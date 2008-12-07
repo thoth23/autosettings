@@ -65,3 +65,6 @@ Implementation:
     - check profiles, if match, apply settings
     - alarm/sleep till next check ts
 
+----
+20081206 Experimenting
+
