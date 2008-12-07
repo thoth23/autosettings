@@ -13,5 +13,9 @@
 
 <EditTextPreference android:title="Start Hour" android:key="start_hour" android:defaultValue="21"></EditTextPreference>
 <EditTextPreference android:defaultValue="9" android:title="End Hour" android:key="end_hour"></EditTextPreference>
+<PreferenceCategory android:title="Start Action" android:key="start_category"><CheckBoxPreference android:key="start_mute" android:defaultValue="true" android:title="Mute"></CheckBoxPreference>
+<CheckBoxPreference android:key="start_vibrate" android:defaultValue="true" android:title="Vibrate on Mute" android:dependency="start_vibrate"></CheckBoxPreference>
+</PreferenceCategory>
+<PreferenceCategory android:key="end_category"><CheckBoxPreference android:title="Mute" android:key="end_mute" android:defaultValue="false"></CheckBoxPreference><CheckBoxPreference android:key="end_vibrate" android:defaultValue="false" android:title="Vibrate on Mute" android:dependency="end_mute"></CheckBoxPreference></PreferenceCategory>
 </PreferenceScreen>
  
