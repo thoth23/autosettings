@@ -6,9 +6,7 @@
 
 package com.alfray.autosettings;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.view.WindowManager;
 
@@ -22,9 +20,6 @@ public class PrefsActivity extends PreferenceActivity {
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		Intent intent = getIntent();
-		boolean enable_themes = intent.getBooleanExtra(EXTRA_ENABLE_VISUALS, true);
 
         // Have the system blur any windows behind this one.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
