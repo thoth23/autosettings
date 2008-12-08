@@ -4,14 +4,21 @@
       android:versionCode="1"
       android:versionName="1.0">
     <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name=".AutoSettingsMain" android:label="@string/app_name">
+        <activity android:label="@string/app_name" android:name="AutoUI">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    <service android:name="AutoService"></service>
+    
 <activity android:name="PrefsActivity" android:label="Auto Settings - Settings"></activity>
+
+<receiver android:name="AutoReceiver"><intent-filter><action android:name="android.intent.action.BOOT_COMPLETED"></action>
+</intent-filter>
+<intent-filter><action android:name="com.alfray.intent.action.AUTO_CHECK_STATE"></action>
+</intent-filter>
+</receiver>
 </application>
 <uses-sdk android:minSdkVersion="1"></uses-sdk>
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
 </manifest> 

@@ -8,7 +8,7 @@
 <Button android:layout_height="wrap_content" android:id="@+id/stop" android:text="Stop" android:layout_weight="1" android:layout_width="fill_parent" android:drawableTop="@android:drawable/ic_menu_close_clear_cancel"></Button>
 </LinearLayout><TextView  
     android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" android:text="Status" android:textAppearance="@style/Section"/>
+    android:layout_height="wrap_content" android:id="@+id/status" android:text="log here"/>
 
 
 </LinearLayout>
