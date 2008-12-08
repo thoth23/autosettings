@@ -31,7 +31,7 @@ public class PrefsValues {
         return Integer.parseInt(mPrefs.getString("start_hour", "10"));
     }
 
-    public int stopdHour() {
+    public int stopHour() {
         return Integer.parseInt(mPrefs.getString("end_hour", "14"));
     }
 

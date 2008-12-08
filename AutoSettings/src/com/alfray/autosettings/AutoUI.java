@@ -14,6 +14,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class AutoUI extends Activity {
@@ -22,6 +23,7 @@ public class AutoUI extends Activity {
     private TextView mStatus;
     private PrefsValues mPrefs;
     private Runnable mStatusUpdater;
+    private ScrollView mScroller;
 
     /** Called when the activity is first created. */
     @Override
@@ -47,7 +49,11 @@ public class AutoUI extends Activity {
         });
 
         mPrefs = new PrefsValues(this);
+        mScroller = (ScrollView) findViewById(R.id.scroller);
         mStatus = (TextView) findViewById(R.id.status);
+        mStatus.setFocusable(true);
+        mStatus.setFocusableInTouchMode(true);
+        mStatus.requestFocus();
         
         mStatusUpdater = new Runnable() {
             @Override
@@ -80,6 +86,7 @@ public class AutoUI extends Activity {
     private void updateStatus() {
         String msg = mPrefs.getLog();
         mStatus.setText(msg);
+        mScroller.scrollTo(0, mStatus.getHeight());
     }
 
     private void requestSettingsCheck() {
