@@ -1,6 +1,6 @@
 /*
  * Copyright 2008 (c) ralfoide gmail com, 2008
- * Project: auto settigs
+ * Project: auto settings
  * License: GPL version 3 or any later version
  */
 
@@ -28,11 +28,11 @@ public class PrefsValues {
 	}
 
     public int startHour() {
-        return mPrefs.getInt("start_hour", 21);
+        return Integer.parseInt(mPrefs.getString("start_hour", "10"));
     }
 
     public int stopdHour() {
-        return mPrefs.getInt("end_hour", 21);
+        return Integer.parseInt(mPrefs.getString("end_hour", "14"));
     }
 
     public boolean startMute() {

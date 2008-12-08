@@ -6,6 +6,9 @@
 
 package com.alfray.autosettings;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,9 +29,29 @@ public class AutoReceiver extends BroadcastReceiver {
                 + (prefs.enableService() ? "enabled" : "disabled")
                 + (isBoot ? " (boot)" : ""));
         
-        if (prefs.enableService()) {
-            
+        if (!prefs.enableService()) return;
+
+        Calendar c = new GregorianCalendar();
+        c.setTimeInMillis(System.currentTimeMillis());
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        
+        int start = prefs.startHour();
+        int stop = prefs.stopdHour();
+        
+        boolean inRange;
+        if (start <= stop) {
+            inRange = hour >= start && hour < stop;
+        } else {
+            inRange = hour < stop || hour >= start;
         }
         
+        SettingsHelper helper = new SettingsHelper(context);
+        if (inRange) {
+            prefs.appendToLog("Apply START settings");
+            helper.applyStartSettings();
+        } else {
+            prefs.appendToLog("Apply STOP settings");
+            helper.applyStopSettings();
+        }
     }
 }
