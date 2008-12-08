@@ -4,11 +4,11 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-<LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent"><Button android:layout_height="wrap_content" android:text="Settings" android:id="@+id/show_settings" android:layout_weight="1" android:layout_width="fill_parent" android:drawableTop="@android:drawable/ic_menu_preferences"></Button><Button android:layout_height="wrap_content" android:id="@+id/start" android:text="Start" android:layout_weight="1" android:layout_width="fill_parent" android:drawableTop="@android:drawable/ic_menu_add"></Button>
-<Button android:layout_height="wrap_content" android:id="@+id/stop" android:text="Stop" android:layout_weight="1" android:layout_width="fill_parent" android:drawableTop="@android:drawable/ic_menu_close_clear_cancel"></Button>
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent"><Button android:layout_height="wrap_content" android:text="Settings" android:id="@+id/show_settings" android:layout_weight="1" android:layout_width="fill_parent" android:drawableTop="@android:drawable/ic_menu_preferences"></Button><Button android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="fill_parent" android:id="@+id/check_now" android:text="Check Now" android:drawableTop="@android:drawable/ic_menu_rotate"></Button>
+
 </LinearLayout><TextView  
     android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" android:id="@+id/status" android:text="log here"/>
+    android:id="@+id/status" android:text="log here" android:layout_height="fill_parent" android:scrollbars="vertical"/>
 
 
 </LinearLayout>
