@@ -8,6 +8,7 @@ package com.alfray.autosettings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 public class PrefsValues {
@@ -17,6 +18,10 @@ public class PrefsValues {
 	public PrefsValues(Context context) {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 	}
+	
+	public SharedPreferences getPrefs() {
+        return mPrefs;
+    }
 
 	public boolean enableService() {
 	    return mPrefs.getBoolean("enable_serv", true);
@@ -45,5 +50,23 @@ public class PrefsValues {
     public boolean stopVibrate() {
         return mPrefs.getBoolean("end_vibrate", false);
     }
-	
+    
+    public String getLog() {
+        return mPrefs.getString("log", "");
+    }
+    
+    public void appendToLog(String msg) {
+        long now = System.currentTimeMillis();
+        msg = String.format("%d:%s\n", now, msg);
+        
+        String current = mPrefs.getString("log", "");
+        
+        Editor editor = mPrefs.edit();
+        
+        try {
+            editor.putString("log", current + msg);
+        } finally {
+            editor.commit();
+        }
+    }
 }
