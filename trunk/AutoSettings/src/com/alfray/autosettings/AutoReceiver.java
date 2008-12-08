@@ -74,10 +74,6 @@ public class AutoReceiver extends BroadcastReceiver {
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
-        sdf.setCalendar(c);
-        String s1 = sdf.format(c.getTime());
-        
         if (hour > now_hour) {
             c.add(Calendar.HOUR_OF_DAY, hour - now_hour);
         } else if (hour < now_hour) {
@@ -86,9 +82,10 @@ public class AutoReceiver extends BroadcastReceiver {
 
         long timeMs = c.getTimeInMillis();
         
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
         sdf.setCalendar(c);
         String s2 = sdf.format(c.getTime());
-        prefs.appendToLog(String.format("Alarm %d: %s => %d: %s", now_hour, s1, hour, s2));
+        prefs.appendToLog(String.format("Alarm for %s", s2));
 
         manager.set(AlarmManager.RTC_WAKEUP, timeMs, op);
     }
