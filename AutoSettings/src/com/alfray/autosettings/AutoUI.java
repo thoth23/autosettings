@@ -84,8 +84,21 @@ public class AutoUI extends Activity {
     }
 
     private void updateStatus() {
-        String msg = mPrefs.getLog();
-        mStatus.setText(msg);
+        long now = System.currentTimeMillis();
+        
+        String[] lines = mPrefs.getLog().split("\n");
+        StringBuilder sb = new StringBuilder();
+        for (String line : lines) {
+            int pos = line.indexOf(':');
+            if (pos < 0) continue;
+            String ts = line.substring(0, pos);
+            long timeMs = Long.parseLong(ts);
+            
+            ts = Utils.formatTime(this, timeMs, now).toString();
+            sb.append(ts).append(": ").append(line.substring(pos + 1)).append('\n');
+        }
+        
+        mStatus.setText(sb.toString());
         mScroller.scrollTo(0, mStatus.getHeight());
     }
 
