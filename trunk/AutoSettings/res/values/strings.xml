@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string name="app_name">Auto Settings</string>
-<string name="prefs_title">Auto Settings - Preferences</string>
+    <string name="app_name">Timeriffic</string>
+<string name="prefs_title">Timeriffic - Preferences</string>
 </resources>
