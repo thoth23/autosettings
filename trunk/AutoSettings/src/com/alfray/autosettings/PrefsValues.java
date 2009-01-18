@@ -27,6 +27,18 @@ public class PrefsValues {
 	    return mPrefs.getBoolean("enable_serv", true);
 	}
 
+    public boolean dismissIntro() {
+        return mPrefs.getBoolean("dismiss_intro", false);
+    }
+    
+    /**
+     * Sets the dismiss_intro boolean value.
+     * @return true if value was successfully changed if the prefs
+     */
+    public boolean setDismissIntro(boolean dismiss) {
+        return mPrefs.edit().putBoolean("dismiss_intro", dismiss).commit();
+    }
+
     public int startHour() {
         return Integer.parseInt(mPrefs.getString("start_hour", "10"));
     }
