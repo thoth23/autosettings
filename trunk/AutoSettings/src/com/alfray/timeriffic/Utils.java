@@ -55,12 +55,12 @@ public class Utils {
                     qualifier);
         }
 
-        int day = 24 * hour;
+        long day = 24 * hour;
         if (delta < day) {
             // less than 1 day
             return String.format("%d hour%s %s",
                     delta / hour,
-                    delta < hour ? "" : "s",
+                    delta <= hour ? "" : "s",
                     qualifier);
         }
 
@@ -78,7 +78,7 @@ public class Utils {
         // less than 7 days
         return String.format("%d day%s %s",
                 delta / day,
-                delta < day ? "" : "s",
+                delta <= day ? "" : "s",
                 qualifier);
     }
     
