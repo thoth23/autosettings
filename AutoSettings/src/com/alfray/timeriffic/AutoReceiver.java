@@ -4,7 +4,7 @@
  * License TBD
  */
 
-package com.alfray.autosettings;
+package com.alfray.timeriffic;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

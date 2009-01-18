@@ -4,7 +4,7 @@
  * License TBD
  */
 
-package com.alfray.autosettings;
+package com.alfray.timeriffic;
 
 import android.content.Context;
 import android.media.AudioManager;

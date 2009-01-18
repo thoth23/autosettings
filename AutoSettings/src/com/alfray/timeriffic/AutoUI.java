@@ -5,7 +5,7 @@
  */
 
 
-package com.alfray.autosettings;
+package com.alfray.timeriffic;
 
 import android.app.Activity;
 import android.app.Application;
