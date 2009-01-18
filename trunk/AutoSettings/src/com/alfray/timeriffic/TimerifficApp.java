@@ -1,7 +1,7 @@
 /*
  * (c) ralfoide gmail com, 2009
- * Project: AutoSettings
- * License TBD
+ * Project: Timeriffic
+ * License: GPLv3
  */
 
 /**
