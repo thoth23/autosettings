@@ -5,7 +5,7 @@
  */
 
 
-package com.alfray.autosettings;
+package com.alfray.timeriffic;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

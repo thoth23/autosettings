@@ -4,7 +4,7 @@
  * License: GPL version 3 or any later version
  */
 
-package com.alfray.autosettings;
+package com.alfray.timeriffic;
 
 import android.content.Context;
 import android.content.SharedPreferences;
