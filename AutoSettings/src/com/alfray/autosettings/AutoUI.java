@@ -8,10 +8,13 @@
 package com.alfray.autosettings;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
@@ -35,8 +38,7 @@ public class AutoUI extends Activity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(AutoUI.this, PrefsActivity.class),
-                        SETTINGS_UPDATED);
+                showPrefs();
             }
         });
         
@@ -71,6 +73,8 @@ public class AutoUI extends Activity {
         });
 
         mStatusUpdater.run();
+        
+        showIntro(false /*force*/);
     }
 
     @Override
@@ -104,5 +108,52 @@ public class AutoUI extends Activity {
 
     private void requestSettingsCheck() {
         sendBroadcast(new Intent(AutoReceiver.ACTION_AUTO_CHECK_STATE));
+    }
+
+    private void showIntro(boolean force) {
+        if (!force) {
+            Application app = getApplication();
+            if (app instanceof TimerifficApp) {
+                TimerifficApp tapp = (TimerifficApp) app;
+                if (!tapp.isIntroDisplayed() && !mPrefs.dismissIntro()) {
+                    tapp.setIntroDisplayed(true);
+                    force = true;
+                }
+            }
+        }
+        
+        if (force) {
+            startActivity(new Intent(AutoUI.this, IntroDialogActivity.class));
+        }
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, R.string.settings,  0, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
+        menu.add(0, R.string.check_now,  0, R.string.check_now).setIcon(R.drawable.ic_menu_rotate);
+        menu.add(0, R.string.about,  0, R.string.about).setIcon(R.drawable.ic_menu_help);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+        case R.string.settings:
+            showPrefs();
+            break;
+        case R.string.check_now:
+            requestSettingsCheck();
+            break;
+        case R.string.about:
+            showIntro(true /*force*/);
+            break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showPrefs() {
+        startActivityForResult(new Intent(AutoUI.this, PrefsActivity.class),
+                SETTINGS_UPDATED);
     }
 }
