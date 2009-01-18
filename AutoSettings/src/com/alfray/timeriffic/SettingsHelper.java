@@ -1,7 +1,7 @@
 /*
  * (c) ralfoide gmail com, 2008
- * Project: AutoSettings
- * License TBD
+ * Project: Timeriffic
+ * License: GPLv3
  */
 
 package com.alfray.timeriffic;
