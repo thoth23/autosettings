@@ -7,6 +7,8 @@
 
 package com.alfray.timeriffic;
 
+import java.util.Calendar;
+
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
@@ -27,6 +29,8 @@ public class AutoUI extends Activity {
     private PrefsValues mPrefs;
     private Runnable mStatusUpdater;
     private ScrollView mScroller;
+    
+    private Calendar mCalendar = Calendar.getInstance();
 
     /** Called when the activity is first created. */
     @Override
@@ -98,7 +102,7 @@ public class AutoUI extends Activity {
             String ts = line.substring(0, pos);
             long timeMs = Long.parseLong(ts);
             
-            ts = Utils.formatTime(this, timeMs, now).toString();
+            ts = Utils.formatTime(mCalendar, timeMs, now);
             sb.append(ts).append(": ").append(line.substring(pos + 1)).append('\n');
         }
         
