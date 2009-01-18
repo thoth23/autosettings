@@ -7,48 +7,79 @@
 
 package com.alfray.timeriffic;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.Calendar;
 
 
 public class Utils {
 
-    public static CharSequence formatTime(Object caller, long time_ms, long now) {
-        /* The following method is not visible anymore in SDK 1.0 but still present,
-           just use reflection to do the equivalent of:
-            
-        CharSequence mod = android.pim.DateUtils.getRelativeTimeSpanString(
-                time_ms,
-                now,
-                0); // minresolution
-        */
-        
-        ClassLoader cl = caller.getClass().getClassLoader();
-        Class<?> du_class;
-        try {
-            du_class = cl.loadClass("android.pim.DateUtils");
-            Method method = du_class.getDeclaredMethod("getRelativeTimeSpanString",
-                    new Class[] { long.class, long.class, long.class });
-            Object v = method.invoke(null /*receiver*/, new Object[] { time_ms, now, (long)0 });
+    /**
+     * Returns a string describing time_ns compared to now.
+     * Examples:
+     * - "2 sec.s ago"
+     * - "2 min. ago"
+     * - "2 hours ago"
+     * - "2 days ago"
+     * 
+     * If the delta is > 7 days, simply formats a short date ("Dec 21")
+     * If the delta is > 31 days, formats an YYYY/MM/DD date.
+     * 
+     * "ago" is used if time_ms < now (the typical case).
+     * If time_ms > now, uses "later"
+     * If time_ns == now or if delta < 1 second, uses "now".
+     */
+    public static String formatTime(Calendar cal, long time_ms, long now) {
+        long delta = now - time_ms;
 
-            if (v instanceof CharSequence) {
-                return (CharSequence) v;
-            }
-        } catch (ClassNotFoundException e) {
-            // pass
-        } catch (SecurityException e) {
-            // pass
-        } catch (NoSuchMethodException e) {
-            // pass
-        } catch (IllegalArgumentException e) {
-            // pass
-        } catch (IllegalAccessException e) {
-            // pass
-        } catch (InvocationTargetException e) {
-            // pass
+        String qualifier = delta > 0 ? "ago" : "later";
+        if (delta < 0) delta = 0 - delta;
+        
+        int second = 1000;
+        if (delta < second) {
+            // less than 1 sec
+            return "now";
+        }
+
+        int minute = 60 * second;
+        if (delta < minute) {
+            // less than 1 minute
+            return String.format("%d sec. %s",
+                    delta / second,
+                    qualifier);
         }
         
-        return null;
+        int hour = 60 * minute;
+        if (delta < hour) {
+            // less than 1 hour
+            return String.format("%d min. %s",
+                    delta / minute,
+                    qualifier);
+        }
+
+        int day = 24 * hour;
+        if (delta < day) {
+            // less than 1 day
+            return String.format("%d hour%s %s",
+                    delta / hour,
+                    delta < hour ? "" : "s",
+                    qualifier);
+        }
+
+        if (cal == null) cal = Calendar.getInstance();
+        cal.setTimeInMillis(time_ms);
+
+        if (delta > 30 * day) {
+            return String.format("%1$tF", cal);
+        }
+        
+        if (delta > 7 * day) {
+            return String.format("%1$tb %1$te", cal);
+        }
+
+        // less than 7 days
+        return String.format("%d day%s %s",
+                delta / day,
+                delta < day ? "" : "s",
+                qualifier);
     }
     
 }

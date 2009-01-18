@@ -17,7 +17,7 @@
 
 <WebView android:id="@+id/web"
     android:layout_height="wrap_content"
-    android:layout_width="wrap_content"
+    android:layout_width="fill_parent"
     />
 
 </ScrollView>
