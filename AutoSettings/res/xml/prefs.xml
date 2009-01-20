@@ -5,11 +5,16 @@
 		android:summaryOff="Auto service is disabled." android:key="enable_serv"
 		android:title="Enable Auto Service" android:summaryOn="Auto service is enabled." /><CheckBoxPreference android:key="dismiss_intro" android:title="Don't display introduction" android:summaryOff="Introduction is visible." android:summaryOn="Introduction is skipped." android:defaultValue="false"/>
 
-	<EditTextPreference android:title="Start Hour"
-		android:key="start_hour" android:defaultValue="21"></EditTextPreference>
+	<com.alfray.timeriffic.TimePreference
+        style="?attr/timePreferenceStyle"
+	    android:title="Start Hour"
+		android:key="start_hour" 
+		android:defaultValue="21" />
 
-	<EditTextPreference android:defaultValue="9"
-		android:title="End Hour" android:key="end_hour"></EditTextPreference>
+	<com.alfray.timeriffic.TimePreference 
+	    android:defaultValue="9"
+		android:title="End Hour" 
+		android:key="end_hour" />
 
 	<PreferenceCategory android:title="Start Action"
 		android:key="start_category">
