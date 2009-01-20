@@ -2,6 +2,9 @@
 
 set -e # fail early
 
+VERS="$1"
+[ -n "$VERS" ] && VERS="${VERS}_"
+
 function die() {
   echo "Error: " $*
   echo
@@ -20,7 +23,7 @@ function process() {
 	N=1
 	while /bin/true; do
 		EXT=`python -c "print chr(96+$N)"`
-		DEST="${BASE}_${DATE}${EXT}.apk"
+		DEST="${BASE}_${VERS}${DATE}${EXT}.apk"
 		[ ! -e "$DEST" ] && break
 		N=$((N+1))
 		[ "$N" == "27" ] && die "$DEST exists, can't generate higher letter."
