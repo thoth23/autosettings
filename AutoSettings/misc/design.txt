@@ -66,5 +66,11 @@ Implementation:
     - alarm/sleep till next check ts
 
 ----
-20081206 Experimenting
+20090120 Misc Ideas/suggestions
 
+- conditions: time range and/or cellid/gps (+rate check)
+- profile group of setting with same condition) vs (condition per setting).
+- toggles: led, gps, cellid, wifi, 2g/3g
+- levels: media/ringer volumes, brightness
+- settings for weekends vs weekdays or weekly
+- home icons for profiles
