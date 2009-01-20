@@ -35,10 +35,6 @@ public class UtilsTest {
         return mSf.parse(time).getTime();
     }
 
-    private void assertNotEquals(String expected, String actual) {
-        assertFalse(expected.equals(actual));
-    }
-
     // ----
     
     @Test
