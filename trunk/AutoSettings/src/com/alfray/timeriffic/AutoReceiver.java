@@ -36,16 +36,16 @@ public class AutoReceiver extends BroadcastReceiver {
 
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(System.currentTimeMillis());
-        int hour = c.get(Calendar.HOUR_OF_DAY);
+        int hourMin = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
         
-        int start = prefs.startHour();
-        int stop = prefs.stopHour();
+        int start = prefs.startHourMin();
+        int stop = prefs.stopHourMin();
         
         boolean inRange;
         if (start <= stop) {
-            inRange = hour >= start && hour < stop;
+            inRange = hourMin >= start && hourMin < stop;
         } else {
-            inRange = hour < stop || hour >= start;
+            inRange = hourMin < stop || hourMin >= start;
         }
         
         SettingsHelper helper = new SettingsHelper(context);
@@ -60,7 +60,7 @@ public class AutoReceiver extends BroadcastReceiver {
         }
     }
 
-    private void scheduleAlarm(Context context, PrefsValues prefs, int hour) {
+    private void scheduleAlarm(Context context, PrefsValues prefs, int hourMin) {
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         
         Intent intent = new Intent(ACTION_AUTO_CHECK_STATE);
@@ -69,20 +69,21 @@ public class AutoReceiver extends BroadcastReceiver {
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(System.currentTimeMillis());
         int now_hour = c.get(Calendar.HOUR_OF_DAY);
+        int now_min = c.get(Calendar.MINUTE);
+        int now_hourMin = now_hour * 60 + now_min;
         
-        c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
 
-        if (hour > now_hour) {
-            c.add(Calendar.HOUR_OF_DAY, hour - now_hour);
-        } else if (hour < now_hour) {
-            c.add(Calendar.HOUR_OF_DAY, 24 - now_hour + hour);
+        if (hourMin > now_hourMin) {
+            c.add(Calendar.MINUTE, hourMin - now_hourMin);
+        } else if (hourMin < now_hourMin) {
+            c.add(Calendar.MINUTE, 24*60 - now_hourMin + hourMin);
         }
 
         long timeMs = c.getTimeInMillis();
         
-        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         sdf.setCalendar(c);
         String s2 = sdf.format(c.getTime());
         prefs.appendToLog(String.format("Alarm for %s", s2));

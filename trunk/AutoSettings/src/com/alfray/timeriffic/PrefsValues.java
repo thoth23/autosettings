@@ -13,6 +13,9 @@ import android.preference.PreferenceManager;
 
 public class PrefsValues {
 
+    public static final String KEY_START_HOUR = "start_hour";
+    public static final String KEY_END_HOUR = "end_hour";
+
     private SharedPreferences mPrefs;
 	
 	public PrefsValues(Context context) {
@@ -39,12 +42,24 @@ public class PrefsValues {
         return mPrefs.edit().putBoolean("dismiss_intro", dismiss).commit();
     }
 
-    public int startHour() {
-        return Integer.parseInt(mPrefs.getString("start_hour", "10"));
+    public int startHourMin() {
+        try {
+            return mPrefs.getInt(KEY_START_HOUR, 10*60);
+        } catch (ClassCastException e) {
+            // The field used to be a String, so it could fail here
+            String s = mPrefs.getString(KEY_START_HOUR, "10");
+            return TimePreference.parseHoursMin(s);
+        }
     }
 
-    public int stopHour() {
-        return Integer.parseInt(mPrefs.getString("end_hour", "14"));
+    public int stopHourMin() {
+        try {
+            return mPrefs.getInt(KEY_END_HOUR, 14*60);
+        } catch (ClassCastException e) {
+            // The field used to be a String, so it could fail here
+            String s = mPrefs.getString(KEY_END_HOUR, "14");
+            return TimePreference.parseHoursMin(s);
+        }
     }
 
     public boolean startMute() {

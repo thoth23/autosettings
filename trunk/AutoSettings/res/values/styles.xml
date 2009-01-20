@@ -5,6 +5,7 @@
 <style name="Section" parent="@android:style/TextAppearance.Large">
     <item name="android:textStyle">bold</item>
     <item name="android:textColor">@color/yellow</item>
+
 </style>
 
 </resources>

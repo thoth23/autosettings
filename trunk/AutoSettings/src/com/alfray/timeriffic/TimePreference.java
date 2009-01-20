@@ -8,17 +8,20 @@ package com.alfray.timeriffic;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.TypedArray;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.DialogPreference;
 import android.preference.EditTextPreference;
-import android.text.TextUtils;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.EditText;
+import android.widget.TimePicker;
 
 //-----------------------------------------------
 
@@ -33,25 +36,40 @@ import android.widget.EditText;
  * via {@link #getEditText()}, or through XML by setting any EditText
  * attributes on the TimePreference.
  * <p>
- * This preference will store a string into the SharedPreferences.
+ * This preference will store an integer into the SharedPreferences that
+ * represents the number of minutes since midnight. So 0=midnight, 60=1 AM,
+ * etc till the max value which is 23*60+59 (1440-1=1439).
  * <p>
  * See {@link android.R.styleable#EditText EditText Attributes}.
  */
 public class TimePreference extends DialogPreference {
-    /**
-     * The edit text shown in the dialog.
-     */
-    private EditText mEditText;
     
-    private String mText;
+    private static final String TAG = "TimePref";
+    
+    /**
+     * The edit mHourMin shown in the dialog.
+     */
+    private TimePicker mTimePicker;
+    
+    private int mHourMin;
+    
+    /**
+     * Sets the context to our custom theme.
+     */
+    private static Context changeTheme(Context context) {
+        context.setTheme(R.style.TimeTheme);
+        return context;
+    }
     
     public TimePreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         
-        mEditText = new EditText(context, attrs);
+        Log.d("TimePref", "init");
+        
+        mTimePicker = new TimePicker(context, attrs);
         
         // Give it an ID so it can be saved/restored
-        mEditText.setId(com.android.internal.R.id.edit);
+        mTimePicker.setId(R.id.time);
         
         /*
          * The preference framework and view framework both have an 'enabled'
@@ -59,11 +77,11 @@ public class TimePreference extends DialogPreference {
          * the preference framework, but it was also given to the view framework.
          * We reset the enabled state.
          */
-        mEditText.setEnabled(true);
+        mTimePicker.setEnabled(true);
     }
 
     public TimePreference(Context context, AttributeSet attrs) {
-        this(context, attrs, com.android.internal.R.attr.editTextPreferenceStyle);
+        this(changeTheme(context), attrs, R.attr.timePreferenceStyle);
     }
 
     public TimePreference(Context context) {
@@ -71,16 +89,16 @@ public class TimePreference extends DialogPreference {
     }
     
     /**
-     * Saves the text to the {@link SharedPreferences}.
+     * Saves the mHourMin to the {@link SharedPreferences}.
      * 
-     * @param text The text to save
+     * @param hourMin The mHourMin to save
      */
-    public void setText(String text) {
+    public void setTime(int hourMin) {
         final boolean wasBlocking = shouldDisableDependents();
         
-        mText = text;
+        mHourMin = hourMin;
         
-        persistString(text);
+        persistInt(hourMin);
         
         final boolean isBlocking = shouldDisableDependents(); 
         if (isBlocking != wasBlocking) {
@@ -89,27 +107,27 @@ public class TimePreference extends DialogPreference {
     }
     
     /**
-     * Gets the text from the {@link SharedPreferences}.
+     * Gets the mHourMin from the {@link SharedPreferences}.
      * 
      * @return The current preference value.
      */
-    public String getText() {
-        return mText;
+    public int getTime() {
+        return mHourMin;
     }
 
     @Override
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
 
-        EditText editText = mEditText;
-        editText.setText(getText());
+        TimePicker timePicker = mTimePicker;
+        setTimePickerValue(timePicker, getTime());
         
-        ViewParent oldParent = editText.getParent();
+        ViewParent oldParent = timePicker.getParent();
         if (oldParent != view) {
             if (oldParent != null) {
-                ((ViewGroup) oldParent).removeView(editText);
+                ((ViewGroup) oldParent).removeView(timePicker);
             }
-            onAddEditTextToDialogView(view, editText);
+            addPickerToDialogView(view, timePicker);
         }
     }
 
@@ -118,11 +136,10 @@ public class TimePreference extends DialogPreference {
      * 
      * @param dialogView The dialog view.
      */
-    protected void onAddEditTextToDialogView(View dialogView, EditText editText) {
-        ViewGroup container = (ViewGroup) dialogView
-                .findViewById(com.android.internal.R.id.edittext_container);
+    private void addPickerToDialogView(View dialogView, TimePicker timePicker) {
+        ViewGroup container = (ViewGroup) dialogView.findViewById(R.id.time_container);
         if (container != null) {
-            container.addView(editText, ViewGroup.LayoutParams.FILL_PARENT,
+            container.addView(timePicker, ViewGroup.LayoutParams.FILL_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
@@ -132,9 +149,9 @@ public class TimePreference extends DialogPreference {
         super.onDialogClosed(positiveResult);
         
         if (positiveResult) {
-            String value = mEditText.getText().toString();
-            if (callChangeListener(value)) {
-                setText(value);
+            int hourMin = getTimePickerHourMin(mTimePicker);
+            if (callChangeListener(hourMin)) {
+                setTime(hourMin);
             }
         }
     }
@@ -146,21 +163,30 @@ public class TimePreference extends DialogPreference {
 
     @Override
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-        setText(restoreValue ? getPersistedString(mText) : (String) defaultValue);
-    }
-
-    @Override
-    public boolean shouldDisableDependents() {
-        return TextUtils.isEmpty(mText) || super.shouldDisableDependents();
-    }
-
-    /**
-     * Returns the {@link EditText} widget that will be shown in the dialog.
-     * 
-     * @return The {@link EditText} widget that will be shown in the dialog.
-     */
-    public EditText getEditText() {
-        return mEditText;
+        try {
+            if (restoreValue) {
+                try {
+                    setTime(getPersistedInt(mHourMin));
+                } catch (Exception e) {
+                    // This may fail because the field used to be a String and now
+                    // is an int, so try again.
+                    int hourMin = parseHoursMin(getPersistedString(toHourMinStr(mHourMin)));
+                    
+                    // setTime calls persistInt() which will fail if trying to persist
+                    // an int where a String is stored. Manually emove the pref first.
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    Editor editor = prefs.edit();
+                    editor.remove(getKey());
+                    editor.commit();
+                    
+                    setTime(hourMin);
+                }
+            } else {
+                setTime(parseHoursMin((String) defaultValue));
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "onSetInitialValue failed", e);
+        }
     }
 
     @Override
@@ -172,7 +198,7 @@ public class TimePreference extends DialogPreference {
         }
         
         final SavedState myState = new SavedState(superState);
-        myState.text = getText();
+        myState.mHourMin = getTime();
         return myState;
     }
 
@@ -186,21 +212,23 @@ public class TimePreference extends DialogPreference {
          
         SavedState myState = (SavedState) state;
         super.onRestoreInstanceState(myState.getSuperState());
-        setText(myState.text);
+        setTime(myState.mHourMin);
     }
     
+    // ------------------
+
     private static class SavedState extends BaseSavedState {
-        String text;
+        int mHourMin;
         
         public SavedState(Parcel source) {
             super(source);
-            text = source.readString();
+            mHourMin = source.readInt();
         }
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
-            dest.writeString(text);
+            dest.writeInt(mHourMin);
         }
 
         public SavedState(Parcelable superState) {
@@ -217,6 +245,57 @@ public class TimePreference extends DialogPreference {
                 return new SavedState[size];
             }
         };
+    }
+
+    // ------------------
+    
+    private void setTimePickerValue(TimePicker timePicker, int hourMin) {
+        if (hourMin < 0) hourMin = 0;
+        if (hourMin >= 24*60) hourMin = 24*60-1;
+        int hours = hourMin / 60;
+        int minutes = hourMin % 60;
+        
+        timePicker.setCurrentHour(hours);
+        timePicker.setCurrentMinute(minutes);
+    }
+    
+    public static int parseHoursMin(String text) {
+        int hours = 0;
+        int minutes = 0;
+        
+        String[] numbers = text.trim().split(":");
+        if (numbers.length >= 1) hours = parseNumber(numbers[0], 23);
+        if (numbers.length >= 2) minutes = parseNumber(numbers[1], 59);
+
+        return hours*60 + minutes;
+    }
+
+    private static int parseNumber(String string, int maxValue) {
+        try {
+            int n = Integer.parseInt(string);
+            if (n < 0) return 0;
+            if (n > maxValue) return maxValue;
+            return n;
+        } catch (Exception e) {
+            // ignore
+        }
+        return 0;
+    }
+    
+    public static String toHourMinStr(int hourMin) {
+        if (hourMin < 0) hourMin = 0;
+        if (hourMin >= 24*60) hourMin = 24*60-1;
+        int hours = hourMin / 60;
+        int minutes = hourMin % 60;
+
+        return String.format("%02d:%02d", hours, minutes);
+    }
+
+    private int getTimePickerHourMin(TimePicker timePicker) {
+        int hours = timePicker.getCurrentHour();
+        int minutes = timePicker.getCurrentMinute();
+
+        return hours*60 + minutes;
     }
     
 }
