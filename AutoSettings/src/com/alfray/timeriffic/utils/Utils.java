@@ -5,7 +5,7 @@
  */
 
 
-package com.alfray.timeriffic;
+package com.alfray.timeriffic.utils;
 
 import java.util.Calendar;
 

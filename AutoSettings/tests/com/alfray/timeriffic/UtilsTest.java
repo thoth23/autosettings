@@ -16,6 +16,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.alfray.timeriffic.utils.Utils;
+
 public class UtilsTest {
 
     private Calendar mCal;

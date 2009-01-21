@@ -7,7 +7,7 @@
 /**
  * 
  */
-package com.alfray.timeriffic;
+package com.alfray.timeriffic.app;
 
 import android.app.Application;
 

@@ -4,11 +4,14 @@
  * License: GPLv3
  */
 
-package com.alfray.timeriffic;
+package com.alfray.timeriffic.app;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import com.alfray.timeriffic.prefs.PrefsValues;
+import com.alfray.timeriffic.utils.SettingsHelper;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
