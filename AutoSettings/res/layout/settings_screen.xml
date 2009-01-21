@@ -10,5 +10,5 @@
 
 
 
-<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/ProfilesLinear"></LinearLayout>
+<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/ProfilesLinear" android:orientation="vertical"></LinearLayout>
 </LinearLayout>

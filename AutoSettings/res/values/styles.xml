@@ -2,11 +2,22 @@
 
 <resources>
 
-<style name="ProfileHeader" parent="@android:style/TextAppearance.Large">
+<style name="ProfileHeaderTextStyle" parent="@android:style/TextAppearance.Large">
     <item name="android:textColor">@drawable/black</item>
 </style>
 
-<style name="SettingsLine" parent="@android:style/TextAppearance.Small">
+<style name="SettingTextStyle" parent="@android:style/TextAppearance.Small">
+</style>
+
+<attr name="profileHeaderBackground" />
+<attr name="profileHeaderTextStyle" />
+<attr name="profileSettingTextStyle" />
+
+<style name="ProfileTheme" parent="@android:style/Theme">
+    <item name="android:drawableBottom">@drawable/divider_horizontal_dark</item>
+    <item name="profileHeaderBackground">@drawable/settings_header_raw</item>
+    <item name="profileHeaderTextStyle">@style/ProfileHeaderTextStyle</item>
+    <item name="profileSettingTextStyle">@style/SettingTextStyle</item>
 </style>
 
 </resources>
