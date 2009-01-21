@@ -5,18 +5,25 @@
 
 	<LinearLayout android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/HeaderLinear"
-		android:background="@drawable/settings_header_raw">
+		android:background="?profileHeaderBackground">
 		<TextView android:text="TextView01" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:id="@+id/ProfileName"
-			android:layout_weight="1" android:textAppearance="@style/ProfileHeader" android:paddingLeft="5sp"/>
+			android:layout_weight="1" 
+			android:paddingLeft="5sp" 
+			android:textAppearance="?profileHeaderTextStyle"/>
 	</LinearLayout>
 	<LinearLayout android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/SettingsLinear"
 		android:orientation="vertical">
 		<TextView android:text="TextView01" android:id="@+id/TextView01"
-			android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="@style/SettingsLine" android:paddingLeft="20sp"></TextView>
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:paddingLeft="20sp"
+			android:textAppearance="?profileSettingTextStyle"></TextView>
 		<TextView android:text="TextView02" android:id="@+id/TextView02"
-			android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="@style/SettingsLine" android:paddingLeft="20sp"></TextView>
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:paddingLeft="20sp"
+			android:drawableBottom="@drawable/divider_horizontal_bright" 
+			android:textAppearance="?profileSettingTextStyle"></TextView>
 	</LinearLayout>
 
 
