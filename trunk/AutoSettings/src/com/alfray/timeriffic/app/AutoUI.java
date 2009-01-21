@@ -9,16 +9,6 @@ package com.alfray.timeriffic.app;
 
 import java.util.Calendar;
 
-import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.R.drawable;
-import com.alfray.timeriffic.R.id;
-import com.alfray.timeriffic.R.layout;
-import com.alfray.timeriffic.R.string;
-import com.alfray.timeriffic.prefs.PrefsActivity;
-import com.alfray.timeriffic.prefs.PrefsValues;
-import com.alfray.timeriffic.ui.IntroDialogActivity;
-import com.alfray.timeriffic.utils.Utils;
-
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
@@ -31,6 +21,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.prefs.PrefsActivity;
+import com.alfray.timeriffic.prefs.PrefsValues;
+import com.alfray.timeriffic.ui.IntroDialogActivity;
+import com.alfray.timeriffic.utils.Utils;
 
 public class AutoUI extends Activity {
 
