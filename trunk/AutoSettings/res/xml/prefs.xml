@@ -5,13 +5,13 @@
 		android:key="enable_serv"
 		android:summaryOff="Timeriffic is disabled." android:summaryOn="Timeriffic is enabled." android:title="Enable Timeriffic"/><CheckBoxPreference android:key="dismiss_intro" android:title="Don't display introduction" android:summaryOff="Introduction is visible." android:summaryOn="Introduction is skipped." android:defaultValue="false"/>
 
-	<com.alfray.timeriffic.TimePreference
+	<com.alfray.timeriffic.prefs.TimePreference
         style="?attr/timePreferenceStyle"
 	    android:title="Start Hour"
 		android:key="start_hour" 
 		android:defaultValue="21" />
 
-	<com.alfray.timeriffic.TimePreference 
+	<com.alfray.timeriffic.prefs.TimePreference 
 	    android:defaultValue="9"
 		android:title="End Hour" 
 		android:key="end_hour" />

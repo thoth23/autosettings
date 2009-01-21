@@ -21,7 +21,12 @@
  * under the License.
  */
 
-package com.alfray.timeriffic;
+package com.alfray.timeriffic.prefs;
+
+import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.R.attr;
+import com.alfray.timeriffic.R.id;
+import com.alfray.timeriffic.R.style;
 
 import android.content.Context;
 import android.content.SharedPreferences;

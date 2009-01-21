@@ -4,7 +4,13 @@
  * License: GPLv3
  */
 
-package com.alfray.timeriffic;
+package com.alfray.timeriffic.ui;
+
+import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.R.id;
+import com.alfray.timeriffic.R.layout;
+import com.alfray.timeriffic.R.string;
+import com.alfray.timeriffic.prefs.PrefsValues;
 
 import android.app.Activity;
 import android.os.Bundle;

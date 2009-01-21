@@ -4,7 +4,9 @@
  * License: GPLv3
  */
 
-package com.alfray.timeriffic;
+package com.alfray.timeriffic.utils;
+
+import com.alfray.timeriffic.prefs.PrefsValues;
 
 import android.content.Context;
 import android.media.AudioManager;
