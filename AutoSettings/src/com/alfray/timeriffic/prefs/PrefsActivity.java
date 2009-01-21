@@ -6,15 +6,13 @@
 
 package com.alfray.timeriffic.prefs;
 
-import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.R.string;
-import com.alfray.timeriffic.R.xml;
-
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.view.WindowManager;
+
+import com.alfray.timeriffic.R;
 
 /**
  * Displays preferences

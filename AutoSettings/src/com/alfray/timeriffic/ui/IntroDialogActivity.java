@@ -6,18 +6,15 @@
 
 package com.alfray.timeriffic.ui;
 
-import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.R.id;
-import com.alfray.timeriffic.R.layout;
-import com.alfray.timeriffic.R.string;
-import com.alfray.timeriffic.prefs.PrefsValues;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+
+import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.prefs.PrefsValues;
 
 /**
  */

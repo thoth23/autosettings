@@ -23,11 +23,6 @@
 
 package com.alfray.timeriffic.prefs;
 
-import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.R.attr;
-import com.alfray.timeriffic.R.id;
-import com.alfray.timeriffic.R.style;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -44,6 +39,8 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.EditText;
 import android.widget.TimePicker;
+
+import com.alfray.timeriffic.R;
 
 //-----------------------------------------------
 
