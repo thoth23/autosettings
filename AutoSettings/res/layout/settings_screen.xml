@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/ButtonsLinear"><Button android:layout_height="wrap_content" android:id="@+id/show_settings" android:layout_weight="1" android:layout_width="fill_parent" android:text="@string/settings" android:drawableLeft="@drawable/ic_menu_preferences"></Button><Button android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="fill_parent" android:id="@+id/check_now" android:text="@string/check_now" android:drawableLeft="@drawable/ic_menu_rotate"></Button>
+
+</LinearLayout>
+
+
+
+<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/ProfilesLinear"></LinearLayout>
+</LinearLayout>

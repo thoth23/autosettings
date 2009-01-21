@@ -2,10 +2,11 @@
 
 <resources>
 
-<style name="Section" parent="@android:style/TextAppearance.Large">
-    <item name="android:textStyle">bold</item>
-    <item name="android:textColor">@color/yellow</item>
+<style name="ProfileHeader" parent="@android:style/TextAppearance.Large">
+    <item name="android:textColor">@drawable/black</item>
+</style>
 
+<style name="SettingsLine" parent="@android:style/TextAppearance.Small">
 </style>
 
 </resources>
