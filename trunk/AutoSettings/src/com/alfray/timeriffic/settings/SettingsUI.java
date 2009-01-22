@@ -22,7 +22,7 @@ public class SettingsUI extends Activity {
         
         setContentView(R.layout.settings_screen);
         
-        mProfilesLinear = (LinearLayout) findViewById(R.id.ProfilesLinear);
+        mProfilesLinear = (LinearLayout) findViewById(R.id.profilesLinear);
         addDummy();
         addDummy();
     }
