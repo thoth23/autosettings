@@ -1,14 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+<ImageView 
+    android:id="@+id/icon"
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"
+    android:src="@drawable/timeriffic_icon"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true"
+    />
+
+<ToggleButton
+    android:id="@+id/global_toggle"
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:layout_toRightOf="@+id/icon" 
+    android:layout_alignBottom="@+id/icon"
+    android:paddingLeft="15dip"
+    android:paddingRight="15dip"
+    android:textOff="Disabled" 
+    android:textOn="Enabled"/>
+    
+<Button
+    android:layout_height="wrap_content"
+	android:id="@+id/check_now"
+	android:text="@string/check_now"
+	android:drawableLeft="@drawable/ic_menu_rotate"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentRight="true"
+	android:layout_width="wrap_content"
+	/>
+
+<LinearLayout 
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:id="@+id/profilesLinear"
     android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-<LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/ButtonsLinear"><Button android:layout_height="wrap_content" android:id="@+id/show_settings" android:layout_weight="1" android:layout_width="fill_parent" android:text="@string/settings" android:drawableLeft="@drawable/ic_menu_preferences"></Button><Button android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="fill_parent" android:id="@+id/check_now" android:text="@string/check_now" android:drawableLeft="@drawable/ic_menu_rotate"></Button>
-
-</LinearLayout>
-
-
-
-<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/ProfilesLinear" android:orientation="vertical"></LinearLayout>
-</LinearLayout>
+    android:layout_below="@id/icon"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentBottom="true"
+    />
+</RelativeLayout>
