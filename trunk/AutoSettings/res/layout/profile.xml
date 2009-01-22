@@ -15,15 +15,19 @@
 			android:layout_height="wrap_content" 
 			android:id="@+id/profileName"
 			android:layout_weight="1" 
-			android:paddingLeft="5sp"
+			android:paddingRight="5dip" 
+			android:paddingLeft="5dip" 
 			android:textAppearance="?profileHeaderTextStyle"
 			/>
-    <ImageView 
-        android:id="@+id/ImageView01" 
-        android:layout_width="wrap_content" 
-        android:layout_height="wrap_content" 
-        android:src="@drawable/menu_indicator"
-        />
+        <ImageButton
+            android:src="@drawable/menu_indicator" 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:id="@+id/profileButton"
+            android:layout_weight="0"
+            android:paddingRight="5dip" 
+            />
+    
 
     </LinearLayout>
 
@@ -33,12 +37,7 @@
 		android:orientation="vertical"
 		android:layout_width="fill_parent"
 		>
-	    <ImageView 
-	        android:id="@+id/ImageView01" 
-	        android:layout_width="wrap_content" 
-	        android:layout_height="wrap_content" 
-	        android:src="@drawable/green_dot"
-	        />
+	    
 		<TextView 
             android:text="Settings Line" 
             android:id="@+id/TextView01"
@@ -46,6 +45,9 @@
 			android:layout_height="wrap_content"
 			android:paddingLeft="20sp" 
 			android:textAppearance="?profileSettingTextStyle"
+			android:drawableLeft="@drawable/green_dot" 
+			android:paddingTop="5dip" 
+			android:paddingBottom="5dip"
 			/>
 		<ImageView 
             android:id="@+id/separator"
@@ -57,4 +59,5 @@
 	</LinearLayout>
 
 
+<CheckBox android:text="CheckBox01" android:id="@+id/CheckBox01" android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
 </LinearLayout>
