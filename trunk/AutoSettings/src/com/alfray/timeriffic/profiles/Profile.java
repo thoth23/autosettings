@@ -4,7 +4,7 @@
  * License TBD
  */
 
-package com.alfray.timeriffic.settings;
+package com.alfray.timeriffic.profiles;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +24,7 @@ public class Profile {
     }
 
     public void addTo(LayoutInflater layoutInflater, LinearLayout profilesLinear) {
-        View pv = layoutInflater.inflate(R.layout.settings_profile, null /*root*/);
+        View pv = layoutInflater.inflate(R.layout.profile, null /*root*/);
         profilesLinear.addView(pv);
         
         TextView tv = (TextView) pv.findViewById(R.id.profileName);

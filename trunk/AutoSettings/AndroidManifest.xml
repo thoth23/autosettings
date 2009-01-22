@@ -19,7 +19,7 @@
 
 <activity android:label="@string/intro_title" android:theme="@android:style/Theme.Dialog" android:name=".ui.IntroDialogActivity"></activity>
 
-<activity android:name=".settings.SettingsUI" android:theme="@style/ProfileTheme"><intent-filter>
+<activity android:theme="@style/ProfileTheme" android:name=".profiles.ProfilesUI"><intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 
             </intent-filter></activity>
