@@ -9,7 +9,7 @@
 	   android:background="?profileHeaderBackground"
 	   android:layout_width="fill_parent"
 	   >
-        <TextView 
+        <CheckBox 
             android:text="Profile Name" 
 		    android:layout_width="wrap_content"
 			android:layout_height="wrap_content" 
@@ -18,13 +18,27 @@
 			android:paddingLeft="5sp"
 			android:textAppearance="?profileHeaderTextStyle"
 			/>
-	</LinearLayout>
+    <ImageView 
+        android:id="@+id/ImageView01" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:src="@drawable/menu_indicator"
+        />
+
+    </LinearLayout>
+
 	<LinearLayout 
         android:layout_height="wrap_content"
 		android:id="@+id/settingsLinear" 
 		android:orientation="vertical"
 		android:layout_width="fill_parent"
 		>
+	    <ImageView 
+	        android:id="@+id/ImageView01" 
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content" 
+	        android:src="@drawable/green_dot"
+	        />
 		<TextView 
             android:text="Settings Line" 
             android:id="@+id/TextView01"
