@@ -2,27 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent">
 
-<ImageView 
-    android:id="@+id/icon"
-    android:layout_width="wrap_content" 
-    android:layout_height="wrap_content"
-    android:src="@drawable/timeriffic_icon"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentLeft="true"
-    />
-
-<ToggleButton
+<ImageView android:id="@+id/icon" android:src="@drawable/timeriffic_icon" android:layout_alignParentTop="true" android:layout_height="60dip" android:layout_width="40dip" android:layout_centerHorizontal="true" android:scaleType="fitCenter" /><ToggleButton
     android:id="@+id/global_toggle"
     android:layout_width="wrap_content" 
-    android:layout_height="wrap_content"
     android:layout_alignParentTop="true"
-    android:layout_toRightOf="@+id/icon" 
-    android:layout_alignBottom="@+id/icon"
-    android:paddingLeft="15dip"
-    android:paddingRight="15dip"
-    android:textOff="Disabled" 
-    android:textOn="Enabled"/>
+    android:layout_alignParentLeft="true"
+    android:textOff="Timeriffic Disabled" 
+    android:textOn="Timeriffic Enabled" android:layout_height="64dip" android:paddingLeft="10dip" android:paddingRight="10dip" android:layout_toLeftOf="@+id/icon"/>
     
+
+
 <Button
     android:layout_height="wrap_content"
 	android:id="@+id/check_now"
@@ -31,7 +20,7 @@
     android:layout_alignParentTop="true"
     android:layout_alignParentRight="true"
 	android:layout_width="wrap_content"
-	/>
+	android:layout_toRightOf="@+id/icon"/>
 
 <LinearLayout 
     android:layout_width="fill_parent" 
