@@ -6,19 +6,9 @@
 	<LinearLayout 
 	   android:layout_height="wrap_content"
 	   android:id="@+id/headerLinear" 
-	   android:background="?profileHeaderBackground"
 	   android:layout_width="fill_parent"
-	   >
-        <CheckBox 
-            android:text="Profile Name" 
-		    android:layout_width="wrap_content"
-			android:layout_height="wrap_content" 
-			android:id="@+id/profileName"
-			android:layout_weight="1" 
-			android:paddingRight="5dip" 
-			android:paddingLeft="5dip" 
-			android:textAppearance="?profileHeaderTextStyle"
-			/>
+	   android:background="@drawable/profile_bg"><CheckBox android:text="Profile Name" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/profileName" android:layout_weight="1" android:paddingRight="5dip" android:textColor="#000" android:textStyle="bold"/>
+        
         <ImageButton
             android:src="@drawable/menu_indicator" 
             android:layout_width="wrap_content"
@@ -44,11 +34,9 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
 			android:paddingLeft="20sp" 
-			android:textAppearance="?profileSettingTextStyle"
 			android:drawableLeft="@drawable/green_dot" 
 			android:paddingTop="5dip" 
-			android:paddingBottom="5dip"
-			/>
+			android:paddingBottom="5dip" android:textAppearance="?android:textAppearance" android:drawablePadding="5dip"/>
 		<ImageView 
             android:id="@+id/separator"
 			android:layout_height="wrap_content" 
@@ -59,5 +47,5 @@
 	</LinearLayout>
 
 
-<CheckBox android:text="CheckBox01" android:id="@+id/CheckBox01" android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
+
 </LinearLayout>
