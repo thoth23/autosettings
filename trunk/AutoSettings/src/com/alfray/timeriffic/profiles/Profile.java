@@ -6,31 +6,42 @@
 
 package com.alfray.timeriffic.profiles;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.alfray.timeriffic.R;
+import java.util.ArrayList;
 
 public class Profile {
     
     private String mName;
-    private String mValue1;
+    private ArrayList<TimedAction> mActions;
+    private long mId;
+    private boolean mEnabled;
+
+    private static Object sLock = new Object();
+    private static long sNextId = 0;
 
     public Profile() {
-        mName = "Test";
-        mValue1 = "7 am start";
-    }
-
-    public void addTo(LayoutInflater layoutInflater, LinearLayout profilesLinear) {
-        View pv = layoutInflater.inflate(R.layout.profile, null /*root*/);
-        profilesLinear.addView(pv);
+        synchronized (sLock) {
+            mId = sNextId;
+            sNextId += 2;
+        }
         
-        TextView tv = (TextView) pv.findViewById(R.id.profileName);
-        tv.setText(mName);
-        tv = (TextView) pv.findViewById(R.id.TextView01);
-        tv.setText(mValue1);
+        mEnabled = true;
+        mName = "Test";
+        mActions = new ArrayList<TimedAction>();
+    }
+    
+    public boolean isEnabled() {
+        return mEnabled;
+    }
+    
+    public long getId() {
+        return mId;
+    }
+    
+    public String getName() {
+        return mName;
     }
 
+    public ArrayList<TimedAction> getActions() {
+        return mActions;
+    }
 }

@@ -22,10 +22,10 @@
 	android:layout_width="wrap_content"
 	android:layout_toRightOf="@+id/icon"/>
 
-<LinearLayout 
+<ListView
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:id="@+id/profilesLinear"
+    android:id="@+id/profilesList"
     android:orientation="vertical"
     android:layout_below="@id/icon"
     android:layout_alignParentLeft="true"
