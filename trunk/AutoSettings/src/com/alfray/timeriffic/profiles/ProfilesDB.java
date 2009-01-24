@@ -14,7 +14,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.util.Log;
 
 //-----------------------------------------------
@@ -40,14 +39,23 @@ public class ProfilesDB {
     private static final int DB_VERSION = 1 * 100 + 1; // major*100 + minor
 
     private SQLiteDatabase mDb;
+    private DatabaseHelper mDbHelper;
 
     // ----------------------------------
 
+    /** Call this after creating this object. */
     public boolean onCreate(Context context) {
-        DatabaseHelper helper = new DatabaseHelper(context, DB_NAME, null /* cursor factory */, DB_VERSION);
-        mDb = helper.getWritableDatabase();
+        mDbHelper = new DatabaseHelper(context, DB_NAME, DB_VERSION);
+        mDb = mDbHelper.getWritableDatabase();
         boolean created = mDb != null;
         return created;
+    }
+
+    /** Call this when the database is no longer needed. */
+    public void onDestroy() {
+        if (mDbHelper != null) {
+            mDbHelper.close();
+        }
     }
 
     // ----------------------------------
@@ -74,7 +82,8 @@ public class ProfilesDB {
         return id;
     }
 
-    public long insertTimedAction(String description,
+    public long insertTimedAction(long profileId,
+            String description,
             boolean isActive,
             int hourMin,
             int days,
@@ -84,6 +93,7 @@ public class ProfilesDB {
         ContentValues values = new ContentValues(2);
 
         values.put(Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION);
+        values.put(Columns.PROFILE_ID, profileId);
         values.put(Columns.DESCRIPTION, description);
         values.put(Columns.IS_ENABLED, isActive);
         values.put(Columns.HOUR_MIN, hourMin);
@@ -151,10 +161,12 @@ public class ProfilesDB {
     // ----------------------------------    
 
     /** Convenience helper to open/create/update the database */
-    private static class DatabaseHelper extends SQLiteOpenHelper {
+    private class DatabaseHelper extends SQLiteOpenHelper {
 
-        public DatabaseHelper(Context context, String name, CursorFactory factory, int version) {
-			super(context, name, factory, version);
+        public DatabaseHelper(Context context,
+                String db_name,
+                int version) {
+			super(context, db_name, null /* cursor factory */, version);
 		}
 
 		@Override
@@ -167,6 +179,7 @@ public class ProfilesDB {
                     + "%s INTEGER, "
                     + "%s INTEGER, "
                     + "%s INTEGER, "
+                    + "%s TEXT, "
                     + "%s INTEGER);" ,
                     TABLE_NAME,
                     Columns._ID,
@@ -176,7 +189,13 @@ public class ProfilesDB {
                     Columns.PROFILE_ID,
                     Columns.HOUR_MIN,
                     Columns.DAYS,
+                    Columns.ACTIONS,
                     Columns.NEXT_MS));
+            
+            SQLiteDatabase old_mDb = mDb;
+            mDb = db;
+            onInitialize();
+            mDb = old_mDb;
         }
 		
         @Override
@@ -194,4 +213,66 @@ public class ProfilesDB {
         }        
     }
 
+    /**
+     * Called by {@link DatabaseHelper} when the database has just been
+     * created to initialize it with initial data. It's safe to use
+     * {@link ProfilesDB#insertProfile(String, boolean)} or
+     * {@link ProfilesDB#insertTimedAction(String, boolean, int, int, String, long)}
+     * at that point.
+     */
+    private void onInitialize() {
+        long pid = insertProfile("Weekdaze", true /*isEnabled*/);
+        insertTimedAction(pid,
+                "7am Mon - Thu, Ringer on, Vibrate",
+                true,               //isActive
+                7*60+0,             //hourMin
+                Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY,
+                "M0,V1",            //actions
+                0                   //nextMs
+                );
+        insertTimedAction(pid,
+                "8pm Mon - Thu, Mute, vibrate",
+                false,              //isActive
+                20*60+0,             //hourMin
+                Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY,
+                "M1,V1",            //actions
+                0                   //nextMs
+                );
+
+        pid = insertProfile("Party Time", true /*isEnabled*/);
+        insertTimedAction(pid,
+                "9am Fri - Sat, Ringer on",
+                false,              //isActive
+                9*60+0,             //hourMin
+                Columns.FRIDAY + Columns.SATURDAY,
+                "M0",               //actions
+                0                   //nextMs
+                );
+        insertTimedAction(pid,
+                "10pm Fri - Sat, Mute, vibrate",
+                false,               //isActive
+                22*60+0,             //hourMin
+                Columns.FRIDAY + Columns.SATURDAY,
+                "M1,V1",            //actions
+                0                   //nextMs
+                );
+
+        pid = insertProfile("Sleeping-In", true /*isEnabled*/);
+        insertTimedAction(pid,
+                "10:30am Sun, Ringer on",
+                false,               //isActive
+                10*60+30,            //hourMin
+                Columns.SUNDAY,
+                "M0",               //actions
+                0                   //nextMs
+                );
+        insertTimedAction(pid,
+                "9pm Sun, Mute, vibrate",
+                false,               //isActive
+                21*60+0,             //hourMin
+                Columns.SUNDAY,
+                "M1,V1",            //actions
+                0                   //nextMs
+                );
+    }
 }
