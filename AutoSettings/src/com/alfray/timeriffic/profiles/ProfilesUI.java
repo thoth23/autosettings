@@ -7,21 +7,17 @@
 package com.alfray.timeriffic.profiles;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -34,6 +30,10 @@ public class ProfilesUI extends Activity {
     private ProfileCursorAdapter mAdapter;
     private LayoutInflater mLayoutInflater;
     private ProfilesDB mProfilesDb;
+
+    private int mTypeColIndex;
+    private int mDescColIndex;
+    private int mEnableColIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,20 +49,26 @@ public class ProfilesUI extends Activity {
         
         mProfilesDb = new ProfilesDB();
         mProfilesDb.onCreate(this);
-        mProfilesDb.query(
+        Cursor cursor = mProfilesDb.query(
                 -1, //id
-                new String[] { Columns.TYPE, 
+                new String[] { 
+                    Columns.TYPE, 
                     Columns.DESCRIPTION,
                     Columns.IS_ENABLED,
-                    Columns.HOUR_MIN,
-                    Columns.DAYS,
-                    Columns.ACTIONS,
-                    Columns.NEXT_MS
+                    //Columns.HOUR_MIN,
+                    //Columns.DAYS,
+                    //Columns.ACTIONS,
+                    //Columns.NEXT_MS
                 } , //projection
-                , //selection
-                , //selectionArgs
-                , //sortOrder
-        
+                null, //selection
+                null, //selectionArgs
+                null //sortOrder
+                );
+
+        mTypeColIndex = cursor.getColumnIndexOrThrow(Columns.TYPE);
+        mDescColIndex = cursor.getColumnIndexOrThrow(Columns.DESCRIPTION);
+        mEnableColIndex = cursor.getColumnIndexOrThrow(Columns.IS_ENABLED);
+
         mAdapter = new ProfileCursorAdapter(this, cursor);
         mProfilesList.setAdapter(mAdapter);
         
@@ -88,11 +94,9 @@ public class ProfilesUI extends Activity {
         private final static int TYPE_PROFILE = 0;
         private final static int TYPE_TIMED_ACTION = 1;
         
-        private int mTypeColIndex;
 
         public ProfileCursorAdapter(Context context, Cursor c) {
             super(context, c);
-            mTypeColIndex = c.getColumnIndexOrThrow(Columns.TYPE);
         }
         
         @Override
@@ -281,19 +285,14 @@ public class ProfilesUI extends Activity {
     }
     */
 
-    private static class ProfileHeaderHolder {
+    private class ProfileHeaderHolder {
         
         /** @deprecated */ public Profile mProfile;
 
         public final CheckBox mCheckName;
         public final ImageButton mButton;
 
-        private final int mDescColIndex;
-        private final int mEnableColIndex;
-
         public ProfileHeaderHolder(Cursor cursor, View view) {
-            mDescColIndex = cursor.getColumnIndexOrThrow(Columns.DESCRIPTION);
-            mEnableColIndex = cursor.getColumnIndexOrThrow(Columns.IS_ENABLED);
             
             mCheckName = (CheckBox) view.findViewById(R.id.profileTitle);
             mButton = (ImageButton) view.findViewById(R.id.profileButton);
@@ -311,17 +310,13 @@ public class ProfilesUI extends Activity {
         }
     }
     
-    private static class TimedActionHolder {
+    private class TimedActionHolder {
         
         /** @deprecated */ public TimedAction mTimedAction;
 
         public final TextView mDescription;
 
-        private final int mDescColIndex;
-
         public TimedActionHolder(Cursor cursor, View view) {
-            mDescColIndex = cursor.getColumnIndexOrThrow(Columns.DESCRIPTION);
-            
             mDescription = (TextView) view.findViewById(R.id.timedActionTitle);
         }
 
