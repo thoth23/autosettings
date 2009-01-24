@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -28,8 +31,9 @@ public class ProfilesUI extends Activity {
 
     private ListView mProfilesList;
     private ArrayList<Profile> mProfiles;
-    private ProfileListAdapter mAdapter;
+    private ProfileCursorAdapter mAdapter;
     private LayoutInflater mLayoutInflater;
+    private ProfilesDB mProfilesDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +46,29 @@ public class ProfilesUI extends Activity {
         addDummyData();
 
         mProfilesList = (ListView) findViewById(R.id.profilesList);
-        mAdapter = new ProfileListAdapter();
+        
+        mProfilesDb = new ProfilesDB();
+        mProfilesDb.onCreate(this);
+        mProfilesDb.query(
+                -1, //id
+                new String[] { Columns.TYPE, 
+                    Columns.DESCRIPTION,
+                    Columns.IS_ENABLED,
+                    Columns.HOUR_MIN,
+                    Columns.DAYS,
+                    Columns.ACTIONS,
+                    Columns.NEXT_MS
+                } , //projection
+                , //selection
+                , //selectionArgs
+                , //sortOrder
+        
+        mAdapter = new ProfileCursorAdapter(this, cursor);
         mProfilesList.setAdapter(mAdapter);
+        
+        /*
+        mAdapter = new ProfileListAdapter();
+        */
     }
 
     private void addDummyData() {
@@ -55,7 +80,91 @@ public class ProfilesUI extends Activity {
         p.getActions().add(new TimedAction(p));
         p.getActions().add(new TimedAction(p));
     }
+    
+    //--------------
 
+    private class ProfileCursorAdapter extends CursorAdapter {
+
+        private final static int TYPE_PROFILE = 0;
+        private final static int TYPE_TIMED_ACTION = 1;
+        
+        private int mTypeColIndex;
+
+        public ProfileCursorAdapter(Context context, Cursor c) {
+            super(context, c);
+            mTypeColIndex = c.getColumnIndexOrThrow(Columns.TYPE);
+        }
+        
+        @Override
+        public boolean areAllItemsEnabled() {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return true;
+        }
+        
+        @Override
+        public int getViewTypeCount() {
+            return 2;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            Cursor c = (Cursor) getItem(position);
+            int type = c.getInt(mTypeColIndex);
+            if (type == Columns.TYPE_IS_PROFILE)
+                return TYPE_PROFILE;
+            if (type == Columns.TYPE_IS_TIMED_ACTION)
+                return TYPE_TIMED_ACTION;
+            // throw?
+            return IGNORE_ITEM_VIEW_TYPE;
+        }
+
+        // ---
+
+        @Override
+        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+
+            int type = cursor.getInt(mTypeColIndex);
+            if (type == Columns.TYPE_IS_PROFILE) {
+                View v = mLayoutInflater.inflate(R.layout.profile_header, null);
+                ProfileHeaderHolder h = new ProfileHeaderHolder(cursor, v);
+                v.setTag(h);
+                h.setUiData(cursor);
+                return v;
+            }
+
+            if (type == Columns.TYPE_IS_TIMED_ACTION) {
+                View v = mLayoutInflater.inflate(R.layout.timed_action, null);
+                TimedActionHolder h = new TimedActionHolder(cursor, v);
+                v.setTag(h);
+                h.setUiData(cursor);
+                return v;
+            }
+
+            return null;
+        }
+        
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+
+            int type = cursor.getInt(mTypeColIndex);
+            if (type == Columns.TYPE_IS_PROFILE) {
+                ProfileHeaderHolder h = (ProfileHeaderHolder) view.getTag();
+                h.setUiData(cursor);
+            } else if (type == Columns.TYPE_IS_TIMED_ACTION) {
+                View v = mLayoutInflater.inflate(R.layout.timed_action, null);
+                TimedActionHolder h = ( TimedActionHolder) view.getTag();
+                h.setUiData(cursor);
+            }
+        }
+    }
+    
+    //--------------
+
+    /*
     private class ProfileListAdapter implements ListAdapter {
 
         private final static int TYPE_PROFILE = 0;
@@ -71,14 +180,6 @@ public class ProfilesUI extends Activity {
         @Override
         public boolean isEnabled(int position) {
             return true;
-            /*
-            Object o = getItem(position);
-            if (o instanceof TimedAction) o = ((TimedAction)o).getProfile();
-            if (o instanceof Profile) {
-                return ((Profile)o).isEnabled();
-            }
-            return false;
-            */
         }
 
         @Override
@@ -162,7 +263,7 @@ public class ProfilesUI extends Activity {
                     v = mLayoutInflater.inflate(R.layout.profile_header, null);
                     v.setTag(new ProfileHeaderHolder(v));
                 }
-                ((ProfileHeaderHolder)v.getTag()).setProfile((Profile) o);
+                ((ProfileHeaderHolder)v.getTag()).setUiData((Profile) o);
             }
 
             if (o instanceof TimedAction) {
@@ -171,45 +272,66 @@ public class ProfilesUI extends Activity {
                     v = mLayoutInflater.inflate(R.layout.timed_action, null);
                     v.setTag(new TimedActionHolder(v));
                 }
-                ((TimedActionHolder)v.getTag()).setProfile((TimedAction) o);
+                ((TimedActionHolder)v.getTag()).setUiData((TimedAction) o);
             }
             
             return v;
         }
         
     }
-    
+    */
+
     private static class ProfileHeaderHolder {
         
-        public Profile mProfile;
-        public CheckBox mCheckName;
-        public ImageButton mButton;
+        /** @deprecated */ public Profile mProfile;
 
-        public ProfileHeaderHolder(View view) {
+        public final CheckBox mCheckName;
+        public final ImageButton mButton;
+
+        private final int mDescColIndex;
+        private final int mEnableColIndex;
+
+        public ProfileHeaderHolder(Cursor cursor, View view) {
+            mDescColIndex = cursor.getColumnIndexOrThrow(Columns.DESCRIPTION);
+            mEnableColIndex = cursor.getColumnIndexOrThrow(Columns.IS_ENABLED);
+            
             mCheckName = (CheckBox) view.findViewById(R.id.profileTitle);
             mButton = (ImageButton) view.findViewById(R.id.profileButton);
         }
         
-        public void setProfile(Profile profile) {
+        public void setUiData(Profile profile) {
             mProfile = profile;
             mCheckName.setText(profile.getName());
             mCheckName.setEnabled(profile.isEnabled());
         }
-        
+
+        public void setUiData(Cursor cursor) {
+            mCheckName.setText(cursor.getString(mDescColIndex));
+            mCheckName.setChecked(cursor.getInt(mEnableColIndex) != 0);
+        }
     }
     
     private static class TimedActionHolder {
         
-        public TimedAction mTimedAction;
-        public TextView mDescription;
+        /** @deprecated */ public TimedAction mTimedAction;
 
-        public TimedActionHolder(View view) {
+        public final TextView mDescription;
+
+        private final int mDescColIndex;
+
+        public TimedActionHolder(Cursor cursor, View view) {
+            mDescColIndex = cursor.getColumnIndexOrThrow(Columns.DESCRIPTION);
+            
             mDescription = (TextView) view.findViewById(R.id.timedActionTitle);
         }
 
-        public void setProfile(TimedAction timedAction) {
+        public void setUiData(TimedAction timedAction) {
             mTimedAction = timedAction;
             mDescription.setText(timedAction.toString());
+        }
+
+        public void setUiData(Cursor cursor) {
+            mDescription.setText(cursor.getString(mDescColIndex));
         }
     }
 }
