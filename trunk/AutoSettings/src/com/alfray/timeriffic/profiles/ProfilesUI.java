@@ -9,16 +9,21 @@ package com.alfray.timeriffic.profiles;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.prefs.PrefsValues;
 
 public class ProfilesUI extends Activity {
 
@@ -30,6 +35,9 @@ public class ProfilesUI extends Activity {
     private int mTypeColIndex;
     private int mDescColIndex;
     private int mEnableColIndex;
+    private PrefsValues mPrefsValues;
+    private Drawable mGreenDot;
+    private Drawable mGrayDot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +45,16 @@ public class ProfilesUI extends Activity {
         
         setContentView(R.layout.profiles_screen);
         mLayoutInflater = getLayoutInflater();
+
+        mPrefsValues = new PrefsValues(this);
+        mGreenDot = getResources().getDrawable(R.drawable.green_dot);
+        mGrayDot = getResources().getDrawable(R.drawable.gray_dot);
         
+        initProfileList();
+        initButtons();
+    }
+
+    private void initProfileList() {
         mProfilesList = (ListView) findViewById(R.id.profilesList);
         
         mProfilesDb = new ProfilesDB();
@@ -66,6 +83,23 @@ public class ProfilesUI extends Activity {
 
         mAdapter = new ProfileCursorAdapter(this, cursor);
         mProfilesList.setAdapter(mAdapter);
+    }
+
+    private void initButtons() {
+        final ToggleButton globalToggle = (ToggleButton) findViewById(R.id.global_toggle);
+
+        globalToggle.setChecked(mPrefsValues.enableService());
+
+        globalToggle.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                mPrefsValues.setEnabledService(globalToggle.isChecked());
+            }
+            
+        });
+        
+        
     }
 
     //--------------
@@ -174,6 +208,12 @@ public class ProfilesUI extends Activity {
 
         public void setUiData(Cursor cursor) {
             mDescription.setText(cursor.getString(mDescColIndex));
+            mDescription.setCompoundDrawablesWithIntrinsicBounds(
+                    cursor.getInt(mEnableColIndex) == 0 ? mGrayDot : mGreenDot,
+                    null, //top
+                    null, //right
+                    null //bottom
+                    );
         }
     }
 }
