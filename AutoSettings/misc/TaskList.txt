@@ -1,0 +1,32 @@
+TODO
+
+20090124 Options menu for profile screen
+20090124 Context menu for list items
+20090124 Scroll list
+
+20090124 Profile header remove
+20090124 Profile header edit name
+20090124 Profile header add
+20090124 Profile header checkbox
+
+20090124 Timed action remove
+20090124 Timed action edit
+20090124 Timed action add
+
+20090124 Check now + UI feedback
+20090124 Receiver: compute current, next
+20090124 Receiver: perform action
+20090124 Receiver activates timed actions + UI feedback
+
+20090124 Preferences
+
+DONE
+
+20090124 Cleanup, comments, tasklist
+20090124 Custom CursorAdapter
+20090123 Change for an SQLite DB 
+20090123 Experiment with in-memory ListAdapter 
+20090121 Experiment with profile UI design
+20090121 setup features for profile/timed-actions design
+20090120 v1.00 on market
+20090119 Add TimePicker preference 
