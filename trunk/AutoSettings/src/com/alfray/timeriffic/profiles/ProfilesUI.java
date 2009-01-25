@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -153,12 +152,10 @@ public class ProfilesUI extends Activity {
     private class ProfileHeaderHolder {
         
         public final CheckBox mCheckName;
-        public final ImageButton mButton;
 
         public ProfileHeaderHolder(Cursor cursor, View view) {
             
             mCheckName = (CheckBox) view.findViewById(R.id.profileTitle);
-            mButton = (ImageButton) view.findViewById(R.id.profileButton);
         }
         
         public void setUiData(Cursor cursor) {
