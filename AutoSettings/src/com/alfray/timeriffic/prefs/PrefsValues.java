@@ -30,6 +30,14 @@ public class PrefsValues {
 	public boolean enableService() {
 	    return mPrefs.getBoolean("enable_serv", true);
 	}
+    
+    /**
+     * Sets the dismiss_intro boolean value.
+     * @return true if value was successfully changed if the prefs
+     */
+    public boolean setEnabledService(boolean checked) {
+        return mPrefs.edit().putBoolean("enable_serv", checked).commit();
+    }
 
     public boolean dismissIntro() {
         return mPrefs.getBoolean("dismiss_intro", false);

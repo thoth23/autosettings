@@ -23,11 +23,14 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.prefs.PrefsActivity;
 import com.alfray.timeriffic.prefs.PrefsValues;
+import com.alfray.timeriffic.profiles.ProfilesUI;
 import com.alfray.timeriffic.ui.IntroDialogActivity;
 import com.alfray.timeriffic.utils.Utils;
 
+/**
+ * @deprecated
+ */
 public class AutoUI extends Activity {
 
     protected static final int SETTINGS_UPDATED = 42;
@@ -163,7 +166,8 @@ public class AutoUI extends Activity {
     }
 
     private void showPrefs() {
-        startActivityForResult(new Intent(AutoUI.this, PrefsActivity.class),
+        // dispatch to the new settings UI screen, for testing
+        startActivityForResult(new Intent(AutoUI.this, ProfilesUI.class),
                 SETTINGS_UPDATED);
     }
 }
