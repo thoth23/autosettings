@@ -52,9 +52,11 @@ public class ProfilesUI extends Activity {
         Cursor cursor = mProfilesDb.query(
                 -1, //id
                 new String[] { 
+                    Columns._ID,
                     Columns.TYPE, 
                     Columns.DESCRIPTION,
                     Columns.IS_ENABLED,
+                    // enable these only if they are actually used here
                     //Columns.HOUR_MIN,
                     //Columns.DAYS,
                     //Columns.ACTIONS,
