@@ -16,15 +16,6 @@
         android:textColor="#000" 
         android:textStyle="bold"
         />
-	    
-    <ImageButton
-        android:src="@drawable/menu_indicator" 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" 
-        android:id="@+id/profileButton"
-        android:layout_weight="0"
-        android:paddingRight="5dip" 
-        />
 	
 	
 </LinearLayout>
