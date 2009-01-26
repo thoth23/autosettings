@@ -150,7 +150,7 @@ public class ProfilesDB {
         } else {
             whereClause = "";
         }
-        whereClause = String.format("%1$s=%2$ld %3$s",
+        whereClause = String.format("%s=%d %s",
                 Columns._ID,
                 id,
                 whereClause);

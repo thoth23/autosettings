@@ -9,38 +9,50 @@ package com.alfray.timeriffic.profiles;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
-import android.widget.CheckBox;
+import android.view.View.OnCreateContextMenuListener;
+import android.widget.AdapterView;
 import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.widget.AbsListView.RecyclerListener;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.prefs.PrefsValues;
 
 public class ProfilesUI extends Activity {
 
+    private static final String TAG = "ProfilesUI";
+    
     private ListView mProfilesList;
     private ProfileCursorAdapter mAdapter;
     private LayoutInflater mLayoutInflater;
     private ProfilesDB mProfilesDb;
 
+    private int mIdColIndex;
     private int mTypeColIndex;
     private int mDescColIndex;
     private int mEnableColIndex;
     private PrefsValues mPrefsValues;
     private Drawable mGreenDot;
     private Drawable mGrayDot;
+    private Drawable mCheckOn;
+    private Drawable mCheckOff;
+
 
     /**
      * Called when the activity is created.
@@ -58,6 +70,8 @@ public class ProfilesUI extends Activity {
         mPrefsValues = new PrefsValues(this);
         mGreenDot = getResources().getDrawable(R.drawable.green_dot);
         mGrayDot = getResources().getDrawable(R.drawable.gray_dot);
+        mCheckOn = getResources().getDrawable(R.drawable.btn_check_on);
+        mCheckOff = getResources().getDrawable(R.drawable.btn_check_off);
         
         initButtons();
     }
@@ -116,12 +130,47 @@ public class ProfilesUI extends Activity {
                 null //sortOrder
                 );
 
+        mIdColIndex = cursor.getColumnIndexOrThrow(Columns._ID);
         mTypeColIndex = cursor.getColumnIndexOrThrow(Columns.TYPE);
         mDescColIndex = cursor.getColumnIndexOrThrow(Columns.DESCRIPTION);
         mEnableColIndex = cursor.getColumnIndexOrThrow(Columns.IS_ENABLED);
 
         mAdapter = new ProfileCursorAdapter(this, cursor);
         mProfilesList.setAdapter(mAdapter);
+        
+        mProfilesList.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, String.format("onItemClick: pos %d, id %d", position, id));
+                BaseHolder h = null;
+                h = getHolderAtPosition(null, position);
+                if (h != null) h.onItemSelected();
+            }
+        });
+
+        mProfilesList.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+                Log.d(TAG, "onCreateContextMenu");
+                BaseHolder h = null;
+                h = getHolderAtPosition(menuInfo, 0);
+                if (h != null) h.onCreateContextMenu(menu);
+            }
+        });
+    }
+
+    private BaseHolder getHolderAtPosition(ContextMenuInfo menuInfo, int position) {
+        if (menuInfo instanceof AdapterContextMenuInfo) {
+            position = ((AdapterContextMenuInfo) menuInfo).position;
+        }
+        Object item = mProfilesList.getChildAt(position);
+        if (item instanceof View) {
+            Object tag = ((View) item).getTag();
+            if (tag instanceof BaseHolder) {
+                return (BaseHolder) tag;
+            }
+        }
+        return null;
     }
 
     /**
@@ -151,10 +200,10 @@ public class ProfilesUI extends Activity {
      * need: the profile header and the timed action entry.
      * <p/>
      * For each new view, the tag is set to either {@link ProfileHeaderHolder}
-     * or {@link TimedActionHolder}, a subclass of {@link CursorHolder}.
+     * or {@link TimedActionHolder}, a subclass of {@link BaseHolder}.
      * <p/>
      * When a view is reused, it's tag is reused with a new cursor by using
-     * {@link CursorHolder#setUiData(Cursor)}. This also updates the view
+     * {@link BaseHolder#setUiData(Cursor)}. This also updates the view
      * with the data from the cursor.
      * <p/>
      * When a view is recycled/reclaimed, it's tag is cleared by the
@@ -225,22 +274,22 @@ public class ProfilesUI extends Activity {
          * <p/>
          * It then associates the tag with a new {@link ProfileHeaderHolder}
          * or {@link TimedActionHolder} and initializes the holder using
-         * {@link CursorHolder#setUiData(Cursor)}.
+         * {@link BaseHolder#setUiData(Cursor)}.
          * 
          */
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
 
             View v = null;
-            CursorHolder h = null;
+            BaseHolder h = null;
             
             int type = cursor.getInt(mTypeColIndex);
             if (type == Columns.TYPE_IS_PROFILE) {
                 v = mLayoutInflater.inflate(R.layout.profile_header, null);
-                h = new ProfileHeaderHolder(cursor, v);
+                h = new ProfileHeaderHolder(v);
             } else if (type == Columns.TYPE_IS_TIMED_ACTION) {
                 v = mLayoutInflater.inflate(R.layout.timed_action, null);
-                h = new TimedActionHolder(cursor, v);
+                h = new TimedActionHolder(v);
             }
             if (v != null) {
                 v.setTag(h);
@@ -251,7 +300,7 @@ public class ProfilesUI extends Activity {
         
         /**
          * To recycle a view, we just re-associate its tag using
-         * {@link CursorHolder#setUiData(Cursor)}.
+         * {@link BaseHolder#setUiData(Cursor)}.
          */
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
@@ -259,7 +308,7 @@ public class ProfilesUI extends Activity {
             int type = cursor.getInt(mTypeColIndex);
             if (type == Columns.TYPE_IS_PROFILE ||
                     type == Columns.TYPE_IS_TIMED_ACTION) {
-                CursorHolder h = (CursorHolder) view.getTag();
+                BaseHolder h = (BaseHolder) view.getTag();
                 h.setUiData(cursor);
             }
         }
@@ -269,78 +318,135 @@ public class ProfilesUI extends Activity {
 
     /**
      * This {@link RecyclerListener} is attached to the profile list to
-     * call {@link CursorHolder#clearCursor()} of the tags of the reclaimed
+     * call {@link BaseHolder#clearCursor()} of the tags of the reclaimed
      * views. This should ensure that not dangling cursor reference exists.
      */
     private class ProfileRecyclerListener implements RecyclerListener {
         @Override
         public void onMovedToScrapHeap(View view) {
             Object tag = view.getTag();
-            if (tag instanceof CursorHolder) {
-                ((CursorHolder) tag).clearCursor(); 
+            if (tag instanceof BaseHolder) {
+                ((BaseHolder) tag).clearCursor(); 
             }
         }
     }
 
     /**
-     * A base holder class that keeps tracks of the current cursor.
+     * A base holder class that keeps tracks of the current cursor
+     * and the common widgets of the two derived holders.
      */
-    private abstract class CursorHolder {
+    private abstract class BaseHolder {
         
-        /** The current cursor associated with that holder.
+        /**
+         * The current cursor associated with that holder.
          * It is null if the view is not associated with a cursor anymore.
          */
-        public Cursor mCursor;
+        private Cursor mCursor;
 
+        /**
+         * The text view that holds the title or description as well
+         * as the "check box".
+         */
+        private final TextView mDescription;
+
+        public BaseHolder(View view) {
+            mDescription = (TextView) view.findViewById(R.id.description);
+        }
+        
+        public Cursor getCursor() {
+            return mCursor;
+        }
+        
         public void clearCursor() {
             mCursor = null;
         }
         
-        public void setUiData(Cursor cursor) {
+        protected void setUiData(Cursor cursor,
+                String description,
+                Drawable state) {
             mCursor = cursor;
+            if (description != null) mDescription.setText(description);
+            if (state != null) mDescription.setCompoundDrawablesWithIntrinsicBounds(
+                    state /*left*/, null /*top*/, null /*right*/, null /*bottom*/);
         }
+
+        public abstract void setUiData(Cursor cursor);
+        public abstract void onItemSelected();
+        public abstract void onCreateContextMenu(ContextMenu menu);
     }
 
     /**
      * The holder for a profile header row.
      */
-    private class ProfileHeaderHolder extends CursorHolder {
+    private class ProfileHeaderHolder extends BaseHolder {
         
-        public final CheckBox mCheckName;
-
-        public ProfileHeaderHolder(Cursor cursor, View view) {
-            mCheckName = (CheckBox) view.findViewById(R.id.profileTitle);
+        public ProfileHeaderHolder(View view) {
+            super(view);
         }
         
         @Override
         public void setUiData(Cursor cursor) {
-            super.setUiData(cursor);
-            mCheckName.setText(cursor.getString(mDescColIndex));
-            mCheckName.setChecked(cursor.getInt(mEnableColIndex) != 0);
+            super.setUiData(cursor,
+                    cursor.getString(mDescColIndex),
+                    cursor.getInt(mEnableColIndex) != 0 ? mCheckOn : mCheckOff);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu) {
+            menu.add("Timeriffic Profile:").setEnabled(false);
+            menu.add("Insert new...");
+
+            menu.add("Remove...");
+            menu.add("Rename...");
+        }
+
+        @Override
+        public void onItemSelected() {
+            Cursor cursor = getCursor();
+            if (cursor == null) return;
+
+            boolean enabled = cursor.getInt(mEnableColIndex) != 0;
+            enabled = !enabled;
+            
+            long id = cursor.getLong(mIdColIndex);
+            ContentValues cv = new ContentValues(1);
+            cv.put(Columns.IS_ENABLED, enabled);
+            mProfilesDb.update(id, cv, null/*whereClause*/, null/*whereArgs*/);
+
+            // update ui
+            cursor.requery();
+            setUiData(cursor, null, enabled ? mCheckOn : mCheckOff);
         }
     }
 
     /**
      * The holder for a timed action row.
      */
-    private class TimedActionHolder extends CursorHolder {
+    private class TimedActionHolder extends BaseHolder {
         
-        public final TextView mDescription;
-
-        public TimedActionHolder(Cursor cursor, View view) {
-            mDescription = (TextView) view.findViewById(R.id.timedActionTitle);
+        public TimedActionHolder(View view) {
+            super(view);
         }
 
         @Override
         public void setUiData(Cursor cursor) {
-            super.setUiData(cursor);
-            mDescription.setText(cursor.getString(mDescColIndex));
-            mDescription.setCompoundDrawablesWithIntrinsicBounds(
-                    cursor.getInt(mEnableColIndex) == 0 ? mGrayDot : mGreenDot,
-                    null, //top
-                    null, //right
-                    null //bottom
-                    );
+            super.setUiData(cursor,
+                    cursor.getString(mDescColIndex),
+                    cursor.getInt(mEnableColIndex) != 0 ? mGreenDot : mGrayDot);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu) {
+            menu.add("Timeriffic Profile Timed Action:").setEnabled(false);
+            menu.add("Insert new...");
+
+            menu.add("Remove...");
+            menu.add("Edit...");
+        }
+
+        @Override
+        public void onItemSelected() {
+            // pass (or trigger edit?)
         }
     }
 }
