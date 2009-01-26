@@ -504,16 +504,23 @@ public class ProfilesUI extends Activity {
                 public void onClick(DialogInterface dialog, int which) {
                     int count = 0;
                     
-                    // delete all actions for this profile
-                    count += mProfilesDb.delete(-1,
-                            String.format("(%s=%d) AND (%s=%d)",
-                                    Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
-                                    Columns.PROFILE_ID, profile_id));
-                    
-                    // delete profile
-                    count += mProfilesDb.delete(profile_id, 
-                            String.format("%s=%d",
-                                    Columns.TYPE, Columns.TYPE_IS_PROFILE));
+                    mProfilesDb.beginTransaction();
+                    try {
+                        // delete all actions for this profile
+                        count += mProfilesDb.delete(-1,
+                                String.format("(%s=%d) AND (%s=%d)",
+                                        Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
+                                        Columns.PROFILE_ID, profile_id));
+                        
+                        // delete profile
+                        count += mProfilesDb.delete(profile_id, 
+                                String.format("%s=%d",
+                                        Columns.TYPE, Columns.TYPE_IS_PROFILE));
+                        
+                        mProfilesDb.setTransactionSuccessful();
+                    } finally {
+                        mProfilesDb.endTransaction();
+                    }
                     
                     Log.d(TAG, String.format("Deleted %d rows", count));
                     if (count > 0) {
