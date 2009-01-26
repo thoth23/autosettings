@@ -9,7 +9,7 @@
 	   
 	<TextView 
         android:text="Settings Line" 
-        android:id="@+id/timedActionTitle"
+        android:id="@+id/description"
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content"
 		android:paddingLeft="20sp" 
