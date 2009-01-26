@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -153,7 +154,7 @@ public class ProfilesUI extends Activity {
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
                 Log.d(TAG, "onCreateContextMenu");
                 BaseHolder h = null;
-                h = getHolderAtPosition(menuInfo, 0);
+                h = getHolderAtPosition(menuInfo, -1);
                 if (h != null) h.onCreateContextMenu(menu);
             }
         });
@@ -163,11 +164,13 @@ public class ProfilesUI extends Activity {
         if (menuInfo instanceof AdapterContextMenuInfo) {
             position = ((AdapterContextMenuInfo) menuInfo).position;
         }
-        Object item = mProfilesList.getChildAt(position);
-        if (item instanceof View) {
-            Object tag = ((View) item).getTag();
-            if (tag instanceof BaseHolder) {
-                return (BaseHolder) tag;
+        if (position >= 0 && position < mProfilesList.getChildCount()) {
+            Object item = mProfilesList.getChildAt(position);
+            if (item instanceof View) {
+                Object tag = ((View) item).getTag();
+                if (tag instanceof BaseHolder) {
+                    return (BaseHolder) tag;
+                }
             }
         }
         return null;
@@ -192,7 +195,7 @@ public class ProfilesUI extends Activity {
         
         
     }
-
+    
     //--------------
 
     /**
@@ -373,6 +376,7 @@ public class ProfilesUI extends Activity {
         public abstract void setUiData(Cursor cursor);
         public abstract void onItemSelected();
         public abstract void onCreateContextMenu(ContextMenu menu);
+        public abstract void onContextMenuSelected(MenuItem item);
     }
 
     /**
@@ -393,11 +397,11 @@ public class ProfilesUI extends Activity {
 
         @Override
         public void onCreateContextMenu(ContextMenu menu) {
-            menu.add("Timeriffic Profile:").setEnabled(false);
-            menu.add("Insert new...");
+            menu.setHeaderTitle("Profile");
 
-            menu.add("Remove...");
-            menu.add("Rename...");
+            menu.add(0, R.string.insert_new, 0, R.string.insert_new);
+            menu.add(0, R.string.delete, 0, R.string.delete);
+            menu.add(0, R.string.rename, 0, R.string.rename);
         }
 
         @Override
@@ -416,6 +420,23 @@ public class ProfilesUI extends Activity {
             // update ui
             cursor.requery();
             setUiData(cursor, null, enabled ? mCheckOn : mCheckOff);
+        }
+
+        @Override
+        public void onContextMenuSelected(MenuItem item) {
+            switch (item.getItemId()) {
+            case R.string.insert_new:
+                Log.d(TAG, "profile - insert_new");
+                break;
+            case R.string.delete:
+                Log.d(TAG, "profile - delete");
+                break;
+            case R.string.rename:
+                Log.d(TAG, "profile - rename");
+                break;
+            default:
+                break;
+            }
         }
     }
 
@@ -437,16 +458,45 @@ public class ProfilesUI extends Activity {
 
         @Override
         public void onCreateContextMenu(ContextMenu menu) {
-            menu.add("Timeriffic Profile Timed Action:").setEnabled(false);
-            menu.add("Insert new...");
+            menu.setHeaderTitle("Timed Action");
 
-            menu.add("Remove...");
-            menu.add("Edit...");
+            menu.add(0, R.string.insert_new, 0, R.string.insert_new);
+            menu.add(0, R.string.delete, 0, R.string.delete);
+            menu.add(0, R.string.edit, 0, R.string.edit);
         }
 
         @Override
         public void onItemSelected() {
             // pass (or trigger edit?)
         }
+
+        @Override
+        public void onContextMenuSelected(MenuItem item) {
+            switch (item.getItemId()) {
+            case R.string.insert_new:
+                Log.d(TAG, "profile - insert_new");
+                break;
+            case R.string.delete:
+                Log.d(TAG, "profile - delete");
+                break;
+            case R.string.edit:
+                Log.d(TAG, "profile - edit");
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        ContextMenuInfo info = item.getMenuInfo();
+        BaseHolder h = getHolderAtPosition(info, -1);
+        if (h != null) {
+            h.onContextMenuSelected(item);
+            return true;
+        }
+        
+        return super.onContextItemSelected(item);
     }
 }
