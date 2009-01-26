@@ -1,15 +1,11 @@
 TODO
 
 20090124 Options menu for profile screen
-20090124 Context menu for list items
 20090124 Scroll list
 
-20090124 Profile header remove
 20090124 Profile header edit name
 20090124 Profile header add
-20090124 Profile header checkbox
 
-20090124 Timed action remove
 20090124 Timed action edit
 20090124 Timed action add
 
@@ -21,6 +17,11 @@ TODO
 20090124 Preferences
 
 DONE
+
+20090125 Timed action remove
+20090125 Profile header remove
+20090125 Profile header checkbox
+20090125 Context menu for list items
 
 20090124 Cleanup, comments, tasklist
 20090124 Custom CursorAdapter
