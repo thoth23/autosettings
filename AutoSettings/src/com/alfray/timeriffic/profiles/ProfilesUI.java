@@ -9,19 +9,24 @@ package com.alfray.timeriffic.profiles;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
@@ -54,6 +59,8 @@ public class ProfilesUI extends Activity {
     private Drawable mCheckOn;
     private Drawable mCheckOff;
 
+    private SparseArray<AlertDialog.Builder> mTempDialogList = new SparseArray<AlertDialog.Builder>();
+    private int mNextTempDialogId = 0;
 
     /**
      * Called when the activity is created.
@@ -101,6 +108,16 @@ public class ProfilesUI extends Activity {
         ArrayList<View> views = new ArrayList<View>();
         mProfilesList.reclaimViews(views);
         mProfilesDb.onDestroy();
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        return mTempDialogList.get(id).create();
+    }
+    
+    private void removeTempDialog(int index) {
+        mTempDialogList.remove(index);
+        removeDialog(index);
     }
 
     /**
@@ -184,13 +201,11 @@ public class ProfilesUI extends Activity {
 
         globalToggle.setChecked(mPrefsValues.enableService());
 
-        globalToggle.setOnClickListener(new OnClickListener() {
-
+        globalToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mPrefsValues.setEnabledService(globalToggle.isChecked());
             }
-            
         });
         
         
@@ -430,6 +445,10 @@ public class ProfilesUI extends Activity {
                 break;
             case R.string.delete:
                 Log.d(TAG, "profile - delete");
+                deleteProfile(
+                        getCursor().getInt(mIdColIndex),
+                        getCursor().getString(mDescColIndex));
+
                 break;
             case R.string.rename:
                 Log.d(TAG, "profile - rename");
@@ -437,6 +456,59 @@ public class ProfilesUI extends Activity {
             default:
                 break;
             }
+        }
+
+        private void deleteProfile(final int profile_id, String title) {
+            Builder d = new AlertDialog.Builder(ProfilesUI.this);
+            final int index = mNextTempDialogId++;
+            mTempDialogList.put(index, d);
+
+            d.setCancelable(true);
+            d.setTitle("Delete profile");
+            d.setIcon(R.drawable.timeriffic_icon);
+            d.setMessage(String.format(
+                    "Are you sure you want to delete profile '%s' and all its actions?", title));
+            
+            d.setOnCancelListener(new OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    removeTempDialog(index);
+                }
+            });
+            
+            d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    removeTempDialog(index);
+                }
+            });
+            
+            d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    int count = 0;
+                    
+                    // delete all actions for this profile
+                    count += mProfilesDb.delete(-1,
+                            String.format("(%s=%d) AND (%s=%d)",
+                                    Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
+                                    Columns.PROFILE_ID, profile_id));
+                    
+                    // delete profile
+                    count += mProfilesDb.delete(profile_id, 
+                            String.format("%s=%d",
+                                    Columns.TYPE, Columns.TYPE_IS_PROFILE));
+                    
+                    Log.d(TAG, String.format("Deleted %d rows", count));
+                    if (count > 0) {
+                        getCursor().requery();
+                        mAdapter.notifyDataSetChanged();
+                    }
+                    removeTempDialog(index);
+                }
+            });
+            
+            showDialog(index);
         }
     }
 
@@ -478,6 +550,9 @@ public class ProfilesUI extends Activity {
                 break;
             case R.string.delete:
                 Log.d(TAG, "profile - delete");
+                deleteTimedAction(
+                        getCursor().getInt(mIdColIndex),
+                        getCursor().getString(mDescColIndex));
                 break;
             case R.string.edit:
                 Log.d(TAG, "profile - edit");
@@ -486,8 +561,55 @@ public class ProfilesUI extends Activity {
                 break;
             }
         }
+
+        private void deleteTimedAction(final int action_id, String description) {
+            Builder d = new AlertDialog.Builder(ProfilesUI.this);
+            final int index = mNextTempDialogId++;
+            mTempDialogList.put(index, d);
+
+            d.setCancelable(true);
+            d.setTitle("Delete action");
+            d.setIcon(R.drawable.timeriffic_icon);
+            d.setMessage(String.format(
+                    "Are you sure you want to delete action '%s'?", description));
+            
+            d.setOnCancelListener(new OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    removeTempDialog(index);
+                }
+            });
+            
+            d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    removeTempDialog(index);
+                }
+            });
+            
+            d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    int count = 0;
+                    
+                    // delete action
+                    count += mProfilesDb.delete(action_id, 
+                            String.format("%s=%d",
+                                    Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION));
+                    
+                    Log.d(TAG, String.format("Deleted %d rows", count));
+                    if (count > 0) {
+                        getCursor().requery();
+                        mAdapter.notifyDataSetChanged();
+                    }
+                    removeTempDialog(index);
+                }
+            });
+            
+            showDialog(index);
+        }
     }
-    
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         ContextMenuInfo info = item.getMenuInfo();

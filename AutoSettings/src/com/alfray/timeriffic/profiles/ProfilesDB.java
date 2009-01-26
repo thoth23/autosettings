@@ -60,15 +60,6 @@ public class ProfilesDB {
 
     // ----------------------------------
 
-    public int delete(long _id) {
-        String whereClause = String.format("%s=%d",
-                Columns._ID,
-                _id);
-        
-        int count = mDb.delete(TABLE_NAME, whereClause, null);
-        return count;
-    }
-
     public long insertProfile(String title, boolean isEnabled) {
 
         ContentValues values = new ContentValues(2);
@@ -129,12 +120,31 @@ public class ProfilesDB {
         return c;
     }
 
-    /** id is used if >= 0 */
+    /** id is used if >= 0
+     *  
+     * @return The number of updated rows
+     */
     public int update(long id, ContentValues values, String whereClause, String[] whereArgs) {
         if (id >= 0) {
         	whereClause = addWhereId(id, whereClause);
         }
     	int count = mDb.update(TABLE_NAME, values, whereClause, whereArgs);
+        return count;
+    }
+
+    /** id is used if >= 0. There must be either an id *or* a whereClause;
+     * it's an error to use neither (which would delete everything).
+     * 
+     * @return The number of deleted rows
+     * */
+    public int delete(long id, String whereClause) {
+        assert (id >= 0) || (whereClause != null && whereClause.length() > 0);
+
+        if (id >= 0) {
+            whereClause = addWhereId(id, whereClause);
+        }
+        
+        int count = mDb.delete(TABLE_NAME, whereClause, null);
         return count;
     }
 
