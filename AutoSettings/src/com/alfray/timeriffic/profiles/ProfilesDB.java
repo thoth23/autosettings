@@ -34,12 +34,23 @@ public class ProfilesDB {
     
     private static final String TAG = "ProfilesDB";
 
-    private static final String TABLE_NAME = "profiles";
     private static final String DB_NAME = "profiles.db";
     private static final int DB_VERSION = 1 * 100 + 1; // major*100 + minor
 
+    private static final String PROFILES_TABLE = "profiles";
+    private static final String COUNTERS_TABLE = "counters";
+    private static final String COUNTER_TYPE = "type";
+    private static final int COUNTER_TYPE_PROFILES = 0;
+    private static final String COUNTER_VALUE = "value";
+
+    private static final int PROFILE_CAPACITY = 256;
+
     private SQLiteDatabase mDb;
     private DatabaseHelper mDbHelper;
+
+    private Cursor mProfilesCountCursor;
+
+    private int mCounterValueColIndex;
 
     // ----------------------------------
 
@@ -53,8 +64,13 @@ public class ProfilesDB {
 
     /** Call this when the database is no longer needed. */
     public void onDestroy() {
+        if (mProfilesCountCursor != null) {
+            mProfilesCountCursor.close();
+            mProfilesCountCursor = null;
+        }
         if (mDbHelper != null) {
             mDbHelper.close();
+            mDbHelper = null;
         }
     }
 
@@ -81,18 +97,72 @@ public class ProfilesDB {
         mDb.endTransaction();
     }
 
+    // ----------------------------------
+
+    private void insertCounter(int type, int value) {
+        ContentValues values = new ContentValues(2);
+        values.put(COUNTER_TYPE, type);
+        values.put(COUNTER_VALUE, value);
+        mDb.insert(COUNTERS_TABLE, null, values);
+    }
+    
+    private int getProfilesCount() {
+        if (mProfilesCountCursor == null) {
+            SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+            qb.setTables(COUNTERS_TABLE);
+    
+            qb.appendWhere(String.format("%s=%d", COUNTER_TYPE, COUNTER_TYPE_PROFILES));
+            
+            mProfilesCountCursor = qb.query(mDb,
+                    null, //projection
+                    null, //selection
+                    null, //selectionArgs,
+                    null, //groupBy
+                    null, //having,
+                    null  //sortOrder
+                    );
+           
+            mCounterValueColIndex = mProfilesCountCursor.getColumnIndexOrThrow(COUNTER_VALUE);
+        }
+        mProfilesCountCursor.moveToFirst();
+        return mProfilesCountCursor.getInt(mCounterValueColIndex);
+    }
+
+    private void setProfilesCount(int value) {
+        ContentValues values = new ContentValues(1);
+        values.put(COUNTER_VALUE, value);
+
+        String whereClause = String.format("%s=%d", COUNTER_TYPE, COUNTER_TYPE_PROFILES);
+        int count = mDb.update(COUNTERS_TABLE, values, whereClause, null);
+        assert count == 1;
+        
+        if (mProfilesCountCursor != null) mProfilesCountCursor.requery();
+    }
+    
+    // ----------------------------------
     
     public long insertProfile(String title, boolean isEnabled) {
 
-        ContentValues values = new ContentValues(2);
-
-        values.put(Columns.TYPE, Columns.TYPE_IS_PROFILE);
-        values.put(Columns.DESCRIPTION, title);
-        values.put(Columns.IS_ENABLED, isEnabled);
-        
-        long id = mDb.insert(TABLE_NAME, Columns.TYPE, values);
-        if (id < 0) throw new SQLException("insert row failed");
-        return id;
+        beginTransaction();
+        try {
+            int numProfiles = getProfilesCount() + 1;
+            setProfilesCount(numProfiles);
+            long id = numProfiles * PROFILE_CAPACITY;
+            
+            ContentValues values = new ContentValues(2);
+    
+            values.put(Columns._ID, id);
+            values.put(Columns.TYPE, Columns.TYPE_IS_PROFILE);
+            values.put(Columns.DESCRIPTION, title);
+            values.put(Columns.IS_ENABLED, isEnabled);
+            
+            id = mDb.insert(PROFILES_TABLE, Columns.TYPE, values);
+            if (id < 0) throw new SQLException("insert row failed");
+            setTransactionSuccessful();
+            return id;
+        } finally {
+            endTransaction();
+        }
     }
 
     public long insertTimedAction(long profileId,
@@ -114,7 +184,7 @@ public class ProfilesDB {
         values.put(Columns.ACTIONS, actions);
         values.put(Columns.NEXT_MS, nextMs);
         
-        long id = mDb.insert(TABLE_NAME, Columns.TYPE, values);
+        long id = mDb.insert(PROFILES_TABLE, Columns.TYPE, values);
         if (id < 0) throw new SQLException("insert row failed");
         return id;
     }
@@ -127,10 +197,10 @@ public class ProfilesDB {
             String sortOrder) {
     	
     	SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-    	qb.setTables(TABLE_NAME);
+    	qb.setTables(PROFILES_TABLE);
 
     	if (id >= 0) {
-        	qb.appendWhere(String.format("%1$s=%2$ld", Columns._ID, id));
+        	qb.appendWhere(String.format("%s=%d", Columns._ID, id));
         }
         
         if (sortOrder == null || sortOrder.length() == 0) sortOrder = Columns.DEFAULT_SORT_ORDER;
@@ -150,7 +220,7 @@ public class ProfilesDB {
         if (id >= 0) {
         	whereClause = addWhereId(id, whereClause);
         }
-    	int count = mDb.update(TABLE_NAME, values, whereClause, whereArgs);
+    	int count = mDb.update(PROFILES_TABLE, values, whereClause, whereArgs);
         return count;
     }
 
@@ -166,7 +236,7 @@ public class ProfilesDB {
             whereClause = addWhereId(id, whereClause);
         }
 
-        int count = mDb.delete(TABLE_NAME, whereClause, null);
+        int count = mDb.delete(PROFILES_TABLE, whereClause, null);
         return count;
     }
 
@@ -204,7 +274,14 @@ public class ProfilesDB {
 		@Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(String.format("CREATE TABLE %s "
-                    + "(%s INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "(%s INTEGER, %s INTEGER);" ,
+                    COUNTERS_TABLE,
+                    COUNTER_TYPE,
+                    COUNTER_VALUE));
+
+            
+            db.execSQL(String.format("CREATE TABLE %s "
+                    + "(%s INTEGER PRIMARY KEY, "
                     + "%s INTEGER, "
                     + "%s TEXT, "
                     + "%s INTEGER, "
@@ -213,7 +290,7 @@ public class ProfilesDB {
                     + "%s INTEGER, "
                     + "%s TEXT, "
                     + "%s INTEGER);" ,
-                    TABLE_NAME,
+                    PROFILES_TABLE,
                     Columns._ID,
                     Columns.TYPE,
                     Columns.DESCRIPTION,
@@ -226,7 +303,8 @@ public class ProfilesDB {
             
             SQLiteDatabase old_mDb = mDb;
             mDb = db;
-            onInitialize();
+            insertCounter(COUNTER_TYPE_PROFILES, 0);
+            onInitializeProfiles();
             mDb = old_mDb;
         }
 		
@@ -234,7 +312,7 @@ public class ProfilesDB {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, String.format("Upgrading database from version %1$d to %2$d.",
                     oldVersion, newVersion));
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + PROFILES_TABLE);
             onCreate(db);
         }
         
@@ -252,7 +330,7 @@ public class ProfilesDB {
      * {@link ProfilesDB#insertTimedAction(String, boolean, int, int, String, long)}
      * at that point.
      */
-    private void onInitialize() {
+    private void onInitializeProfiles() {
         long pid = insertProfile("Weekdaze", true /*isEnabled*/);
         insertTimedAction(pid,
                 "7am Mon - Thu, Ringer on, Vibrate",
