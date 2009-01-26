@@ -177,6 +177,18 @@ public class ProfilesUI extends Activity {
         });
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        ContextMenuInfo info = item.getMenuInfo();
+        BaseHolder h = getHolderAtPosition(info, -1);
+        if (h != null) {
+            h.onContextMenuSelected(item);
+            return true;
+        }
+        
+        return super.onContextItemSelected(item);
+    }
+
     private BaseHolder getHolderAtPosition(ContextMenuInfo menuInfo, int position) {
         if (menuInfo instanceof AdapterContextMenuInfo) {
             position = ((AdapterContextMenuInfo) menuInfo).position;
@@ -349,6 +361,8 @@ public class ProfilesUI extends Activity {
         }
     }
 
+    //--------------
+
     /**
      * A base holder class that keeps tracks of the current cursor
      * and the common widgets of the two derived holders.
@@ -393,6 +407,8 @@ public class ProfilesUI extends Activity {
         public abstract void onCreateContextMenu(ContextMenu menu);
         public abstract void onContextMenuSelected(MenuItem item);
     }
+
+    //--------------
 
     /**
      * The holder for a profile header row.
@@ -512,6 +528,8 @@ public class ProfilesUI extends Activity {
         }
     }
 
+    //--------------
+
     /**
      * The holder for a timed action row.
      */
@@ -610,15 +628,5 @@ public class ProfilesUI extends Activity {
         }
     }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        ContextMenuInfo info = item.getMenuInfo();
-        BaseHolder h = getHolderAtPosition(info, -1);
-        if (h != null) {
-            h.onContextMenuSelected(item);
-            return true;
-        }
-        
-        return super.onContextItemSelected(item);
-    }
+    //--------------
 }
