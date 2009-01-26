@@ -60,6 +60,28 @@ public class ProfilesDB {
 
     // ----------------------------------
 
+    /**
+     * @see SQLiteDatabase#beginTransaction()
+     */
+    public void beginTransaction() {
+        mDb.beginTransaction();
+    }
+
+    /**
+     * @see SQLiteDatabase#setTransactionSuccessful()
+     */
+    public void setTransactionSuccessful() {
+        mDb.setTransactionSuccessful();
+    }
+
+    /**
+     * @see SQLiteDatabase#endTransaction()
+     */
+    public void endTransaction() {
+        mDb.endTransaction();
+    }
+
+    
     public long insertProfile(String title, boolean isEnabled) {
 
         ContentValues values = new ContentValues(2);
@@ -143,7 +165,7 @@ public class ProfilesDB {
         if (id >= 0) {
             whereClause = addWhereId(id, whereClause);
         }
-        
+
         int count = mDb.delete(TABLE_NAME, whereClause, null);
         return count;
     }
