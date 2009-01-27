@@ -15,9 +15,6 @@ import android.provider.BaseColumns;
  */
 public class Columns implements BaseColumns {
 
-    /** The default sort order for this table, _ID ASC */
-    public static final String DEFAULT_SORT_ORDER = _ID + " ASC";
-
     /** The type of this row.
      * Enum: {@link #TYPE_IS_PROFILE} or {@link #TYPE_IS_TIMED_ACTION}.
      * <p/>
@@ -56,9 +53,35 @@ public class Columns implements BaseColumns {
     
     // --- fields for a timed action
     
-    /** Profile ID. Type: INTEGER */
+    /** Profile ID = profile_index << PROFILE_SHIFT + action_index.
+     * <p/>
+     * - Profile: The base number of the profile << {@link #PROFILE_SHIFT}
+     *            e.g. PROF << 16.
+     * - Timed action: The profile's profile_id + index of the action,
+     *            e.g. PROF << 16 + INDEX_ACTION.
+     * <p/>
+     * Allocation rules:
+     * - Profile's index start at 1, not 0. So first profile_id is 1<<16.
+     * - Action index start at 1, so 1<<16+0 is a profile but 1<<16+1 is an action.
+     * - Max 1<<16-1 actions per profile.
+     * - On delete, don't compact numbers.
+     * - On insert before or after, check if the number is available.
+     *   - On insert, if not available, need to move items to make space.
+     * - To avoid having to move, leave gaps:
+     *   - Make initial first index at profile 256*capacity.
+     *   - When inserting at the end, leave a 256 gap between profiles or actions.
+     *   - When inserting between 2 existing entries, pick middle point.
+     * <p/>
+     * Type: INTEGER
+     */
     public static final String PROFILE_ID = "prof_id";
 
+    public static final int PROFILE_SHIFT = 16;
+    public static final int ACTION_MASK = (1<<PROFILE_SHIFT)-1;
+    public static final int PROFILE_GAP = 256;
+    public static final int TIMED_ACTION_GAP = 256;
+
+    
     /** Hour-Min Time, computed as hour*60+min in a day (from 0 to 23*60+59)
      * <p/>
      * Type: INTEGER
@@ -103,4 +126,7 @@ public class Columns implements BaseColumns {
      * Type: INTEGER (long)
      */
     public static final String NEXT_MS = "next_ms";
+
+    /** The default sort order for this table, _ID ASC */
+    public static final String DEFAULT_SORT_ORDER = PROFILE_ID + " ASC";
 }

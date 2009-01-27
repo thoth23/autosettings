@@ -474,7 +474,7 @@ public class ProfilesUI extends Activity {
             }
         }
 
-        private void deleteProfile(final int profile_id, String title) {
+        private void deleteProfile(final int row_id, String title) {
             Builder d = new AlertDialog.Builder(ProfilesUI.this);
             final int index = mNextTempDialogId++;
             mTempDialogList.put(index, d);
@@ -502,31 +502,7 @@ public class ProfilesUI extends Activity {
             d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    int count = 0;
-                    
-                    mProfilesDb.beginTransaction();
-                    try {
-                        // delete all actions for this profile
-                        count += mProfilesDb.delete(-1,
-                                String.format("(%s=%d) AND (%s=%d)",
-                                        Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
-                                        Columns.PROFILE_ID, profile_id));
-                        
-                        // delete profile
-                        count += mProfilesDb.delete(profile_id, 
-                                String.format("%s=%d",
-                                        Columns.TYPE, Columns.TYPE_IS_PROFILE));
-                        
-                        mProfilesDb.setTransactionSuccessful();
-                    } finally {
-                        mProfilesDb.endTransaction();
-                    }
-                    
-                    Log.d(TAG, String.format("Deleted %d rows", count));
-                    if (count > 0) {
-                        getCursor().requery();
-                        mAdapter.notifyDataSetChanged();
-                    }
+                    mProfilesDb.deleteProfile(row_id);
                     removeTempDialog(index);
                 }
             });
@@ -587,7 +563,7 @@ public class ProfilesUI extends Activity {
             }
         }
 
-        private void deleteTimedAction(final int action_id, String description) {
+        private void deleteTimedAction(final int row_id, String description) {
             Builder d = new AlertDialog.Builder(ProfilesUI.this);
             final int index = mNextTempDialogId++;
             mTempDialogList.put(index, d);
@@ -615,18 +591,7 @@ public class ProfilesUI extends Activity {
             d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    int count = 0;
-                    
-                    // delete action
-                    count += mProfilesDb.delete(action_id, 
-                            String.format("%s=%d",
-                                    Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION));
-                    
-                    Log.d(TAG, String.format("Deleted %d rows", count));
-                    if (count > 0) {
-                        getCursor().requery();
-                        mAdapter.notifyDataSetChanged();
-                    }
+                    mProfilesDb.deleteAction(row_id);
                     removeTempDialog(index);
                 }
             });
