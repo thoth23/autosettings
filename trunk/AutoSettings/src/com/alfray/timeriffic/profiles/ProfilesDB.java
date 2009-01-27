@@ -319,6 +319,8 @@ public class ProfilesDB {
             long pid = getProfileIdForRowId(row_id);
             if (pid == 0) throw new InvalidParameterException("No profile id for this row id.");
 
+            pid = pid & (~Columns.ACTION_MASK);
+            
             // DELETE FROM profiles WHERE prof_id >= 65536 AND prof_id < 65536+65535
             String where = String.format("%s>=%d AND %s<%d",
                     Columns.PROFILE_ID, pid,

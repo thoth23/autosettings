@@ -502,7 +502,11 @@ public class ProfilesUI extends Activity {
             d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    mProfilesDb.deleteProfile(row_id);
+                    int count = mProfilesDb.deleteProfile(row_id);
+                    if (count > 0) {
+                        getCursor().requery();
+                        mAdapter.notifyDataSetChanged();
+                    }
                     removeTempDialog(index);
                 }
             });
@@ -591,7 +595,11 @@ public class ProfilesUI extends Activity {
             d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    mProfilesDb.deleteAction(row_id);
+                    int count = mProfilesDb.deleteAction(row_id);
+                    if (count > 0) {
+                        getCursor().requery();
+                        mAdapter.notifyDataSetChanged();
+                    }
                     removeTempDialog(index);
                 }
             });
