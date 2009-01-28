@@ -163,7 +163,7 @@ public class ProfilesDB {
      * 
      * @return the profile index (not the row id)
      */
-    public long insertProfile(int beforeProfileIndex,
+    public long insertProfile(long beforeProfileIndex,
             String title, boolean isEnabled) {
 
         beginTransaction();
