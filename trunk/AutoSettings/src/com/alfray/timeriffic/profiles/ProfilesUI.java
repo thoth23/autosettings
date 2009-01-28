@@ -53,6 +53,7 @@ public class ProfilesUI extends Activity {
     private int mTypeColIndex;
     private int mDescColIndex;
     private int mEnableColIndex;
+    private int mProfIdColIndex;
     private PrefsValues mPrefsValues;
     private Drawable mGreenDot;
     private Drawable mGrayDot;
@@ -61,6 +62,7 @@ public class ProfilesUI extends Activity {
 
     private SparseArray<AlertDialog.Builder> mTempDialogList = new SparseArray<AlertDialog.Builder>();
     private int mNextTempDialogId = 0;
+
 
     /**
      * Called when the activity is created.
@@ -137,6 +139,7 @@ public class ProfilesUI extends Activity {
                     Columns.TYPE, 
                     Columns.DESCRIPTION,
                     Columns.IS_ENABLED,
+                    Columns.PROFILE_ID,
                     // enable these only if they are actually used here
                     //Columns.HOUR_MIN,
                     //Columns.DAYS,
@@ -152,6 +155,7 @@ public class ProfilesUI extends Activity {
         mTypeColIndex = cursor.getColumnIndexOrThrow(Columns.TYPE);
         mDescColIndex = cursor.getColumnIndexOrThrow(Columns.DESCRIPTION);
         mEnableColIndex = cursor.getColumnIndexOrThrow(Columns.IS_ENABLED);
+        mProfIdColIndex = cursor.getColumnIndexOrThrow(Columns.PROFILE_ID);
 
         mAdapter = new ProfileCursorAdapter(this, cursor);
         mProfilesList.setAdapter(mAdapter);
@@ -458,13 +462,11 @@ public class ProfilesUI extends Activity {
             switch (item.getItemId()) {
             case R.string.insert_new:
                 Log.d(TAG, "profile - insert_new");
+                insertNewProfile(getCursor());
                 break;
             case R.string.delete:
                 Log.d(TAG, "profile - delete");
-                deleteProfile(
-                        getCursor().getInt(mIdColIndex),
-                        getCursor().getString(mDescColIndex));
-
+                deleteProfile(getCursor());
                 break;
             case R.string.rename:
                 Log.d(TAG, "profile - rename");
@@ -474,7 +476,10 @@ public class ProfilesUI extends Activity {
             }
         }
 
-        private void deleteProfile(final int row_id, String title) {
+        private void deleteProfile(Cursor cursor) {
+            final long row_id = cursor.getLong(mIdColIndex);
+            String title = cursor.getString(mDescColIndex);
+            
             Builder d = new AlertDialog.Builder(ProfilesUI.this);
             final int index = mNextTempDialogId++;
             mTempDialogList.put(index, d);
@@ -513,6 +518,16 @@ public class ProfilesUI extends Activity {
             
             showDialog(index);
         }
+        
+        private void insertNewProfile(Cursor beforeCursor) {
+            long prof_index = 0;
+            if (beforeCursor != null) {
+                prof_index = beforeCursor.getLong(mProfIdColIndex) >> Columns.PROFILE_SHIFT;
+            }
+            
+            
+        }
+
     }
 
     //--------------
@@ -555,9 +570,7 @@ public class ProfilesUI extends Activity {
                 break;
             case R.string.delete:
                 Log.d(TAG, "profile - delete");
-                deleteTimedAction(
-                        getCursor().getInt(mIdColIndex),
-                        getCursor().getString(mDescColIndex));
+                deleteTimedAction(getCursor());
                 break;
             case R.string.edit:
                 Log.d(TAG, "profile - edit");
@@ -567,7 +580,11 @@ public class ProfilesUI extends Activity {
             }
         }
 
-        private void deleteTimedAction(final int row_id, String description) {
+        private void deleteTimedAction(Cursor cursor) {
+            
+            final long row_id = cursor.getLong(mIdColIndex);
+            String description = cursor.getString(mDescColIndex);
+            
             Builder d = new AlertDialog.Builder(ProfilesUI.this);
             final int index = mNextTempDialogId++;
             mTempDialogList.put(index, d);
