@@ -18,6 +18,7 @@ TODO
 
 DONE
 
+20090126 Change SQL schema usage: prof_id=prof_index<<shift + action_index
 20090125 Timed action remove
 20090125 Profile header remove
 20090125 Profile header checkbox
