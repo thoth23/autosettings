@@ -1,31 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.alfray.timeriffic" android:versionName="1.0.0" android:versionCode="1000">
-    <application android:label="@string/app_name" android:icon="@drawable/timeriffic_icon" android:name=".app.TimerifficApp">
-        <activity android:label="@string/app_name" android:name=".app.AutoUI">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-    
-<receiver android:name=".app.AutoReceiver"><intent-filter><action android:name="android.intent.action.BOOT_COMPLETED"></action>
-</intent-filter>
-<intent-filter><action android:name="com.alfray.intent.action.AUTO_CHECK_STATE"></action>
-</intent-filter>
-</receiver>
+	package="com.alfray.timeriffic" android:versionName="1.0.0"
+	android:versionCode="1000">
+	<application android:label="@string/app_name" android:icon="@drawable/timeriffic_icon"
+		android:name=".app.TimerifficApp">
+		<activity android:label="@string/app_name" android:name=".app.AutoUI">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
 
-<activity android:label="@string/prefs_title" android:name=".prefs.PrefsActivity"></activity>
+		<receiver android:name=".app.AutoReceiver">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED"></action>
+			</intent-filter>
+			<intent-filter>
+				<action android:name="com.alfray.intent.action.AUTO_CHECK_STATE"></action>
+			</intent-filter>
+		</receiver>
 
-<activity android:label="@string/intro_title" android:theme="@android:style/Theme.Dialog" android:name=".ui.IntroDialogActivity"></activity>
+		<activity android:label="@string/prefs_title" android:name=".prefs.PrefsActivity"></activity>
 
-<activity android:name=".profiles.ProfilesUI"><intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                
-            </intent-filter></activity>
-</application>
+		<activity android:label="@string/intro_title" android:theme="@android:style/Theme.Dialog"
+			android:name=".ui.IntroDialogActivity"></activity>
 
-<uses-sdk android:minSdkVersion="1"></uses-sdk>
-<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+		<activity android:name=".profiles.ProfilesUI">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+
+			</intent-filter>
+		</activity>
+		<activity android:theme="@android:style/Theme.Dialog" android:label="EditProfile" android:name=".profiles.EditProfileUI"></activity>
+	</application>
+
+	<uses-sdk android:minSdkVersion="1"></uses-sdk>
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
 
 </manifest> 

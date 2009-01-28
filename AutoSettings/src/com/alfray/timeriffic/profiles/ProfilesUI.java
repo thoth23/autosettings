@@ -15,6 +15,7 @@ import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -525,7 +526,15 @@ public class ProfilesUI extends Activity {
                 prof_index = beforeCursor.getLong(mProfIdColIndex) >> Columns.PROFILE_SHIFT;
             }
             
-            
+            prof_index = mProfilesDb.insertProfile(prof_index, "New Profile", true /*isEnabled*/);
+
+            getCursor().requery();
+            mAdapter.notifyDataSetChanged();
+
+            Intent intent = new Intent(ProfilesUI.this, EditProfileUI.class);
+            intent.putExtra("prof_index", prof_index);
+
+            startActivity(intent);
         }
 
     }
