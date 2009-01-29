@@ -12,7 +12,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.AlertDialog.Builder;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -448,10 +447,10 @@ public class ProfilesUI extends Activity {
             boolean enabled = cursor.getInt(mEnableColIndex) != 0;
             enabled = !enabled;
             
-            long id = cursor.getLong(mIdColIndex);
-            ContentValues cv = new ContentValues(1);
-            cv.put(Columns.IS_ENABLED, enabled);
-            mProfilesDb.update(id, cv, null/*whereClause*/, null/*whereArgs*/);
+            mProfilesDb.updateProfile(
+                    cursor.getLong(mProfIdColIndex),
+                    null, // name
+                    enabled);
 
             // update ui
             cursor.requery();
@@ -471,6 +470,7 @@ public class ProfilesUI extends Activity {
                 break;
             case R.string.rename:
                 Log.d(TAG, "profile - rename");
+                editProfile(getCursor());
                 break;
             default:
                 break;
@@ -532,7 +532,16 @@ public class ProfilesUI extends Activity {
             mAdapter.notifyDataSetChanged();
 
             Intent intent = new Intent(ProfilesUI.this, EditProfileUI.class);
-            intent.putExtra("prof_index", prof_index);
+            intent.putExtra(EditProfileUI.EXTRA_PROFILE_ID, prof_index << Columns.PROFILE_SHIFT);
+
+            startActivity(intent);
+        }
+        
+        private void editProfile(Cursor cursor) {
+            long prof_id = cursor.getLong(mProfIdColIndex);
+
+            Intent intent = new Intent(ProfilesUI.this, EditProfileUI.class);
+            intent.putExtra(EditProfileUI.EXTRA_PROFILE_ID, prof_id);
 
             startActivity(intent);
         }
