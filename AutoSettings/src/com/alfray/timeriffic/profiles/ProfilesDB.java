@@ -299,11 +299,25 @@ public class ProfilesDB {
      *  
      * @return The number of updated rows
      */
-    public int update(long id, ContentValues values, String whereClause, String[] whereArgs) {
+    private int update(long id, ContentValues values, String whereClause, String[] whereArgs) {
         if (id >= 0) {
         	whereClause = addWhereId(id, whereClause);
         }
     	int count = mDb.update(PROFILES_TABLE, values, whereClause, whereArgs);
+        return count;
+    }
+
+    public int updateProfile(long prof_id, String name, boolean isEnabled) {
+
+        String where = String.format("%s=%d AND %s=%d",
+                Columns.TYPE, Columns.TYPE_IS_PROFILE,
+                Columns.PROFILE_ID, prof_id);
+
+        ContentValues cv = new ContentValues();
+        if (name != null) cv.put(Columns.DESCRIPTION, name);
+        cv.put(Columns.IS_ENABLED, isEnabled);
+        
+        int count = mDb.update(PROFILES_TABLE, cv, where, null);
         return count;
     }
 
