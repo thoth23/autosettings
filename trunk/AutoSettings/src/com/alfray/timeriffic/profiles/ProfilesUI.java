@@ -87,6 +87,72 @@ public class ProfilesUI extends Activity {
     }
 
     /**
+     * Initializes the profile list widget with a cursor adapter.
+     * Creates a db connection.
+     */
+    private void initProfileList() {
+        if (mProfilesList == null) {
+            mProfilesList = (ListView) findViewById(R.id.profilesList);
+            mProfilesList.setRecyclerListener(new ProfileRecyclerListener());
+            
+            mProfilesList.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Log.d(TAG, String.format("onItemClick: pos %d, id %d", position, id));
+                    BaseHolder h = null;
+                    h = getHolderAtPosition(null, position);
+                    if (h != null) h.onItemSelected();
+                }
+            });
+
+            mProfilesList.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
+                @Override
+                public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+                    Log.d(TAG, "onCreateContextMenu");
+                    BaseHolder h = null;
+                    h = getHolderAtPosition(menuInfo, -1);
+                    if (h != null) h.onCreateContextMenu(menu);
+                }
+            });
+        }
+
+        if (mProfilesDb == null) {
+            mProfilesDb = new ProfilesDB();
+            mProfilesDb.onCreate(this);
+        }
+
+        if (mAdapter == null) {
+            Cursor cursor = mProfilesDb.query(
+                    -1, //id
+                    new String[] { 
+                        Columns._ID,
+                        Columns.TYPE, 
+                        Columns.DESCRIPTION,
+                        Columns.IS_ENABLED,
+                        Columns.PROFILE_ID,
+                        // enable these only if they are actually used here
+                        //Columns.HOUR_MIN,
+                        //Columns.DAYS,
+                        //Columns.ACTIONS,
+                        //Columns.NEXT_MS
+                    } , //projection
+                    null, //selection
+                    null, //selectionArgs
+                    null //sortOrder
+                    );
+    
+            mIdColIndex = cursor.getColumnIndexOrThrow(Columns._ID);
+            mTypeColIndex = cursor.getColumnIndexOrThrow(Columns.TYPE);
+            mDescColIndex = cursor.getColumnIndexOrThrow(Columns.DESCRIPTION);
+            mEnableColIndex = cursor.getColumnIndexOrThrow(Columns.IS_ENABLED);
+            mProfIdColIndex = cursor.getColumnIndexOrThrow(Columns.PROFILE_ID);
+    
+            mAdapter = new ProfileCursorAdapter(this, cursor);
+            mProfilesList.setAdapter(mAdapter);
+        }
+    }
+
+    /**
      * Called when activity is resume, or just after creation.
      * <p/>
      * Initializes the profile list & db.
@@ -96,7 +162,7 @@ public class ProfilesUI extends Activity {
         super.onResume();
         initProfileList();
     }
-
+    
     /**
      * Called when the activity is getting paused. It might get destroyed
      * at any point.
@@ -107,9 +173,25 @@ public class ProfilesUI extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        ArrayList<View> views = new ArrayList<View>();
-        mProfilesList.reclaimViews(views);
-        mProfilesDb.onDestroy();
+        if (mAdapter != null) {
+            mAdapter.changeCursor(null);
+            mAdapter = null;
+        }
+        if (mProfilesDb != null) {
+            mProfilesDb.onDestroy();
+            mProfilesDb = null;
+        }
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mProfilesList != null) {
+            ArrayList<View> views = new ArrayList<View>();
+            mProfilesList.reclaimViews(views);
+            mProfilesList.setAdapter(null);
+            mProfilesList = null;
+        }
     }
 
     @Override
@@ -120,82 +202,6 @@ public class ProfilesUI extends Activity {
     private void removeTempDialog(int index) {
         mTempDialogList.remove(index);
         removeDialog(index);
-    }
-
-    /**
-     * Initializes the profile list widget with a cursor adapter.
-     * Creates a db connection.
-     */
-    private void initProfileList() {
-        mProfilesList = (ListView) findViewById(R.id.profilesList);
-        mProfilesList.setRecyclerListener(new ProfileRecyclerListener());
-        
-        mProfilesDb = new ProfilesDB();
-        mProfilesDb.onCreate(this);
-        Cursor cursor = mProfilesDb.query(
-                -1, //id
-                new String[] { 
-                    Columns._ID,
-                    Columns.TYPE, 
-                    Columns.DESCRIPTION,
-                    Columns.IS_ENABLED,
-                    Columns.PROFILE_ID,
-                    // enable these only if they are actually used here
-                    //Columns.HOUR_MIN,
-                    //Columns.DAYS,
-                    //Columns.ACTIONS,
-                    //Columns.NEXT_MS
-                } , //projection
-                null, //selection
-                null, //selectionArgs
-                null //sortOrder
-                );
-
-        mIdColIndex = cursor.getColumnIndexOrThrow(Columns._ID);
-        mTypeColIndex = cursor.getColumnIndexOrThrow(Columns.TYPE);
-        mDescColIndex = cursor.getColumnIndexOrThrow(Columns.DESCRIPTION);
-        mEnableColIndex = cursor.getColumnIndexOrThrow(Columns.IS_ENABLED);
-        mProfIdColIndex = cursor.getColumnIndexOrThrow(Columns.PROFILE_ID);
-
-        mAdapter = new ProfileCursorAdapter(this, cursor);
-        mProfilesList.setAdapter(mAdapter);
-        
-        mProfilesList.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, String.format("onItemClick: pos %d, id %d", position, id));
-                BaseHolder h = null;
-                h = getHolderAtPosition(null, position);
-                if (h != null) h.onItemSelected();
-            }
-        });
-
-        mProfilesList.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-                Log.d(TAG, "onCreateContextMenu");
-                BaseHolder h = null;
-                h = getHolderAtPosition(menuInfo, -1);
-                if (h != null) h.onCreateContextMenu(menu);
-            }
-        });
-    }
-    
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mProfilesList != null) {
-            mProfilesList.setAdapter(null);
-            mProfilesList = null;
-        }
-        if (mAdapter != null) {
-            mAdapter.changeCursor(null);
-            mAdapter = null;
-        }
-        if (mProfilesDb != null) {
-            mProfilesDb.onDestroy();
-            mProfilesDb = null;
-        }
     }
 
     @Override
