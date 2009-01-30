@@ -45,8 +45,6 @@ public class ProfilesDB {
     private SQLiteDatabase mDb;
     private DatabaseHelper mDbHelper;
 
-    private Cursor mProfilesCountCursor;
-
     // ----------------------------------
 
     /** Call this after creating this object. */
@@ -59,10 +57,6 @@ public class ProfilesDB {
 
     /** Call this when the database is no longer needed. */
     public void onDestroy() {
-        if (mProfilesCountCursor != null) {
-            mProfilesCountCursor.close();
-            mProfilesCountCursor = null;
-        }
         if (mDbHelper != null) {
             mDbHelper.close();
             mDbHelper = null;
@@ -298,6 +292,7 @@ public class ProfilesDB {
     /** id is used if >= 0
      *  
      * @return The number of updated rows
+     * @deprecated
      */
     private int update(long id, ContentValues values, String whereClause, String[] whereArgs) {
         if (id >= 0) {
