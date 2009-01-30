@@ -22,7 +22,6 @@ public class EditProfileUI extends Activity {
     
     /** Extra long with the profile id (not index) to edit. */
     public static final String EXTRA_PROFILE_ID = "prof_id";
-    private ProfilesDB mProfilesDb;
     private EditText mNameField;
     private CheckBox mEnabledCheck;
     private long mProfId;
@@ -38,6 +37,8 @@ public class EditProfileUI extends Activity {
         Intent intent = getIntent();
         mProfId = intent.getExtras().getLong(EXTRA_PROFILE_ID);
         
+        Log.d(TAG, String.format("edit prof_id: %08x", mProfId));
+        
         if (mProfId == 0) {
             Log.e(TAG, "profile id not found in intent.");
             finish();
@@ -47,10 +48,10 @@ public class EditProfileUI extends Activity {
         String prof_id_select = String.format("%s=%d",
                 Columns.PROFILE_ID, mProfId);
         
-        mProfilesDb = new ProfilesDB();
-        mProfilesDb.onCreate(this);
-        Cursor c = mProfilesDb.query(
-                0, // id
+        ProfilesDB profilesDb = new ProfilesDB();
+        profilesDb.onCreate(this);
+        Cursor c = profilesDb.query(
+                -1, // id
                 new String[] {
                         Columns.PROFILE_ID,
                         Columns.DESCRIPTION,
@@ -64,15 +65,20 @@ public class EditProfileUI extends Activity {
             int descColIndex = c.getColumnIndexOrThrow(Columns.DESCRIPTION);
             int enColIndex = c.getColumnIndexOrThrow(Columns.IS_ENABLED);
 
-            c.moveToFirst();
-
-            mNameField = (EditText) findViewById(R.id.name);
-            mEnabledCheck = (CheckBox) findViewById(R.id.enabled);
-            
-            mNameField.setText(c.getString(descColIndex));
-            mEnabledCheck.setChecked(c.getInt(enColIndex) != 0);
+            if (c.moveToFirst()) {
+                mNameField = (EditText) findViewById(R.id.name);
+                mEnabledCheck = (CheckBox) findViewById(R.id.enabled);
+                
+                mNameField.setText(c.getString(descColIndex));
+                mEnabledCheck.setChecked(c.getInt(enColIndex) != 0);
+            } else {
+                Log.e(TAG, "cursor is empty: " + prof_id_select);
+                finish();
+                return;
+            }
         } finally {
             c.close();
+            profilesDb.onDestroy();
         }
     }
     
@@ -80,9 +86,15 @@ public class EditProfileUI extends Activity {
     protected void onPause() {
         super.onPause();
 
-        mProfilesDb.updateProfile(
-                mProfId,
-                mNameField.getText().toString(),
-                mEnabledCheck.isChecked());
+        ProfilesDB profilesDb = new ProfilesDB();
+        try {
+            profilesDb.onCreate(this);
+            profilesDb.updateProfile(
+                    mProfId,
+                    mNameField.getText().toString(),
+                    mEnabledCheck.isChecked());
+        } finally {
+            profilesDb.onDestroy();
+        }
     }
 }

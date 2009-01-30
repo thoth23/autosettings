@@ -180,6 +180,23 @@ public class ProfilesUI extends Activity {
             }
         });
     }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mProfilesList != null) {
+            mProfilesList.setAdapter(null);
+            mProfilesList = null;
+        }
+        if (mAdapter != null) {
+            mAdapter.changeCursor(null);
+            mAdapter = null;
+        }
+        if (mProfilesDb != null) {
+            mProfilesDb.onDestroy();
+            mProfilesDb = null;
+        }
+    }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
