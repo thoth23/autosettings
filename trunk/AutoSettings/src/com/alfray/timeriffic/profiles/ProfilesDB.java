@@ -289,19 +289,9 @@ public class ProfilesDB {
 
     // ----------------------------------
 
-    /** id is used if >= 0
-     *  
-     * @return The number of updated rows
-     * @deprecated
+    /**
+     * @return Number of rows affected. 1 on success, 0 on failure.
      */
-    private int update(long id, ContentValues values, String whereClause, String[] whereArgs) {
-        if (id >= 0) {
-        	whereClause = addWhereId(id, whereClause);
-        }
-    	int count = mDb.update(PROFILES_TABLE, values, whereClause, whereArgs);
-        return count;
-    }
-
     public int updateProfile(long prof_id, String name, boolean isEnabled) {
 
         String where = String.format("%s=%d AND %s=%d",
@@ -316,10 +306,18 @@ public class ProfilesDB {
         return count;
     }
 
+    /**
+     * @return Number of rows affected. 1 on success, 0 on failure.
+     */
+    public int updateTimedAction(long action_id, String name, boolean isEnabled) {
+        return 0;
+    }
+
     // ----------------------------------
 
     /** 
-     * @return The number of deleted rows
+     * @param row_id The SQL row id, NOT the prof_id
+     * @return The number of deleted rows, >= 1 on success, 0 on failure.
      */
     public int deleteProfile(long row_id) {
         
@@ -344,7 +342,8 @@ public class ProfilesDB {
     }
 
     /** 
-     * @return The number of deleted rows
+     * @param row_id The SQL row id, NOT the prof_id
+     * @return The number of deleted rows, 1 on success, 0 on failure.
      */
     public int deleteAction(long row_id) {
         
@@ -361,26 +360,6 @@ public class ProfilesDB {
         } finally {
             endTransaction();
         }
-    }
-
-    // ----------------------------------
-    
-    /**
-     * Helper that returns a where clause "_id=NN" where NN is the last segment of
-     * the input URI. If there's an existing whereClause, it is rewritten using
-     * "_id=NN AND ( whereClause )".
-     */
-    private String addWhereId(long id, String whereClause) {
-        if (whereClause != null && whereClause.length() > 0) {
-            whereClause = "AND (" + whereClause + ")";
-        } else {
-            whereClause = "";
-        }
-        whereClause = String.format("%s=%d %s",
-                Columns._ID,
-                id,
-                whereClause);
-        return whereClause;
     }
 
     

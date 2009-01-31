@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/scroller" android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:orientation="vertical"
+		android:padding="5dip">
+
+		<TextView android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:text="Trigger Time"
+			android:textAppearance="@android:style/TextAppearance.Large.Inverse"
+			android:gravity="center_horizontal" android:layout_marginBottom="5sp"
+			android:layout_marginLeft="5sp" android:layout_marginRight="5sp"
+			android:background="@drawable/section_bg" />
+
+		<TimePicker android:id="@+id/TimePicker01"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal" />
+
+		<TextView android:textAppearance="@android:style/TextAppearance.Large.Inverse"
+			android:text="Days" android:gravity="center_horizontal"
+			android:layout_height="wrap_content" android:layout_width="fill_parent"
+			android:layout_margin="5sp" android:background="@drawable/section_bg" />
+
+		<TableLayout android:id="@+id/tableDays"
+			android:layout_height="wrap_content" android:layout_width="fill_parent">
+			<TableRow android:layout_height="wrap_content"
+				android:layout_width="fill_parent">
+				<CheckBox android:id="@+id/CheckBox01"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="Mon" />
+				<CheckBox android:id="@+id/CheckBox01"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="Mon" />
+				<CheckBox android:id="@+id/CheckBox01"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="Mon" />
+				<CheckBox android:id="@+id/CheckBox01"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="Mon"></CheckBox>
+			</TableRow>
+			<TableRow android:id="@+id/TableRow02"
+				android:layout_height="wrap_content" android:layout_width="fill_parent">
+				<CheckBox android:id="@+id/CheckBox01"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="Mon"></CheckBox>
+				<CheckBox android:id="@+id/CheckBox01"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="Mon"></CheckBox>
+				<CheckBox android:id="@+id/CheckBox01"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="Mon"></CheckBox>
+			</TableRow>
+		</TableLayout>
+		<TextView android:id="@+id/label" android:layout_height="wrap_content"
+			android:textAppearance="@android:style/TextAppearance.Large.Inverse"
+			android:text="Action" android:gravity="center_horizontal"
+			android:layout_width="fill_parent" android:layout_margin="5sp"
+			android:background="@drawable/section_bg" />
+
+
+
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent"><ToggleButton android:id="@+id/ToggleButton01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:textOn="Ringer On" android:textOff="Ringer Muted" android:paddingTop="10sp"></ToggleButton>
+<ToggleButton android:text="ToggleButton02" android:id="@+id/ToggleButton02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:textOff="No Vibrate" android:textOn="Vibrate" android:paddingTop="10sp"></ToggleButton>
+</LinearLayout>
+
+</LinearLayout>
+        </ScrollView>
