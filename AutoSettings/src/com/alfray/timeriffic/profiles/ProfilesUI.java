@@ -607,14 +607,16 @@ public class ProfilesUI extends Activity {
         public void onContextMenuSelected(MenuItem item) {
             switch (item.getItemId()) {
             case R.string.insert_new:
-                Log.d(TAG, "profile - insert_new");
+                Log.d(TAG, "action - insert_new");
+                //--insertNewAction(getCursor());
                 break;
             case R.string.delete:
-                Log.d(TAG, "profile - delete");
+                Log.d(TAG, "action - delete");
                 deleteTimedAction(getCursor());
                 break;
             case R.string.edit:
-                Log.d(TAG, "profile - edit");
+                Log.d(TAG, "action - edit");
+                editAction(getCursor());
                 break;
             default:
                 break;
@@ -663,6 +665,15 @@ public class ProfilesUI extends Activity {
             });
             
             showDialog(index);
+        }
+        
+        private void editAction(Cursor cursor) {
+            long prof_id = cursor.getLong(mProfIdColIndex);
+
+            Intent intent = new Intent(ProfilesUI.this, EditActionUI.class);
+            intent.putExtra(EditActionUI.EXTRA_ACTION_ID, prof_id);
+
+            startActivity(intent);
         }
     }
 
