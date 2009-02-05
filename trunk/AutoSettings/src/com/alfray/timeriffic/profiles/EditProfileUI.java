@@ -45,13 +45,16 @@ public class EditProfileUI extends Activity {
             return;
         }
         
-        String prof_id_select = String.format("%s=%d",
-                Columns.PROFILE_ID, mProfId);
         
+        // get profiles db helper
         ProfilesDB profilesDb = new ProfilesDB();
         profilesDb.onCreate(this);
+        
+        // get cursor
+        String prof_id_select = String.format("%s=%d", Columns.PROFILE_ID, mProfId);
         Cursor c = profilesDb.query(
                 -1, // id
+                // projection, a.k.a. the list of columns to retrieve from the db
                 new String[] {
                         Columns.PROFILE_ID,
                         Columns.DESCRIPTION,
@@ -62,20 +65,23 @@ public class EditProfileUI extends Activity {
                 null // sortOrder
                 );
         try {
-            int descColIndex = c.getColumnIndexOrThrow(Columns.DESCRIPTION);
-            int enColIndex = c.getColumnIndexOrThrow(Columns.IS_ENABLED);
-
-            if (c.moveToFirst()) {
-                mNameField = (EditText) findViewById(R.id.name);
-                mEnabledCheck = (CheckBox) findViewById(R.id.enabled);
-                
-                mNameField.setText(c.getString(descColIndex));
-                mEnabledCheck.setChecked(c.getInt(enColIndex) != 0);
-            } else {
+            if (!c.moveToFirst()) {
                 Log.e(TAG, "cursor is empty: " + prof_id_select);
                 finish();
                 return;
             }
+
+            // get UI widgets
+            mNameField = (EditText) findViewById(R.id.name);
+            mEnabledCheck = (CheckBox) findViewById(R.id.enabled);
+            
+            // get column indexes
+            int descColIndex = c.getColumnIndexOrThrow(Columns.DESCRIPTION);
+            int enColIndex = c.getColumnIndexOrThrow(Columns.IS_ENABLED);
+
+            // fill in UI from cursor data
+            mNameField.setText(c.getString(descColIndex));
+            mEnabledCheck.setChecked(c.getInt(enColIndex) != 0);
         } finally {
             c.close();
             profilesDb.onDestroy();
