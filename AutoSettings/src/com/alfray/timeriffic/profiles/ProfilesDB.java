@@ -290,6 +290,8 @@ public class ProfilesDB {
     // ----------------------------------
 
     /**
+     * @param name Profile name to update, if not null.
+     * @param isEnabled Profile is enable flag to update.
      * @return Number of rows affected. 1 on success, 0 on failure.
      */
     public int updateProfile(long prof_id, String name, boolean isEnabled) {
@@ -307,10 +309,41 @@ public class ProfilesDB {
     }
 
     /**
+     * @param isEnabled Timed action is enable flag to update.
      * @return Number of rows affected. 1 on success, 0 on failure.
      */
-    public int updateTimedAction(long action_id, String name, boolean isEnabled) {
-        return 0;
+    public int updateTimedAction(long action_id, boolean isEnabled) {
+
+        String where = String.format("%s=%d AND %s=%d",
+                Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
+                Columns.PROFILE_ID, action_id);
+
+        ContentValues cv = new ContentValues();
+        cv.put(Columns.IS_ENABLED, isEnabled);
+        
+        int count = mDb.update(PROFILES_TABLE, cv, where, null);
+        return count;
+    }
+
+    /**
+     * @param name Timed action description to update, if not null.
+     * @return Number of rows affected. 1 on success, 0 on failure.
+     */
+    public int updateTimedAction(long action_id, int hourMin, int days,
+            String actions, String description) {
+
+        String where = String.format("%s=%d AND %s=%d",
+                Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
+                Columns.PROFILE_ID, action_id);
+
+        ContentValues cv = new ContentValues();
+        cv.put(Columns.HOUR_MIN, hourMin);
+        cv.put(Columns.DAYS, days);
+        cv.put(Columns.ACTIONS, actions);
+        if (description != null) cv.put(Columns.DESCRIPTION, description);
+        
+        int count = mDb.update(PROFILES_TABLE, cv, where, null);
+        return count;
     }
 
     // ----------------------------------

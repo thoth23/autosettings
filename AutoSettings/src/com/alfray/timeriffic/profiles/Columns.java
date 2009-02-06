@@ -120,8 +120,8 @@ public class Columns implements BaseColumns {
      */
     public static final String ACTIONS = "actions";
 
-    /** Mute. Boolean: 0=Unmute, 1=Mute */
-    public static final String ACTION_MUTE        = "M";
+    /** Mute. Boolean: 0=Ringer off (muted), 1=Ringer on (not muted) */
+    public static final String ACTION_RINGER      = "M";
     /** Vibrate. Boolean: 0=No vib, 1=Vib */
     public static final String ACTION_VIBRATE     = "V";
     /** Rig volume. Integer: 0..99 */
