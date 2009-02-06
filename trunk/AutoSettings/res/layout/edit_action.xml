@@ -45,67 +45,64 @@
 		android:background="@drawable/section_bg"
         />
 
-	<LinearLayout 
+	<TableLayout
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent" 
 		android:layout_gravity="center_horizontal"
 		>
+	<TableRow
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent" 
+	   >
 		<CheckBox 
 		    android:id="@+id/dayMon"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
 			android:text="Mon" 
-			android:layout_weight="1"
 			/>
         <CheckBox 
             android:id="@+id/dayTue"
             android:layout_width="wrap_content" 
             android:layout_height="wrap_content"
             android:text="Tues" 
-            android:layout_weight="1"
             />
         <CheckBox 
             android:id="@+id/dayWed"
             android:layout_width="wrap_content" 
             android:layout_height="wrap_content"
             android:text="Wed" 
-            android:layout_weight="1"
             />
         <CheckBox 
             android:id="@+id/dayThu"
             android:layout_width="wrap_content" 
             android:layout_height="wrap_content"
             android:text="Thrus" 
-            android:layout_weight="1"
             />
-    </LinearLayout>
-    <LinearLayout 
+    </TableRow>
+    <TableRow 
 		android:layout_height="wrap_content" 
 		android:layout_width="fill_parent" 
-		android:layout_gravity="center_horizontal"
 		>
         <CheckBox 
             android:id="@+id/dayFri"
             android:layout_width="wrap_content" 
             android:layout_height="wrap_content"
             android:text="Fri" 
-            android:layout_weight="1"
             />
         <CheckBox 
             android:id="@+id/daySat"
             android:layout_width="wrap_content" 
             android:layout_height="wrap_content"
             android:text="Sat" 
-            android:layout_weight="1"
             />
         <CheckBox 
             android:id="@+id/daySun"
             android:layout_width="wrap_content" 
             android:layout_height="wrap_content"
             android:text="Sun" 
-            android:layout_weight="1"
             />
-    </LinearLayout>
+    </TableRow>
+    </TableLayout>
 
     <!-- label -->
 	<TextView 
