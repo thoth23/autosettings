@@ -582,7 +582,7 @@ public class ProfilesUI extends Activity {
             
             Calendar c = new GregorianCalendar();
             c.setTimeInMillis(System.currentTimeMillis());
-            int hourMin = c.get(Calendar.HOUR) * 60 + c.get(Calendar.MINUTE);
+            int hourMin = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
             
             int day = c.get(Calendar.DAY_OF_WEEK);
             int[] calendar_days = { 

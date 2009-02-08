@@ -2,7 +2,9 @@ TODO
 
 20090207 Fix insert action to mean after
 
-20090124 Options menu for profile screen
+20090124 Options menu: setttings, about
+
+20090207 Options menu: append new profile
 
 20090124 Check now + UI feedback
 20090124 Receiver: compute current, next
