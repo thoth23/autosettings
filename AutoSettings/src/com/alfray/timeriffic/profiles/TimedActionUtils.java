@@ -17,7 +17,7 @@ public class TimedActionUtils {
 
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(System.currentTimeMillis());
-        c.set(Calendar.HOUR, hourMin / 60);
+        c.set(Calendar.HOUR_OF_DAY, hourMin / 60);
         int min = hourMin % 60;
         c.set(Calendar.MINUTE, min);
         String desc_time = null;
