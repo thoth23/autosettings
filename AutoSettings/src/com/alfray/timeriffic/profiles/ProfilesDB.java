@@ -207,7 +207,7 @@ public class ProfilesDB {
      * @return the action index (not the row id)
      */
     public long insertTimedAction(long profileIndex,
-            int beforeActionIndex,
+            long beforeActionIndex,
             String description,
             boolean isActive,
             int hourMin,

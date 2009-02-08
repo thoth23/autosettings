@@ -7,6 +7,8 @@
 package com.alfray.timeriffic.profiles;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -43,6 +45,8 @@ import com.alfray.timeriffic.prefs.PrefsValues;
 public class ProfilesUI extends Activity {
 
     private static final String TAG = "ProfilesUI";
+
+    private static final int DATA_CHANGED = 42;
     
     private ListView mProfilesList;
     private ProfileCursorAdapter mAdapter;
@@ -173,6 +177,11 @@ public class ProfilesUI extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         if (mAdapter != null) {
             mAdapter.changeCursor(null);
             mAdapter = null;
@@ -181,16 +190,23 @@ public class ProfilesUI extends Activity {
             mProfilesDb.onDestroy();
             mProfilesDb = null;
         }
-    }
-    
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
         if (mProfilesList != null) {
             ArrayList<View> views = new ArrayList<View>();
             mProfilesList.reclaimViews(views);
             mProfilesList.setAdapter(null);
             mProfilesList = null;
+        }
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        
+        switch(requestCode) {
+        case DATA_CHANGED:
+            mAdapter = null;
+            initProfileList();
+            break;
         }
     }
 
@@ -433,74 +449,21 @@ public class ProfilesUI extends Activity {
         public abstract void onItemSelected();
         public abstract void onCreateContextMenu(ContextMenu menu);
         public abstract void onContextMenuSelected(MenuItem item);
-    }
 
-    //--------------
-
-    /**
-     * The holder for a profile header row.
-     */
-    private class ProfileHeaderHolder extends BaseHolder {
         
-        public ProfileHeaderHolder(View view) {
-            super(view);
+        // --- profile actions ---
+
+        private void startEditActivity(Class<?> activity, String extra_id, long extra_value) {
+            getCursor().requery();
+            mAdapter.notifyDataSetChanged();
+
+            Intent intent = new Intent(ProfilesUI.this, activity);
+            intent.putExtra(extra_id, extra_value);
+
+            startActivityForResult(intent, DATA_CHANGED);
         }
         
-        @Override
-        public void setUiData(Cursor cursor) {
-            super.setUiData(cursor,
-                    cursor.getString(mDescColIndex),
-                    cursor.getInt(mEnableColIndex) != 0 ? mCheckOn : mCheckOff);
-        }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu menu) {
-            menu.setHeaderTitle("Profile");
-
-            menu.add(0, R.string.insert_new, 0, R.string.insert_new);
-            menu.add(0, R.string.delete, 0, R.string.delete);
-            menu.add(0, R.string.rename, 0, R.string.rename);
-        }
-
-        @Override
-        public void onItemSelected() {
-            Cursor cursor = getCursor();
-            if (cursor == null) return;
-
-            boolean enabled = cursor.getInt(mEnableColIndex) != 0;
-            enabled = !enabled;
-            
-            mProfilesDb.updateProfile(
-                    cursor.getLong(mProfIdColIndex),
-                    null, // name
-                    enabled);
-
-            // update ui
-            cursor.requery();
-            setUiData(cursor, null, enabled ? mCheckOn : mCheckOff);
-        }
-
-        @Override
-        public void onContextMenuSelected(MenuItem item) {
-            switch (item.getItemId()) {
-            case R.string.insert_new:
-                Log.d(TAG, "profile - insert_new");
-                insertNewProfile(getCursor());
-                break;
-            case R.string.delete:
-                Log.d(TAG, "profile - delete");
-                deleteProfile(getCursor());
-                break;
-            case R.string.rename:
-                Log.d(TAG, "profile - rename");
-                editProfile(getCursor());
-                break;
-            default:
-                break;
-            }
-        }
-
-        private void deleteProfile(Cursor cursor) {
+        protected void deleteProfile(Cursor cursor) {
             final long row_id = cursor.getLong(mIdColIndex);
             String title = cursor.getString(mDescColIndex);
             
@@ -543,7 +506,7 @@ public class ProfilesUI extends Activity {
             showDialog(index);
         }
         
-        private void insertNewProfile(Cursor beforeCursor) {
+        protected void insertNewProfile(Cursor beforeCursor) {
             long prof_index = 0;
             if (beforeCursor != null) {
                 prof_index = beforeCursor.getLong(mProfIdColIndex) >> Columns.PROFILE_SHIFT;
@@ -551,79 +514,20 @@ public class ProfilesUI extends Activity {
             
             prof_index = mProfilesDb.insertProfile(prof_index, "New Profile", true /*isEnabled*/);
 
-            getCursor().requery();
-            mAdapter.notifyDataSetChanged();
-
-            Intent intent = new Intent(ProfilesUI.this, EditProfileUI.class);
-            intent.putExtra(EditProfileUI.EXTRA_PROFILE_ID, prof_index << Columns.PROFILE_SHIFT);
-
-            startActivity(intent);
+            startEditActivity(EditProfileUI.class,
+                    EditProfileUI.EXTRA_PROFILE_ID, prof_index << Columns.PROFILE_SHIFT);
         }
         
-        private void editProfile(Cursor cursor) {
+        protected void editProfile(Cursor cursor) {
             long prof_id = cursor.getLong(mProfIdColIndex);
 
-            Intent intent = new Intent(ProfilesUI.this, EditProfileUI.class);
-            intent.putExtra(EditProfileUI.EXTRA_PROFILE_ID, prof_id);
-
-            startActivity(intent);
+            startEditActivity(EditProfileUI.class, EditProfileUI.EXTRA_PROFILE_ID, prof_id);
         }
 
-    }
+        // --- timed actions ----
 
-    //--------------
 
-    /**
-     * The holder for a timed action row.
-     */
-    private class TimedActionHolder extends BaseHolder {
-        
-        public TimedActionHolder(View view) {
-            super(view);
-        }
-
-        @Override
-        public void setUiData(Cursor cursor) {
-            super.setUiData(cursor,
-                    cursor.getString(mDescColIndex),
-                    cursor.getInt(mEnableColIndex) != 0 ? mGreenDot : mGrayDot);
-        }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu menu) {
-            menu.setHeaderTitle("Timed Action");
-
-            menu.add(0, R.string.insert_new, 0, R.string.insert_new);
-            menu.add(0, R.string.delete, 0, R.string.delete);
-            menu.add(0, R.string.edit, 0, R.string.edit);
-        }
-
-        @Override
-        public void onItemSelected() {
-            // pass (or trigger edit?)
-        }
-
-        @Override
-        public void onContextMenuSelected(MenuItem item) {
-            switch (item.getItemId()) {
-            case R.string.insert_new:
-                Log.d(TAG, "action - insert_new");
-                //--insertNewAction(getCursor());
-                break;
-            case R.string.delete:
-                Log.d(TAG, "action - delete");
-                deleteTimedAction(getCursor());
-                break;
-            case R.string.edit:
-                Log.d(TAG, "action - edit");
-                editAction(getCursor());
-                break;
-            default:
-                break;
-            }
-        }
-
-        private void deleteTimedAction(Cursor cursor) {
+        protected void deleteTimedAction(Cursor cursor) {
             
             final long row_id = cursor.getLong(mIdColIndex);
             String description = cursor.getString(mDescColIndex);
@@ -667,13 +571,182 @@ public class ProfilesUI extends Activity {
             showDialog(index);
         }
         
-        private void editAction(Cursor cursor) {
-            long prof_id = cursor.getLong(mProfIdColIndex);
+        protected void insertNewAction(Cursor beforeCursor) {
+            long prof_index = 0;
+            long action_index = 0;
+            if (beforeCursor != null) {
+                prof_index = beforeCursor.getLong(mProfIdColIndex);
+                action_index = prof_index & Columns.ACTION_MASK;
+                prof_index = prof_index >> Columns.PROFILE_SHIFT;
+            }
+            
+            Calendar c = new GregorianCalendar();
+            c.setTimeInMillis(System.currentTimeMillis());
+            int hourMin = c.get(Calendar.HOUR) * 60 + c.get(Calendar.MINUTE);
+            
+            int day = c.get(Calendar.DAY_OF_WEEK);
+            int[] calendar_days = { 
+                    Calendar.MONDAY,
+                    Calendar.TUESDAY,
+                    Calendar.WEDNESDAY,
+                    Calendar.THURSDAY,
+                    Calendar.FRIDAY,
+                    Calendar.SATURDAY,
+                    Calendar.SUNDAY
+            };
+            for (int i = Columns.MONDAY_BIT_INDEX; i <= Columns.SUNDAY_BIT_INDEX; i++) {
+                if (day == calendar_days[i]) {
+                    day = i;
+                    break;
+                }
+            }
+            
+            action_index = mProfilesDb.insertTimedAction(
+                    prof_index,
+                    action_index,
+                    "",         // description
+                    false,      // isActive
+                    hourMin,    // hourMin
+                    day,        // days
+                    "",         // actions
+                    0           // nextMs
+                    );
 
-            Intent intent = new Intent(ProfilesUI.this, EditActionUI.class);
-            intent.putExtra(EditActionUI.EXTRA_ACTION_ID, prof_id);
+            long action_id = (prof_index << Columns.PROFILE_SHIFT) + action_index;
 
-            startActivity(intent);
+            startEditActivity(EditActionUI.class, EditActionUI.EXTRA_ACTION_ID, action_id);
+        }
+        
+        protected void editAction(Cursor cursor) {
+            long action_id = cursor.getLong(mProfIdColIndex);
+
+            startEditActivity(EditActionUI.class, EditActionUI.EXTRA_ACTION_ID, action_id);
+        }
+
+    }
+
+    //--------------
+
+    /**
+     * The holder for a profile header row.
+     */
+    private class ProfileHeaderHolder extends BaseHolder {
+        
+        public ProfileHeaderHolder(View view) {
+            super(view);
+        }
+        
+        @Override
+        public void setUiData(Cursor cursor) {
+            super.setUiData(cursor,
+                    cursor.getString(mDescColIndex),
+                    cursor.getInt(mEnableColIndex) != 0 ? mCheckOn : mCheckOff);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu) {
+            menu.setHeaderTitle("Profile");
+
+            menu.add(0, R.string.insert_profile, 0, R.string.insert_profile);
+            menu.add(0, R.string.insert_action, 0, R.string.insert_action);
+            menu.add(0, R.string.delete, 0, R.string.delete);
+            menu.add(0, R.string.rename, 0, R.string.rename);
+        }
+
+        @Override
+        public void onItemSelected() {
+            Cursor cursor = getCursor();
+            if (cursor == null) return;
+
+            boolean enabled = cursor.getInt(mEnableColIndex) != 0;
+            enabled = !enabled;
+            
+            mProfilesDb.updateProfile(
+                    cursor.getLong(mProfIdColIndex),
+                    null, // name
+                    enabled);
+
+            // update ui
+            cursor.requery();
+            setUiData(cursor, null, enabled ? mCheckOn : mCheckOff);
+        }
+
+        @Override
+        public void onContextMenuSelected(MenuItem item) {
+            switch (item.getItemId()) {
+            case R.string.insert_profile:
+                Log.d(TAG, "profile - insert_profile");
+                insertNewProfile(getCursor());
+                break;
+            case R.string.insert_action:
+                Log.d(TAG, "profile - insert_action");
+                insertNewAction(getCursor());
+                break;
+            case R.string.delete:
+                Log.d(TAG, "profile - delete");
+                deleteProfile(getCursor());
+                break;
+            case R.string.rename:
+                Log.d(TAG, "profile - rename");
+                editProfile(getCursor());
+                break;
+            default:
+                break;
+            }
+        }
+
+    }
+
+    //--------------
+
+    /**
+     * The holder for a timed action row.
+     */
+    private class TimedActionHolder extends BaseHolder {
+        
+        public TimedActionHolder(View view) {
+            super(view);
+        }
+
+        @Override
+        public void setUiData(Cursor cursor) {
+            super.setUiData(cursor,
+                    cursor.getString(mDescColIndex),
+                    cursor.getInt(mEnableColIndex) != 0 ? mGreenDot : mGrayDot);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu) {
+            menu.setHeaderTitle("Timed Action");
+
+            menu.add(0, R.string.insert_action, 0, R.string.insert_action);
+            menu.add(0, R.string.delete, 0, R.string.delete);
+            menu.add(0, R.string.edit, 0, R.string.edit);
+        }
+
+        @Override
+        public void onItemSelected() {
+            // pass (or trigger edit?)
+        }
+
+        @Override
+        public void onContextMenuSelected(MenuItem item) {
+            switch (item.getItemId()) {
+            case R.string.insert_action:
+                Log.d(TAG, "action - insert_action");
+                insertNewAction(getCursor());
+                break;
+            case R.string.delete:
+                Log.d(TAG, "action - delete");
+                deleteTimedAction(getCursor());
+                break;
+            case R.string.edit:
+                Log.d(TAG, "action - edit");
+                editAction(getCursor());
+                break;
+            default:
+                break;
+            }
         }
     }
 
