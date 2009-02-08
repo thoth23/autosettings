@@ -102,6 +102,16 @@ public class ProfilesDB {
         }
     }
     
+    /**
+     * Returns the max profile index (not id!).
+     * 
+     * If maxProfileIndex == 0, returns the absolute max profile index,
+     * i.e. the very last one.
+     * If maxProfileIndex > 0, returns the max profile index that is smaller
+     * than the given index (so basically the profile just before the one
+     * given).
+     * Returns 0 if there is no such index.
+     */
     public long getMaxProfileIndex(long maxProfileIndex) {
         try {
             String testMaxProfId = "";
@@ -124,28 +134,32 @@ public class ProfilesDB {
         }
     }
 
-    public long getMaxActionIndex(long profileIndex, long maxActionIndex) {
+    /**
+     * Returns the min action index (not id!) that is greater than the
+     * requested minActionIndex.
+     * <p/>
+     * So for a given index (including 0), returns the next one used.
+     * If there's no such index (i.e. not one used after the given index)
+     * returns -1.
+     */
+    public long getMinActionIndex(long profileIndex, long minActionIndex) {
         try {
-            long pid = profileIndex << Columns.PROFILE_SHIFT;
+            long pid = (profileIndex << Columns.PROFILE_SHIFT) + minActionIndex;
+            long maxPid = (profileIndex +1) << Columns.PROFILE_SHIFT;
 
-            String testMaxActionId = "";
-            if (maxActionIndex > 0) {
-                testMaxActionId = String.format("AND %s<%d",
-                        Columns.PROFILE_ID, pid + maxActionIndex);
-            }
-            // e.g. SELECT MAX(prof_id) FROM profiles WHERE type=2 AND prof_id > 65536 [ AND prof_id < 65536+256 ]
+            // e.g. SELECT MAX(prof_id) FROM profiles WHERE type=2 AND prof_id > 32768+256 AND prof_id < 65536
             SQLiteStatement sql = mDb.compileStatement(
-                    String.format("SELECT MAX(%s) FROM %s WHERE %s=%d AND %s>%d %s;",
+                    String.format("SELECT MIN(%s) FROM %s WHERE %s=%d AND %s>%d %s AND %s<%d;",
                             Columns.PROFILE_ID,
                             PROFILES_TABLE,
                             Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
                             Columns.PROFILE_ID, pid, 
-                            testMaxActionId));
+                            Columns.PROFILE_ID, maxPid));
 
             return sql.simpleQueryForLong() & Columns.ACTION_MASK;
         } catch (SQLiteDoneException e) {
             // no actions
-            return 0;
+            return -1;
         }
     }
 
@@ -202,12 +216,12 @@ public class ProfilesDB {
 
     /**
      * Inserts a new action for the given profile index.
-     * If beforeActionIndex is <= 0, insert at the end of these actions
+     * If afterActionIndex is == 0, insert at the beginning of these actions.
      * 
      * @return the action index (not the row id)
      */
     public long insertTimedAction(long profileIndex,
-            long beforeActionIndex,
+            long afterActionIndex,
             boolean isActive,
             int hourMin,
             int days,
@@ -218,22 +232,13 @@ public class ProfilesDB {
         try {
             long pid = profileIndex << Columns.PROFILE_SHIFT;
 
-            long index = getMaxActionIndex(profileIndex, beforeActionIndex);
-            if (beforeActionIndex <= 0) {
-                int max = Columns.ACTION_MASK;
-                if (index >= max - 1) {
-                    throw new UnsupportedOperationException("Action index at maximum.");
-                } else if (index < max - Columns.PROFILE_GAP) {
-                    index += Columns.PROFILE_GAP;
-                } else {
-                    index += (max - index) / 2;
-                }
+            long index = getMinActionIndex(profileIndex, afterActionIndex);
+            int max = Columns.ACTION_MASK;
+
+            if (index <= 0) {
+                index += Columns.PROFILE_GAP;
             } else {
-                if (index == beforeActionIndex - 1) {
-                    throw new UnsupportedOperationException("No space left to insert action before action.");
-                } else {
-                    index = (index + beforeActionIndex) / 2; // get middle offset
-                }
+                index = (index + afterActionIndex) / 2; // get middle offset
             }
             
             pid += index;
