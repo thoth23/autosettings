@@ -1,7 +1,6 @@
 TODO
 
 20090207 Fix insert action to mean after
-20090207 Fix insert action to set initial description
 
 20090124 Options menu for profile screen
 
@@ -14,6 +13,7 @@ TODO
 
 DONE
 
+20090207 Fix insert action to set initial description
 20090207 Remove old main UI
 20090207 Timed action add
 20090205 Timed action edit

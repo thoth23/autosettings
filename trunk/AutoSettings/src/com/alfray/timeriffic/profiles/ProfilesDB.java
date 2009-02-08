@@ -208,7 +208,6 @@ public class ProfilesDB {
      */
     public long insertTimedAction(long profileIndex,
             long beforeActionIndex,
-            String description,
             boolean isActive,
             int hourMin,
             int days,
@@ -239,6 +238,8 @@ public class ProfilesDB {
             
             pid += index;
 
+            String description = TimedActionUtils.computeDescription(hourMin, days, actions);
+            
             ContentValues values = new ContentValues(2);
 
             values.put(Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION);
@@ -461,55 +462,49 @@ public class ProfilesDB {
     private void onInitializeProfiles() {
         long pindex = insertProfile(0, "Weekdaze", true /*isEnabled*/);
         insertTimedAction(pindex, 0,
-                "7am Mon - Thu, Ringer on, Vibrate",
                 true,               //isActive
                 7*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY,
-                "M0,V1",            //actions
+                "M1,V1",            //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, 0,
-                "8pm Mon - Thu, Mute, vibrate",
                 false,              //isActive
                 20*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY,
-                "M1,V1",            //actions
+                "M0,V1",            //actions
                 0                   //nextMs
                 );
 
         pindex = insertProfile(0, "Party Time", true /*isEnabled*/);
         insertTimedAction(pindex, 0,
-                "9am Fri - Sat, Ringer on",
                 false,              //isActive
                 9*60+0,             //hourMin
                 Columns.FRIDAY + Columns.SATURDAY,
-                "M0",               //actions
+                "M1",               //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, 0,
-                "10pm Fri - Sat, Mute, vibrate",
                 false,               //isActive
                 22*60+0,             //hourMin
                 Columns.FRIDAY + Columns.SATURDAY,
-                "M1,V1",            //actions
+                "M0,V1",            //actions
                 0                   //nextMs
                 );
 
         pindex = insertProfile(0, "Sleeping-In", true /*isEnabled*/);
         insertTimedAction(pindex, 0,
-                "10:30am Sun, Ringer on",
                 false,               //isActive
                 10*60+30,            //hourMin
                 Columns.SUNDAY,
-                "M0",               //actions
+                "M1",               //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, 0,
-                "9pm Sun, Mute, vibrate",
                 false,               //isActive
                 21*60+0,             //hourMin
                 Columns.SUNDAY,
-                "M1,V1",            //actions
+                "M0,V1",            //actions
                 0                   //nextMs
                 );
     }

@@ -6,9 +6,6 @@
 
 package com.alfray.timeriffic.profiles;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -177,70 +174,28 @@ public class EditActionUI extends Activity {
             
             int hourMin = getTimePickerHourMin(mTimePicker);
             
-            Calendar c = new GregorianCalendar();
-            c.setTimeInMillis(System.currentTimeMillis());
-            c.set(Calendar.HOUR, hourMin / 60);
-            c.set(Calendar.MINUTE, hourMin % 60);
-            String desc_time = String.format("%1$tI:%1$tM %1$Tp", c);
-            
-            
             int days = 0;
-            String[] days_names = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
-            int start = -2;
-            int count = 0;
-            StringBuilder desc_days = new StringBuilder();
 
             for (int i = Columns.MONDAY_BIT_INDEX; i <= Columns.SUNDAY_BIT_INDEX; i++) {
                 if (mCheckDays[i].isChecked()) {
                     days |= 1<<i;
-                    
-                    if (start == i-1) {
-                        // continue range
-                        start = i;
-                        count++;
-                    } else {
-                        // start new range
-                        if (desc_days.length() > 0) desc_days.append(", ");
-                        desc_days.append(days_names[i]);
-                        start = i;
-                        count = 0;
-                    }
-                } else {
-                    if (start >= 0 && count > 0) {
-                        // close range
-                        desc_days.append(" - ");
-                        desc_days.append(days_names[start]);
-                    }
-                    start = -2;
-                    count = 0;
                 }
             }
-            if (start >= 0 && count > 0) {
-                // close range
-                desc_days.append(" - ");
-                desc_days.append(days_names[start]);
-            }
-            if (desc_days.length() == 0) desc_days.append("never");
 
             StringBuilder actions = new StringBuilder();
-            StringBuilder desc_actions = new StringBuilder();
             if (mCheckRinger.isChecked()) {
                 actions.append(Columns.ACTION_RINGER);
                 actions.append(mToggleRinger.isChecked() ? "1" : "0");
-                desc_actions.append(mToggleRinger.isChecked() ? "Ringer on" : "Mute");
             }
             if (mCheckVib.isChecked()) {
                 if (actions.length() > 0) actions.append(",");
                 actions.append(Columns.ACTION_VIBRATE);
                 actions.append(mToggleVib.isChecked() ? "1" : "0");
-                if (desc_actions.length() > 0) desc_actions.append(", ");
-                desc_actions.append(mToggleVib.isChecked() ? "Vibrate" : "No vibrate");
             }
-            if (desc_actions.length() == 0) desc_actions.append("no action");
             
-            String description = String.format("%s %s, %s", desc_time, desc_days, desc_actions);
+            String description = TimedActionUtils.computeDescription(hourMin, days, actions.toString());
             
-            count = profilesDb.updateTimedAction(mActionId,
+            int count = profilesDb.updateTimedAction(mActionId,
                     hourMin,
                     days,
                     actions.toString(),

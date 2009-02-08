@@ -596,15 +596,14 @@ public class ProfilesUI extends Activity {
             };
             for (int i = Columns.MONDAY_BIT_INDEX; i <= Columns.SUNDAY_BIT_INDEX; i++) {
                 if (day == calendar_days[i]) {
-                    day = i;
+                    day = 1<<i;
                     break;
                 }
             }
-            
+
             action_index = mProfilesDb.insertTimedAction(
                     prof_index,
                     action_index,
-                    "",         // description
                     false,      // isActive
                     hourMin,    // hourMin
                     day,        // days
