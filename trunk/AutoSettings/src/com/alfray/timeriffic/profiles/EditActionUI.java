@@ -9,17 +9,18 @@ package com.alfray.timeriffic.profiles;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import com.alfray.timeriffic.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.CheckBox;
-import android.widget.EditText;
+import android.widget.CompoundButton;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+
+import com.alfray.timeriffic.R;
 
 public class EditActionUI extends Activity {
 
@@ -40,6 +41,10 @@ public class EditActionUI extends Activity {
      * to {@link Columns#SUNDAY_BIT_INDEX}.
      */
     private CheckBox[] mCheckDays;
+
+    private CheckBox mCheckRinger;
+
+    private CheckBox mCheckVib;
 
     /** Called when the activity is first created. */
     @Override
@@ -88,18 +93,37 @@ public class EditActionUI extends Activity {
 
             // get UI widgets
             mTimePicker = (TimePicker) findViewById(R.id.timePicker);
-            mToggleRinger = (ToggleButton) findViewById(R.id.toggleRinger);
-            mToggleVib = (ToggleButton) findViewById(R.id.toggleVib);
+            mToggleRinger = (ToggleButton) findViewById(R.id.ringerToggle);
+            mToggleVib = (ToggleButton) findViewById(R.id.vibToggle);
+            mCheckRinger = (CheckBox) findViewById(R.id.ringerCheck);
+            mCheckVib = (CheckBox) findViewById(R.id.vibCheck);
             mCheckDays = new CheckBox[] {
-                    (CheckBox) findViewById(R.id.dayMon),
                     (CheckBox) findViewById(R.id.dayMon),
                     (CheckBox) findViewById(R.id.dayTue),
                     (CheckBox) findViewById(R.id.dayWed),
                     (CheckBox) findViewById(R.id.dayThu),
                     (CheckBox) findViewById(R.id.dayFri),
                     (CheckBox) findViewById(R.id.daySat),
-                    (CheckBox) findViewById(R.id.daySun),
+                    (CheckBox) findViewById(R.id.daySun)
             };
+
+            OnCheckedChangeListener ringerChanged = new OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mToggleRinger.setEnabled(buttonView.isChecked());
+                }
+            };
+            mCheckRinger.setOnCheckedChangeListener(ringerChanged);
+            ringerChanged.onCheckedChanged(mCheckRinger, false);
+            
+            OnCheckedChangeListener vibChanged = new OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mToggleVib.setEnabled(buttonView.isChecked());
+                }
+            };
+            mCheckVib.setOnCheckedChangeListener(vibChanged);
+            vibChanged.onCheckedChanged(mCheckVib, false);
             
             // get column indexes
             int hourMinColIndex = c.getColumnIndexOrThrow(Columns.HOUR_MIN);
@@ -115,23 +139,25 @@ public class EditActionUI extends Activity {
             }
             
             String actions = c.getString(actionsColIndex);
-            for (String action : actions.split(",")) {
-                int value = -1;
-                if (action.length() > 1) {
-                    try {
-                        value = Integer.parseInt(action.substring(1));
-                    } catch (NumberFormatException e) {
-                        Log.e(TAG, String.format("Invalid action '%s' in '%s", action, actions));
-                        
+            if (actions != null) {
+                for (String action : actions.split(",")) {
+                    int value = -1;
+                    if (action.length() > 1) {
+                        try {
+                            value = Integer.parseInt(action.substring(1));
+                        } catch (NumberFormatException e) {
+                            Log.e(TAG, String.format("Invalid action '%s' in '%s", action, actions));
+                            
+                        }
                     }
-                }
-                if (action.startsWith(Columns.ACTION_RINGER)) {
-                    mToggleRinger.setEnabled(value >= 0);
-                    mToggleRinger.setChecked(value > 0);
-                }
-                if (action.startsWith(Columns.ACTION_VIBRATE)) {
-                    mToggleVib.setEnabled(value >= 0);
-                    mToggleVib.setChecked(value > 0);
+                    if (action.startsWith(Columns.ACTION_RINGER)) {
+                        mCheckRinger.setChecked(value >= 0);
+                        mToggleRinger.setChecked(value > 0);
+                    }
+                    if (action.startsWith(Columns.ACTION_VIBRATE)) {
+                        mCheckVib.setChecked(value >= 0);
+                        mToggleVib.setChecked(value > 0);
+                    }
                 }
             }
             
@@ -155,7 +181,7 @@ public class EditActionUI extends Activity {
             c.setTimeInMillis(System.currentTimeMillis());
             c.set(Calendar.HOUR, hourMin / 60);
             c.set(Calendar.MINUTE, hourMin % 60);
-            String desc_time = String.format("%1$tI:%t1$M %1$Tp", c);
+            String desc_time = String.format("%1$tI:%1$tM %1$Tp", c);
             
             
             int days = 0;
@@ -194,21 +220,23 @@ public class EditActionUI extends Activity {
                 desc_days.append(" - ");
                 desc_days.append(days_names[start]);
             }
-            if (desc_days.length() == 0) desc_days.append("(no days)");
+            if (desc_days.length() == 0) desc_days.append("never");
 
             StringBuilder actions = new StringBuilder();
             StringBuilder desc_actions = new StringBuilder();
-            if (mToggleRinger.isEnabled()) {
+            if (mCheckRinger.isChecked()) {
                 actions.append(Columns.ACTION_RINGER);
                 actions.append(mToggleRinger.isChecked() ? "1" : "0");
                 desc_actions.append(mToggleRinger.isChecked() ? "Ringer on" : "Mute");
             }
-            if (mToggleVib.isEnabled()) {
+            if (mCheckVib.isChecked()) {
+                if (actions.length() > 0) actions.append(",");
                 actions.append(Columns.ACTION_VIBRATE);
                 actions.append(mToggleVib.isChecked() ? "1" : "0");
+                if (desc_actions.length() > 0) desc_actions.append(", ");
                 desc_actions.append(mToggleVib.isChecked() ? "Vibrate" : "No vibrate");
             }
-            if (desc_actions.length() == 0) desc_actions.append("(no action)");
+            if (desc_actions.length() == 0) desc_actions.append("no action");
             
             String description = String.format("%s %s, %s", desc_time, desc_days, desc_actions);
             

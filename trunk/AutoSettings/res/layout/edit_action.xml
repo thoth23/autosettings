@@ -14,16 +14,73 @@
 	android:padding="5dip"
 	>
 
-    <!-- label -->
+    <!-- Action Section -->
+    <TextView 
+        android:layout_height="wrap_content"
+        android:textAppearance="@android:style/TextAppearance.Large.Inverse"
+        android:text="Action" 
+        android:gravity="center_horizontal"
+        android:layout_width="fill_parent" 
+        android:layout_margin="5sp"
+        android:background="@drawable/section_bg" 
+        />
+
+    <TableLayout
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent"
+        >
+    <TableRow 
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent" 
+        >
+        <CheckBox 
+            android:id="@+id/ringerCheck"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Change Ringer to:"
+            android:layout_weight="1" 
+            />
+        <ToggleButton 
+            android:id="@+id/ringerToggle" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:paddingTop="10sp"
+            android:textOn="Ringer On" 
+            android:textOff="Ringer Muted" 
+            android:layout_weight="1" 
+            />
+    </TableRow>
+    <TableRow 
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent" 
+        >
+        <CheckBox 
+            android:id="@+id/vibCheck"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Change Vibrate to:"
+            android:layout_weight="1" 
+            />
+        <ToggleButton 
+            android:id="@+id/vibToggle" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:paddingTop="10sp"
+            android:textOff="No Vibrate" 
+            android:textOn="Vibrate" 
+            android:layout_weight="1" 
+            />
+    </TableRow>
+    </TableLayout>
+
+    <!-- Time Section -->
 	<TextView 
         android:layout_height="wrap_content"
 		android:layout_width="fill_parent" 
 		android:text="Trigger Time"
 		android:textAppearance="@android:style/TextAppearance.Large.Inverse"
 		android:gravity="center_horizontal" 
-		android:layout_marginBottom="5sp"
-		android:layout_marginLeft="5sp" 
-		android:layout_marginRight="5sp"
+        android:layout_margin="5sp"
 		android:background="@drawable/section_bg" 
 		/>
 
@@ -34,7 +91,7 @@
 		android:layout_gravity="center_horizontal" 
 		/>
 
-    <!-- label -->
+    <!-- Days Section -->
 	<TextView
         android:textAppearance="@android:style/TextAppearance.Large.Inverse"
 		android:text="Days" 
@@ -103,41 +160,6 @@
             />
     </TableRow>
     </TableLayout>
-
-    <!-- label -->
-	<TextView 
-        android:layout_height="wrap_content"
-		android:textAppearance="@android:style/TextAppearance.Large.Inverse"
-		android:text="Action" 
-		android:gravity="center_horizontal"
-		android:layout_width="fill_parent" 
-		android:layout_margin="5sp"
-		android:background="@drawable/section_bg" 
-		/>
-
-    <LinearLayout
-        android:layout_height="wrap_content" 
-        android:layout_width="fill_parent"
-        >
-        <ToggleButton 
-            android:id="@+id/toggleRinger" 
-            android:layout_width="wrap_content" 
-            android:layout_height="wrap_content" 
-            android:layout_weight="1" 
-            android:textOn="Ringer On" 
-            android:textOff="Ringer Muted" 
-            android:paddingTop="10sp"
-            />
-        <ToggleButton
-            android:id="@+id/toggleVib" 
-            android:layout_width="wrap_content" 
-            android:layout_height="wrap_content" 
-            android:layout_weight="1" 
-            android:textOff="No Vibrate" 
-            android:textOn="Vibrate" 
-            android:paddingTop="10sp"
-            />
-    </LinearLayout>
 
 </LinearLayout>
 </ScrollView>
