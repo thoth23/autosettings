@@ -1,13 +1,9 @@
 TODO
 
+20090207 Fix insert action to mean after
+20090207 Fix insert action to set initial description
+
 20090124 Options menu for profile screen
-20090124 Scroll list
-
-20090124 Profile header edit name
-20090124 Profile header add
-
-20090124 Timed action edit
-20090124 Timed action add
 
 20090124 Check now + UI feedback
 20090124 Receiver: compute current, next
@@ -17,6 +13,11 @@ TODO
 20090124 Preferences
 
 DONE
+
+20090207 Remove old main UI
+20090207 Timed action add
+20090205 Timed action edit
+20090130 Profile header add/edit name
 
 20090126 Change SQL schema usage: prof_id=prof_index<<shift + action_index
 20090125 Timed action remove
