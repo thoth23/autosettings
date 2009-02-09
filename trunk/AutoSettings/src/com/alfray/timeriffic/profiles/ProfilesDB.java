@@ -145,11 +145,11 @@ public class ProfilesDB {
     public long getMinActionIndex(long profileIndex, long minActionIndex) {
         try {
             long pid = (profileIndex << Columns.PROFILE_SHIFT) + minActionIndex;
-            long maxPid = (profileIndex +1) << Columns.PROFILE_SHIFT;
+            long maxPid = (profileIndex + 1) << Columns.PROFILE_SHIFT;
 
             // e.g. SELECT MAX(prof_id) FROM profiles WHERE type=2 AND prof_id > 32768+256 AND prof_id < 65536
             SQLiteStatement sql = mDb.compileStatement(
-                    String.format("SELECT MIN(%s) FROM %s WHERE %s=%d AND %s>%d %s AND %s<%d;",
+                    String.format("SELECT MIN(%s) FROM %s WHERE %s=%d AND %s>%d AND %s<%d;",
                             Columns.PROFILE_ID,
                             PROFILES_TABLE,
                             Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
@@ -180,6 +180,7 @@ public class ProfilesDB {
             if (beforeProfileIndex <= 0) {
                 long max = Long.MAX_VALUE >> Columns.PROFILE_SHIFT;
                 if (index >= max - 1) {
+                    // TODO repack
                     throw new UnsupportedOperationException("Profile index at maximum.");
                 } else if (index < max - Columns.PROFILE_GAP) {
                     index += Columns.PROFILE_GAP;
@@ -188,6 +189,7 @@ public class ProfilesDB {
                 }
             } else {
                 if (index == beforeProfileIndex - 1) {
+                    // TODO repack
                     throw new UnsupportedOperationException("No space left to insert profile before profile.");
                 } else {
                     index = (index + beforeProfileIndex) / 2; // get middle offset
@@ -216,7 +218,7 @@ public class ProfilesDB {
 
     /**
      * Inserts a new action for the given profile index.
-     * If afterActionIndex is == 0, insert at the beginning of these actions.
+     * If afterActionIndex is == 0, inserts at the beginning of these actions.
      * 
      * @return the action index (not the row id)
      */
@@ -233,13 +235,15 @@ public class ProfilesDB {
             long pid = profileIndex << Columns.PROFILE_SHIFT;
 
             long index = getMinActionIndex(profileIndex, afterActionIndex);
-            int max = Columns.ACTION_MASK;
 
-            if (index <= 0) {
-                index += Columns.PROFILE_GAP;
-            } else {
-                index = (index + afterActionIndex) / 2; // get middle offset
+            if (index < 0) index = Columns.ACTION_MASK - 1;
+            
+            if (index - afterActionIndex < 2) {
+                // TODO repack
+                throw new UnsupportedOperationException("No space left to insert action.");
             }
+
+            index = (index + afterActionIndex) / 2; // get middle offset
             
             pid += index;
 
@@ -466,14 +470,14 @@ public class ProfilesDB {
      */
     private void onInitializeProfiles() {
         long pindex = insertProfile(0, "Weekdaze", true /*isEnabled*/);
-        insertTimedAction(pindex, 0,
+        long action = insertTimedAction(pindex, 0,
                 true,               //isActive
                 7*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY,
                 "M1,V1",            //actions
                 0                   //nextMs
                 );
-        insertTimedAction(pindex, 0,
+        insertTimedAction(pindex, action,
                 false,              //isActive
                 20*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY,
@@ -482,14 +486,14 @@ public class ProfilesDB {
                 );
 
         pindex = insertProfile(0, "Party Time", true /*isEnabled*/);
-        insertTimedAction(pindex, 0,
+        action = insertTimedAction(pindex, 0,
                 false,              //isActive
                 9*60+0,             //hourMin
                 Columns.FRIDAY + Columns.SATURDAY,
                 "M1",               //actions
                 0                   //nextMs
                 );
-        insertTimedAction(pindex, 0,
+        insertTimedAction(pindex, action,
                 false,               //isActive
                 22*60+0,             //hourMin
                 Columns.FRIDAY + Columns.SATURDAY,
@@ -498,14 +502,14 @@ public class ProfilesDB {
                 );
 
         pindex = insertProfile(0, "Sleeping-In", true /*isEnabled*/);
-        insertTimedAction(pindex, 0,
+        action = insertTimedAction(pindex, 0,
                 false,               //isActive
                 10*60+30,            //hourMin
                 Columns.SUNDAY,
                 "M1",               //actions
                 0                   //nextMs
                 );
-        insertTimedAction(pindex, 0,
+        insertTimedAction(pindex, action,
                 false,               //isActive
                 21*60+0,             //hourMin
                 Columns.SUNDAY,
