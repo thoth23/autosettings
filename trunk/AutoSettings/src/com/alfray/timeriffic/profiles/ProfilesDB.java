@@ -420,33 +420,13 @@ public class ProfilesDB {
 
 		@Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(String.format("CREATE TABLE %s "
-                    + "(%s INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + "%s INTEGER, "
-                    + "%s TEXT, "
-                    + "%s INTEGER, "
-                    + "%s INTEGER, "
-                    + "%s INTEGER, "
-                    + "%s INTEGER, "
-                    + "%s TEXT, "
-                    + "%s INTEGER);" ,
-                    PROFILES_TABLE,
-                    Columns._ID,
-                    Columns.TYPE,
-                    Columns.DESCRIPTION,
-                    Columns.IS_ENABLED,
-                    Columns.PROFILE_ID,
-                    Columns.HOUR_MIN,
-                    Columns.DAYS,
-                    Columns.ACTIONS,
-                    Columns.NEXT_MS));
-            
             SQLiteDatabase old_mDb = mDb;
             mDb = db;
-            onInitializeProfiles();
+            onResetTables();
+            initDefaultProfiles();
             mDb = old_mDb;
         }
-		
+
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, String.format("Upgrading database from version %1$d to %2$d.",
@@ -463,13 +443,42 @@ public class ProfilesDB {
     }
 
     /**
+     * Called by {@link DatabaseHelper} to reset the tables.
+     */
+    private void onResetTables() {
+        // hand over that chocolate and nobody gets hurt!
+        mDb.execSQL(String.format("DROP TABLE IF EXISTS %s;", PROFILES_TABLE));
+        
+        mDb.execSQL(String.format("CREATE TABLE %s "
+                + "(%s INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "%s INTEGER, "
+                + "%s TEXT, "
+                + "%s INTEGER, "
+                + "%s INTEGER, "
+                + "%s INTEGER, "
+                + "%s INTEGER, "
+                + "%s TEXT, "
+                + "%s INTEGER);" ,
+                PROFILES_TABLE,
+                Columns._ID,
+                Columns.TYPE,
+                Columns.DESCRIPTION,
+                Columns.IS_ENABLED,
+                Columns.PROFILE_ID,
+                Columns.HOUR_MIN,
+                Columns.DAYS,
+                Columns.ACTIONS,
+                Columns.NEXT_MS));
+    }
+
+    /**
      * Called by {@link DatabaseHelper} when the database has just been
      * created to initialize it with initial data. It's safe to use
      * {@link ProfilesDB#insertProfile(String, boolean)} or
      * {@link ProfilesDB#insertTimedAction(String, boolean, int, int, String, long)}
      * at that point.
      */
-    private void onInitializeProfiles() {
+    private void initDefaultProfiles() {
         long pindex = insertProfile(0, "Weekdaze", true /*isEnabled*/);
         long action = insertTimedAction(pindex, 0,
                 true,               //isActive
@@ -518,4 +527,72 @@ public class ProfilesDB {
                 0                   //nextMs
                 );
     }
+
+    /**
+     * Some simple profiles for me
+     */
+    private void initRalfProfiles() {
+        long pindex = insertProfile(0, "Ralf", true /*isEnabled*/);
+        long action = insertTimedAction(pindex, 0,
+                true,               //isActive
+                9*60+0,             //hourMin
+                Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY + Columns.FRIDAY + Columns.SATURDAY + Columns.SUNDAY,
+                "M1,V1",            //actions
+                0                   //nextMs
+                );
+        insertTimedAction(pindex, action,
+                false,              //isActive
+                21*60+0,             //hourMin
+                Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY + Columns.FRIDAY + Columns.SATURDAY + Columns.SUNDAY,
+                "M0,V1",            //actions
+                0                   //nextMs
+                );
+    }
+
+    // --------------
+
+    /**
+     * Labels of the reset profiles choices.
+     * Default is index 0.
+     */
+    public String[] getResetLabels() {
+        return new String[] {
+            "Default Profiles",
+            "Empty, no profiles",
+            "Ralf Profiles"
+        };
+    }
+
+    /**
+     * Reset profiles according to choices.
+     * 
+     * @param labelIndex An index from the {@link #getResetLabels()} array.
+     */
+    public void resetProfiles(int labelIndex) {
+
+        beginTransaction();
+        try {
+            // empty tables
+            onResetTables();
+        
+            switch(labelIndex) {
+            case 0:
+                initDefaultProfiles();
+                break;
+            case 1:
+                // empty profiles list, already done.
+                // pass
+                break;
+            case 2:
+                initRalfProfiles();
+                break;
+            }
+
+            setTransactionSuccessful();
+        } finally {
+            endTransaction();
+        }
+    }
+    
+
 }

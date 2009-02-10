@@ -12,6 +12,7 @@ import java.util.GregorianCalendar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.Dialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,13 +42,18 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.app.AutoReceiver;
+import com.alfray.timeriffic.app.TimerifficApp;
+import com.alfray.timeriffic.prefs.PrefsActivity;
 import com.alfray.timeriffic.prefs.PrefsValues;
+import com.alfray.timeriffic.ui.IntroDialogActivity;
 
 public class ProfilesUI extends Activity {
 
     private static final String TAG = "ProfilesUI";
 
     private static final int DATA_CHANGED = 42;
+    private static final int SETTINGS_UPDATED = 43;
     
     private ListView mProfilesList;
     private ProfileCursorAdapter mAdapter;
@@ -66,6 +73,8 @@ public class ProfilesUI extends Activity {
 
     private SparseArray<AlertDialog.Builder> mTempDialogList = new SparseArray<AlertDialog.Builder>();
     private int mNextTempDialogId = 0;
+
+    private ToggleButton mGlobalToggle;
 
 
     /**
@@ -88,6 +97,24 @@ public class ProfilesUI extends Activity {
         mCheckOff = getResources().getDrawable(R.drawable.btn_check_off);
         
         initButtons();
+        showIntro(false);
+    }
+
+    private void showIntro(boolean force) {
+        if (!force) {
+            Application app = getApplication();
+            if (app instanceof TimerifficApp) {
+                TimerifficApp tapp = (TimerifficApp) app;
+                if (!tapp.isIntroDisplayed() && !mPrefsValues.isIntroDismissed()) {
+                    tapp.setIntroDisplayed(true);
+                    force = true;
+                }
+            }
+        }
+        
+        if (force) {
+            startActivity(new Intent(this, IntroDialogActivity.class));
+        }
     }
 
     /**
@@ -204,10 +231,18 @@ public class ProfilesUI extends Activity {
         
         switch(requestCode) {
         case DATA_CHANGED:
-            mAdapter = null;
-            initProfileList();
+            onDataChanged();
+            break;
+        case SETTINGS_UPDATED:
+            updateGlobalToggleFromPrefs();
+            requestSettingsCheck();
             break;
         }
+    }
+
+    private void onDataChanged() {
+        mAdapter = null;
+        initProfileList();
     }
 
     @Override
@@ -252,20 +287,100 @@ public class ProfilesUI extends Activity {
      * Initializes the list-independent buttons: global toggle, check now.
      */
     private void initButtons() {
-        final ToggleButton globalToggle = (ToggleButton) findViewById(R.id.global_toggle);
+        mGlobalToggle = (ToggleButton) findViewById(R.id.global_toggle);
 
-        globalToggle.setChecked(mPrefsValues.enableService());
+        mGlobalToggle.setChecked(mPrefsValues.isServiceEnabled());
 
-        globalToggle.setOnClickListener(new View.OnClickListener() {
+        mGlobalToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPrefsValues.setEnabledService(globalToggle.isChecked());
+                mPrefsValues.setServiceEnabled(mGlobalToggle.isChecked());
+            }
+        });
+    }
+    
+    private void updateGlobalToggleFromPrefs() {
+        mGlobalToggle.setChecked(mPrefsValues.isServiceEnabled());
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, R.string.append_profile,  0, R.string.append_profile).setIcon(R.drawable.ic_menu_add);
+        menu.add(0, R.string.about,  0, R.string.about).setIcon(R.drawable.ic_menu_help);
+        menu.add(0, R.string.settings,  0, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
+        menu.add(0, R.string.check_now,  0, R.string.check_now).setIcon(R.drawable.ic_menu_rotate);
+        menu.add(0, R.string.reset,  0, R.string.reset).setIcon(R.drawable.ic_menu_revert);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+        case R.string.settings:
+            showPrefs();
+            break;
+        case R.string.check_now:
+            requestSettingsCheck();
+            break;
+        case R.string.about:
+            showIntro(true /*force*/);
+            break;
+        case R.string.reset:
+            showResetChoices();
+            break;
+        case R.string.append_profile:
+            appendNewProfile();
+            break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showPrefs() {
+        startActivityForResult(new Intent(this, PrefsActivity.class), SETTINGS_UPDATED);
+    }
+
+    private void requestSettingsCheck() {
+        sendBroadcast(new Intent(AutoReceiver.ACTION_AUTO_CHECK_STATE));
+    }
+    
+    protected void showResetChoices() {
+        Builder d = new AlertDialog.Builder(this);
+        final int index = mNextTempDialogId++;
+        mTempDialogList.put(index, d);
+
+        d.setCancelable(true);
+        d.setTitle("Delete and Reset all Profiles? No undo!");
+        d.setIcon(R.drawable.timeriffic_icon);
+        //d.setMessage("Are you sure you want to delete all profiles?");
+        d.setItems(mProfilesDb.getResetLabels(),
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mProfilesDb.resetProfiles(which);
+                    removeTempDialog(index);
+                    onDataChanged();
+                }
+        });
+        
+        d.setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                removeTempDialog(index);
             }
         });
         
+        d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                removeTempDialog(index);
+            }
+        });
         
+        showDialog(index);
     }
-    
+
+
     //--------------
 
     /**
@@ -425,7 +540,7 @@ public class ProfilesUI extends Activity {
         private final TextView mDescription;
 
         public BaseHolder(View view) {
-            mDescription = (TextView) view.findViewById(R.id.description);
+            mDescription = view != null ? (TextView) view.findViewById(R.id.description) : null;
         }
         
         public Cursor getCursor() {
@@ -454,8 +569,7 @@ public class ProfilesUI extends Activity {
         // --- profile actions ---
 
         private void startEditActivity(Class<?> activity, String extra_id, long extra_value) {
-            getCursor().requery();
-            mAdapter.notifyDataSetChanged();
+            if (getCursor() != null) getCursor().requery();
 
             Intent intent = new Intent(ProfilesUI.this, activity);
             intent.putExtra(extra_id, extra_value);
@@ -517,7 +631,7 @@ public class ProfilesUI extends Activity {
             startEditActivity(EditProfileUI.class,
                     EditProfileUI.EXTRA_PROFILE_ID, prof_index << Columns.PROFILE_SHIFT);
         }
-        
+
         protected void editProfile(Cursor cursor) {
             long prof_id = cursor.getLong(mProfIdColIndex);
 
@@ -622,6 +736,15 @@ public class ProfilesUI extends Activity {
             startEditActivity(EditActionUI.class, EditActionUI.EXTRA_ACTION_ID, action_id);
         }
 
+    }
+    
+    public void appendNewProfile() {
+        long prof_index = mProfilesDb.insertProfile(0, "New Profile", true /*isEnabled*/);
+
+        Intent intent = new Intent(ProfilesUI.this, EditProfileUI.class);
+        intent.putExtra(EditProfileUI.EXTRA_PROFILE_ID, prof_index << Columns.PROFILE_SHIFT);
+
+        startActivityForResult(intent, DATA_CHANGED);
     }
 
     //--------------

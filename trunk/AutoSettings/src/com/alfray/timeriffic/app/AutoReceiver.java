@@ -32,10 +32,10 @@ public class AutoReceiver extends BroadcastReceiver {
         PrefsValues prefs = new PrefsValues(context);
 
         prefs.appendToLog("Checking "
-                + (prefs.enableService() ? "enabled" : "disabled")
+                + (prefs.isServiceEnabled() ? "enabled" : "disabled")
                 + (isBoot ? " (boot)" : ""));
         
-        if (!prefs.enableService()) return;
+        if (!prefs.isServiceEnabled()) return;
 
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(System.currentTimeMillis());

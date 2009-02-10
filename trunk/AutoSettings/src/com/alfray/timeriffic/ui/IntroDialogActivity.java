@@ -39,13 +39,13 @@ public class IntroDialogActivity extends Activity {
         CheckBox dismiss = (CheckBox) findViewById(R.id.dismiss);
         if (dismiss != null) {
             final PrefsValues pv = new PrefsValues(this);
-            dismiss.setChecked(pv.dismissIntro());
+            dismiss.setChecked(pv.isIntroDismissed());
             
             dismiss.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView,
                         boolean isChecked) {
-                    pv.setDismissIntro(isChecked);
+                    pv.setIntroDismissed(isChecked);
                 }
             });
         }

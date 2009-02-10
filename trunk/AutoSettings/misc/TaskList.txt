@@ -1,10 +1,7 @@
 TODO
 
-20090207 Fix insert action to mean after
-
-20090124 Options menu: setttings, about
-
-20090207 Options menu: append new profile
+20090210 Fix persistent dialog using in activity
+20090210 Fix leaked cursor when resetting profiles
 
 20090124 Check now + UI feedback
 20090124 Receiver: compute current, next
@@ -15,6 +12,10 @@ TODO
 
 DONE
 
+20090209 Options menu: append new profile
+20090209 Options menu: reset profiles
+20090209 Options menu: setttings, about
+20090209 Fix insert action to mean after
 20090207 Fix insert action to set initial description
 20090207 Remove old main UI
 20090207 Timed action add
