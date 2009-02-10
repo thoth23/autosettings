@@ -147,7 +147,7 @@ public class ProfilesDB {
             long pid = (profileIndex << Columns.PROFILE_SHIFT) + minActionIndex;
             long maxPid = (profileIndex + 1) << Columns.PROFILE_SHIFT;
 
-            // e.g. SELECT MAX(prof_id) FROM profiles WHERE type=2 AND prof_id > 32768+256 AND prof_id < 65536
+            // e.g. SELECT MIN(prof_id) FROM profiles WHERE type=2 AND prof_id > 32768+256 AND prof_id < 65536
             SQLiteStatement sql = mDb.compileStatement(
                     String.format("SELECT MIN(%s) FROM %s WHERE %s=%d AND %s>%d AND %s<%d;",
                             Columns.PROFILE_ID,
@@ -156,11 +156,12 @@ public class ProfilesDB {
                             Columns.PROFILE_ID, pid, 
                             Columns.PROFILE_ID, maxPid));
 
-            return sql.simpleQueryForLong() & Columns.ACTION_MASK;
+            long result = sql.simpleQueryForLong();
+            if (result > pid && result < maxPid) return result & Columns.ACTION_MASK;
         } catch (SQLiteDoneException e) {
             // no actions
-            return -1;
         }
+        return -1;
     }
 
     // ----------------------------------

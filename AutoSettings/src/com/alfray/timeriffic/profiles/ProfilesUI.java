@@ -157,7 +157,7 @@ public class ProfilesUI extends Activity {
     }
 
     /**
-     * Called when activity is resume, or just after creation.
+     * Called when activity is resumed, or just after creation.
      * <p/>
      * Initializes the profile list & db.
      */
