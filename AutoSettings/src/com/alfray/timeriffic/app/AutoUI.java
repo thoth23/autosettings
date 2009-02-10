@@ -128,7 +128,7 @@ public class AutoUI extends Activity {
             Application app = getApplication();
             if (app instanceof TimerifficApp) {
                 TimerifficApp tapp = (TimerifficApp) app;
-                if (!tapp.isIntroDisplayed() && !mPrefs.dismissIntro()) {
+                if (!tapp.isIntroDisplayed() && !mPrefs.isIntroDismissed()) {
                     tapp.setIntroDisplayed(true);
                     force = true;
                 }
@@ -136,7 +136,7 @@ public class AutoUI extends Activity {
         }
         
         if (force) {
-            startActivity(new Intent(AutoUI.this, IntroDialogActivity.class));
+            startActivity(new Intent(this, IntroDialogActivity.class));
         }
     }
     
@@ -167,7 +167,6 @@ public class AutoUI extends Activity {
 
     private void showPrefs() {
         // dispatch to the new settings UI screen, for testing
-        startActivityForResult(new Intent(AutoUI.this, ProfilesUI.class),
-                SETTINGS_UPDATED);
+        startActivityForResult(new Intent(this, ProfilesUI.class), SETTINGS_UPDATED);
     }
 }

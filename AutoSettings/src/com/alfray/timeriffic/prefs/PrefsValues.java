@@ -27,7 +27,7 @@ public class PrefsValues {
         return mPrefs;
     }
 
-	public boolean enableService() {
+	public boolean isServiceEnabled() {
 	    return mPrefs.getBoolean("enable_serv", true);
 	}
     
@@ -35,11 +35,11 @@ public class PrefsValues {
      * Sets the dismiss_intro boolean value.
      * @return true if value was successfully changed if the prefs
      */
-    public boolean setEnabledService(boolean checked) {
+    public boolean setServiceEnabled(boolean checked) {
         return mPrefs.edit().putBoolean("enable_serv", checked).commit();
     }
 
-    public boolean dismissIntro() {
+    public boolean isIntroDismissed() {
         return mPrefs.getBoolean("dismiss_intro", false);
     }
     
@@ -47,7 +47,7 @@ public class PrefsValues {
      * Sets the dismiss_intro boolean value.
      * @return true if value was successfully changed if the prefs
      */
-    public boolean setDismissIntro(boolean dismiss) {
+    public boolean setIntroDismissed(boolean dismiss) {
         return mPrefs.edit().putBoolean("dismiss_intro", dismiss).commit();
     }
 
