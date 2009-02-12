@@ -54,6 +54,11 @@ public class ProfilesUI extends Activity {
 
     private static final int DATA_CHANGED = 42;
     private static final int SETTINGS_UPDATED = 43;
+
+    private static final int DIALOG_RESET_CHOICES = 0;
+    public static final int DIALOG_DELETE_ACTION = 1;
+    public static final int DIALOG_DELETE_PROFILE = 2;
+
     
     private ListView mProfilesList;
     private ProfileCursorAdapter mAdapter;
@@ -71,10 +76,12 @@ public class ProfilesUI extends Activity {
     private Drawable mCheckOn;
     private Drawable mCheckOff;
 
-    private SparseArray<AlertDialog.Builder> mTempDialogList = new SparseArray<AlertDialog.Builder>();
-    private int mNextTempDialogId = 0;
-
     private ToggleButton mGlobalToggle;
+    
+    private long mTempDialogRowId;
+    private String mTempDialogTitle;
+
+    private Cursor mCursor;
 
 
     /**
@@ -153,7 +160,7 @@ public class ProfilesUI extends Activity {
         }
 
         if (mAdapter == null) {
-            Cursor cursor = mProfilesDb.query(
+            mCursor = mProfilesDb.query(
                     -1, //id
                     new String[] { 
                         Columns._ID,
@@ -172,13 +179,13 @@ public class ProfilesUI extends Activity {
                     null //sortOrder
                     );
     
-            mIdColIndex = cursor.getColumnIndexOrThrow(Columns._ID);
-            mTypeColIndex = cursor.getColumnIndexOrThrow(Columns.TYPE);
-            mDescColIndex = cursor.getColumnIndexOrThrow(Columns.DESCRIPTION);
-            mEnableColIndex = cursor.getColumnIndexOrThrow(Columns.IS_ENABLED);
-            mProfIdColIndex = cursor.getColumnIndexOrThrow(Columns.PROFILE_ID);
+            mIdColIndex = mCursor.getColumnIndexOrThrow(Columns._ID);
+            mTypeColIndex = mCursor.getColumnIndexOrThrow(Columns.TYPE);
+            mDescColIndex = mCursor.getColumnIndexOrThrow(Columns.DESCRIPTION);
+            mEnableColIndex = mCursor.getColumnIndexOrThrow(Columns.IS_ENABLED);
+            mProfIdColIndex = mCursor.getColumnIndexOrThrow(Columns.PROFILE_ID);
     
-            mAdapter = new ProfileCursorAdapter(this, cursor);
+            mAdapter = new ProfileCursorAdapter(this, mCursor);
             mProfilesList.setAdapter(mAdapter);
         }
     }
@@ -205,6 +212,22 @@ public class ProfilesUI extends Activity {
     protected void onPause() {
         super.onPause();
     }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        
+        mTempDialogRowId = savedInstanceState.getLong("dlg_rowid");
+        mTempDialogTitle = savedInstanceState.getString("dlg_title");
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        
+        outState.putLong("dlg_rowid", mTempDialogRowId);
+        outState.putString("dlg_title", mTempDialogTitle);
+    }
     
     @Override
     protected void onDestroy() {
@@ -212,6 +235,9 @@ public class ProfilesUI extends Activity {
         if (mAdapter != null) {
             mAdapter.changeCursor(null);
             mAdapter = null;
+        }
+        if (mCursor != null) {
+            mCursor = null;
         }
         if (mProfilesDb != null) {
             mProfilesDb.onDestroy();
@@ -241,18 +267,23 @@ public class ProfilesUI extends Activity {
     }
 
     private void onDataChanged() {
+        if (mCursor != null) mCursor.requery();
         mAdapter = null;
         initProfileList();
     }
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        return mTempDialogList.get(id).create();
-    }
-    
-    private void removeTempDialog(int index) {
-        mTempDialogList.remove(index);
-        removeDialog(index);
+        switch(id) {
+        case DIALOG_RESET_CHOICES:
+            return createDialogResetChoices();
+        case DIALOG_DELETE_PROFILE:
+            return createDeleteProfileDialog();
+        case DIALOG_DELETE_ACTION:
+            return createDialogDeleteTimedAction();
+        default:
+            return null;
+        }
     }
 
     @Override
@@ -345,9 +376,11 @@ public class ProfilesUI extends Activity {
     }
     
     protected void showResetChoices() {
+        showDialog(DIALOG_RESET_CHOICES);
+    }
+    
+    private Dialog createDialogResetChoices() {
         Builder d = new AlertDialog.Builder(this);
-        final int index = mNextTempDialogId++;
-        mTempDialogList.put(index, d);
 
         d.setCancelable(true);
         d.setTitle("Delete and Reset all Profiles? No undo!");
@@ -358,7 +391,7 @@ public class ProfilesUI extends Activity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     mProfilesDb.resetProfiles(which);
-                    removeTempDialog(index);
+                    removeDialog(DIALOG_RESET_CHOICES);
                     onDataChanged();
                 }
         });
@@ -366,18 +399,18 @@ public class ProfilesUI extends Activity {
         d.setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                removeTempDialog(index);
+                removeDialog(DIALOG_RESET_CHOICES);
             }
         });
         
         d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                removeTempDialog(index);
+                removeDialog(DIALOG_RESET_CHOICES);
             }
         });
         
-        showDialog(index);
+        return d.create();
     }
 
 
@@ -581,43 +614,9 @@ public class ProfilesUI extends Activity {
             final long row_id = cursor.getLong(mIdColIndex);
             String title = cursor.getString(mDescColIndex);
             
-            Builder d = new AlertDialog.Builder(ProfilesUI.this);
-            final int index = mNextTempDialogId++;
-            mTempDialogList.put(index, d);
-
-            d.setCancelable(true);
-            d.setTitle("Delete profile");
-            d.setIcon(R.drawable.timeriffic_icon);
-            d.setMessage(String.format(
-                    "Are you sure you want to delete profile '%s' and all its actions?", title));
-            
-            d.setOnCancelListener(new OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    removeTempDialog(index);
-                }
-            });
-            
-            d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    removeTempDialog(index);
-                }
-            });
-            
-            d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    int count = mProfilesDb.deleteProfile(row_id);
-                    if (count > 0) {
-                        getCursor().requery();
-                        mAdapter.notifyDataSetChanged();
-                    }
-                    removeTempDialog(index);
-                }
-            });
-            
-            showDialog(index);
+            mTempDialogRowId = row_id;
+            mTempDialogTitle = title;
+            showDialog(DIALOG_DELETE_PROFILE);
         }
         
         protected void insertNewProfile(Cursor beforeCursor) {
@@ -646,45 +645,11 @@ public class ProfilesUI extends Activity {
             final long row_id = cursor.getLong(mIdColIndex);
             String description = cursor.getString(mDescColIndex);
             
-            Builder d = new AlertDialog.Builder(ProfilesUI.this);
-            final int index = mNextTempDialogId++;
-            mTempDialogList.put(index, d);
-
-            d.setCancelable(true);
-            d.setTitle("Delete action");
-            d.setIcon(R.drawable.timeriffic_icon);
-            d.setMessage(String.format(
-                    "Are you sure you want to delete action '%s'?", description));
-            
-            d.setOnCancelListener(new OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    removeTempDialog(index);
-                }
-            });
-            
-            d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    removeTempDialog(index);
-                }
-            });
-            
-            d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    int count = mProfilesDb.deleteAction(row_id);
-                    if (count > 0) {
-                        getCursor().requery();
-                        mAdapter.notifyDataSetChanged();
-                    }
-                    removeTempDialog(index);
-                }
-            });
-            
-            showDialog(index);
+            mTempDialogRowId = row_id;
+            mTempDialogTitle = description;
+            showDialog(DIALOG_DELETE_ACTION);
         }
-        
+
         protected void insertNewAction(Cursor beforeCursor) {
             long prof_index = 0;
             long action_index = 0;
@@ -738,6 +703,90 @@ public class ProfilesUI extends Activity {
 
     }
     
+    private Dialog createDeleteProfileDialog() {
+        final long row_id = mTempDialogRowId;
+        final String title = mTempDialogTitle;
+
+        Builder d = new AlertDialog.Builder(ProfilesUI.this);
+
+        d.setCancelable(true);
+        d.setTitle("Delete profile");
+        d.setIcon(R.drawable.timeriffic_icon);
+        d.setMessage(String.format(
+                "Are you sure you want to delete profile '%s' and all its actions?", title));
+        
+        d.setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                removeDialog(DIALOG_DELETE_PROFILE);
+            }
+        });
+        
+        d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                removeDialog(DIALOG_DELETE_PROFILE);
+            }
+        });
+        
+        d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int count = mProfilesDb.deleteProfile(row_id);
+                if (count > 0) {
+                    mAdapter.notifyDataSetChanged();
+                    onDataChanged();
+                }
+                removeDialog(DIALOG_DELETE_PROFILE);
+            }
+        });
+        
+        return d.create();
+    }
+
+    private Dialog createDialogDeleteTimedAction() {
+        
+        final long row_id = mTempDialogRowId;
+        final String description = mTempDialogTitle;
+        
+        Builder d = new AlertDialog.Builder(ProfilesUI.this);
+
+        d.setCancelable(true);
+        d.setTitle("Delete action");
+        d.setIcon(R.drawable.timeriffic_icon);
+        d.setMessage(String.format(
+                "Are you sure you want to delete action '%s'?", description));
+        
+        d.setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                removeDialog(DIALOG_DELETE_ACTION);
+            }
+        });
+        
+        d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                removeDialog(DIALOG_DELETE_ACTION);
+            }
+        });
+        
+        d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int count = mProfilesDb.deleteAction(row_id);
+                if (count > 0) {
+                    mAdapter.notifyDataSetChanged();
+                    onDataChanged();
+                }
+                removeDialog(DIALOG_DELETE_ACTION);
+            }
+        });
+
+        return d.create();
+    }
+
+
     public void appendNewProfile() {
         long prof_index = mProfilesDb.insertProfile(0, "New Profile", true /*isEnabled*/);
 

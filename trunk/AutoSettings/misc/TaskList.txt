@@ -1,7 +1,7 @@
 TODO
 
-20090210 Fix persistent dialog using in activity
 20090210 Fix leaked cursor when resetting profiles
+20090210 Fix insert timed action order
 
 20090124 Check now + UI feedback
 20090124 Receiver: compute current, next
@@ -12,6 +12,7 @@ TODO
 
 DONE
 
+20090210 Fix persistent dialog usage in activity
 20090209 Options menu: append new profile
 20090209 Options menu: reset profiles
 20090209 Options menu: setttings, about
