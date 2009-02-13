@@ -14,11 +14,9 @@ import android.media.AudioManager;
 public class SettingsHelper {
     
     private final Context mContext;
-    private PrefsValues mPrefs;
 
     public SettingsHelper(Context context) {
         mContext = context;
-        mPrefs = new PrefsValues(context);
     }
     
     public void applySettings(boolean mute, boolean vibrate) {
