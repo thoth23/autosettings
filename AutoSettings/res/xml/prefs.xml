@@ -5,32 +5,12 @@
 		android:key="enable_serv"
 		android:summaryOff="Timeriffic is disabled." android:summaryOn="Timeriffic is enabled." android:title="Enable Timeriffic"/><CheckBoxPreference android:key="dismiss_intro" android:title="Don't display introduction" android:summaryOff="Introduction is visible." android:summaryOn="Introduction is skipped." android:defaultValue="false"/>
 
-	<com.alfray.timeriffic.prefs.TimePreference
-        style="?attr/timePreferenceStyle"
-	    android:title="Start Hour"
-		android:key="start_hour" 
-		android:defaultValue="21" />
+	
 
-	<com.alfray.timeriffic.prefs.TimePreference 
-	    android:defaultValue="9"
-		android:title="End Hour" 
-		android:key="end_hour" />
+	
 
-	<PreferenceCategory android:title="Start Action"
-		android:key="start_category">
-		<CheckBoxPreference android:key="start_mute"
-			android:defaultValue="true" android:title="Mute"></CheckBoxPreference>
-		<CheckBoxPreference android:key="start_vibrate"
-			android:defaultValue="true" android:title="Vibrate on Mute"
-			android:dependency="start_vibrate"></CheckBoxPreference>
-	</PreferenceCategory>
+	
 
-	<PreferenceCategory android:key="end_category" android:title="End Action">
-		<CheckBoxPreference android:title="Mute"
-			android:key="end_mute" android:defaultValue="false"></CheckBoxPreference>
-		<CheckBoxPreference android:key="end_vibrate"
-			android:defaultValue="false" android:title="Vibrate on Mute"
-			android:dependency="end_mute"></CheckBoxPreference>
-	</PreferenceCategory>
+	
 </PreferenceScreen>
  
