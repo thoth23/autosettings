@@ -20,20 +20,15 @@ public class SettingsHelper {
         mContext = context;
         mPrefs = new PrefsValues(context);
     }
-
-    public void applyStartSettings() {
-        applySettings(mPrefs.startMute(), mPrefs.startVibrate());
-    }
-
-    public void applyStopSettings() {
-        applySettings(mPrefs.stopMute(), mPrefs.stopVibrate());
-    }
-        
-    private void applySettings(boolean mute, boolean vibrate) {
+    
+    public void applySettings(boolean mute, boolean vibrate) {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
         if (mute) {
             if (vibrate) {
+                if (manager.getVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER) == AudioManager.VIBRATE_SETTING_OFF) {
+                    manager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER, AudioManager.VIBRATE_SETTING_ON);
+                }
                 manager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
             } else {
                 manager.setRingerMode(AudioManager.RINGER_MODE_SILENT);

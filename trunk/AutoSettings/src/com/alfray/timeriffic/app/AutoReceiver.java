@@ -18,10 +18,14 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 
 public class AutoReceiver extends BroadcastReceiver {
 
+    private final static boolean DEBUG = true;
+    private final static String TAG = "AutoReceiver";
+    
     public final static String ACTION_AUTO_CHECK_STATE = "com.alfray.intent.action.AUTO_CHECK_STATE";
     
     @Override
@@ -30,13 +34,15 @@ public class AutoReceiver extends BroadcastReceiver {
         boolean isBoot = Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction());
         
         PrefsValues prefs = new PrefsValues(context);
-
-        prefs.appendToLog("Checking "
-                + (prefs.isServiceEnabled() ? "enabled" : "disabled")
-                + (isBoot ? " (boot)" : ""));
         
-        if (!prefs.isServiceEnabled()) return;
+        if (!prefs.isServiceEnabled()) {
+            Log.d(TAG, "Checking disabled");
+            return;
+        }
 
+        Log.d(TAG, "Checking enabled");
+
+        /*
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(System.currentTimeMillis());
         int hourMin = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
@@ -61,6 +67,7 @@ public class AutoReceiver extends BroadcastReceiver {
             helper.applyStopSettings();
             scheduleAlarm(context, prefs, start); // schedule alarm at start time
         }
+        */
     }
 
     private void scheduleAlarm(Context context, PrefsValues prefs, int hourMin) {
@@ -85,12 +92,14 @@ public class AutoReceiver extends BroadcastReceiver {
         }
 
         long timeMs = c.getTimeInMillis();
-        
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        sdf.setCalendar(c);
-        String s2 = sdf.format(c.getTime());
-        prefs.appendToLog(String.format("Alarm for %s", s2));
 
         manager.set(AlarmManager.RTC_WAKEUP, timeMs, op);
+
+        if (DEBUG) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            sdf.setCalendar(c);
+            String s2 = sdf.format(c.getTime());
+            Log.d(TAG, String.format("Next Alarm: %s", s2));
+        }
     }
 }
