@@ -1,6 +1,5 @@
 TODO
 
-20090210 Fix leaked cursor when resetting profiles
 20090210 Fix insert timed action order
 
 20090124 Check now + UI feedback
@@ -12,6 +11,8 @@ TODO
 
 DONE
 
+20090212 Fix leaked cursor when resetting profiles
+20090212 Add accept button in profile rename dialog
 20090210 Fix persistent dialog usage in activity
 20090209 Options menu: append new profile
 20090209 Options menu: reset profiles
