@@ -14,6 +14,7 @@ import android.app.Application;
 
 public class TimerifficApp extends Application {
     private boolean mIntroDisplayed;
+    private Runnable mDataListener;
 
     @Override
     public void onCreate() {
@@ -26,5 +27,15 @@ public class TimerifficApp extends Application {
     
     public void setIntroDisplayed(boolean introDisplayed) {
         mIntroDisplayed = introDisplayed;
+    }
+    
+    //---------------------
+    
+    public void setDataListener(Runnable listener) {
+        mDataListener = listener;
+    }
+    
+    public void invokeDataListener() {
+        if (mDataListener != null) mDataListener.run();
     }
 }

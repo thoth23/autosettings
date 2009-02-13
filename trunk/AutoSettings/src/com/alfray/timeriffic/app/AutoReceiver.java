@@ -53,6 +53,8 @@ public class AutoReceiver extends BroadcastReceiver {
             profilesDb.onDestroy();
         }
         
+        notifyDataChanged(context);
+        
         /*
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(System.currentTimeMillis());
@@ -79,6 +81,14 @@ public class AutoReceiver extends BroadcastReceiver {
             scheduleAlarm(context, prefs, start); // schedule alarm at start time
         }
         */
+    }
+
+    /** Notify UI to update */
+    private void notifyDataChanged(Context context) {
+        Context c = context.getApplicationContext();
+        if (c instanceof TimerifficApp) {
+            ((TimerifficApp) c).invokeDataListener();
+        }
     }
 
     private void scheduleAlarm(Context context, PrefsValues prefs, int hourMin) {
