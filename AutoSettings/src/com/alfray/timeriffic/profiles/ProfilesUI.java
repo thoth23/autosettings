@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -108,19 +109,24 @@ public class ProfilesUI extends Activity {
 
     private void showIntro(boolean force) {
         if (!force) {
-            Application app = getApplication();
-            if (app instanceof TimerifficApp) {
-                TimerifficApp tapp = (TimerifficApp) app;
-                if (!tapp.isIntroDisplayed() && !mPrefsValues.isIntroDismissed()) {
-                    tapp.setIntroDisplayed(true);
-                    force = true;
-                }
+            TimerifficApp tapp = getApp();
+            if (tapp != null &&
+                    !tapp.isIntroDisplayed() &&
+                    !mPrefsValues.isIntroDismissed()) {
+                tapp.setIntroDisplayed(true);
+                force = true;
             }
         }
         
         if (force) {
             startActivity(new Intent(this, IntroDialogActivity.class));
         }
+    }
+    
+    private TimerifficApp getApp() {
+        Application app = getApplication();
+        if (app instanceof TimerifficApp) return (TimerifficApp) app;
+        return null;
     }
 
     /**
@@ -199,6 +205,7 @@ public class ProfilesUI extends Activity {
     protected void onResume() {
         super.onResume();
         initProfileList();
+        setDataListener();
     }
     
     /**
@@ -211,7 +218,28 @@ public class ProfilesUI extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        removeDataListener();
     }
+
+    private void setDataListener() {
+        TimerifficApp app = getApp();
+        if (app != null) {
+            app.setDataListener(new Runnable() {
+                @Override
+                public void run() {
+                    onDataChanged();
+                }
+            });
+        }
+    }
+
+    private void removeDataListener() {
+        TimerifficApp app = getApp();
+        if (app != null) {
+            app.setDataListener(null);
+        }
+    }
+
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -329,6 +357,14 @@ public class ProfilesUI extends Activity {
                 mPrefsValues.setServiceEnabled(mGlobalToggle.isChecked());
             }
         });
+        
+        Button b = (Button) findViewById(R.id.check_now);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestSettingsCheck();
+            }
+        });
     }
     
     private void updateGlobalToggleFromPrefs() {
@@ -373,6 +409,7 @@ public class ProfilesUI extends Activity {
     }
 
     private void requestSettingsCheck() {
+        Log.d(TAG, "Request settings check");
         sendBroadcast(new Intent(AutoReceiver.ACTION_AUTO_CHECK_STATE));
     }
     
