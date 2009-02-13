@@ -593,6 +593,38 @@ public class ProfilesDB {
             endTransaction();
         }
     }
+
+    // --------------
+
+    public void removeAllActionExecFlags() {
+        Cursor c = null;
+        beginTransaction();
+        try {
+            // empty tables
+            onResetTables();
+        
+            // generates WHERE type=2 (aka action) AND enable=1
+            String where = String.format("%s=%d AND %s=%d",
+                    Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
+                    Columns.IS_ENABLED, 1);
+
+            ContentValues values = new ContentValues(1);
+            values.put(Columns.IS_ENABLED, false);
+
+            mDb.update(
+                    PROFILES_TABLE, // table
+                    values,         // values
+                    where,          // whereClause
+                    null            // whereArgs
+                    );
+
+            setTransactionSuccessful();
+        } finally {
+            if (c != null) c.close();
+            endTransaction();
+        }
+        
+    }
     
 
 }

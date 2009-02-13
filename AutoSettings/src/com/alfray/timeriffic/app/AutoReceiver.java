@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import com.alfray.timeriffic.prefs.PrefsValues;
+import com.alfray.timeriffic.profiles.ProfilesDB;
 import com.alfray.timeriffic.utils.SettingsHelper;
 
 import android.app.AlarmManager;
@@ -42,6 +43,16 @@ public class AutoReceiver extends BroadcastReceiver {
 
         Log.d(TAG, "Checking enabled");
 
+        ProfilesDB profilesDb = new ProfilesDB();
+        try {
+            profilesDb.onCreate(context);
+            
+            profilesDb.removeAllActionExecFlags();
+            
+        } finally {
+            profilesDb.onDestroy();
+        }
+        
         /*
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(System.currentTimeMillis());
