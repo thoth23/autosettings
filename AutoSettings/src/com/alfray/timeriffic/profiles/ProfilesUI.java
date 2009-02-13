@@ -160,6 +160,7 @@ public class ProfilesUI extends Activity {
         }
 
         if (mAdapter == null) {
+            if (mCursor != null) mCursor.close();
             mCursor = mProfilesDb.query(
                     -1, //id
                     new String[] { 
@@ -237,6 +238,7 @@ public class ProfilesUI extends Activity {
             mAdapter = null;
         }
         if (mCursor != null) {
+            mCursor.close();
             mCursor = null;
         }
         if (mProfilesDb != null) {
