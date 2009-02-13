@@ -13,6 +13,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
@@ -86,12 +89,17 @@ public class EditProfileUI extends Activity {
             c.close();
             profilesDb.onDestroy();
         }
+        
+        Button accept = (Button) findViewById(R.id.ok);
+        accept.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                accept();
+            }
+        });
     }
     
-    @Override
-    protected void onPause() {
-        super.onPause();
-
+    private void accept() {
         ProfilesDB profilesDb = new ProfilesDB();
         try {
             profilesDb.onCreate(this);
@@ -102,5 +110,12 @@ public class EditProfileUI extends Activity {
         } finally {
             profilesDb.onDestroy();
         }
+        finish();
+    }
+    
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // do nothing, discard changes
     }
 }

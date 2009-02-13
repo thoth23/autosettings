@@ -13,6 +13,7 @@
 	android:layout_height="wrap_content" 
 	android:text="Profile Name:"
 	/>
+
 <EditText 
     android:text=""
     android:id="@+id/name"
@@ -26,5 +27,27 @@
     android:id="@+id/enabled"
 	android:layout_height="wrap_content"
 	android:paddingTop="5sp"
-	android:layout_gravity="left|center_horizontal" android:layout_width="fill_parent"/>
+	android:layout_width="fill_parent"
+	android:layout_gravity="left"
+	/>
+
+<ImageView
+    android:id="@+id/divider" 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:src="@drawable/divider_horizontal_dark"
+    android:layout_gravity="center_horizontal"
+    />
+
+<Button
+    android:id="@+id/ok" 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:layout_gravity="center_horizontal"
+    android:paddingTop="5dip" 
+    android:paddingLeft="20dip" 
+    android:paddingRight="20dip" 
+    android:text="Accept"
+    />
+
 </LinearLayout>
