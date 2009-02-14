@@ -13,8 +13,30 @@ import java.util.GregorianCalendar;
 
 public class TimedActionUtils {
 
-    static public String computeDescription(int hourMin, int days, String actions) {
+    static private final int[] CALENDAR_DAYS = { 
+            Calendar.MONDAY,
+            Calendar.TUESDAY,
+            Calendar.WEDNESDAY,
+            Calendar.THURSDAY,
+            Calendar.FRIDAY,
+            Calendar.SATURDAY,
+            Calendar.SUNDAY
+    };
 
+    static private final String[] DAYS_NAMES = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+
+    static public int calendarDayToActionDay(Calendar c) {
+        int day = c.get(Calendar.DAY_OF_WEEK);
+        for (int i = Columns.MONDAY_BIT_INDEX; i <= Columns.SUNDAY_BIT_INDEX; i++) {
+            if (day == CALENDAR_DAYS[i]) {
+                day = 1<<i;
+                break;
+            }
+        }
+        return day;
+    }
+
+    static public String computeDescription(int hourMin, int days, String actions) {
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(System.currentTimeMillis());
         c.set(Calendar.HOUR_OF_DAY, hourMin / 60);
@@ -27,7 +49,6 @@ public class TimedActionUtils {
             desc_time = String.format("%1$tl %1$tp", c);
         }
             
-        String[] days_names = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
         int start = -2;
         int count = 0;
         StringBuilder desc_days = new StringBuilder();
@@ -42,7 +63,7 @@ public class TimedActionUtils {
                 } else {
                     // start new range
                     if (desc_days.length() > 0) desc_days.append(", ");
-                    desc_days.append(days_names[i]);
+                    desc_days.append(DAYS_NAMES[i]);
                     start = i;
                     count = 0;
                 }
@@ -50,7 +71,7 @@ public class TimedActionUtils {
                 if (start >= 0 && count > 0) {
                     // close range
                     desc_days.append(" - ");
-                    desc_days.append(days_names[start]);
+                    desc_days.append(DAYS_NAMES[start]);
                 }
                 start = -2;
                 count = 0;
@@ -59,7 +80,7 @@ public class TimedActionUtils {
         if (start >= 0 && count > 0) {
             // close range
             desc_days.append(" - ");
-            desc_days.append(days_names[start]);
+            desc_days.append(DAYS_NAMES[start]);
         }
         if (desc_days.length() == 0) desc_days.append("Never");
 

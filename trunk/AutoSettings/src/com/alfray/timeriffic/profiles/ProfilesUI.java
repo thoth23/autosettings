@@ -701,22 +701,7 @@ public class ProfilesUI extends Activity {
             c.setTimeInMillis(System.currentTimeMillis());
             int hourMin = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
             
-            int day = c.get(Calendar.DAY_OF_WEEK);
-            int[] calendar_days = { 
-                    Calendar.MONDAY,
-                    Calendar.TUESDAY,
-                    Calendar.WEDNESDAY,
-                    Calendar.THURSDAY,
-                    Calendar.FRIDAY,
-                    Calendar.SATURDAY,
-                    Calendar.SUNDAY
-            };
-            for (int i = Columns.MONDAY_BIT_INDEX; i <= Columns.SUNDAY_BIT_INDEX; i++) {
-                if (day == calendar_days[i]) {
-                    day = 1<<i;
-                    break;
-                }
-            }
+            int day = TimedActionUtils.calendarDayToActionDay(c);
 
             action_index = mProfilesDb.insertTimedAction(
                     prof_index,

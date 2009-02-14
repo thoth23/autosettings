@@ -315,8 +315,14 @@ public class ProfilesDB {
         if (name != null) cv.put(Columns.DESCRIPTION, name);
         cv.put(Columns.IS_ENABLED, isEnabled);
         
-        int count = mDb.update(PROFILES_TABLE, cv, where, null);
-        return count;
+        beginTransaction();
+        try {
+            int count = mDb.update(PROFILES_TABLE, cv, where, null);
+            setTransactionSuccessful();
+            return count;
+        } finally {
+            endTransaction();
+        }
     }
 
     /**
@@ -332,8 +338,14 @@ public class ProfilesDB {
         ContentValues cv = new ContentValues();
         cv.put(Columns.IS_ENABLED, isEnabled);
         
-        int count = mDb.update(PROFILES_TABLE, cv, where, null);
-        return count;
+        beginTransaction();
+        try {
+            int count = mDb.update(PROFILES_TABLE, cv, where, null);
+            setTransactionSuccessful();
+            return count;
+        } finally {
+            endTransaction();
+        }
     }
 
     /**
@@ -353,8 +365,14 @@ public class ProfilesDB {
         cv.put(Columns.ACTIONS, actions);
         if (description != null) cv.put(Columns.DESCRIPTION, description);
         
-        int count = mDb.update(PROFILES_TABLE, cv, where, null);
-        return count;
+        beginTransaction();
+        try {
+            int count = mDb.update(PROFILES_TABLE, cv, where, null);
+            setTransactionSuccessful();
+            return count;
+        } finally {
+            endTransaction();
+        }
     }
 
     // ----------------------------------
@@ -597,20 +615,16 @@ public class ProfilesDB {
     // --------------
 
     public void removeAllActionExecFlags() {
-        Cursor c = null;
+        // generates WHERE type=2 (aka action) AND enable=1
+        String where = String.format("%s=%d AND %s=%d",
+                Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
+                Columns.IS_ENABLED, 1);
+
+        ContentValues values = new ContentValues(1);
+        values.put(Columns.IS_ENABLED, false);
+
         beginTransaction();
         try {
-            // empty tables
-            onResetTables();
-        
-            // generates WHERE type=2 (aka action) AND enable=1
-            String where = String.format("%s=%d AND %s=%d",
-                    Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
-                    Columns.IS_ENABLED, 1);
-
-            ContentValues values = new ContentValues(1);
-            values.put(Columns.IS_ENABLED, false);
-
             mDb.update(
                     PROFILES_TABLE, // table
                     values,         // values
@@ -620,10 +634,104 @@ public class ProfilesDB {
 
             setTransactionSuccessful();
         } finally {
-            if (c != null) c.close();
             endTransaction();
         }
+    }
+
+    /**
+     * Returns the list of all enabled profiles.
+     * This is a list of profiles indexes.
+     * - Can return an empty list, but not null.
+     */
+    public long[] getEnabledProfiles() {
+
+        // generates WHERE type=1 (aka profile) AND enable=1
+        String where = String.format("%s=%d AND %s=%d",
+                Columns.TYPE, Columns.TYPE_IS_PROFILE,
+                Columns.IS_ENABLED, 1);
+
+        Cursor c = null;
+        try {
+            c = mDb.query(
+                    PROFILES_TABLE,                         // table
+                    new String[] { Columns.PROFILE_ID },    // columns
+                    where,                                  // selection
+                    null,                                   // selectionArgs
+                    null,                                   // groupBy
+                    null,                                   // having
+                    null                                    // orderBy
+                    );
+            
+            int profIdColIndex = c.getColumnIndexOrThrow(Columns.PROFILE_ID);
+            
+            long[] indexes = new long[c.getCount()];
+            
+            if (c.moveToFirst()) {
+                int i = 0;
+                do {
+                    indexes[i++] = c.getLong(profIdColIndex) >> Columns.PROFILE_SHIFT;
+                } while (c.moveToNext());
+            }
+            
+            return indexes;
+        } finally {
+            if (c != null) c.close();
+        }
+    }
+
+    /**
+     * Returns the list of timed actions that should be activated "now",
+     * as defined by the given day and hour/minute and limited to the
+     * given list of profiles.
+     * <p/>
+     * Returns a list of action prof_id (ids, not indexes).
+     * prof_indexes is a list of profile indexes (not ids) that are currently
+     * enabled.
+     * <p/>
+     * Synopsis:
+     * - If there are no profiles activated, abort. That is we support prof_ids
+     *   being an empty list.
+     * - Selects actions which action_day & given_day != 0 (bitfield match)
+     * - Selects all actions for that day, independently of the hourMin.
+     *   The hourMin check is done after on the result.
+     * - Can return an empty list, but not null.
+     */
+    public long[] getActivableActions(int hourMin, int day, long[] prof_indexes) {
+        long[] result = {};
+        if (prof_indexes.length < 1) return result;
+
+        StringBuilder profList = new StringBuilder();
+        for (long prof_index : prof_indexes) {
+            if (profList.length() > 0) profList.append(",");
+            profList.append(Long.toString(prof_index));
+        }
         
+        // generates WHERE type=1 (aka profile) AND enable=1 AND days & MASK != 0 AND prof_id >> SHIFT IN (profList)
+        String where = String.format("%s=%d AND %s=%d AND %s>>%d IN (%s)",
+                Columns.TYPE, Columns.TYPE_IS_PROFILE,
+                Columns.IS_ENABLED, 1,
+                Columns.DAYS, day,
+                Columns.PROFILE_ID, Columns.PROFILE_SHIFT, profList);
+
+        Cursor c = null;
+        try {
+            c = mDb.query(
+                    PROFILES_TABLE,                         // table
+                    new String[] { Columns.PROFILE_ID, Columns.HOUR_MIN },    // columns
+                    where,                                  // selection
+                    null,                                   // selectionArgs
+                    null,                                   // groupBy
+                    null,                                   // having
+                    null                                    // orderBy
+                    );
+
+            int profIdColIndex = c.getColumnIndexOrThrow(Columns.PROFILE_ID);
+            int hourMinColIndex = c.getColumnIndexOrThrow(Columns.PROFILE_ID);
+            
+            return ids;
+        } finally {
+            if (c != null) c.close();
+        }
     }
     
 
