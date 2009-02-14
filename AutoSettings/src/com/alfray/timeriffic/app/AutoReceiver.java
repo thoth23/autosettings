@@ -12,6 +12,7 @@ import java.util.GregorianCalendar;
 
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.ProfilesDB;
+import com.alfray.timeriffic.profiles.TimedActionUtils;
 import com.alfray.timeriffic.utils.SettingsHelper;
 
 import android.app.AlarmManager;
@@ -32,10 +33,10 @@ public class AutoReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         
-        boolean isBoot = Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction());
-        
+        // boolean isBoot = Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction());
+
         PrefsValues prefs = new PrefsValues(context);
-        
+
         if (!prefs.isServiceEnabled()) {
             Log.d(TAG, "Checking disabled");
             return;
@@ -48,6 +49,15 @@ public class AutoReceiver extends BroadcastReceiver {
             profilesDb.onCreate(context);
             
             profilesDb.removeAllActionExecFlags();
+            
+            long[] prof_indexes = profilesDb.getEnabledProfiles();
+
+            Calendar c = new GregorianCalendar();
+            c.setTimeInMillis(System.currentTimeMillis());
+            int hourMin = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
+            int day = TimedActionUtils.calendarDayToActionDay(c);
+            
+            profilesDb.getActivableActions(hourMin, day, prof_indexes);
             
         } finally {
             profilesDb.onDestroy();

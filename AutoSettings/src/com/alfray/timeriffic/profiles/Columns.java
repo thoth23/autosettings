@@ -128,6 +128,12 @@ public class Columns implements BaseColumns {
     public static final String ACTION_RING_VOLUME = "R";
 
     /**
+     * The precomputed System.currentTimeMillis timestamp of the last event for this action.
+     * Type: INTEGER (long)
+     */
+    public static final String LAST_MS = "last_ms";
+
+    /**
      * The precomputed System.currentTimeMillis timestamp of the next event for this action.
      * Type: INTEGER (long)
      */
