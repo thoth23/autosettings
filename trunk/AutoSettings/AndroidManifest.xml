@@ -32,4 +32,6 @@
 	<uses-sdk android:minSdkVersion="1"></uses-sdk>
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
 
+
+<uses-permission android:name="android.permission.WRITE_SETTINGS"></uses-permission>
 </manifest> 
