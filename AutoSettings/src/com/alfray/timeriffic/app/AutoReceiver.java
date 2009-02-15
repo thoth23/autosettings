@@ -7,12 +7,14 @@
 package com.alfray.timeriffic.app;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.ProfilesDB;
 import com.alfray.timeriffic.profiles.TimedActionUtils;
+import com.alfray.timeriffic.profiles.ProfilesDB.ActionInfo;
 import com.alfray.timeriffic.utils.SettingsHelper;
 
 import android.app.AlarmManager;
@@ -57,7 +59,11 @@ public class AutoReceiver extends BroadcastReceiver {
             int hourMin = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
             int day = TimedActionUtils.calendarDayToActionDay(c);
             
-            profilesDb.getActivableActions(hourMin, day, prof_indexes);
+            ArrayList<ActionInfo> actions = profilesDb.getActivableActions(hourMin, day, prof_indexes);
+            if (actions != null && actions.size() > 0) {
+                performActions(actions);
+                profilesDb.markActionsEnabled(actions);
+            }
             
         } finally {
             profilesDb.onDestroy();
@@ -91,6 +97,11 @@ public class AutoReceiver extends BroadcastReceiver {
             scheduleAlarm(context, prefs, start); // schedule alarm at start time
         }
         */
+    }
+
+    private void performActions(ArrayList<ActionInfo> actions) {
+        // TODO Auto-generated method stub
+        
     }
 
     /** Notify UI to update */
