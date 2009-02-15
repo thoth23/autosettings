@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import com.alfray.timeriffic.utils.SettingsHelper;
 import com.alfray.timeriffic.utils.SettingsHelper.RingerMode;
 import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;
 

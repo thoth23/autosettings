@@ -11,6 +11,7 @@ import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
+import android.util.Log;
 
 /**
  * Helper class that changes settings.
@@ -27,6 +28,8 @@ import android.provider.Settings.SettingNotFoundException;
  */
 public class SettingsHelper {
 
+    private static final String TAG = "SettingsHelper";
+    
     private final Context mContext;
 
     public enum RingerMode {
@@ -60,9 +63,11 @@ public class SettingsHelper {
         mContext = context;
     }
     
-    public void changeRinger(RingerMode ringer) {
+    public void changeRingerMode(RingerMode ringer) {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
+        Log.d(TAG, "changeRingerMode: " + ringer.toString());
+        
         switch (ringer) {
             case NORMAL:
                 manager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
@@ -78,6 +83,8 @@ public class SettingsHelper {
     
     public void changeRingerVibrate(VibrateRingerMode vib) {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+
+        Log.d(TAG, "changeRingerVibrate: " + vib.toString());
 
         switch(vib) {
             case WHEN_POSSIBLE:
@@ -95,6 +102,8 @@ public class SettingsHelper {
     public void changeRingerVolume(int percent) {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
+        Log.d(TAG, "changeRingerVolume: " + Integer.toString(percent));
+
         int max = manager.getStreamMaxVolume(AudioManager.STREAM_RING);
         int vol = (max * percent) / 100;
         manager.setStreamVolume(AudioManager.STREAM_RING, vol, 0 /*flags*/);
@@ -102,7 +111,9 @@ public class SettingsHelper {
 
     public void changeWifi(boolean enabled) {
         WifiManager manager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
-        
+
+        Log.d(TAG, "changeWifi: " + (enabled ? "on" : "off"));
+
         manager.setWifiEnabled(enabled);
     }
     
@@ -118,6 +129,8 @@ public class SettingsHelper {
         // - All constants are in android.os.Power which is hidden from the SDK
         // - To get value: Settings.System.getInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
         // - To set value: Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, v);
+
+        Log.d(TAG, "changeBrightness: " + Integer.toString(percent));
 
         int v = MIN_BRIGHTNESS + percent * (MAX_BRIGHTNESS - MIN_BRIGHTNESS) / 100;
         Settings.System.putInt(mContext.getContentResolver(),

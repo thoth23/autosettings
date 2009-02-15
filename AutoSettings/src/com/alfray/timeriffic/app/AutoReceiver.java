@@ -19,9 +19,13 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.alfray.timeriffic.prefs.PrefsValues;
+import com.alfray.timeriffic.profiles.Columns;
 import com.alfray.timeriffic.profiles.ProfilesDB;
 import com.alfray.timeriffic.profiles.TimedActionUtils;
 import com.alfray.timeriffic.profiles.ProfilesDB.ActionInfo;
+import com.alfray.timeriffic.utils.SettingsHelper;
+import com.alfray.timeriffic.utils.SettingsHelper.RingerMode;
+import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;
 
 
 public class AutoReceiver extends BroadcastReceiver {
@@ -60,7 +64,8 @@ public class AutoReceiver extends BroadcastReceiver {
             
             ArrayList<ActionInfo> actions = profilesDb.getActivableActions(hourMin, day, prof_indexes);
             if (actions != null && actions.size() > 0) {
-                performActions(actions);
+                SettingsHelper settings = new SettingsHelper(context);
+                performActions(settings, actions);
                 profilesDb.markActionsEnabled(actions);
             }
             
@@ -73,9 +78,62 @@ public class AutoReceiver extends BroadcastReceiver {
         notifyDataChanged(context);
     }
 
-    private void performActions(ArrayList<ActionInfo> actions) {
-        // TODO Auto-generated method stub
+    private void performActions(SettingsHelper settings, ArrayList<ActionInfo> actions) {
+        for (ActionInfo info : actions) {
+            performAction(settings, info.mActions);
+        }
+    }
+
+    private void performAction(SettingsHelper settings, String actions) {
+        if (actions == null) return;
         
+        for (String action : actions.split(",")) {
+            int value = -1;
+            if (action.length() > 1) {
+                char code = action.charAt(0);
+                char v = action.charAt(1);
+                
+                switch(code) {
+                case Columns.ACTION_RINGER:
+                    for (RingerMode mode : RingerMode.values()) {
+                        String name = mode.toString();
+                        if (name.charAt(0) == v) {
+                            settings.changeRingerMode(mode);
+                            break;
+                        }
+                    }
+                    break;
+                case Columns.ACTION_VIBRATE:
+                    for (VibrateRingerMode mode : VibrateRingerMode.values()) {
+                        String name = mode.toString();
+                        if (name.charAt(0) == v) {
+                            settings.changeRingerVibrate(mode);
+                            break;
+                        }
+                    }
+                    break;
+                default:
+                    try {
+                        value = Integer.parseInt(action.substring(1));
+
+                        switch(code) {
+                        case Columns.ACTION_WIFI:
+                            settings.changeWifi(value > 0);
+                            break;
+                        case Columns.ACTION_BRIGHTNESS:
+                            settings.changeBrightness(value);
+                            break;
+                        case Columns.ACTION_RING_VOLUME:
+                            settings.changeRingerVolume(value);
+                            break;
+                        }
+                        
+                    } catch (NumberFormatException e) {
+                        // pass
+                    }
+                }
+            }
+        }
     }
 
     /** Notify UI to update */
