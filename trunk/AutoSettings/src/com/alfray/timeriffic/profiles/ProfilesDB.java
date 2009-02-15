@@ -7,6 +7,7 @@
 package com.alfray.timeriffic.profiles;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -588,6 +589,8 @@ public class ProfilesDB {
      */
     public void resetProfiles(int labelIndex) {
 
+        Log.d(TAG, "Reset profiles: " + Integer.toString(labelIndex));
+        
         beginTransaction();
         try {
             // empty tables
@@ -684,7 +687,7 @@ public class ProfilesDB {
      * as defined by the given day and hour/minute and limited to the
      * given list of profiles.
      * <p/>
-     * Returns a list of action prof_id (ids, not indexes).
+     * Returns a list of action prof_id (ids, not indexes) or null.
      * prof_indexes is a list of profile indexes (not ids) that are currently
      * enabled.
      * <p/>
@@ -696,9 +699,8 @@ public class ProfilesDB {
      *   The hourMin check is done after on the result.
      * - Can return an empty list, but not null.
      */
-    public long[] getActivableActions(int hourMin, int day, long[] prof_indexes) {
-        long[] result = {};
-        if (prof_indexes.length < 1) return result;
+    public ArrayList<ActionInfo> getActivableActions(int hourMin, int day, long[] prof_indexes) {
+        if (prof_indexes.length < 1) return null;
 
         StringBuilder profList = new StringBuilder();
         for (long prof_index : prof_indexes) {
@@ -706,33 +708,113 @@ public class ProfilesDB {
             profList.append(Long.toString(prof_index));
         }
         
-        // generates WHERE type=1 (aka profile) AND enable=1 AND days & MASK != 0 AND prof_id >> SHIFT IN (profList)
-        String where = String.format("%s=%d AND %s=%d AND %s>>%d IN (%s)",
-                Columns.TYPE, Columns.TYPE_IS_PROFILE,
-                Columns.IS_ENABLED, 1,
+        // generates WHERE type=2 (aka action) 
+        //           AND hourMin <= targetHourMin
+        //           AND days & MASK != 0
+        //           AND prof_id >> SHIFT IN (profList)
+        String where = String.format("%s=%d AND %s <= %d AND %s & %d != 0 AND %s >> %d IN (%s)",
+                Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
+                Columns.HOUR_MIN, hourMin,
                 Columns.DAYS, day,
                 Columns.PROFILE_ID, Columns.PROFILE_SHIFT, profList);
 
+        // ORDER BY hourMin DESC
+        String orderBy = String.format("%s DESC", Columns.HOUR_MIN);
+
+        Log.d(TAG, "Get actions: WHERE " + where + " ORDER BY " + orderBy);
+
+        
         Cursor c = null;
         try {
             c = mDb.query(
                     PROFILES_TABLE,                         // table
-                    new String[] { Columns.PROFILE_ID, Columns.HOUR_MIN },    // columns
+                    new String[] { Columns._ID, Columns.HOUR_MIN, Columns.ACTIONS },    // columns
                     where,                                  // selection
                     null,                                   // selectionArgs
                     null,                                   // groupBy
                     null,                                   // having
-                    null                                    // orderBy
+                    orderBy
                     );
 
-            int profIdColIndex = c.getColumnIndexOrThrow(Columns.PROFILE_ID);
-            int hourMinColIndex = c.getColumnIndexOrThrow(Columns.PROFILE_ID);
-            
-            return ids;
+            int rowIdColIndex = c.getColumnIndexOrThrow(Columns._ID);
+            int hourMinColIndex = c.getColumnIndexOrThrow(Columns.HOUR_MIN);
+            int actionsColInfo = c.getColumnIndexOrThrow(Columns.ACTIONS);
+
+            int lastHourMin = 0;
+            ArrayList<ActionInfo> infos = new ArrayList<ActionInfo>();
+            if (c.moveToFirst()) {
+                do {
+                    int currHourMin = c.getInt(hourMinColIndex);
+                    if (lastHourMin == 0) {
+                        lastHourMin = currHourMin;
+                    } else if (currHourMin != lastHourMin) {
+                        break;
+                    }
+
+                    infos.add(new ActionInfo(c.getLong(rowIdColIndex),
+                            currHourMin,
+                            c.getString(actionsColInfo)));
+                    lastHourMin = currHourMin;
+                } while (c.moveToNext());
+            }
+
+            return infos;
         } finally {
             if (c != null) c.close();
         }
     }
-    
+
+    /**
+     * Struct that describes a Timed Action returned by
+     * {@link ProfilesDB#getActivableActions(int, int, long[])}
+     */
+    public static class ActionInfo {
+
+        public final long mRowId;
+        public final int mHourMin;
+        public final String mActions;
+
+        public ActionInfo(long rowId, int hourMin, String actions) {
+            mRowId = rowId;
+            mHourMin = hourMin;
+            mActions = actions;
+        }
+    }
+
+    /**
+     * Mark all actions as enabled.
+     */
+    public void markActionsEnabled(ArrayList<ActionInfo> actions) {
+
+        StringBuilder rowList = new StringBuilder();
+        for (ActionInfo info : actions) {
+            if (rowList.length() > 0) rowList.append(",");
+            rowList.append(Long.toString(info.mRowId));
+        }
+
+        // generates WHERE type=2 (aka action) AND _id in (profList)
+        String where = String.format("%s=%d AND %s IN (%s)",
+                Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
+                Columns._ID, rowList);
+
+        Log.d(TAG, "Mark actions: WHERE " + where);
+        
+        ContentValues values = new ContentValues(1);
+        values.put(Columns.IS_ENABLED, true);
+
+        beginTransaction();
+        try {
+            mDb.update(
+                    PROFILES_TABLE, // table
+                    values,         // values
+                    where,          // whereClause
+                    null            // whereArgs
+                    );
+
+            setTransactionSuccessful();
+        } finally {
+            endTransaction();
+        }
+    }
 
 }

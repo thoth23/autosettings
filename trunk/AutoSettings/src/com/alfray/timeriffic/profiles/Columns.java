@@ -30,7 +30,7 @@ public class Columns implements BaseColumns {
     public static final int TYPE_IS_TIMED_ACTION = 2;
 
     // --- fields common to both a profile definition and a timed action
-    
+
     /** Description:
      * - Profile: user title.
      * - Time action: pre-computed summary description.
