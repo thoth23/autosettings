@@ -11,6 +11,9 @@ TODO
 
 DONE
 
+20090214 New actions
+20090214 Receiver: compute current
+20090214 Check now + UI feedback
 20090212 Fix leaked cursor when resetting profiles
 20090212 Add accept button in profile rename dialog
 20090210 Fix persistent dialog usage in activity
