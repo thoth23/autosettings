@@ -11,18 +11,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import com.alfray.timeriffic.prefs.PrefsValues;
-import com.alfray.timeriffic.profiles.ProfilesDB;
-import com.alfray.timeriffic.profiles.TimedActionUtils;
-import com.alfray.timeriffic.profiles.ProfilesDB.ActionInfo;
-import com.alfray.timeriffic.utils.SettingsHelper;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
+import com.alfray.timeriffic.prefs.PrefsValues;
+import com.alfray.timeriffic.profiles.ProfilesDB;
+import com.alfray.timeriffic.profiles.TimedActionUtils;
+import com.alfray.timeriffic.profiles.ProfilesDB.ActionInfo;
 
 
 public class AutoReceiver extends BroadcastReceiver {

@@ -7,8 +7,13 @@
 
 package com.alfray.timeriffic.profiles;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import com.alfray.timeriffic.utils.SettingsHelper;
+import com.alfray.timeriffic.utils.SettingsHelper.RingerMode;
+import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;
 
 
 public class TimedActionUtils {
@@ -85,29 +90,68 @@ public class TimedActionUtils {
         if (desc_days.length() == 0) desc_days.append("Never");
 
         
-        StringBuilder desc_actions = new StringBuilder();
+        ArrayList<String> actions_names = new ArrayList<String>();
 
         if (actions != null) {
             for (String action : actions.split(",")) {
                 int value = -1;
                 if (action.length() > 1) {
-                    try {
-                        value = Integer.parseInt(action.substring(1));
-                    } catch (NumberFormatException e) {
-                        // pass
+                    char code = action.charAt(0);
+                    char v = action.charAt(1);
+                    
+                    switch(code) {
+                    case Columns.ACTION_RINGER:
+                        for (RingerMode mode : RingerMode.values()) {
+                            String name = mode.toString();
+                            if (name.charAt(0) == v) {
+                                actions_names.add("Ringer " + name);
+                                break;
+                            }
+                        }
+                        break;
+                    case Columns.ACTION_VIBRATE:
+                        for (VibrateRingerMode mode : VibrateRingerMode.values()) {
+                            String name = mode.toString();
+                            if (name.charAt(0) == v) {
+                                actions_names.add("Vibrate " + name);
+                                break;
+                            }
+                        }
+                        break;
+                    default:
+                        try {
+                            value = Integer.parseInt(action.substring(1));
+
+                            switch(code) {
+                            case Columns.ACTION_WIFI:
+                                actions_names.add(value > 0 ? "Wifi on" : "Wifi off");
+                                break;
+                            case Columns.ACTION_BRIGHTNESS:
+                                actions_names.add(String.format("Brightness %d%%", value));
+                                break;
+                            case Columns.ACTION_RING_VOLUME:
+                                actions_names.add(String.format("Ringer %d%%", value));
+                                break;
+                            }
+                            
+                        } catch (NumberFormatException e) {
+                            // pass
+                        }
                     }
-                }
-                if (action.startsWith(Columns.ACTION_RINGER) && value >= 0) {
-                    desc_actions.append(value > 0 ? "Ringer on" : "Mute");
-                }
-                if (action.startsWith(Columns.ACTION_VIBRATE) && value >= 0) {
-                    if (desc_actions.length() > 0) desc_actions.append(", ");
-                    desc_actions.append(value > 0 ? "Vibrate" : "No vibrate");
                 }
             }
         }
         
-        if (desc_actions.length() == 0) desc_actions.append("No action");
+        StringBuilder desc_actions = new StringBuilder();
+
+        if (actions_names.size() == 0) {
+            desc_actions.append("No action");
+        } else {
+            for (String name : actions_names) {
+                if (desc_actions.length() > 0) desc_actions.append(", ");
+                desc_actions.append(name);
+            }
+        }
 
         String description = String.format("%s %s, %s", desc_time, desc_days, desc_actions);
         return description;

@@ -147,6 +147,8 @@ public class EditActionUI extends Activity {
                             
                         }
                     }
+                    // TODO
+                    /*
                     if (action.startsWith(Columns.ACTION_RINGER)) {
                         mCheckRinger.setChecked(value >= 0);
                         mToggleRinger.setChecked(value > 0);
@@ -155,6 +157,7 @@ public class EditActionUI extends Activity {
                         mCheckVib.setChecked(value >= 0);
                         mToggleVib.setChecked(value > 0);
                     }
+                    */
                 }
             }
             

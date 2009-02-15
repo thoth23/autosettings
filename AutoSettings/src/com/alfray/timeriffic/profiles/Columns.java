@@ -120,12 +120,17 @@ public class Columns implements BaseColumns {
      */
     public static final String ACTIONS = "actions";
 
-    /** Mute. Boolean: 0=Ringer off (muted), 1=Ringer on (not muted) */
-    public static final String ACTION_RINGER      = "M";
-    /** Vibrate. Boolean: 0=No vib, 1=Vib */
-    public static final String ACTION_VIBRATE     = "V";
-    /** Rig volume. Integer: 0..99 */
-    public static final String ACTION_RING_VOLUME = "R";
+    /** Ringer: N)ormal, S)ilent, V)ibrate */
+    public static final char ACTION_RINGER      = 'R';
+    /** Vibrate Ringer: W)hen Possible, N)ever, O)nly when silent */
+    public static final char ACTION_VIBRATE     = 'V';
+    /** Ringer volume. Integer: 0..100 */
+    public static final char ACTION_RING_VOLUME = 'G';
+    /** Wifi. Boolean: 0..1 */
+    public static final char ACTION_WIFI        = 'W';
+    /** Screen Brightness. Integer: 0..100 */
+    public static final char ACTION_BRIGHTNESS  = 'B';
+    
 
     /**
      * The precomputed System.currentTimeMillis timestamp of the last event for this action.
