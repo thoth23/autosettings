@@ -65,38 +65,13 @@ public class AutoReceiver extends BroadcastReceiver {
                 profilesDb.markActionsEnabled(actions);
             }
             
+            // TODO compute next
+            
         } finally {
             profilesDb.onDestroy();
         }
         
         notifyDataChanged(context);
-        
-        /*
-        Calendar c = new GregorianCalendar();
-        c.setTimeInMillis(System.currentTimeMillis());
-        int hourMin = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
-        
-        int start = prefs.startHourMin();
-        int stop = prefs.stopHourMin();
-        
-        boolean inRange;
-        if (start <= stop) {
-            inRange = hourMin >= start && hourMin < stop;
-        } else {
-            inRange = hourMin < stop || hourMin >= start;
-        }
-        
-        SettingsHelper helper = new SettingsHelper(context);
-        if (inRange) {
-            prefs.appendToLog("Apply START settings");
-            helper.applyStartSettings();
-            scheduleAlarm(context, prefs, stop); // schedule alarm at stop time
-        } else {
-            prefs.appendToLog("Apply STOP settings");
-            helper.applyStopSettings();
-            scheduleAlarm(context, prefs, start); // schedule alarm at start time
-        }
-        */
     }
 
     private void performActions(ArrayList<ActionInfo> actions) {

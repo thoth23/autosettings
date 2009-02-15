@@ -6,11 +6,11 @@
 
 package com.alfray.timeriffic.utils;
 
-import com.alfray.timeriffic.prefs.PrefsValues;
-
 import android.content.Context;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
+import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
 
 /**
  * Helper class that changes settings.
@@ -26,19 +26,34 @@ import android.net.wifi.WifiManager;
  * </ul>
  */
 public class SettingsHelper {
-    
+
     private final Context mContext;
 
     public enum RingerMode {
         NORMAL,
         SILENT,
-        VIBRATE
+        VIBRATE;
+
+        /** Capitalizes the string */
+        @Override
+        public String toString() {
+            String s = super.toString();
+            return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+        }
     }
     
     public enum VibrateRingerMode {
         WHEN_POSSIBLE,
         NEVER,
-        ONLY_WHEN_SILENT
+        ONLY_WHEN_SILENT;
+
+        /** Capitalizes the string */
+        @Override
+        public String toString() {
+            String s = super.toString();
+            return s.substring(0, 1).toUpperCase() + 
+                s.substring(1).toLowerCase().replace('_', ' ');
+        }
     }
     
     public SettingsHelper(Context context) {
@@ -89,5 +104,45 @@ public class SettingsHelper {
         WifiManager manager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         
         manager.setWifiEnabled(enabled);
+    }
+    
+    private static int MIN_BRIGHTNESS = 10;
+    private static int MAX_BRIGHTNESS = 255;
+    
+    public void changeBrightness(int percent) {
+        // Reference:
+        // http://android.git.kernel.org/?p=platform/packages/apps/Settings.git;a=blob;f=src/com/android/settings/BrightnessPreference.java
+        // The source indicates
+        // - Backlight range is 0..255
+        // - Must not set to 0 (user would see nothing) so they use 10 as minimum
+        // - All constants are in android.os.Power which is hidden from the SDK
+        // - To get value: Settings.System.getInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+        // - To set value: Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, v);
+
+        int v = MIN_BRIGHTNESS + percent * (MAX_BRIGHTNESS - MIN_BRIGHTNESS) / 100;
+        Settings.System.putInt(mContext.getContentResolver(),
+                Settings.System.SCREEN_BRIGHTNESS,
+                v);
+    }
+
+    /**
+     * Returns screen brightness in range 0..100%.
+     * <p/>
+     * See comments in {@link #changeBrightness(int)}. The real range is 0..255
+     * but 10..255 is only usable (to avoid a non-readable screen). So map 10..255
+     * to 0..100%.
+     */
+    public int getCurrentBrightness() {
+        try {
+            int v = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.SCREEN_BRIGHTNESS);
+            // transform 10..255 into 0..100
+            v = (v - MIN_BRIGHTNESS) * 100 / (MAX_BRIGHTNESS - MIN_BRIGHTNESS);
+            // clip to 0..100
+            return Math.min(100, Math.max(0, v));
+        } catch (SettingNotFoundException e) {
+            // If not found, return max
+            return MAX_BRIGHTNESS;
+        }
     }
 }
