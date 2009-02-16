@@ -11,6 +11,7 @@ TODO
 
 DONE
 
+20090215 Redesign Edit Action UI for new actions (not complete)
 20090214 New actions
 20090214 Receiver: compute current
 20090214 Check now + UI feedback

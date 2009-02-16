@@ -11,13 +11,17 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TimePicker;
-import android.widget.ToggleButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.utils.SettingsHelper;
 
 public class EditActionUI extends Activity {
 
@@ -29,19 +33,21 @@ public class EditActionUI extends Activity {
 
     private TimePicker mTimePicker;
 
-    private ToggleButton mToggleRinger;
-
-    private ToggleButton mToggleVib;
+    private Button mButtonRingerMode;
+    private Button mButtonRingerVibrate;
+    private Button mButtonRingerVolume;
+    private Button mButtonWifi;
+    private Button mButtonBrightness;
 
     /**
      * Day checkboxes, in the same index order than {@link Columns#MONDAY_BIT_INDEX}
      * to {@link Columns#SUNDAY_BIT_INDEX}.
      */
     private CheckBox[] mCheckDays;
-
     private CheckBox mCheckRinger;
-
     private CheckBox mCheckVib;
+
+    private View mCurrentContextMenuView;
 
     /** Called when the activity is first created. */
     @Override
@@ -87,13 +93,36 @@ public class EditActionUI extends Activity {
                 finish();
                 return;
             }
+            
+            // get column indexes
+            int hourMinColIndex = c.getColumnIndexOrThrow(Columns.HOUR_MIN);
+            int daysColIndex = c.getColumnIndexOrThrow(Columns.DAYS);
+            int actionsColIndex = c.getColumnIndexOrThrow(Columns.ACTIONS);
+
+            String actions_str = c.getString(actionsColIndex);
+            String[] actions = actions_str != null ? actions_str.split(",") : null;
 
             // get UI widgets
             mTimePicker = (TimePicker) findViewById(R.id.timePicker);
-            mToggleRinger = (ToggleButton) findViewById(R.id.ringerToggle);
-            mToggleVib = (ToggleButton) findViewById(R.id.vibToggle);
-            mCheckRinger = (CheckBox) findViewById(R.id.ringerCheck);
-            mCheckVib = (CheckBox) findViewById(R.id.vibCheck);
+            
+            mButtonRingerMode = setupButtonEnum(R.id.ringerModeButton, 
+                            SettingsHelper.RingerMode.class,
+                            actions,
+                            Columns.ACTION_RINGER);
+            mButtonRingerVibrate = setupButtonEnum(R.id.ringerVibButton, 
+                            SettingsHelper.VibrateRingerMode.class,
+                            actions,
+                            Columns.ACTION_VIBRATE);
+            mButtonRingerVolume = setupButtonPercent(R.id.ringerVolButton,
+                            actions,
+                            Columns.ACTION_RING_VOLUME);
+            mButtonBrightness = setupButtonPercent(R.id.brightnessButton,
+                            actions,
+                            Columns.ACTION_BRIGHTNESS);
+            mButtonWifi = setupButtonEnabled(R.id.wifiButton,
+                            actions,
+                            Columns.ACTION_WIFI);
+            
             mCheckDays = new CheckBox[] {
                     (CheckBox) findViewById(R.id.dayMon),
                     (CheckBox) findViewById(R.id.dayTue),
@@ -104,29 +133,6 @@ public class EditActionUI extends Activity {
                     (CheckBox) findViewById(R.id.daySun)
             };
 
-            OnCheckedChangeListener ringerChanged = new OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mToggleRinger.setEnabled(buttonView.isChecked());
-                }
-            };
-            mCheckRinger.setOnCheckedChangeListener(ringerChanged);
-            ringerChanged.onCheckedChanged(mCheckRinger, false);
-            
-            OnCheckedChangeListener vibChanged = new OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mToggleVib.setEnabled(buttonView.isChecked());
-                }
-            };
-            mCheckVib.setOnCheckedChangeListener(vibChanged);
-            vibChanged.onCheckedChanged(mCheckVib, false);
-            
-            // get column indexes
-            int hourMinColIndex = c.getColumnIndexOrThrow(Columns.HOUR_MIN);
-            int daysColIndex = c.getColumnIndexOrThrow(Columns.DAYS);
-            int actionsColIndex = c.getColumnIndexOrThrow(Columns.ACTIONS);
-
             // fill in UI from cursor data
             setTimePickerValue(mTimePicker, c.getInt(hourMinColIndex));
             
@@ -135,42 +141,91 @@ public class EditActionUI extends Activity {
                 mCheckDays[i].setChecked((days & (1<<i)) != 0);
             }
             
-            String actions = c.getString(actionsColIndex);
-            if (actions != null) {
-                for (String action : actions.split(",")) {
-                    int value = -1;
-                    if (action.length() > 1) {
-                        try {
-                            value = Integer.parseInt(action.substring(1));
-                        } catch (NumberFormatException e) {
-                            Log.e(TAG, String.format("Invalid action '%s' in '%s", action, actions));
-                            
-                        }
-                    }
-                    // TODO
-                    /*
-                    if (action.startsWith(Columns.ACTION_RINGER)) {
-                        mCheckRinger.setChecked(value >= 0);
-                        mToggleRinger.setChecked(value > 0);
-                    }
-                    if (action.startsWith(Columns.ACTION_VIBRATE)) {
-                        mCheckVib.setChecked(value >= 0);
-                        mToggleVib.setChecked(value > 0);
-                    }
-                    */
-                }
-            }
-            
         } finally {
             c.close();
             profilesDb.onDestroy();
         }
     }
     
+    private Button setupButtonEnum(int res_id, Class<? extends Enum<?>> classEnum,
+                    String[] actions, char prefix) {
+        Button b = (Button) findViewById(res_id);
+        
+        return b;
+    }
+
+    private Button setupButtonPercent(int res_id, String[] actions, char prefix) {
+        Button b = (Button) findViewById(res_id);
+        return b;
+    }
+
+    private Button setupButtonEnabled(int res_id, String[] actions, char prefix) {
+        Button b = setupButton(res_id,
+                    new String[] {
+                        "-,Unchanged",
+                        "1,Enabled",
+                        "0,Disabled"
+                    });
+
+        return b;
+    }
+
+    private Button setupButton(int res_id, String[] choices) {
+        Button b = (Button) findViewById(res_id);
+        b.setTag(choices);
+
+        registerForContextMenu(b);
+        b.setOnClickListener(new ShowMenuClickListener());
+        return b;
+    }
+    
+    private class ShowMenuClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            if (view.getTag() instanceof String[]) {
+                openContextMenu(view);
+            }
+        }
+    }
+    
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View view,
+                    ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, view, menuInfo);
+        
+        mCurrentContextMenuView = null;
+        
+        Object tag = view.getTag();
+        if (tag instanceof String[]) {
+            String[] choices = (String[]) tag;
+            for (String choice : choices) {
+                String c[] = choice.split(",");
+                if (c.length >= 2) menu.add(c[1]);
+            }
+            mCurrentContextMenuView = view;
+        }
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (mCurrentContextMenuView instanceof Button) {
+            ((Button) mCurrentContextMenuView).setText(item.getTitle());
+        }
+        return super.onContextItemSelected(item);
+    }
+    
+    @Override
+    public void onContextMenuClosed(Menu menu) {
+        super.onContextMenuClosed(menu);
+        mCurrentContextMenuView = null;
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
 
+        return ; // =======================================
+        /*
         ProfilesDB profilesDb = new ProfilesDB();
         try {
             profilesDb.onCreate(this);
@@ -209,6 +264,7 @@ public class EditActionUI extends Activity {
         } finally {
             profilesDb.onDestroy();
         }
+        */
     }
     
     // -----------

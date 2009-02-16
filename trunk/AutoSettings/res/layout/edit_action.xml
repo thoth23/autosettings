@@ -33,20 +33,17 @@
         android:layout_height="wrap_content" 
         android:layout_width="fill_parent" 
         >
-        <CheckBox 
-            android:id="@+id/ringerCheck"
+        <TextView
             android:layout_width="wrap_content" 
             android:layout_height="wrap_content"
-            android:text="Change Ringer to:"
-            android:layout_weight="1" 
+            android:text="Ringer Mode:"
             />
-        <ToggleButton 
-            android:id="@+id/ringerToggle" 
-            android:layout_width="wrap_content" 
+        <Button 
+            android:id="@+id/ringerModeButton" 
+            android:layout_width="fill_parent" 
             android:layout_height="wrap_content" 
             android:paddingTop="10sp"
-            android:textOn="Ringer On" 
-            android:textOff="Ringer Muted" 
+            android:text="--" 
             android:layout_weight="1" 
             />
     </TableRow>
@@ -54,20 +51,71 @@
         android:layout_height="wrap_content" 
         android:layout_width="fill_parent" 
         >
-        <CheckBox 
-            android:id="@+id/vibCheck"
+        <TextView 
             android:layout_width="wrap_content" 
             android:layout_height="wrap_content"
-            android:text="Change Vibrate to:"
-            android:layout_weight="1" 
+            android:text="Ringer Vibrate:"
             />
-        <ToggleButton 
-            android:id="@+id/vibToggle" 
-            android:layout_width="wrap_content" 
+        <Button 
+            android:id="@+id/ringerVibButton" 
+            android:layout_width="fill_parent" 
             android:layout_height="wrap_content" 
             android:paddingTop="10sp"
-            android:textOff="No Vibrate" 
-            android:textOn="Vibrate" 
+            android:text="--" 
+            android:layout_weight="1" 
+            />
+    </TableRow>
+    <TableRow 
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent" 
+        >
+        <TextView 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Ringer Volume:"
+            />
+        <Button 
+            android:id="@+id/ringerVolButton" 
+            android:layout_width="fill_parent" 
+            android:layout_height="wrap_content" 
+            android:paddingTop="10sp"
+            android:text="--" 
+            android:layout_weight="1" 
+            />
+    </TableRow>
+    <TableRow 
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent" 
+        >
+        <TextView 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Brightness:"
+            />
+        <Button 
+            android:id="@+id/brightnessButton" 
+            android:layout_width="fill_parent" 
+            android:layout_height="wrap_content" 
+            android:paddingTop="10sp"
+            android:text="--" 
+            android:layout_weight="1" 
+            />
+    </TableRow>
+    <TableRow 
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent" 
+        >
+        <TextView 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Wifi:"
+            />
+        <Button 
+            android:id="@+id/wifiButton" 
+            android:layout_width="fill_parent" 
+            android:layout_height="wrap_content" 
+            android:paddingTop="10sp"
+            android:text="--" 
             android:layout_weight="1" 
             />
     </TableRow>
