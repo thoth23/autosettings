@@ -6,6 +6,8 @@
 
 package com.alfray.timeriffic.profiles;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -44,8 +46,6 @@ public class EditActionUI extends Activity {
      * to {@link Columns#SUNDAY_BIT_INDEX}.
      */
     private CheckBox[] mCheckDays;
-    private CheckBox mCheckRinger;
-    private CheckBox mCheckVib;
 
     private View mCurrentContextMenuView;
 
@@ -106,11 +106,11 @@ public class EditActionUI extends Activity {
             mTimePicker = (TimePicker) findViewById(R.id.timePicker);
             
             mButtonRingerMode = setupButtonEnum(R.id.ringerModeButton, 
-                            SettingsHelper.RingerMode.class,
+                            SettingsHelper.RingerMode.values(),
                             actions,
                             Columns.ACTION_RINGER);
             mButtonRingerVibrate = setupButtonEnum(R.id.ringerVibButton, 
-                            SettingsHelper.VibrateRingerMode.class,
+                            SettingsHelper.VibrateRingerMode.values(),
                             actions,
                             Columns.ACTION_VIBRATE);
             mButtonRingerVolume = setupButtonPercent(R.id.ringerVolButton,
@@ -147,9 +147,18 @@ public class EditActionUI extends Activity {
         }
     }
     
-    private Button setupButtonEnum(int res_id, Class<? extends Enum<?>> classEnum,
+    private Button setupButtonEnum(int res_id, Object[] values,
                     String[] actions, char prefix) {
-        Button b = (Button) findViewById(res_id);
+        ArrayList<String> choices = new ArrayList<String>();
+        choices.add("-,Unchanged");
+
+        for (Object value : values) {
+            String s = value.toString();
+            choices.add(String.format("%c,%s", s.charAt(0), s));
+        }
+
+        Button b = setupButton(res_id,
+                        choices.toArray(new String[choices.size()]));
         
         return b;
     }
