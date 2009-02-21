@@ -9,6 +9,8 @@ package com.alfray.timeriffic.profiles;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -31,6 +33,8 @@ public class EditActionUI extends Activity {
     
     /** Extra long with the action prof_id (not index) to edit. */
     public static final String EXTRA_ACTION_ID = "action_id";
+
+    private static final int DIALOG_EDIT_PERCENT = 42;
     private long mActionId;
 
     private TimePicker mTimePicker;
@@ -48,6 +52,8 @@ public class EditActionUI extends Activity {
     private CheckBox[] mCheckDays;
 
     private View mCurrentContextMenuView;
+
+    private View mCurrentPercentButton;
 
     /** Called when the activity is first created. */
     @Override
@@ -147,28 +153,75 @@ public class EditActionUI extends Activity {
         }
     }
     
+    private String getActionValue(String[] actions, char prefix) {
+        for (String action : actions) {
+            if (action.length() > 1 && action.charAt(0) == prefix) {
+                return action.substring(1);
+            }
+        }
+        
+        return null;
+    }
+    
     private Button setupButtonEnum(int res_id, Object[] values,
                     String[] actions, char prefix) {
         ArrayList<String> choices = new ArrayList<String>();
         choices.add("-,Unchanged");
 
+        String currentValue = getActionValue(actions, prefix);
+        String currentChoice = null;
+        
         for (Object value : values) {
             String s = value.toString();
-            choices.add(String.format("%c,%s", s.charAt(0), s));
+            prefix = s.charAt(0);
+            choices.add(String.format("%c,%s", prefix, s));
+            
+            if (currentValue != null &&
+                    currentValue.length() >= 1 &&
+                    currentValue.charAt(0) == prefix) {
+                currentChoice = s;
+            }
         }
 
         Button b = setupButton(res_id,
                         choices.toArray(new String[choices.size()]));
+
+        if (currentChoice != null) {
+            b.setText(currentChoice);
+        } else {
+            b.setText("Unchanged");
+        }
         
         return b;
     }
 
     private Button setupButtonPercent(int res_id, String[] actions, char prefix) {
         Button b = (Button) findViewById(res_id);
+
+        String currentValue = getActionValue(actions, prefix);
+        
+        try {
+            int percent = Integer.parseInt(currentValue);
+            b.setText(String.format("%d%%", percent));
+            
+        } catch (Exception e) {
+            b.setText("Unchanged");
+        }
+        
+        b.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                mCurrentPercentButton = v;
+                showDialog(DIALOG_EDIT_PERCENT);
+            }
+        });
+
         return b;
     }
 
     private Button setupButtonEnabled(int res_id, String[] actions, char prefix) {
+
         Button b = setupButton(res_id,
                     new String[] {
                         "-,Unchanged",
@@ -176,6 +229,15 @@ public class EditActionUI extends Activity {
                         "0,Disabled"
                     });
 
+        String currentValue = getActionValue(actions, prefix);
+        if ("1".equals(currentValue)) {
+            b.setText("Enabled");
+        } else if ("0".equals(currentValue)) {
+            b.setText("Disabled");
+        } else {
+            b.setText("Unchanged");
+        }
+        
         return b;
     }
 
@@ -227,6 +289,15 @@ public class EditActionUI extends Activity {
     public void onContextMenuClosed(Menu menu) {
         super.onContextMenuClosed(menu);
         mCurrentContextMenuView = null;
+    }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        
+        // TODO create dialog
+        create dialog
+        
+        return super.onCreateDialog(id);
     }
 
     @Override

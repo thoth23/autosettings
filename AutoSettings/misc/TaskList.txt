@@ -20,7 +20,7 @@ DONE
 20090210 Fix persistent dialog usage in activity
 20090209 Options menu: append new profile
 20090209 Options menu: reset profiles
-20090209 Options menu: setttings, about
+20090209 Options menu: settings, about
 20090209 Fix insert action to mean after
 20090207 Fix insert action to set initial description
 20090207 Remove old main UI
