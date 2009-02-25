@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,6 +24,8 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
+import android.widget.SeekBar;
 import android.widget.TimePicker;
 
 import com.alfray.timeriffic.R;
@@ -294,11 +298,77 @@ public class EditActionUI extends Activity {
     @Override
     protected Dialog onCreateDialog(int id) {
         
-        // TODO create dialog
-        create dialog
+        if (id == DIALOG_EDIT_PERCENT && mCurrentPercentButton == mButtonBrightness) {
+            return new BrightnessDialog(mCurrentPercentButton);
+        }
         
         return super.onCreateDialog(id);
     }
+
+    private class BrightnessDialog extends AlertDialog
+        implements DialogInterface.OnDismissListener,
+                   DialogInterface.OnClickListener,
+                   SeekBar.OnSeekBarChangeListener {
+
+        private SettingsHelper mHelper;
+        private int mInitialBrightness;
+        private final View mPercentButton;
+        private int mSelectedBrightness;
+
+        protected BrightnessDialog(View percentButton) {
+            super(EditActionUI.this);
+            mPercentButton = percentButton;
+            
+            View content = getLayoutInflater().inflate(R.layout.brigthness_alert, null/*root*/);
+            setView(content);
+
+            mHelper = new SettingsHelper(getContext());
+            mInitialBrightness = mHelper.getCurrentBrightness();
+            mSelectedBrightness = mInitialBrightness;
+
+            SeekBar seekBar = (SeekBar) content.findViewById(R.id.seekbar);
+            seekBar.setOnSeekBarChangeListener(this);
+            seekBar.setMax(100);
+            
+            setOnDismissListener(this);
+            
+            setButton("Set", this);
+        }
+
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            mHelper.changeBrightness(mInitialBrightness);
+            mCurrentPercentButton = null;
+        }
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+            mSelectedBrightness = progress;
+            mHelper.changeBrightness(progress);
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            // pass
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            // pass
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            // Update button with percentage selected
+            if (mPercentButton instanceof Button) {
+                ((Button) mPercentButton).setText(String.format("%d%%", mSelectedBrightness));
+            }
+            dismiss();
+        }
+    }
+
+    // -----------
+
 
     @Override
     protected void onPause() {
