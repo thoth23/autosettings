@@ -920,7 +920,9 @@ public class ProfilesUI extends Activity {
 
         @Override
         public void onItemSelected() {
-            // pass (or trigger edit?)
+            // trigger edit
+            Log.d(TAG, "action - edit");
+            editAction(getCursor());
         }
 
         @Override
