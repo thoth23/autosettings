@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TimePicker;
+import android.widget.ToggleButton;
 
 import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.utils.SettingsHelper;
@@ -211,13 +212,13 @@ public class EditActionUI extends Activity {
         }
         
         b.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 mCurrentPercentButton = v;
                 showDialog(DIALOG_EDIT_PERCENT);
             }
         });
+        b.setTag(currentValue);
 
         return b;
     }
@@ -306,31 +307,57 @@ public class EditActionUI extends Activity {
     private class BrightnessDialog extends AlertDialog
         implements DialogInterface.OnDismissListener,
                    DialogInterface.OnClickListener,
-                   SeekBar.OnSeekBarChangeListener {
+                   SeekBar.OnSeekBarChangeListener,
+                   View.OnClickListener {
 
         private SettingsHelper mHelper;
-        private int mInitialBrightness;
+        /** Initial brightness of the string, so that we can restore it */
+        private final int mInitialBrightness;
+        /** The button being changed */
         private final View mPercentButton;
-        private int mSelectedBrightness;
+        private SeekBar mSeekBar;
+        private ToggleButton mToggleButton;
 
         protected BrightnessDialog(View percentButton) {
             super(EditActionUI.this);
             mPercentButton = percentButton;
+            
+            setIcon(R.drawable.brightness);
+            setTitle("Brightness");
             
             View content = getLayoutInflater().inflate(R.layout.brigthness_alert, null/*root*/);
             setView(content);
 
             mHelper = new SettingsHelper(getContext());
             mInitialBrightness = mHelper.getCurrentBrightness();
-            mSelectedBrightness = mInitialBrightness;
 
-            SeekBar seekBar = (SeekBar) content.findViewById(R.id.seekbar);
-            seekBar.setOnSeekBarChangeListener(this);
-            seekBar.setMax(100);
-            
+            mSeekBar = (SeekBar) content.findViewById(R.id.seekbar);
+            mSeekBar.setOnSeekBarChangeListener(this);
+            mSeekBar.setMax(100);
+
+            mToggleButton = (ToggleButton) content.findViewById(R.id.toggle);
+            mToggleButton.setOnClickListener(this);
+
             setOnDismissListener(this);
             
-            setButton("Set", this);
+            setButton("Accept", this);
+            
+            // set initial value
+            if (mPercentButton.getTag() instanceof String) {
+                String tag = (String)mPercentButton.getTag();
+                try {
+                    int percent = Integer.parseInt(tag);
+                    mHelper.changeBrightness(percent);
+                    mToggleButton.setChecked(true);
+                    mSeekBar.setProgress(percent);
+                    mSeekBar.setEnabled(true);
+                    mToggleButton.setTextOn(String.format("Set to %d%%", percent));
+                } catch (Exception e) {
+                    mToggleButton.setChecked(false);
+                    mSeekBar.setProgress(mInitialBrightness);
+                    mSeekBar.setEnabled(false);
+                }
+            }
         }
 
         @Override
@@ -341,8 +368,10 @@ public class EditActionUI extends Activity {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-            mSelectedBrightness = progress;
             mHelper.changeBrightness(progress);
+            mToggleButton.setTextOn(String.format("Set to %d%%", progress));
+            // force the toggle button to update its text
+            mToggleButton.setChecked(mToggleButton.isChecked());
         }
 
         @Override
@@ -359,9 +388,21 @@ public class EditActionUI extends Activity {
         public void onClick(DialogInterface dialog, int which) {
             // Update button with percentage selected
             if (mPercentButton instanceof Button) {
-                ((Button) mPercentButton).setText(String.format("%d%%", mSelectedBrightness));
+                if (mToggleButton.isChecked()) {
+                    int percent = mSeekBar.getProgress();
+                    mPercentButton.setTag(Integer.toString(percent));
+                    ((Button) mPercentButton).setText(String.format("%d%%", percent));
+                } else {
+                    mPercentButton.setTag("-");
+                    ((Button) mPercentButton).setText("Unchanged");
+                }
             }
             dismiss();
+        }
+
+        @Override
+        public void onClick(View toggle) {
+            mSeekBar.setEnabled(((ToggleButton)toggle).isChecked());
         }
     }
 
