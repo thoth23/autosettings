@@ -58,6 +58,8 @@ public class EditActionUI extends Activity {
 
     private View mCurrentPercentButton;
 
+    private PrefEnum mPrefRingerMode;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,10 +116,11 @@ public class EditActionUI extends Activity {
             // get UI widgets
             mTimePicker = (TimePicker) findViewById(R.id.timePicker);
             
-            mButtonRingerMode = setupButtonEnum(R.id.ringerModeButton, 
+            mPrefRingerMode = new PrefEnum(R.id.ringerModeButton, 
                             SettingsHelper.RingerMode.values(),
                             actions,
                             Columns.ACTION_RINGER);
+            
             mButtonRingerVibrate = setupButtonEnum(R.id.ringerVibButton, 
                             SettingsHelper.VibrateRingerMode.values(),
                             actions,
@@ -156,65 +159,6 @@ public class EditActionUI extends Activity {
         }
     }
     
-    private String getActionValue(String[] actions, char prefix) {
-        for (String action : actions) {
-            if (action.length() > 1 && action.charAt(0) == prefix) {
-                return action.substring(1);
-            }
-        }
-        
-        return null;
-    }
-    
-    private Button setupButtonEnum(int res_id, Object[] values,
-                    String[] actions, char prefix) {
-        ArrayList<String> choices = new ArrayList<String>();
-        choices.add("-,Unchanged");
-
-        String currentValue = getActionValue(actions, prefix);
-        String currentChoice = null;
-        
-        for (Object value : values) {
-            String s = value.toString();
-            prefix = s.charAt(0);
-            choices.add(String.format("%c,%s", prefix, s));
-            
-            if (currentValue != null &&
-                    currentValue.length() >= 1 &&
-                    currentValue.charAt(0) == prefix) {
-                currentChoice = s;
-            }
-        }
-
-        Button b = setupButton(res_id,
-                        choices.toArray(new String[choices.size()]));
-
-        if (currentChoice != null) {
-            b.setText(currentChoice);
-        } else {
-            b.setText("Unchanged");
-        }
-        
-        return b;
-    }
-
-    private void collectEnum(Button button, StringBuilder actions, char prefix) {
-        String t = button.getText().toString();
-        
-        String[] choices = (String[]) button.getTag();
-        for (String choice : choices) {
-            String[] vals = choice.split(",");
-            if (vals[1].equals(t)) {
-                if (!vals[0].equals("-")) {
-                    if (actions.length() > 0) actions.append(",");
-                    actions.append(prefix);
-                    actions.append(vals[0]);
-                }
-                break;
-            }
-        }
-    }
-
     private Button setupButtonPercent(int res_id, String[] actions, char prefix) {
         Button b = (Button) findViewById(res_id);
 
@@ -289,24 +233,6 @@ public class EditActionUI extends Activity {
         }
     }
 
-    private Button setupButton(int res_id, String[] choices) {
-        Button b = (Button) findViewById(res_id);
-        b.setTag(choices);
-
-        registerForContextMenu(b);
-        b.setOnClickListener(new ShowMenuClickListener());
-        return b;
-    }
-    
-    private class ShowMenuClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            if (view.getTag() instanceof String[]) {
-                openContextMenu(view);
-            }
-        }
-    }
-    
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view,
                     ContextMenuInfo menuInfo) {
