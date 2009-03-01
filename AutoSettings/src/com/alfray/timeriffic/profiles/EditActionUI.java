@@ -219,15 +219,16 @@ public class EditActionUI extends Activity {
         Button b = (Button) findViewById(res_id);
 
         String currentValue = getActionValue(actions, prefix);
-        
+        Object tag = null;
+
         try {
             int percent = Integer.parseInt(currentValue);
             b.setText(String.format("%d%%", percent));
-            
+            tag = percent;
         } catch (Exception e) {
             b.setText("Unchanged");
         }
-        
+
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -235,16 +236,21 @@ public class EditActionUI extends Activity {
                 showDialog(DIALOG_EDIT_PERCENT);
             }
         });
-        b.setTag(currentValue);
+        b.setTag(tag);
 
         return b;
     }
 
     private void collectPercent(Button button, StringBuilder actions, char prefix) {
-        // TODO Auto-generated method stub
-        
-    }
+        Object tag = button.getTag();
 
+        if (tag instanceof Integer) {
+            if (actions.length() > 0) actions.append(",");
+            actions.append(prefix);
+            actions.append(((Integer) tag).toString());
+        }
+    }
+    
     private Button setupButtonEnabled(int res_id, String[] actions, char prefix) {
 
         Button b = setupButton(res_id,
@@ -266,10 +272,21 @@ public class EditActionUI extends Activity {
         return b;
     }
 
-    private void collectEnabled(Button buttonWifi, StringBuilder actions,
-                    char actionWifi) {
-        // TODO Auto-generated method stub
+    private void collectEnabled(Button button, StringBuilder actions, char prefix) {
+        String t = button.getText().toString();
         
+        String[] choices = (String[]) button.getTag();
+        for (String choice : choices) {
+            String[] vals = choice.split(".");
+            if (vals[1].equals(t)) {
+                if (!vals[0].equals("-")) {
+                    if (actions.length() > 0) actions.append(",");
+                    actions.append(prefix);
+                    actions.append(vals[0]);
+                }
+                break;
+            }
+        }
     }
 
     private Button setupButton(int res_id, String[] choices) {
@@ -418,10 +435,10 @@ public class EditActionUI extends Activity {
             if (mPercentButton instanceof Button) {
                 if (mToggleButton.isChecked()) {
                     int percent = mSeekBar.getProgress();
-                    mPercentButton.setTag(Integer.toString(percent));
+                    mPercentButton.setTag(percent);
                     ((Button) mPercentButton).setText(String.format("%d%%", percent));
                 } else {
-                    mPercentButton.setTag("-");
+                    mPercentButton.setTag(null);
                     ((Button) mPercentButton).setText("Unchanged");
                 }
             }
@@ -462,6 +479,8 @@ public class EditActionUI extends Activity {
             collectPercent(mButtonRingerVolume, actions, Columns.ACTION_RING_VOLUME);
             collectPercent(mButtonBrightness, actions, Columns.ACTION_BRIGHTNESS);
             collectEnabled(mButtonWifi, actions, Columns.ACTION_WIFI);
+
+            Log.d(TAG, "new actions: " + actions.toString());
 
             String description = TimedActionUtils.computeDescription(hourMin, days, actions.toString());
             
