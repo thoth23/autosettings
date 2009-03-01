@@ -198,6 +198,23 @@ public class EditActionUI extends Activity {
         return b;
     }
 
+    private void collectEnum(Button button, StringBuilder actions, char prefix) {
+        String t = button.getText().toString();
+        
+        String[] choices = (String[]) button.getTag();
+        for (String choice : choices) {
+            String[] vals = choice.split(".");
+            if (vals[1].equals(t)) {
+                if (!vals[0].equals("-")) {
+                    if (actions.length() > 0) actions.append(",");
+                    actions.append(prefix);
+                    actions.append(vals[0]);
+                }
+                break;
+            }
+        }
+    }
+
     private Button setupButtonPercent(int res_id, String[] actions, char prefix) {
         Button b = (Button) findViewById(res_id);
 
@@ -223,6 +240,11 @@ public class EditActionUI extends Activity {
         return b;
     }
 
+    private void collectPercent(Button button, StringBuilder actions, char prefix) {
+        // TODO Auto-generated method stub
+        
+    }
+
     private Button setupButtonEnabled(int res_id, String[] actions, char prefix) {
 
         Button b = setupButton(res_id,
@@ -242,6 +264,12 @@ public class EditActionUI extends Activity {
         }
         
         return b;
+    }
+
+    private void collectEnabled(Button buttonWifi, StringBuilder actions,
+                    char actionWifi) {
+        // TODO Auto-generated method stub
+        
     }
 
     private Button setupButton(int res_id, String[] choices) {
@@ -413,8 +441,6 @@ public class EditActionUI extends Activity {
     protected void onPause() {
         super.onPause();
 
-        return ; // =======================================
-        /*
         ProfilesDB profilesDb = new ProfilesDB();
         try {
             profilesDb.onCreate(this);
@@ -430,16 +456,13 @@ public class EditActionUI extends Activity {
             }
 
             StringBuilder actions = new StringBuilder();
-            if (mCheckRinger.isChecked()) {
-                actions.append(Columns.ACTION_RINGER);
-                actions.append(mToggleRinger.isChecked() ? "1" : "0");
-            }
-            if (mCheckVib.isChecked()) {
-                if (actions.length() > 0) actions.append(",");
-                actions.append(Columns.ACTION_VIBRATE);
-                actions.append(mToggleVib.isChecked() ? "1" : "0");
-            }
-            
+
+            collectEnum(mButtonRingerMode, actions, Columns.ACTION_RINGER);
+            collectEnum(mButtonRingerVibrate, actions, Columns.ACTION_VIBRATE);
+            collectPercent(mButtonRingerVolume, actions, Columns.ACTION_RING_VOLUME);
+            collectPercent(mButtonBrightness, actions, Columns.ACTION_BRIGHTNESS);
+            collectEnabled(mButtonWifi, actions, Columns.ACTION_WIFI);
+
             String description = TimedActionUtils.computeDescription(hourMin, days, actions.toString());
             
             int count = profilesDb.updateTimedAction(mActionId,
@@ -453,7 +476,6 @@ public class EditActionUI extends Activity {
         } finally {
             profilesDb.onDestroy();
         }
-        */
     }
     
     // -----------
