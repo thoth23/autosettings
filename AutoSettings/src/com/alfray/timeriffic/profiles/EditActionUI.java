@@ -203,7 +203,7 @@ public class EditActionUI extends Activity {
         
         String[] choices = (String[]) button.getTag();
         for (String choice : choices) {
-            String[] vals = choice.split(".");
+            String[] vals = choice.split(",");
             if (vals[1].equals(t)) {
                 if (!vals[0].equals("-")) {
                     if (actions.length() > 0) actions.append(",");
@@ -277,7 +277,7 @@ public class EditActionUI extends Activity {
         
         String[] choices = (String[]) button.getTag();
         for (String choice : choices) {
-            String[] vals = choice.split(".");
+            String[] vals = choice.split(",");
             if (vals[1].equals(t)) {
                 if (!vals[0].equals("-")) {
                     if (actions.length() > 0) actions.append(",");
