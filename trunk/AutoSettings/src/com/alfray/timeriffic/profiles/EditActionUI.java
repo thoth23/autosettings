@@ -42,10 +42,10 @@ public class EditActionUI extends Activity {
 
     private TimePicker mTimePicker;
 
-    private Button mButtonRingerMode;
-    private Button mButtonRingerVibrate;
+    private PrefEnum mPrefRingerMode;
+    private PrefEnum mPrefRingerVibrate;
+    private PrefToggle mPrefWifi;
     private Button mButtonRingerVolume;
-    private Button mButtonWifi;
     private Button mButtonBrightness;
 
     /**
@@ -55,10 +55,7 @@ public class EditActionUI extends Activity {
     private CheckBox[] mCheckDays;
 
     private View mCurrentContextMenuView;
-
     private View mCurrentPercentButton;
-
-    private PrefEnum mPrefRingerMode;
 
     /** Called when the activity is first created. */
     @Override
@@ -116,12 +113,13 @@ public class EditActionUI extends Activity {
             // get UI widgets
             mTimePicker = (TimePicker) findViewById(R.id.timePicker);
             
-            mPrefRingerMode = new PrefEnum(R.id.ringerModeButton, 
+            mPrefRingerMode = new PrefEnum(this,
+                            R.id.ringerModeButton, 
                             SettingsHelper.RingerMode.values(),
                             actions,
                             Columns.ACTION_RINGER);
-            
-            mButtonRingerVibrate = setupButtonEnum(R.id.ringerVibButton, 
+            mPrefRingerVibrate = new PrefEnum(this,
+                            R.id.ringerVibButton, 
                             SettingsHelper.VibrateRingerMode.values(),
                             actions,
                             Columns.ACTION_VIBRATE);
@@ -131,7 +129,8 @@ public class EditActionUI extends Activity {
             mButtonBrightness = setupButtonPercent(R.id.brightnessButton,
                             actions,
                             Columns.ACTION_BRIGHTNESS);
-            mButtonWifi = setupButtonEnabled(R.id.wifiButton,
+            mPrefWifi = new PrefToggle(this,
+                            R.id.wifiButton,
                             actions,
                             Columns.ACTION_WIFI);
             
@@ -194,44 +193,6 @@ public class EditActionUI extends Activity {
             actions.append(((Integer) tag).toString());
         }
     }
-    
-    private Button setupButtonEnabled(int res_id, String[] actions, char prefix) {
-
-        Button b = setupButton(res_id,
-                    new String[] {
-                        "-,Unchanged",
-                        "1,Enabled",
-                        "0,Disabled"
-                    });
-
-        String currentValue = getActionValue(actions, prefix);
-        if ("1".equals(currentValue)) {
-            b.setText("Enabled");
-        } else if ("0".equals(currentValue)) {
-            b.setText("Disabled");
-        } else {
-            b.setText("Unchanged");
-        }
-        
-        return b;
-    }
-
-    private void collectEnabled(Button button, StringBuilder actions, char prefix) {
-        String t = button.getText().toString();
-        
-        String[] choices = (String[]) button.getTag();
-        for (String choice : choices) {
-            String[] vals = choice.split(",");
-            if (vals[1].equals(t)) {
-                if (!vals[0].equals("-")) {
-                    if (actions.length() > 0) actions.append(",");
-                    actions.append(prefix);
-                    actions.append(vals[0]);
-                }
-                break;
-            }
-        }
-    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view,
@@ -241,20 +202,20 @@ public class EditActionUI extends Activity {
         mCurrentContextMenuView = null;
         
         Object tag = view.getTag();
-        if (tag instanceof String[]) {
-            String[] choices = (String[]) tag;
-            for (String choice : choices) {
-                String c[] = choice.split(",");
-                if (c.length >= 2) menu.add(c[1]);
-            }
+        if (tag instanceof PrefBase) {
+            ((PrefBase) tag).onCreateContextMenu(menu);
             mCurrentContextMenuView = view;
         }
     }
     
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if (mCurrentContextMenuView instanceof Button) {
-            ((Button) mCurrentContextMenuView).setText(item.getTitle());
+
+        if (mCurrentContextMenuView instanceof View) {
+            Object tag = mCurrentContextMenuView.getTag();
+            if (tag instanceof PrefBase) {
+                ((PrefBase) tag).onContextItemSelected(item);
+            }
         }
         return super.onContextItemSelected(item);
     }
@@ -400,11 +361,12 @@ public class EditActionUI extends Activity {
 
             StringBuilder actions = new StringBuilder();
 
-            collectEnum(mButtonRingerMode, actions, Columns.ACTION_RINGER);
-            collectEnum(mButtonRingerVibrate, actions, Columns.ACTION_VIBRATE);
+            mPrefRingerMode.collectEnum(actions);
+            mPrefRingerVibrate.collectEnum(actions);
+            mPrefWifi.collectEnum(actions);
+
             collectPercent(mButtonRingerVolume, actions, Columns.ACTION_RING_VOLUME);
             collectPercent(mButtonBrightness, actions, Columns.ACTION_BRIGHTNESS);
-            collectEnabled(mButtonWifi, actions, Columns.ACTION_WIFI);
 
             Log.d(TAG, "new actions: " + actions.toString());
 
