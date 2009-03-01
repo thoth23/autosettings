@@ -9,97 +9,101 @@ package com.alfray.timeriffic.profiles;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.view.View;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.widget.Button;
-
-import com.alfray.timeriffic.profiles.PrefBase.ShowMenuClickListener;
-import com.alfray.timeriffic.utils.SettingsHelper.RingerMode;
 
 //-----------------------------------------------
 
 class PrefEnum extends PrefBase {
 
-    private ArrayList<String[]> mChoices;
+    protected static final char UNCHANGED_KEY = '-';
+    protected static final String UNCHANGED_UI_NAME = "Unchanged";
     private final char mActionPrefix;
-    private Button mButton;
 
+    protected static class Choice {
+        public final char mKey;
+        public final String mUiName;
+        public Choice(char key, String uiName) {
+            mKey = key;
+            mUiName = uiName;
+        }
+    }
+    
+    protected ArrayList<Choice> mChoices = new ArrayList<Choice>();
+    protected Choice mCurrentChoice;
+    private Button mButton;
+    
     public PrefEnum(Activity activity,
                     int buttonResId,
-                    RingerMode[] values,
+                    Object[] values,
                     String[] actions,
                     char actionPrefix) {
         super(activity);
         mActionPrefix = actionPrefix;
 
-        setupButtonEnum(buttonResId, values, actions, actionPrefix);
+        mButton = (Button) mActivity.findViewById(buttonResId);
+        mActivity.registerForContextMenu(mButton);
+        mButton.setOnClickListener(new ShowMenuClickListener());
+        mButton.setTag(this);
+        
+        Choice c = new Choice(UNCHANGED_KEY, UNCHANGED_UI_NAME);
+        mChoices.add(c);
+        mCurrentChoice = c;
+
+        initChoices(values, actions, actionPrefix);
+
+        mButton.setText(mCurrentChoice.mUiName);
     }
 
-    private Button setupButtonEnum(int res_id, Object[] values, String[] actions, char prefix) {
-        mChoices = new ArrayList<String[]>();
-        mChoices.add(new String[] { "-", "Unchanged" });
+    protected void initChoices(Object[] values, String[] actions, char prefix) {
 
         String currentValue = getActionValue(actions, prefix);
-        String currentChoice = null;
         
         for (Object value : values) {
             String s = value.toString();
-            String p = s.substring(0, 1);
-            mChoices.add(new String[] { p, s });
+            char p = s.charAt(0);
+            Choice c = new Choice(p, s);
+            mChoices.add(c);
             
             if (currentValue != null &&
                     currentValue.length() >= 1 &&
-                    currentValue.charAt(0) == p.charAt(0)) {
-                currentChoice = s;
-            }
-        }
-
-        mButton = setupButton(res_id);
-        mButton.setTag(this);
-
-        if (currentChoice != null) {
-            mButton.setText(currentChoice);
-        } else {
-            mButton.setText("Unchanged");
-        }
-        
-        return mButton;
-    }
-
-    private Button setupButton(int res_id) {
-        Button b = (Button) mActivity.findViewById(res_id);
-
-        mActivity.registerForContextMenu(b);
-        b.setOnClickListener(new ShowMenuClickListener());
-        return b;
-    }
-    
-    private class ShowMenuClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            if (view.getTag() instanceof String[]) {
-                mActivity.openContextMenu(view);
+                    currentValue.charAt(0) == p) {
+                mCurrentChoice = c;
             }
         }
     }
 
-    public void collectEnum(StringBuilder actions) {
-        String t = button.getText().toString();
+    @Override
+    public void onCreateContextMenu(ContextMenu menu) {
         
-        String[] choices = (String[]) button.getTag();
-        for (String choice : choices) {
-            String[] vals = choice.split(",");
-            if (vals[1].equals(t)) {
-                if (!vals[0].equals("-")) {
-                    if (actions.length() > 0) actions.append(",");
-                    actions.append(prefix);
-                    actions.append(vals[0]);
-                }
+        // TODO menu.setHeaderTitle(arg0);
+
+        for (Choice choice : mChoices) {
+            menu.add(choice.mUiName);
+        }
+    }
+
+    @Override
+    public void onContextItemSelected(MenuItem item) {
+        
+        CharSequence title = item.getTitle();
+
+        for (Choice choice : mChoices) {
+            if (choice.mUiName.equals(title)) {
+                mCurrentChoice = choice;
+                mButton.setText(title);
                 break;
             }
         }
     }
 
-
+    public void collectEnum(StringBuilder actions) {
+        if (mCurrentChoice != null &&
+                mCurrentChoice.mKey != UNCHANGED_KEY) {
+            appendAction(actions, mActionPrefix, Character.toString(mCurrentChoice.mKey));
+        }
+    }
 }
 
 
