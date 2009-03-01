@@ -37,7 +37,7 @@ public class EditActionUI extends Activity {
     /** Extra long with the action prof_id (not index) to edit. */
     public static final String EXTRA_ACTION_ID = "action_id";
 
-    private static final int DIALOG_EDIT_PERCENT = 42;
+    /*package*/ static final int DIALOG_EDIT_PERCENT = 42;
     private long mActionId;
 
     private TimePicker mTimePicker;
@@ -45,8 +45,8 @@ public class EditActionUI extends Activity {
     private PrefEnum mPrefRingerMode;
     private PrefEnum mPrefRingerVibrate;
     private PrefToggle mPrefWifi;
-    private Button mButtonRingerVolume;
-    private Button mButtonBrightness;
+    private PrefPercent mPrefRingerVolume;
+    private PrefPercent mPrefBrightness;
 
     /**
      * Day checkboxes, in the same index order than {@link Columns#MONDAY_BIT_INDEX}
@@ -55,7 +55,7 @@ public class EditActionUI extends Activity {
     private CheckBox[] mCheckDays;
 
     private View mCurrentContextMenuView;
-    private View mCurrentPercentButton;
+    private PrefPercent[] mCurrentPrefPercent = new PrefPercent[1];
 
     /** Called when the activity is first created. */
     @Override
@@ -114,25 +114,33 @@ public class EditActionUI extends Activity {
             mTimePicker = (TimePicker) findViewById(R.id.timePicker);
             
             mPrefRingerMode = new PrefEnum(this,
-                            R.id.ringerModeButton, 
-                            SettingsHelper.RingerMode.values(),
-                            actions,
-                            Columns.ACTION_RINGER);
+                    R.id.ringerModeButton, 
+                    SettingsHelper.RingerMode.values(),
+                    actions,
+                    Columns.ACTION_RINGER);
+            
             mPrefRingerVibrate = new PrefEnum(this,
-                            R.id.ringerVibButton, 
-                            SettingsHelper.VibrateRingerMode.values(),
-                            actions,
-                            Columns.ACTION_VIBRATE);
-            mButtonRingerVolume = setupButtonPercent(R.id.ringerVolButton,
-                            actions,
-                            Columns.ACTION_RING_VOLUME);
-            mButtonBrightness = setupButtonPercent(R.id.brightnessButton,
-                            actions,
-                            Columns.ACTION_BRIGHTNESS);
+                    R.id.ringerVibButton, 
+                    SettingsHelper.VibrateRingerMode.values(),
+                    actions,
+                    Columns.ACTION_VIBRATE);
+            
             mPrefWifi = new PrefToggle(this,
-                            R.id.wifiButton,
-                            actions,
-                            Columns.ACTION_WIFI);
+                    R.id.wifiButton,
+                    actions,
+                    Columns.ACTION_WIFI);
+
+            mPrefRingerVolume = new PrefPercent(this,
+                    mCurrentPrefPercent,
+                    R.id.ringerVolButton,
+                    actions,
+                    Columns.ACTION_RING_VOLUME);
+
+            mPrefBrightness = new PrefPercent(this,
+                    mCurrentPrefPercent,
+                    R.id.brightnessButton,
+                    actions,
+                    Columns.ACTION_BRIGHTNESS);
             
             mCheckDays = new CheckBox[] {
                     (CheckBox) findViewById(R.id.dayMon),
@@ -155,42 +163,6 @@ public class EditActionUI extends Activity {
         } finally {
             c.close();
             profilesDb.onDestroy();
-        }
-    }
-    
-    private Button setupButtonPercent(int res_id, String[] actions, char prefix) {
-        Button b = (Button) findViewById(res_id);
-
-        String currentValue = getActionValue(actions, prefix);
-        Object tag = null;
-
-        try {
-            int percent = Integer.parseInt(currentValue);
-            b.setText(String.format("%d%%", percent));
-            tag = percent;
-        } catch (Exception e) {
-            b.setText("Unchanged");
-        }
-
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCurrentPercentButton = v;
-                showDialog(DIALOG_EDIT_PERCENT);
-            }
-        });
-        b.setTag(tag);
-
-        return b;
-    }
-
-    private void collectPercent(Button button, StringBuilder actions, char prefix) {
-        Object tag = button.getTag();
-
-        if (tag instanceof Integer) {
-            if (actions.length() > 0) actions.append(",");
-            actions.append(prefix);
-            actions.append(((Integer) tag).toString());
         }
     }
 
@@ -229,115 +201,13 @@ public class EditActionUI extends Activity {
     @Override
     protected Dialog onCreateDialog(int id) {
         
-        if (id == DIALOG_EDIT_PERCENT && mCurrentPercentButton == mButtonBrightness) {
-            return new BrightnessDialog(mCurrentPercentButton);
+        if (id == DIALOG_EDIT_PERCENT && mCurrentPrefPercent[0] != null) {
+            return new PrefPercentDialog(this, mCurrentPrefPercent[0]);
         }
         
         return super.onCreateDialog(id);
     }
-
-    private class BrightnessDialog extends AlertDialog
-        implements DialogInterface.OnDismissListener,
-                   DialogInterface.OnClickListener,
-                   SeekBar.OnSeekBarChangeListener,
-                   View.OnClickListener {
-
-        private SettingsHelper mHelper;
-        /** Initial brightness of the string, so that we can restore it */
-        private final int mInitialBrightness;
-        /** The button being changed */
-        private final View mPercentButton;
-        private SeekBar mSeekBar;
-        private ToggleButton mToggleButton;
-
-        protected BrightnessDialog(View percentButton) {
-            super(EditActionUI.this);
-            mPercentButton = percentButton;
-            
-            setIcon(R.drawable.brightness);
-            setTitle("Brightness");
-            
-            View content = getLayoutInflater().inflate(R.layout.brigthness_alert, null/*root*/);
-            setView(content);
-
-            mHelper = new SettingsHelper(getContext());
-            mInitialBrightness = mHelper.getCurrentBrightness();
-
-            mSeekBar = (SeekBar) content.findViewById(R.id.seekbar);
-            mSeekBar.setOnSeekBarChangeListener(this);
-            mSeekBar.setMax(100);
-
-            mToggleButton = (ToggleButton) content.findViewById(R.id.toggle);
-            mToggleButton.setOnClickListener(this);
-
-            setOnDismissListener(this);
-            
-            setButton("Accept", this);
-            
-            // set initial value
-            if (mPercentButton.getTag() instanceof String) {
-                String tag = (String)mPercentButton.getTag();
-                try {
-                    int percent = Integer.parseInt(tag);
-                    mHelper.changeBrightness(percent);
-                    mToggleButton.setChecked(true);
-                    mSeekBar.setProgress(percent);
-                    mSeekBar.setEnabled(true);
-                    mToggleButton.setTextOn(String.format("Set to %d%%", percent));
-                } catch (Exception e) {
-                    mToggleButton.setChecked(false);
-                    mSeekBar.setProgress(mInitialBrightness);
-                    mSeekBar.setEnabled(false);
-                }
-            }
-        }
-
-        @Override
-        public void onDismiss(DialogInterface dialog) {
-            mHelper.changeBrightness(mInitialBrightness);
-            mCurrentPercentButton = null;
-        }
-
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-            mHelper.changeBrightness(progress);
-            mToggleButton.setTextOn(String.format("Set to %d%%", progress));
-            // force the toggle button to update its text
-            mToggleButton.setChecked(mToggleButton.isChecked());
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-            // pass
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-            // pass
-        }
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            // Update button with percentage selected
-            if (mPercentButton instanceof Button) {
-                if (mToggleButton.isChecked()) {
-                    int percent = mSeekBar.getProgress();
-                    mPercentButton.setTag(percent);
-                    ((Button) mPercentButton).setText(String.format("%d%%", percent));
-                } else {
-                    mPercentButton.setTag(null);
-                    ((Button) mPercentButton).setText("Unchanged");
-                }
-            }
-            dismiss();
-        }
-
-        @Override
-        public void onClick(View toggle) {
-            mSeekBar.setEnabled(((ToggleButton)toggle).isChecked());
-        }
-    }
-
+    
     // -----------
 
 
@@ -361,12 +231,11 @@ public class EditActionUI extends Activity {
 
             StringBuilder actions = new StringBuilder();
 
-            mPrefRingerMode.collectEnum(actions);
-            mPrefRingerVibrate.collectEnum(actions);
-            mPrefWifi.collectEnum(actions);
-
-            collectPercent(mButtonRingerVolume, actions, Columns.ACTION_RING_VOLUME);
-            collectPercent(mButtonBrightness, actions, Columns.ACTION_BRIGHTNESS);
+            mPrefRingerMode.collectResult(actions);
+            mPrefRingerVibrate.collectResult(actions);
+            mPrefWifi.collectResult(actions);
+            mPrefRingerVolume.collectResult(actions);
+            mPrefBrightness.collectResult(actions);
 
             Log.d(TAG, "new actions: " + actions.toString());
 

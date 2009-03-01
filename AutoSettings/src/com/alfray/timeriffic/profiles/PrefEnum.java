@@ -98,7 +98,7 @@ class PrefEnum extends PrefBase {
         }
     }
 
-    public void collectEnum(StringBuilder actions) {
+    public void collectResult(StringBuilder actions) {
         if (mCurrentChoice != null &&
                 mCurrentChoice.mKey != UNCHANGED_KEY) {
             appendAction(actions, mActionPrefix, Character.toString(mCurrentChoice.mKey));
