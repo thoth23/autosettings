@@ -13,10 +13,6 @@ import android.view.View;
 
 //-----------------------------------------------
 
-/**
- * The class  does...
- *
- */
 public abstract class PrefBase {
 
     protected final Activity mActivity;
