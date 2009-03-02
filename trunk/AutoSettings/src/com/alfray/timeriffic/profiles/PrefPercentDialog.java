@@ -39,7 +39,7 @@ public class PrefPercentDialog extends AlertDialog
         if (mPrefPercent.getIconResId() != 0) setIcon(mPrefPercent.getIconResId());
         if (mPrefPercent.getDialogTitle() != null) setTitle(mPrefPercent.getDialogTitle());
 
-        View content = getLayoutInflater().inflate(R.layout.brigthness_alert, null/* root */);
+        View content = getLayoutInflater().inflate(R.layout.percent_alert, null/* root */);
         setView(content);
 
         mAccessor = mPrefPercent.getAccessor(); 
