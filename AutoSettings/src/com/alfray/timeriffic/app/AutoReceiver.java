@@ -121,7 +121,7 @@ public class AutoReceiver extends BroadcastReceiver {
                             settings.changeWifi(value > 0);
                             break;
                         case Columns.ACTION_BRIGHTNESS:
-                            settings.changeBrightness(value);
+                            settings.changeBrightness(value, true /*persist*/);
                             break;
                         case Columns.ACTION_RING_VOLUME:
                             settings.changeRingerVolume(value);

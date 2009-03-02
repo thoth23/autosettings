@@ -137,7 +137,17 @@ public class EditActionUI extends Activity {
                     Columns.ACTION_RING_VOLUME,
                     "Volume",
                     0,
-                    null);
+                    new Accessor() {
+                        @Override
+                        public void changePercent(int percent) {
+                            mSettingsHelper.changeRingerVolume(percent);
+                        }
+
+                        @Override
+                        public int getPercent() {
+                            return mSettingsHelper.getRingerVolume();
+                        }
+                    });
 
             mPrefBrightness = new PrefPercent(this,
                     mPrefPercentOutWrapper,
@@ -149,14 +159,14 @@ public class EditActionUI extends Activity {
                     new Accessor() {
                         @Override
                         public void changePercent(int percent) {
-                            mSettingsHelper.changeBrightness(percent);
+                            mSettingsHelper.changeBrightness(percent, false /*persist*/);
                         }
 
                         @Override
                         public int getPercent() {
                             return mSettingsHelper.getCurrentBrightness();
                         }
-            });
+                    });
             
             mCheckDays = new CheckBox[] {
                     (CheckBox) findViewById(R.id.dayMon),
