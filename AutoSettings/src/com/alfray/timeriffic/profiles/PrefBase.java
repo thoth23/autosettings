@@ -9,7 +9,6 @@ package com.alfray.timeriffic.profiles;
 import android.app.Activity;
 import android.view.ContextMenu;
 import android.view.MenuItem;
-import android.view.View;
 
 //-----------------------------------------------
 
@@ -29,15 +28,6 @@ public abstract class PrefBase {
         }
         
         return null;
-    }
-
-    protected class ShowMenuClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            if (view.getTag() instanceof String[]) {
-                mActivity.openContextMenu(view);
-            }
-        }
     }
 
     protected void appendAction(StringBuilder actions, char prefix, String value) {
