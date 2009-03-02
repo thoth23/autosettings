@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.alfray.timeriffic.R;
@@ -24,6 +25,7 @@ public class PrefPercentDialog extends AlertDialog
     private final PrefPercent mPrefPercent;
     private SeekBar mSeekBar;
     private ToggleButton mToggleButton;
+    private TextView mPercentLabel;
     private Accessor mAccessor;
 
     public interface Accessor {
@@ -48,6 +50,8 @@ public class PrefPercentDialog extends AlertDialog
         mSeekBar = (SeekBar) content.findViewById(R.id.seekbar);
         mSeekBar.setOnSeekBarChangeListener(this);
         mSeekBar.setMax(100);
+        
+        mPercentLabel = (TextView) content.findViewById(R.id.percent);
 
         mToggleButton = (ToggleButton) content.findViewById(R.id.toggle);
         mToggleButton.setOnClickListener(this);
@@ -63,12 +67,18 @@ public class PrefPercentDialog extends AlertDialog
             mToggleButton.setChecked(true);
             mSeekBar.setProgress(percent);
             mSeekBar.setEnabled(true);
-            // DISABLE -- mToggleButton.setTextOn(String.format("Set to %d%%", percent));
         } else {
             mToggleButton.setChecked(false);
             mSeekBar.setProgress(mInitialValue);
             mSeekBar.setEnabled(false);
         }
+        
+        updatePercentLabel(-1);
+    }
+
+    private void updatePercentLabel(int percent) {
+        if (percent < 0) percent = mSeekBar.getProgress();
+        mPercentLabel.setText(String.format("%d%%", percent));
     }
 
     @Override
@@ -79,10 +89,8 @@ public class PrefPercentDialog extends AlertDialog
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+        updatePercentLabel(progress);
         if (mAccessor != null) mAccessor.changePercent(progress);
-        // DISABLE -- mToggleButton.setTextOn(String.format("Set to %d%%", progress));
-        // DISABLE -- // force the toggle button to update its text
-        // DISABLE -- mToggleButton.setChecked(mToggleButton.isChecked());
     }
 
     @Override

@@ -25,17 +25,14 @@
         android:layout_weight="1"
         android:max="100"
         android:secondaryProgress="10"
-        android:layout_gravity="center_horizontal"
         android:layout_margin="3dip"
-        />
+        android:layout_gravity="center_vertical"/>
 
 	<TextView
 	    android:id="@+id/percent"
 	    android:text="--"
 	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_toLeftOf="@id/seekbar"
-	    />
+	    android:layout_height="wrap_content" android:layout_gravity="center_vertical"/>
 
 </LinearLayout>
 
