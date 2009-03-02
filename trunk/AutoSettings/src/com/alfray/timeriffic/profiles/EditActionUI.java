@@ -6,12 +6,8 @@
 
 package com.alfray.timeriffic.profiles;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -21,11 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.SeekBar;
 import android.widget.TimePicker;
-import android.widget.ToggleButton;
 
 import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.profiles.PrefPercentDialog.Accessor;
@@ -121,18 +114,21 @@ public class EditActionUI extends Activity {
                     R.id.ringerModeButton, 
                     SettingsHelper.RingerMode.values(),
                     actions,
-                    Columns.ACTION_RINGER);
+                    Columns.ACTION_RINGER,
+                    "Ringer Mode");
             
             mPrefRingerVibrate = new PrefEnum(this,
                     R.id.ringerVibButton, 
                     SettingsHelper.VibrateRingerMode.values(),
                     actions,
-                    Columns.ACTION_VIBRATE);
+                    Columns.ACTION_VIBRATE,
+                    "Ringer Vibrate");
             
             mPrefWifi = new PrefToggle(this,
                     R.id.wifiButton,
                     actions,
-                    Columns.ACTION_WIFI);
+                    Columns.ACTION_WIFI,
+                    "Wifi Toggle");
 
             mPrefRingerVolume = new PrefPercent(this,
                     mPrefPercentOutWrapper,

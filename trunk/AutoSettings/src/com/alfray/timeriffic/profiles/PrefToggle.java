@@ -15,8 +15,14 @@ class PrefToggle extends PrefEnum {
     public PrefToggle(Activity activity,
                     int buttonResId,
                     String[] actions,
-                    char actionPrefix) {
-        super(activity, buttonResId, null /*values*/, actions, actionPrefix);
+                    char actionPrefix,
+                    String menuTitle) {
+        super(activity,
+              buttonResId,
+              null /*values*/,
+              actions,
+              actionPrefix,
+              menuTitle);
     }
 
     @Override

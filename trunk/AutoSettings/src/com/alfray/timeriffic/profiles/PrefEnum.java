@@ -11,11 +11,13 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.view.ContextMenu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 
 //-----------------------------------------------
 
-class PrefEnum extends PrefBase {
+class PrefEnum extends PrefBase
+    implements View.OnClickListener {
 
     protected static final char UNCHANGED_KEY = '-';
     protected static final String UNCHANGED_UI_NAME = "Unchanged";
@@ -33,18 +35,21 @@ class PrefEnum extends PrefBase {
     protected ArrayList<Choice> mChoices = new ArrayList<Choice>();
     protected Choice mCurrentChoice;
     private Button mButton;
+    private final String mMenuTitle;
     
     public PrefEnum(Activity activity,
                     int buttonResId,
                     Object[] values,
                     String[] actions,
-                    char actionPrefix) {
+                    char actionPrefix,
+                    String menuTitle) {
         super(activity);
         mActionPrefix = actionPrefix;
+        mMenuTitle = menuTitle;
 
         mButton = (Button) mActivity.findViewById(buttonResId);
         mActivity.registerForContextMenu(mButton);
-        mButton.setOnClickListener(new ShowMenuClickListener());
+        mButton.setOnClickListener(this);
         mButton.setTag(this);
         
         Choice c = new Choice(UNCHANGED_KEY, UNCHANGED_UI_NAME);
@@ -75,9 +80,14 @@ class PrefEnum extends PrefBase {
     }
 
     @Override
+    public void onClick(View view) {
+        mActivity.openContextMenu(mButton);
+    }
+
+    @Override
     public void onCreateContextMenu(ContextMenu menu) {
         
-        // TODO menu.setHeaderTitle(arg0);
+        menu.setHeaderTitle(mMenuTitle);
 
         for (Choice choice : mChoices) {
             menu.add(choice.mUiName);
