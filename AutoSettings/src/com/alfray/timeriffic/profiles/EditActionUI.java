@@ -28,6 +28,7 @@ import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.profiles.PrefPercentDialog.Accessor;
 import com.alfray.timeriffic.utils.SettingsHelper;
 
 public class EditActionUI extends Activity {
@@ -41,6 +42,7 @@ public class EditActionUI extends Activity {
     private long mActionId;
 
     private TimePicker mTimePicker;
+    private SettingsHelper mSettingsHelper;
 
     private PrefEnum mPrefRingerMode;
     private PrefEnum mPrefRingerVibrate;
@@ -55,7 +57,7 @@ public class EditActionUI extends Activity {
     private CheckBox[] mCheckDays;
 
     private View mCurrentContextMenuView;
-    private PrefPercent[] mCurrentPrefPercent = new PrefPercent[1];
+    private PrefPercent[] mPrefPercentOutWrapper = new PrefPercent[1];
 
     /** Called when the activity is first created. */
     @Override
@@ -75,7 +77,9 @@ public class EditActionUI extends Activity {
             finish();
             return;
         }
-        
+
+        mSettingsHelper = new SettingsHelper(this);
+
         // get profiles db helper
         ProfilesDB profilesDb = new ProfilesDB();
         profilesDb.onCreate(this);
@@ -131,16 +135,32 @@ public class EditActionUI extends Activity {
                     Columns.ACTION_WIFI);
 
             mPrefRingerVolume = new PrefPercent(this,
-                    mCurrentPrefPercent,
+                    mPrefPercentOutWrapper,
                     R.id.ringerVolButton,
                     actions,
-                    Columns.ACTION_RING_VOLUME);
+                    Columns.ACTION_RING_VOLUME,
+                    "Volume",
+                    0,
+                    null);
 
             mPrefBrightness = new PrefPercent(this,
-                    mCurrentPrefPercent,
+                    mPrefPercentOutWrapper,
                     R.id.brightnessButton,
                     actions,
-                    Columns.ACTION_BRIGHTNESS);
+                    Columns.ACTION_BRIGHTNESS,
+                    "Brightness",
+                    R.drawable.brightness,
+                    new Accessor() {
+                        @Override
+                        public void changePercent(int percent) {
+                            mSettingsHelper.changeBrightness(percent);
+                        }
+
+                        @Override
+                        public int getPercent() {
+                            return mSettingsHelper.getCurrentBrightness();
+                        }
+            });
             
             mCheckDays = new CheckBox[] {
                     (CheckBox) findViewById(R.id.dayMon),
@@ -201,8 +221,8 @@ public class EditActionUI extends Activity {
     @Override
     protected Dialog onCreateDialog(int id) {
         
-        if (id == DIALOG_EDIT_PERCENT && mCurrentPrefPercent[0] != null) {
-            return new PrefPercentDialog(this, mCurrentPrefPercent[0]);
+        if (id == DIALOG_EDIT_PERCENT && mPrefPercentOutWrapper[0] != null) {
+            return new PrefPercentDialog(this, mPrefPercentOutWrapper);
         }
         
         return super.onCreateDialog(id);

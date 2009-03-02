@@ -4,44 +4,46 @@
  * License TBD
  */
 
-/**
- * 
- */
 package com.alfray.timeriffic.profiles;
-
-import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.utils.SettingsHelper;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.ToggleButton;
+
+import com.alfray.timeriffic.R;
 
 public class PrefPercentDialog extends AlertDialog
     implements DialogInterface.OnDismissListener, DialogInterface.OnClickListener,
                SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
-    private SettingsHelper mHelper;
     private final int mInitialValue;
+    private final PrefPercent[] mPrefPercentOutWrapper;
     private final PrefPercent mPrefPercent;
     private SeekBar mSeekBar;
     private ToggleButton mToggleButton;
+    private Accessor mAccessor;
 
-    protected PrefPercentDialog(Context context, PrefPercent prefPercent) {
+    public interface Accessor {
+        public int getPercent();
+        public void changePercent(int percent);
+    }
+    
+    protected PrefPercentDialog(Context context, PrefPercent[] prefPercentOutWrapper) {
         super(context);
-        mPrefPercent = prefPercent;
+        mPrefPercentOutWrapper = prefPercentOutWrapper;
+        mPrefPercent = prefPercentOutWrapper[0];
 
-        setIcon(prefPercent.getIconResId());
-        setTitle(prefPercent.getDialogTitle());
+        if (mPrefPercent.getIconResId() != 0) setIcon(mPrefPercent.getIconResId());
+        if (mPrefPercent.getDialogTitle() != null) setTitle(mPrefPercent.getDialogTitle());
 
         View content = getLayoutInflater().inflate(R.layout.brigthness_alert, null/* root */);
         setView(content);
 
-        mHelper = new SettingsHelper(getContext());
-        mInitialValue = mHelper.getCurrentBrightness();
+        mAccessor = mPrefPercent.getAccessor(); 
+        mInitialValue = mAccessor == null ? -1 : mAccessor.getPercent();
 
         mSeekBar = (SeekBar) content.findViewById(R.id.seekbar);
         mSeekBar.setOnSeekBarChangeListener(this);
@@ -55,36 +57,32 @@ public class PrefPercentDialog extends AlertDialog
         setButton("Accept", this);
 
         // set initial value
-        if (mPrefPercent.getTag() instanceof String) {
-            String tag = (String) mPrefPercent.getTag();
-            try {
-                int percent = Integer.parseInt(tag);
-                mHelper.changeBrightness(percent);
-                mToggleButton.setChecked(true);
-                mSeekBar.setProgress(percent);
-                mSeekBar.setEnabled(true);
-                mToggleButton.setTextOn(String.format("Set to %d%%", percent));
-            } catch (Exception e) {
-                mToggleButton.setChecked(false);
-                mSeekBar.setProgress(mInitialValue);
-                mSeekBar.setEnabled(false);
-            }
+        int percent = mPrefPercent.getCurrentValue();
+        if (percent >= 0) {
+            if (mAccessor != null) mAccessor.changePercent(percent);
+            mToggleButton.setChecked(true);
+            mSeekBar.setProgress(percent);
+            mSeekBar.setEnabled(true);
+            // DISABLE -- mToggleButton.setTextOn(String.format("Set to %d%%", percent));
+        } else {
+            mToggleButton.setChecked(false);
+            mSeekBar.setProgress(mInitialValue);
+            mSeekBar.setEnabled(false);
         }
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        mHelper.changeBrightness(mInitialValue);
-        mCurrentPercentButton = null;
+        if (mAccessor != null) mAccessor.changePercent(mInitialValue);
+        mPrefPercentOutWrapper[0] = null;
     }
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int progress,
-            boolean fromTouch) {
-        mHelper.changeBrightness(progress);
-        mToggleButton.setTextOn(String.format("Set to %d%%", progress));
-        // force the toggle button to update its text
-        mToggleButton.setChecked(mToggleButton.isChecked());
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+        if (mAccessor != null) mAccessor.changePercent(progress);
+        // DISABLE -- mToggleButton.setTextOn(String.format("Set to %d%%", progress));
+        // DISABLE -- // force the toggle button to update its text
+        // DISABLE -- mToggleButton.setChecked(mToggleButton.isChecked());
     }
 
     @Override
@@ -100,16 +98,10 @@ public class PrefPercentDialog extends AlertDialog
     @Override
     public void onClick(DialogInterface dialog, int which) {
         // Update button with percentage selected
-        if (mPrefPercent instanceof Button) {
-            if (mToggleButton.isChecked()) {
-                int percent = mSeekBar.getProgress();
-                mPrefPercent.setTag(percent);
-                ((Button) mPrefPercent).setText(String
-                        .format("%d%%", percent));
-            } else {
-                mPrefPercent.setTag(null);
-                ((Button) mPrefPercent).setText("Unchanged");
-            }
+        if (mToggleButton.isChecked()) {
+            mPrefPercent.setValue(mSeekBar.getProgress());
+        } else {
+            mPrefPercent.setValue(-1);
         }
         dismiss();
     }

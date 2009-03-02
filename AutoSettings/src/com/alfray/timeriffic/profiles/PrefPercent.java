@@ -12,7 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.alfray.timeriffic.profiles.PrefEnum.Choice;
+import com.alfray.timeriffic.profiles.PrefPercentDialog.Accessor;
 
 //-----------------------------------------------
 
@@ -25,22 +25,27 @@ class PrefPercent extends PrefBase
     private Button mButton;
     /** -1 if unchanged, or 0..100 */
     private int mCurrentValue;
-    private final PrefPercent[] mCurrentPrefPercent;
+    private final PrefPercent[] mPrefPercentOutWrapper;
 
     private final String mDialogTitle;
-    private final String mIconResId;
+    private final int mIconResId;
+
+    private final Accessor mAccessor;
 
     public PrefPercent(Activity activity,
-                    PrefPercent[] currentPrefPercent, int buttonResId,
+                    PrefPercent[] prefPercentOutWrapper,
+                    int buttonResId,
                     String[] actions,
                     char actionPrefix,
                     String dialogTitle,
-                    String iconResId) {
+                    int iconResId,
+                    PrefPercentDialog.Accessor accessor) {
         super(activity);
-        mCurrentPrefPercent = currentPrefPercent;
+        mPrefPercentOutWrapper = prefPercentOutWrapper;
         mActionPrefix = actionPrefix;
         mDialogTitle = dialogTitle;
         mIconResId = iconResId;
+        mAccessor = accessor;
 
         mButton = (Button) mActivity.findViewById(buttonResId);
         mButton.setOnClickListener(this);
@@ -55,8 +60,22 @@ class PrefPercent extends PrefBase
         return mDialogTitle;
     }
     
-    public String getIconResId() {
+    public int getIconResId() {
         return mIconResId;
+    }
+    
+    public Accessor getAccessor() {
+        return mAccessor;
+    }
+    
+    /** -1 if unchanged, or 0..100 */
+    public int getCurrentValue() {
+        return mCurrentValue;
+    }
+
+    public void setValue(int percent) {
+        mCurrentValue = percent;
+        updateButtonText();
     }
 
     private void initValue(String[] actions, char prefix) {
@@ -96,7 +115,7 @@ class PrefPercent extends PrefBase
 
     @Override
     public void onClick(View v) {
-        mCurrentPrefPercent[0] = this;
+        mPrefPercentOutWrapper[0] = this;
         mActivity.showDialog(EditActionUI.DIALOG_EDIT_PERCENT);
     }
 }
