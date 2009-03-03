@@ -9,8 +9,6 @@ package com.alfray.timeriffic.utils;
 import android.content.Context;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
-import android.os.IHardwareService;
-import android.os.ServiceManager;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
@@ -34,6 +32,14 @@ public class SettingsHelper {
     
     private final Context mContext;
 
+    public boolean canControlWifi() {
+        return false;
+    }
+    
+    public boolean canControlBrigthness() {
+        return false;
+    }
+    
     public enum RingerMode {
         NORMAL,
         SILENT,
@@ -147,22 +153,22 @@ public class SettingsHelper {
         // - To get value: Settings.System.getInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
         // - To set value: Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, v);
 
-        Log.d(TAG, "changeBrightness: " + Integer.toString(percent));
-        
-        int v = MIN_BRIGHTNESS + percent * (MAX_BRIGHTNESS - MIN_BRIGHTNESS) / 100;
-        
-        if (persistent) {
-            Settings.System.putInt(mContext.getContentResolver(),
-                    Settings.System.SCREEN_BRIGHTNESS,
-                    v);
-        }
-        
-        try {
-            IHardwareService hs = IHardwareService.Stub.asInterface(ServiceManager.getService("hardware"));
-            if (hs != null) hs.setScreenBacklight(v);
-        } catch (Throwable t) {
-            Log.e(TAG, "Failed to set brightness to " + Integer.toString(v), t);
-        }
+//        Log.d(TAG, "changeBrightness: " + Integer.toString(percent));
+//        
+//        int v = MIN_BRIGHTNESS + percent * (MAX_BRIGHTNESS - MIN_BRIGHTNESS) / 100;
+//        
+//        if (persistent) {
+//            Settings.System.putInt(mContext.getContentResolver(),
+//                    Settings.System.SCREEN_BRIGHTNESS,
+//                    v);
+//        }
+//        
+//        try {
+//            IHardwareService hs = IHardwareService.Stub.asInterface(ServiceManager.getService("hardware"));
+//            if (hs != null) hs.setScreenBacklight(v);
+//        } catch (Throwable t) {
+//            Log.e(TAG, "Failed to set brightness to " + Integer.toString(v), t);
+//        }
     }
 
     /**
