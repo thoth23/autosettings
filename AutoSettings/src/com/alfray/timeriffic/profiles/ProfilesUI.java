@@ -431,6 +431,7 @@ public class ProfilesUI extends Activity {
                     mProfilesDb.resetProfiles(which);
                     removeDialog(DIALOG_RESET_CHOICES);
                     onDataChanged();
+                    requestSettingsCheck();
                 }
         });
         

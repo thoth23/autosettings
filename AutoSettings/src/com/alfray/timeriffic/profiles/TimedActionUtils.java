@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import android.content.Context;
+
+import com.alfray.timeriffic.utils.SettingsHelper;
 import com.alfray.timeriffic.utils.SettingsHelper.RingerMode;
 import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;
 
@@ -40,7 +43,11 @@ public class TimedActionUtils {
         return day;
     }
 
-    static public String computeDescription(int hourMin, int days, String actions) {
+    static public String computeDescription(
+            Context context, int hourMin, int days, String actions) {
+        
+        SettingsHelper sh = new SettingsHelper(context);
+        
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(System.currentTimeMillis());
         c.set(Calendar.HOUR_OF_DAY, hourMin / 60);
@@ -123,10 +130,14 @@ public class TimedActionUtils {
 
                             switch(code) {
                             case Columns.ACTION_WIFI:
-                                actions_names.add(value > 0 ? "Wifi on" : "Wifi off");
+                                if (sh.canControlWifi()) {
+                                    actions_names.add(value > 0 ? "Wifi on" : "Wifi off");
+                                }
                                 break;
                             case Columns.ACTION_BRIGHTNESS:
-                                actions_names.add(String.format("Brightness %d%%", value));
+                                if (sh.canControlBrigthness()) {
+                                    actions_names.add(String.format("Brightness %d%%", value));
+                                }
                                 break;
                             case Columns.ACTION_RING_VOLUME:
                                 actions_names.add(String.format("Ringer %d%%", value));

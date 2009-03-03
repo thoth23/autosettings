@@ -124,11 +124,11 @@ public class EditActionUI extends Activity {
                     Columns.ACTION_VIBRATE,
                     "Ringer Vibrate");
             
-            mPrefWifi = new PrefToggle(this,
-                    R.id.wifiButton,
-                    actions,
-                    Columns.ACTION_WIFI,
-                    "Wifi Toggle");
+//            mPrefWifi = new PrefToggle(this,
+//                    R.id.wifiButton,
+//                    actions,
+//                    Columns.ACTION_WIFI,
+//                    "Wifi Toggle");
 
             mPrefRingerVolume = new PrefPercent(this,
                     mPrefPercentOutWrapper,
@@ -149,25 +149,25 @@ public class EditActionUI extends Activity {
                         }
                     });
 
-            mPrefBrightness = new PrefPercent(this,
-                    mPrefPercentOutWrapper,
-                    R.id.brightnessButton,
-                    actions,
-                    Columns.ACTION_BRIGHTNESS,
-                    "Brightness",
-                    R.drawable.brightness,
-                    new Accessor() {
-                        @Override
-                        public void changePercent(int percent) {
-                            mSettingsHelper.changeBrightness(percent, false /*persist*/);
-                        }
+//            mPrefBrightness = new PrefPercent(this,
+//                    mPrefPercentOutWrapper,
+//                    R.id.brightnessButton,
+//                    actions,
+//                    Columns.ACTION_BRIGHTNESS,
+//                    "Brightness",
+//                    R.drawable.brightness,
+//                    new Accessor() {
+//                        @Override
+//                        public void changePercent(int percent) {
+//                            mSettingsHelper.changeBrightness(percent, false /*persist*/);
+//                        }
+//
+//                        @Override
+//                        public int getPercent() {
+//                            return mSettingsHelper.getCurrentBrightness();
+//                        }
+//                    });
 
-                        @Override
-                        public int getPercent() {
-                            return mSettingsHelper.getCurrentBrightness();
-                        }
-                    });
-            
             mCheckDays = new CheckBox[] {
                     (CheckBox) findViewById(R.id.dayMon),
                     (CheckBox) findViewById(R.id.dayTue),
@@ -259,13 +259,14 @@ public class EditActionUI extends Activity {
 
             mPrefRingerMode.collectResult(actions);
             mPrefRingerVibrate.collectResult(actions);
-            mPrefWifi.collectResult(actions);
             mPrefRingerVolume.collectResult(actions);
-            mPrefBrightness.collectResult(actions);
+            if (mPrefWifi != null) mPrefWifi.collectResult(actions);
+            if (mPrefBrightness != null) mPrefBrightness.collectResult(actions);
 
             Log.d(TAG, "new actions: " + actions.toString());
 
-            String description = TimedActionUtils.computeDescription(hourMin, days, actions.toString());
+            String description = TimedActionUtils.computeDescription(
+                    this, hourMin, days, actions.toString());
             
             int count = profilesDb.updateTimedAction(mActionId,
                     hourMin,

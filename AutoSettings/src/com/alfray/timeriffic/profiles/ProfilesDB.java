@@ -46,10 +46,13 @@ public class ProfilesDB {
     private SQLiteDatabase mDb;
     private DatabaseHelper mDbHelper;
 
+    private Context mContext;
+
     // ----------------------------------
 
     /** Call this after creating this object. */
     public boolean onCreate(Context context) {
+        mContext = context;
         mDbHelper = new DatabaseHelper(context, DB_NAME, DB_VERSION);
         mDb = mDbHelper.getWritableDatabase();
         boolean created = mDb != null;
@@ -58,6 +61,7 @@ public class ProfilesDB {
 
     /** Call this when the database is no longer needed. */
     public void onDestroy() {
+        mContext = null;
         if (mDbHelper != null) {
             mDbHelper.close();
             mDbHelper = null;
@@ -249,7 +253,8 @@ public class ProfilesDB {
             
             pid += index;
 
-            String description = TimedActionUtils.computeDescription(hourMin, days, actions);
+            String description = TimedActionUtils.computeDescription(
+                    mContext, hourMin, days, actions);
             
             ContentValues values = new ContentValues(2);
 
