@@ -46,4 +46,12 @@ public class PrefsValues {
     public boolean setIntroDismissed(boolean dismiss) {
         return mPrefs.edit().putBoolean("dismiss_intro", dismiss).commit();
     }
+    
+    public String getStatusMsg() {
+        return mPrefs.getString("status_msg", "N/A");
+    }
+    
+    public void setStatusMsg(String status) {
+        mPrefs.edit().putString("status_msg", status).commit();
+    }
 }

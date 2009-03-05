@@ -12,7 +12,6 @@ import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
-import android.view.WindowManager;
 
 /**
  * Helper class that changes settings.
