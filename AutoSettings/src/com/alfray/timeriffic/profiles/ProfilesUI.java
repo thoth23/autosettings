@@ -292,10 +292,11 @@ public class ProfilesUI extends Activity {
         switch(requestCode) {
         case DATA_CHANGED:
             onDataChanged();
+            requestSettingsCheck(AutoReceiver.TOAST_IF_CHANGED);
             break;
         case SETTINGS_UPDATED:
             updateGlobalToggleFromPrefs();
-            requestSettingsCheck();
+            requestSettingsCheck(AutoReceiver.TOAST_IF_CHANGED);
             break;
         }
     }
@@ -360,6 +361,7 @@ public class ProfilesUI extends Activity {
             @Override
             public void onClick(View v) {
                 mPrefsValues.setServiceEnabled(mGlobalToggle.isChecked());
+                requestSettingsCheck(AutoReceiver.TOAST_ALWAYS);
             }
         });
         
@@ -368,7 +370,7 @@ public class ProfilesUI extends Activity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestSettingsCheck();
+                requestSettingsCheck(AutoReceiver.TOAST_ALWAYS);
             }
         });
         
@@ -408,7 +410,7 @@ public class ProfilesUI extends Activity {
             showPrefs();
             break;
         case R.string.check_now:
-            requestSettingsCheck();
+            requestSettingsCheck(AutoReceiver.TOAST_ALWAYS);
             break;
         case R.string.about:
             showIntro(true /*force*/);
@@ -427,10 +429,10 @@ public class ProfilesUI extends Activity {
         startActivityForResult(new Intent(this, PrefsActivity.class), SETTINGS_UPDATED);
     }
 
-    private void requestSettingsCheck() {
+    private void requestSettingsCheck(int displayToast) {
         if (DEBUG) Log.d(TAG, "Request settings check");
         Intent i = new Intent(AutoReceiver.ACTION_AUTO_CHECK_STATE);
-        i.putExtra(AutoReceiver.EXTRA_TOAST_NEXT_EVENT, true);
+        i.putExtra(AutoReceiver.EXTRA_TOAST_NEXT_EVENT, displayToast);
         sendBroadcast(i);
     }
     
@@ -452,7 +454,7 @@ public class ProfilesUI extends Activity {
                     mProfilesDb.resetProfiles(which);
                     removeDialog(DIALOG_RESET_CHOICES);
                     onDataChanged();
-                    requestSettingsCheck();
+                    requestSettingsCheck(AutoReceiver.TOAST_IF_CHANGED);
                 }
         });
         

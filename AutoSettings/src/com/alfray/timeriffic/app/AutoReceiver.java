@@ -41,21 +41,29 @@ public class AutoReceiver extends BroadcastReceiver {
     /** Name of intent to broadcast to activate this receiver. */
     public final static String ACTION_AUTO_CHECK_STATE = "com.alfray.intent.action.AUTO_CHECK_STATE";
     
-    /** Name of an extra boolean: true if we should display a toast for next event. */
+    /** Name of an extra int: how we should display a toast for next event. */
     public final static String EXTRA_TOAST_NEXT_EVENT = "toast-next";
+    
+    public final static int TOAST_NONE = 0;
+    public final static int TOAST_IF_CHANGED = 1;
+    public final static int TOAST_ALWAYS = 2;
     
     @Override
     public void onReceive(Context context, Intent intent) {
 
         // boolean isBoot = Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction());
         
+        int displayToast = TOAST_NONE;
         Bundle extras = intent.getExtras();
-        boolean displayNextEventAsToast = extras != null && extras.getBoolean(EXTRA_TOAST_NEXT_EVENT);
+        if (extras != null) displayToast = extras.getInt(EXTRA_TOAST_NEXT_EVENT, TOAST_NONE);
 
         PrefsValues prefs = new PrefsValues(context);
 
         if (!prefs.isServiceEnabled()) {
             Log.d(TAG, "Checking disabled");
+            if (displayToast == TOAST_ALWAYS) {
+                Toast.makeText(context, "Timeriffic Disabled", Toast.LENGTH_LONG).show();
+            }
             return;
         }
 
@@ -87,7 +95,7 @@ public class AutoReceiver extends BroadcastReceiver {
                 // Compute next event and set an alarm for it
                 int nextEventMin = profilesDb.getWeekNextEvent(hourMin, day, prof_indexes);
                 if (nextEventMin > 0) {
-                    scheduleAlarm(context, prefs, c, nextEventMin, displayNextEventAsToast);
+                    scheduleAlarm(context, prefs, c, nextEventMin, displayToast);
                 }
             }
             
@@ -171,13 +179,13 @@ public class AutoReceiver extends BroadcastReceiver {
      * @param prefs Access to prefs (for status update)
      * @param now The time that was used at the beginning of the update.
      * @param nextEventMin The number of minutes ( > 0) after "now" where to set the alarm.
-     * @param displayNextEventAsToast True if we should display the event as a toast
+     * @param displayToast One of {@link #TOAST_NONE}, {@link #TOAST_IF_CHANGED} or {@link #TOAST_ALWAYS}
      */
     private void scheduleAlarm(Context context,
             PrefsValues prefs,
             Calendar now,
             int nextEventMin,
-            boolean displayNextEventAsToast) {
+            int displayToast) {
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         
         Intent intent = new Intent(ACTION_AUTO_CHECK_STATE);
@@ -191,7 +199,14 @@ public class AutoReceiver extends BroadcastReceiver {
 
         manager.set(AlarmManager.RTC_WAKEUP, timeMs, op);
 
-        if (DEBUG || displayNextEventAsToast) {
+        boolean shouldDisplayToast = displayToast != TOAST_NONE;
+        if (displayToast == TOAST_IF_CHANGED) {
+            shouldDisplayToast = timeMs != prefs.getLastScheduledAlarm();
+        }
+        
+        prefs.setLastScheduledAlarm(timeMs);
+        
+        if (DEBUG || shouldDisplayToast) {
             try {
                 Configuration config = new Configuration();
                 Settings.System.getConfiguration(context.getContentResolver(), config);
@@ -201,7 +216,7 @@ public class AutoReceiver extends BroadcastReceiver {
                 s2 = "Next Change: " + s2;
 
                 prefs.setStatusMsg(s2);
-                if (displayNextEventAsToast) Toast.makeText(context, s2, Toast.LENGTH_LONG).show();
+                if (shouldDisplayToast) Toast.makeText(context, s2, Toast.LENGTH_LONG).show();
                 if (DEBUG) Log.d(TAG, s2);
 
             } catch (Throwable t) {
@@ -213,7 +228,7 @@ public class AutoReceiver extends BroadcastReceiver {
                 s2 = String.format("Next Change: %s", s2);
 
                 prefs.setStatusMsg(s2);
-                if (displayNextEventAsToast) Toast.makeText(context, s2, Toast.LENGTH_LONG).show();
+                if (shouldDisplayToast) Toast.makeText(context, s2, Toast.LENGTH_LONG).show();
                 if (DEBUG) Log.d(TAG, s2);
             }
         }
