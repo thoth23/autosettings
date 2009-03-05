@@ -8,7 +8,8 @@ VERS="$1"
 function die() {
   echo "Error: " $*
   echo
-  echo "USage: $0 [dest]"
+  echo "USage: $0 <version>"
+  echo "Automatically sign [A-Z].apk"
   exit 1
 }
 
