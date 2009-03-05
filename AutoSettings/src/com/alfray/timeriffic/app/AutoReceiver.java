@@ -198,7 +198,7 @@ public class AutoReceiver extends BroadcastReceiver {
                 
                 DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, config.locale);
                 String s2 = df.format(now.getTime());
-                s2 = "Next Alarm: " + s2;
+                s2 = "Next Change: " + s2;
 
                 prefs.setStatusMsg(s2);
                 if (displayNextEventAsToast) Toast.makeText(context, s2, Toast.LENGTH_LONG).show();
@@ -210,7 +210,7 @@ public class AutoReceiver extends BroadcastReceiver {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 sdf.setCalendar(now);
                 String s2 = sdf.format(now.getTime());
-                s2 = String.format("Next Alarm: %s", s2);
+                s2 = String.format("Next Change: %s", s2);
 
                 prefs.setStatusMsg(s2);
                 if (displayNextEventAsToast) Toast.makeText(context, s2, Toast.LENGTH_LONG).show();
