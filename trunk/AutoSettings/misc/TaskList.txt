@@ -1,11 +1,11 @@
 TODO
 
-20090304 Edit intro text
 20090304 Open for testing
 20090304 Release to market
 
 DONE
 
+20090304 Edit intro text
 20090304 Receiver: compute next, schedule alert, show toast
 20090304 Revamp intro UI, fix for cupcake
 20090302 Remove brightness/wifi. Will reintroduce later with a twist
