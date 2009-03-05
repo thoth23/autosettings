@@ -108,6 +108,7 @@ public class ProfilesUI extends Activity {
     }
 
     private void showIntro(boolean force) {
+        boolean hideControls = force;
         if (!force) {
             TimerifficApp tapp = getApp();
             if (tapp != null &&
@@ -119,7 +120,9 @@ public class ProfilesUI extends Activity {
         }
         
         if (force) {
-            startActivity(new Intent(this, IntroDialogActivity.class));
+            Intent i = new Intent(this, IntroDialogActivity.class);
+            if (hideControls) i.putExtra(IntroDialogActivity.EXTRA_NO_CONTROLS, true);
+            startActivity(i);
         }
     }
     

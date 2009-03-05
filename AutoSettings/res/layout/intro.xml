@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent" 
     android:layout_height="fill_parent"
     android:orientation="vertical"
@@ -22,14 +23,39 @@
 
 </ScrollView>
 
+<ImageView
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content"
+    android:src="@drawable/divider_horizontal_dark"
+    android:background="#555"
+    />
+
+<LinearLayout
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#555"
+    >
 
 <CheckBox 
     android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
     android:text="Don't display again" 
     android:id="@+id/dismiss"
-    android:layout_weight="0"
-    android:layout_gravity="center_horizontal" android:layout_width="wrap_content"/>
+    android:layout_gravity="center_vertical"
+    android:layout_weight="1"
+    />
 
+<Button
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:text="Continue"
+    android:id="@+id/cont"
+    android:layout_gravity="center_vertical"
+    android:layout_weight="1"
+    />
+
+</LinearLayout>
 
 </LinearLayout>
 
