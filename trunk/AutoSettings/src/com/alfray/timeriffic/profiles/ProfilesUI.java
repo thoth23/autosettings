@@ -36,6 +36,7 @@ import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.AbsListView.RecyclerListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -51,7 +52,8 @@ import com.alfray.timeriffic.ui.IntroDialogActivity;
 public class ProfilesUI extends Activity {
 
     private static final String TAG = "ProfilesUI";
-
+    private static final boolean DEBUG = true;
+    
     private static final int DATA_CHANGED = 42;
     private static final int SETTINGS_UPDATED = 43;
 
@@ -144,7 +146,7 @@ public class ProfilesUI extends Activity {
             mProfilesList.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Log.d(TAG, String.format("onItemClick: pos %d, id %d", position, id));
+                    if (DEBUG) Log.d(TAG, String.format("onItemClick: pos %d, id %d", position, id));
                     BaseHolder h = null;
                     h = getHolderAtPosition(null, position);
                     if (h != null) h.onItemSelected();
@@ -154,7 +156,7 @@ public class ProfilesUI extends Activity {
             mProfilesList.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
                 @Override
                 public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-                    Log.d(TAG, "onCreateContextMenu");
+                    if (DEBUG) Log.d(TAG, "onCreateContextMenu");
                     BaseHolder h = null;
                     h = getHolderAtPosition(menuInfo, -1);
                     if (h != null) h.onCreateContextMenu(menu);
@@ -362,10 +364,24 @@ public class ProfilesUI extends Activity {
         });
         
         Button b = (Button) findViewById(R.id.check_now);
+        
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestSettingsCheck();
+            }
+        });
+        
+        b.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // Display a toast with the last status msg
+                Toast t = Toast.makeText(ProfilesUI.this,
+                        mPrefsValues.getStatusMsg(),
+                        Toast.LENGTH_LONG);
+                t.show();
+                
+                return true; // we consumed the long view
             }
         });
     }
@@ -412,8 +428,10 @@ public class ProfilesUI extends Activity {
     }
 
     private void requestSettingsCheck() {
-        Log.d(TAG, "Request settings check");
-        sendBroadcast(new Intent(AutoReceiver.ACTION_AUTO_CHECK_STATE));
+        if (DEBUG) Log.d(TAG, "Request settings check");
+        Intent i = new Intent(AutoReceiver.ACTION_AUTO_CHECK_STATE);
+        i.putExtra(AutoReceiver.EXTRA_TOAST_NEXT_EVENT, true);
+        sendBroadcast(i);
     }
     
     protected void showResetChoices() {
@@ -873,19 +891,19 @@ public class ProfilesUI extends Activity {
         public void onContextMenuSelected(MenuItem item) {
             switch (item.getItemId()) {
             case R.string.insert_profile:
-                Log.d(TAG, "profile - insert_profile");
+                if (DEBUG) Log.d(TAG, "profile - insert_profile");
                 insertNewProfile(getCursor());
                 break;
             case R.string.insert_action:
-                Log.d(TAG, "profile - insert_action");
+                if (DEBUG) Log.d(TAG, "profile - insert_action");
                 insertNewAction(getCursor());
                 break;
             case R.string.delete:
-                Log.d(TAG, "profile - delete");
+                if (DEBUG) Log.d(TAG, "profile - delete");
                 deleteProfile(getCursor());
                 break;
             case R.string.rename:
-                Log.d(TAG, "profile - rename");
+                if (DEBUG) Log.d(TAG, "profile - rename");
                 editProfile(getCursor());
                 break;
             default:
@@ -925,7 +943,7 @@ public class ProfilesUI extends Activity {
         @Override
         public void onItemSelected() {
             // trigger edit
-            Log.d(TAG, "action - edit");
+            if (DEBUG) Log.d(TAG, "action - edit");
             editAction(getCursor());
         }
 
@@ -933,15 +951,15 @@ public class ProfilesUI extends Activity {
         public void onContextMenuSelected(MenuItem item) {
             switch (item.getItemId()) {
             case R.string.insert_action:
-                Log.d(TAG, "action - insert_action");
+                if (DEBUG) Log.d(TAG, "action - insert_action");
                 insertNewAction(getCursor());
                 break;
             case R.string.delete:
-                Log.d(TAG, "action - delete");
+                if (DEBUG) Log.d(TAG, "action - delete");
                 deleteTimedAction(getCursor());
                 break;
             case R.string.edit:
-                Log.d(TAG, "action - edit");
+                if (DEBUG) Log.d(TAG, "action - edit");
                 editAction(getCursor());
                 break;
             default:

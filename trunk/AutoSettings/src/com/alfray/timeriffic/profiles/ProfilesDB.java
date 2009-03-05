@@ -38,6 +38,7 @@ import android.util.Log;
 public class ProfilesDB {
     
     private static final String TAG = "ProfilesDB";
+    private static final boolean DEBUG = true;
 
     private static final String PROFILES_TABLE = "profiles";
     private static final String DB_NAME = "profiles.db";
@@ -212,7 +213,7 @@ public class ProfilesDB {
             
             id = mDb.insert(PROFILES_TABLE, Columns.TYPE, values);
 
-            Log.d(TAG, String.format("Insert profile: %d => row %d", index, id));
+            if (DEBUG) Log.d(TAG, String.format("Insert profile: %d => row %d", index, id));
 
             if (id < 0) throw new SQLException("insert profile row failed");
             setTransactionSuccessful();
@@ -269,7 +270,7 @@ public class ProfilesDB {
             
             long id = mDb.insert(PROFILES_TABLE, Columns.TYPE, values);
 
-            Log.d(TAG, String.format("Insert profile %d, action: %d => row %d", profileIndex, index, id));
+            if (DEBUG) Log.d(TAG, String.format("Insert profile %d, action: %d => row %d", profileIndex, index, id));
 
             if (id < 0) throw new SQLException("insert action row failed");
             setTransactionSuccessful();
@@ -594,7 +595,7 @@ public class ProfilesDB {
      */
     public void resetProfiles(int labelIndex) {
 
-        Log.d(TAG, "Reset profiles: " + Integer.toString(labelIndex));
+        if (DEBUG) Log.d(TAG, "Reset profiles: " + Integer.toString(labelIndex));
         
         beginTransaction();
         try {
@@ -649,7 +650,7 @@ public class ProfilesDB {
     /**
      * Returns the list of all enabled profiles.
      * This is a list of profiles indexes.
-     * - Can return an empty list, but not null.
+     * Can return an empty list, but not null.
      */
     public long[] getEnabledProfiles() {
 
@@ -704,7 +705,7 @@ public class ProfilesDB {
      *   The hourMin check is done after on the result.
      * - Can return an empty list, but not null.
      */
-    public ArrayList<ActionInfo> getActivableActions(int hourMin, int day, long[] prof_indexes) {
+    public ArrayList<ActionInfo> getDayActivableActions(int hourMin, int day, long[] prof_indexes) {
         if (prof_indexes.length < 1) return null;
 
         StringBuilder profList = new StringBuilder();
@@ -726,7 +727,7 @@ public class ProfilesDB {
         // ORDER BY hourMin DESC
         String orderBy = String.format("%s DESC", Columns.HOUR_MIN);
 
-        Log.d(TAG, "Get actions: WHERE " + where + " ORDER BY " + orderBy);
+        if (DEBUG) Log.d(TAG, "Get actions: WHERE " + where + " ORDER BY " + orderBy);
 
         
         Cursor c = null;
@@ -745,22 +746,23 @@ public class ProfilesDB {
             int hourMinColIndex = c.getColumnIndexOrThrow(Columns.HOUR_MIN);
             int actionsColInfo = c.getColumnIndexOrThrow(Columns.ACTIONS);
 
-            int lastHourMin = 0;
+            // Above we got the list of all actions for the requested day
+            // that happen before the requested hourMin, in descending time
+            // order, e.g. the most recent action is first in the list.
+            //
+            // We want to return the first action found. There might be more
+            // than one action with the same time, so return them all.
+            
             ArrayList<ActionInfo> infos = new ArrayList<ActionInfo>();
             if (c.moveToFirst()) {
+                int currHourMin = c.getInt(hourMinColIndex);
                 do {
-                    int currHourMin = c.getInt(hourMinColIndex);
-                    if (lastHourMin == 0) {
-                        lastHourMin = currHourMin;
-                    } else if (currHourMin != lastHourMin) {
-                        break;
-                    }
-
                     infos.add(new ActionInfo(c.getLong(rowIdColIndex),
-                            currHourMin,
                             c.getString(actionsColInfo)));
-                    lastHourMin = currHourMin;
-                } while (c.moveToNext());
+
+                    if (DEBUG) Log.d(TAG, String.format("ActivableAction: day %d, hourMin %04d", day, currHourMin));
+                        
+                } while (c.moveToNext() && c.getInt(hourMinColIndex) == currHourMin);
             }
 
             return infos;
@@ -770,19 +772,156 @@ public class ProfilesDB {
     }
 
     /**
+     * Invokes {@link #getDayActivableActions(int, int, long[])} for the current
+     * day. If nothing is found, look at the 6 previous days to see if we can
+     * find an action.
+     */
+    public ArrayList<ActionInfo> getWeekActivableActions(int hourMin, int day, long[] prof_indexes) {
+        ArrayList<ActionInfo> actions = null;
+
+        // Look for the last enabled action for day.
+        // If none was found, loop up to 6 days before and check the last
+        // action before 24:00.
+        for (int k = 0; k < 7; k++) {
+            actions = getDayActivableActions(hourMin, day, prof_indexes);
+
+            if (actions != null && actions.size() > 0) {
+                break;
+            }
+
+            // Switch to previous day and loop from monday to sunday as needed.
+            day = day >> 1;
+            if (day == 0) day = Columns.SUNDAY;
+            
+            // Look for anything "before the end of the day". Since we
+            // want to match 23:59 we need to add one minute thus 24h00
+            // is our target.
+            hourMin = 24*60 + 0;
+        }
+        
+        return actions;
+    }
+
+    /**
+     * Given a day and an hourMin time, try to find the first even that happens
+     * after that timestamp. If nothing if found on the day, look up to 6 days
+     * ahead.
+     * 
+     * prof_indexes is a list of profile indexes (not ids) that are currently
+     * enabled.
+     * 
+     * @return The number of minutes from the given timestamp to the next event
+     *  or 0 if there's no such event ("now" is not a valid next event)
+     */
+    public int getWeekNextEvent(int hourMin, int day, long[] prof_indexes) {
+        // First try to find something today
+        int found = getDayNextEvent(hourMin, day, prof_indexes);
+        if (found > hourMin) {
+            return found - hourMin;
+        }
+        
+        // Otherwise look for the 6 days of events
+        int minutes = 24*60 - hourMin;
+        for(int k = 1; k < 7; k++, minutes += 24*60) {
+            // Switch to next day. Loop from sunday back to monday.
+            day = day << 1;
+            if (day > Columns.SUNDAY) day = Columns.MONDAY;
+            
+            found = getDayNextEvent(-1 /*One minute before 00:00*/, day, prof_indexes);
+            if (found >= 0) {
+                return minutes + found;
+            }
+        }
+        
+        return 0;
+    }
+
+    /**
+     * Given a day and an hourMin time, try to find the first even that happens
+     * after that timestamp on the singular day.
+     * 
+     * prof_indexes is a list of profile indexes (not ids) that are currently
+     * enabled.
+     * 
+     * @return The hourMin of the event found (hourMin..23:59) or -1 if nothing found.
+     *  If the return value is not -1, it is guaranteed to be greater than the
+     *  given hourMin since we look for event *past* this time.
+     */
+    private int getDayNextEvent(int hourMin, int day, long[] prof_indexes) {
+        if (prof_indexes.length < 1) return -1;
+
+        StringBuilder profList = new StringBuilder();
+        for (long prof_index : prof_indexes) {
+            if (profList.length() > 0) profList.append(",");
+            profList.append(Long.toString(prof_index));
+        }
+        
+        // generates WHERE type=2 (aka action) 
+        //           AND hourMin > targetHourMin
+        //           AND days & MASK != 0
+        //           AND prof_id >> SHIFT IN (profList)
+        String where = String.format("%s=%d AND %s > %d AND %s & %d != 0 AND %s >> %d IN (%s)",
+                Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
+                Columns.HOUR_MIN, hourMin,
+                Columns.DAYS, day,
+                Columns.PROFILE_ID, Columns.PROFILE_SHIFT, profList);
+
+        // ORDER BY hourMin ASC
+        String orderBy = String.format("%s ASC", Columns.HOUR_MIN);
+
+        // LIMIT 1 (we only want the first result)
+        String limit = "1";
+        
+        if (DEBUG) Log.d(TAG, "Get actions: WHERE " + where + " ORDER BY " + orderBy + " LIMIT " + limit);
+
+        
+        Cursor c = null;
+        try {
+            c = mDb.query(
+                    PROFILES_TABLE,                         // table
+                    new String[] { Columns._ID, Columns.HOUR_MIN, Columns.ACTIONS },    // columns
+                    where,                                  // selection
+                    null,                                   // selectionArgs
+                    null,                                   // groupBy
+                    null,                                   // having
+                    orderBy,
+                    limit
+                    );
+
+            int hourMinColIndex = c.getColumnIndexOrThrow(Columns.HOUR_MIN);
+
+            if (c.moveToFirst()) {
+                hourMin = c.getInt(hourMinColIndex);
+
+                if (DEBUG) Log.d(TAG, String.format("NextEvent: day %d, hourMin %04d", day, hourMin));
+                
+                return hourMin;
+            }
+        } finally {
+            if (c != null) c.close();
+        }
+
+        return -1;
+    }
+
+
+    /**
      * Struct that describes a Timed Action returned by
-     * {@link ProfilesDB#getActivableActions(int, int, long[])}
+     * {@link ProfilesDB#getDayActivableActions(int, int, long[])}
      */
     public static class ActionInfo {
 
         public final long mRowId;
-        public final int mHourMin;
         public final String mActions;
 
-        public ActionInfo(long rowId, int hourMin, String actions) {
+        public ActionInfo(long rowId, String actions) {
             mRowId = rowId;
-            mHourMin = hourMin;
             mActions = actions;
+        }
+        
+        @Override
+        public String toString() {
+            return String.format("Action<#.%d @%04d: %s>", mRowId, mActions);
         }
     }
 
@@ -802,7 +941,7 @@ public class ProfilesDB {
                 Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
                 Columns._ID, rowList);
 
-        Log.d(TAG, "Mark actions: WHERE " + where);
+        if (DEBUG) Log.d(TAG, "Mark actions: WHERE " + where);
         
         ContentValues values = new ContentValues(1);
         values.put(Columns.IS_ENABLED, true);

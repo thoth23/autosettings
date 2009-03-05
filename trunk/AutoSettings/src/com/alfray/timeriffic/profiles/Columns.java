@@ -96,7 +96,9 @@ public class Columns implements BaseColumns {
      */
     public static final String DAYS = "days";
 
+    /** The first day of the bit field: monday is bit 0. */
     public static final int MONDAY_BIT_INDEX = 0;
+    /** The last day of the bit field: sunday is bit 6. */
     public static final int SUNDAY_BIT_INDEX = 6;
 
     public static final int MONDAY    = 1 << MONDAY_BIT_INDEX;

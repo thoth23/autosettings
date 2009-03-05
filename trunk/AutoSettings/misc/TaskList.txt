@@ -1,16 +1,14 @@
 TODO
 
-20090210 Fix insert timed action order
-
-20090124 Check now + UI feedback
-20090124 Receiver: compute current, next
-20090124 Receiver: perform action
-20090124 Receiver activates timed actions + UI feedback
-
-20090124 Preferences
+20090304 Edit intro text
+20090304 Open for testing
+20090304 Release to market
 
 DONE
 
+20090304 Receiver: compute next, schedule alert, show toast
+20090304 Revamp intro UI, fix for cupcake
+20090302 Remove brightness/wifi. Will reintroduce later with a twist
 20090215 Redesign Edit Action UI for new actions (not complete)
 20090214 New actions
 20090214 Receiver: compute current
