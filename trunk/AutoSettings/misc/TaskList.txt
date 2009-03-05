@@ -5,6 +5,7 @@ TODO
 
 DONE
 
+20090305 Recompute next event on action changes, display changed event as toast
 20090304 Edit intro text
 20090304 Receiver: compute next, schedule alert, show toast
 20090304 Revamp intro UI, fix for cupcake

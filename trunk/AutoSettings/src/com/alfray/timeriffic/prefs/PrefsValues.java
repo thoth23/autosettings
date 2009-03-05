@@ -54,4 +54,12 @@ public class PrefsValues {
     public void setStatusMsg(String status) {
         mPrefs.edit().putString("status_msg", status).commit();
     }
+    
+    public long getLastScheduledAlarm() {
+        return mPrefs.getLong("last_alarm", 0);
+    }
+    
+    public void setLastScheduledAlarm(long timeMs) {
+        mPrefs.edit().putLong("last_alarm", timeMs).commit();
+    }
 }
