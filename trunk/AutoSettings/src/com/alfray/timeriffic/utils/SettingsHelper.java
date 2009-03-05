@@ -12,6 +12,7 @@ import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
+import android.view.WindowManager;
 
 /**
  * Helper class that changes settings.
@@ -134,8 +135,8 @@ public class SettingsHelper {
         manager.setWifiEnabled(enabled);
     }
     
-    private static int MIN_BRIGHTNESS = android.os.Power.BRIGHTNESS_DIM + 10;
-    private static int MAX_BRIGHTNESS = android.os.Power.BRIGHTNESS_ON;
+    private static int MIN_BRIGHTNESS = 10;  // android.os.Power.BRIGHTNESS_DIM + 10;
+    private static int MAX_BRIGHTNESS = 255; // android.os.Power.BRIGHTNESS_ON;
 
     /**
      * @param percent The new value in 0..100 range (will get mapped to adequate OS values)
