@@ -1,10 +1,23 @@
-TODO
+TODO v2.0
 
-20090304 Open for testing
+20090305 Menu "Append New Profile" => "Add New Profile"
+20090305 No action: use alternate view to have button "Create Profile"
+20090305 Landscape layout for edit action
+20090305 Better tab pictures [DK]
+20090305 Set/Change button in Edit Action. Back for cancel (dismiss).
+20090305 Remove Ringer+Vibrate Mode, replace by simplified/unified settings.
 20090304 Release to market
+
+TODO v2.1
+
+20090305 Reorder actions/profiles
+20090305 More backgrounds/colors. Test how to do gradients.
+20090305 Test header profile: checkbox (separate) + label=>menu + "+" action
+
 
 DONE
 
+20090305 Open for testing
 20090305 Recompute next event on action changes, display changed event as toast
 20090304 Edit intro text
 20090304 Receiver: compute next, schedule alert, show toast
