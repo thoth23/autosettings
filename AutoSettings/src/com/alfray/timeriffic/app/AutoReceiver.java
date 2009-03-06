@@ -19,6 +19,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -50,25 +52,40 @@ public class AutoReceiver extends BroadcastReceiver {
     
     @Override
     public void onReceive(Context context, Intent intent) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TimerifficReceiver");
+        try {
+            wl.acquire();
 
-        // boolean isBoot = Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction());
-        
-        int displayToast = TOAST_NONE;
-        Bundle extras = intent.getExtras();
-        if (extras != null) displayToast = extras.getInt(EXTRA_TOAST_NEXT_EVENT, TOAST_NONE);
+            // boolean isBoot = Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction());
+            
+            int displayToast = TOAST_NONE;
+            Bundle extras = intent.getExtras();
+            if (extras != null) displayToast = extras.getInt(EXTRA_TOAST_NEXT_EVENT, TOAST_NONE);
 
-        PrefsValues prefs = new PrefsValues(context);
+            PrefsValues prefs = new PrefsValues(context);
 
-        if (!prefs.isServiceEnabled()) {
-            Log.d(TAG, "Checking disabled");
-            if (displayToast == TOAST_ALWAYS) {
-                Toast.makeText(context, "Timeriffic Disabled", Toast.LENGTH_LONG).show();
+            if (!prefs.isServiceEnabled()) {
+                Log.d(TAG, "Checking disabled");
+                if (displayToast == TOAST_ALWAYS) {
+                    Toast.makeText(context, "Timeriffic Disabled", Toast.LENGTH_LONG).show();
+                }
+                return;
             }
-            return;
+
+            Log.d(TAG, "Checking enabled");
+
+            checkProfiles(context, displayToast, prefs);
+            
+            notifyDataChanged(context);
+
+        } finally {
+            wl.release();
         }
+    }
 
-        Log.d(TAG, "Checking enabled");
-
+    private void checkProfiles(Context context, int displayToast,
+                    PrefsValues prefs) {
         ProfilesDB profilesDb = new ProfilesDB();
         try {
             profilesDb.onCreate(context);
@@ -102,8 +119,6 @@ public class AutoReceiver extends BroadcastReceiver {
         } finally {
             profilesDb.onDestroy();
         }
-        
-        notifyDataChanged(context);
     }
 
     private void performActions(SettingsHelper settings, ArrayList<ActionInfo> actions) {
