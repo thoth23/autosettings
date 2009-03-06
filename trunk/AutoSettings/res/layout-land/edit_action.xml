@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/scroller" 
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content" android:scrollY="0dip">
+
+<LinearLayout 
+    android:layout_width="fill_parent"
+	android:layout_height="wrap_content" 
+	android:orientation="vertical"
+	android:padding="5dip"
+	>
+
+    <!-- Action Section -->
+    <TextView 
+        android:layout_height="wrap_content"
+        android:textAppearance="@android:style/TextAppearance.Large.Inverse"
+        android:text="Action" 
+        android:gravity="center_horizontal"
+        android:layout_width="fill_parent" 
+        android:layout_margin="5sp"
+        android:background="@drawable/section_bg" 
+        />
+
+    <TableLayout
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent"
+        >
+    <TableRow 
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent" 
+        >
+        <TextView
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Ringer Mode:"
+            />
+        <Button 
+            android:id="@+id/ringerModeButton" 
+            android:layout_width="fill_parent" 
+            android:layout_height="wrap_content" 
+            android:paddingTop="10sp"
+            android:text="--" 
+            android:layout_weight="1" 
+            />
+    </TableRow>
+    <TableRow 
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent" 
+        >
+        <TextView 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Ringer Vibrate:"
+            />
+        <Button 
+            android:id="@+id/ringerVibButton" 
+            android:layout_width="fill_parent" 
+            android:layout_height="wrap_content" 
+            android:paddingTop="10sp"
+            android:text="--" 
+            android:layout_weight="1" 
+            />
+    </TableRow>
+    <TableRow 
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent" 
+        >
+        <TextView 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Ringer Volume:"
+            />
+        <Button 
+            android:id="@+id/ringerVolButton" 
+            android:layout_width="fill_parent" 
+            android:layout_height="wrap_content" 
+            android:paddingTop="10sp"
+            android:text="--" 
+            android:layout_weight="1" 
+            />
+    </TableRow>
+    <!-- TableRow 
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent" 
+        >
+        <TextView 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Brightness:"
+            />
+        <Button 
+            android:id="@+id/brightnessButton" 
+            android:layout_width="fill_parent" 
+            android:layout_height="wrap_content" 
+            android:paddingTop="10sp"
+            android:text="- -" 
+            android:layout_weight="1" 
+            />
+    </TableRow>
+    <TableRow 
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent" 
+        >
+        <TextView 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Wifi:"
+            />
+        <Button 
+            android:id="@+id/wifiButton" 
+            android:layout_width="fill_parent" 
+            android:layout_height="wrap_content" 
+            android:paddingTop="10sp"
+            android:text="- -" 
+            android:layout_weight="1" 
+            />
+    </TableRow -->
+    </TableLayout>
+
+    <!-- Time Section -->
+	<TextView 
+        android:layout_height="wrap_content"
+		android:layout_width="fill_parent" 
+		android:text="Trigger Time"
+		android:textAppearance="@android:style/TextAppearance.Large.Inverse"
+		android:gravity="center_horizontal" 
+        android:layout_margin="5sp"
+		android:background="@drawable/section_bg" 
+		/>
+
+	<TimePicker
+	    android:id="@+id/timePicker"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal" 
+		/>
+
+    <!-- Days Section -->
+	<TextView
+        android:textAppearance="@android:style/TextAppearance.Large.Inverse"
+		android:text="Days" 
+		android:gravity="center_horizontal"
+		android:layout_height="wrap_content" 
+		android:layout_width="fill_parent"
+		android:layout_margin="5sp" 
+		android:background="@drawable/section_bg"
+        />
+
+	<TableLayout
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent" 
+		android:layout_gravity="center_horizontal"
+		>
+	<TableRow
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent" 
+	   >
+		<CheckBox 
+		    android:id="@+id/dayMon"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="Mon" 
+			/>
+        <CheckBox 
+            android:id="@+id/dayTue"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Tues" 
+            />
+        <CheckBox 
+            android:id="@+id/dayWed"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Wed" 
+            />
+        <CheckBox 
+            android:id="@+id/dayThu"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Thrus" 
+            />
+    </TableRow>
+    <TableRow 
+		android:layout_height="wrap_content" 
+		android:layout_width="fill_parent" 
+		>
+        <CheckBox 
+            android:id="@+id/dayFri"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Fri" 
+            />
+        <CheckBox 
+            android:id="@+id/daySat"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Sat" 
+            />
+        <CheckBox 
+            android:id="@+id/daySun"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Sun" 
+            />
+    </TableRow>
+    </TableLayout>
+
+</LinearLayout>
+</ScrollView>
