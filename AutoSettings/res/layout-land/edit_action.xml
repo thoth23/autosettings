@@ -14,14 +14,11 @@
 	>
 
     <!-- Action Section -->
-    <TextView 
+    <TextView
         android:layout_height="wrap_content"
-        android:textAppearance="@android:style/TextAppearance.Large.Inverse"
-        android:text="Action" 
-        android:gravity="center_horizontal"
         android:layout_width="fill_parent" 
-        android:layout_margin="5sp"
-        android:background="@drawable/section_bg" 
+        android:text="Action" 
+        style="@style/SectionHeader"
         />
 
     <TableLayout
@@ -41,15 +38,11 @@
             android:id="@+id/ringerModeButton" 
             android:layout_width="fill_parent" 
             android:layout_height="wrap_content" 
-            android:paddingTop="10sp"
             android:text="--" 
             android:layout_weight="1" 
+            style="@style/ActionButton"
             />
-    </TableRow>
-    <TableRow 
-        android:layout_height="wrap_content" 
-        android:layout_width="fill_parent" 
-        >
+
         <TextView 
             android:layout_width="wrap_content" 
             android:layout_height="wrap_content"
@@ -59,9 +52,9 @@
             android:id="@+id/ringerVibButton" 
             android:layout_width="fill_parent" 
             android:layout_height="wrap_content" 
-            android:paddingTop="10sp"
             android:text="--" 
             android:layout_weight="1" 
+            style="@style/ActionButton"
             />
     </TableRow>
     <TableRow 
@@ -77,9 +70,9 @@
             android:id="@+id/ringerVolButton" 
             android:layout_width="fill_parent" 
             android:layout_height="wrap_content" 
-            android:paddingTop="10sp"
             android:text="--" 
             android:layout_weight="1" 
+            style="@style/ActionButton"
             />
     </TableRow>
     <!-- TableRow 
@@ -95,9 +88,9 @@
             android:id="@+id/brightnessButton" 
             android:layout_width="fill_parent" 
             android:layout_height="wrap_content" 
-            android:paddingTop="10sp"
             android:text="- -" 
             android:layout_weight="1" 
+            style="@style/ActionButton"
             />
     </TableRow>
     <TableRow 
@@ -113,24 +106,45 @@
             android:id="@+id/wifiButton" 
             android:layout_width="fill_parent" 
             android:layout_height="wrap_content" 
-            android:paddingTop="10sp"
             android:text="- -" 
             android:layout_weight="1" 
+            style="@style/ActionButton"
             />
     </TableRow -->
     </TableLayout>
 
+<TableLayout
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent" 
+    android:layout_gravity="center_horizontal"
+    >
+<TableRow
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent" 
+   >
     <!-- Time Section -->
 	<TextView 
         android:layout_height="wrap_content"
 		android:layout_width="fill_parent" 
 		android:text="Trigger Time"
-		android:textAppearance="@android:style/TextAppearance.Large.Inverse"
-		android:gravity="center_horizontal" 
-        android:layout_margin="5sp"
-		android:background="@drawable/section_bg" 
+        style="@style/SectionHeader"
 		/>
 
+    <!-- Days Section -->
+    <TextView
+        android:text="Days" 
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent"
+        style="@style/SectionHeader"
+        />
+
+</TableRow>
+<TableRow
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent" 
+   >
+
+    <!-- Time Section -->
 	<TimePicker
 	    android:id="@+id/timePicker"
 		android:layout_width="wrap_content" 
@@ -139,16 +153,6 @@
 		/>
 
     <!-- Days Section -->
-	<TextView
-        android:textAppearance="@android:style/TextAppearance.Large.Inverse"
-		android:text="Days" 
-		android:gravity="center_horizontal"
-		android:layout_height="wrap_content" 
-		android:layout_width="fill_parent"
-		android:layout_margin="5sp" 
-		android:background="@drawable/section_bg"
-        />
-
 	<TableLayout
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent" 
@@ -176,17 +180,17 @@
             android:layout_height="wrap_content"
             android:text="Wed" 
             />
-        <CheckBox 
-            android:id="@+id/dayThu"
-            android:layout_width="wrap_content" 
-            android:layout_height="wrap_content"
-            android:text="Thrus" 
-            />
     </TableRow>
     <TableRow 
 		android:layout_height="wrap_content" 
 		android:layout_width="fill_parent" 
 		>
+        <CheckBox 
+            android:id="@+id/dayThu"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Thurs" 
+            />
         <CheckBox 
             android:id="@+id/dayFri"
             android:layout_width="wrap_content" 
@@ -199,6 +203,11 @@
             android:layout_height="wrap_content"
             android:text="Sat" 
             />
+    </TableRow>
+    <TableRow 
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent" 
+        >
         <CheckBox 
             android:id="@+id/daySun"
             android:layout_width="wrap_content" 
@@ -207,6 +216,9 @@
             />
     </TableRow>
     </TableLayout>
+
+</TableRow>
+</TableLayout>
 
 </LinearLayout>
 </ScrollView>
