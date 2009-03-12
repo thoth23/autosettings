@@ -6,13 +6,15 @@ TODO v2.0
 20090305 Better tab pictures [DK]
 20090305 Set/Change button in Edit Action. Back for cancel (dismiss).
 20090305 Remove Ringer+Vibrate Mode, replace by simplified/unified settings.
-20090304 Release to market
-
-TODO v2.1
-
 20090305 Reorder actions/profiles
 20090305 More backgrounds/colors. Test how to do gradients.
 20090305 Test header profile: checkbox (separate) + label=>menu + "+" action
+20090305 Import old settings
+20090305 Collapse profiles in profile list
+20090305 Provide actions using options menu (mirror long press => context)
+20090305 Gray text color depending on global toggle
+20090304 Release to market
+
 
 
 DONE
