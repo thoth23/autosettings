@@ -4,7 +4,7 @@
  * License: GPLv3
  */
 
-package com.alfray.timeriffic.ui;
+package com.alfray.timeriffic.app;
 
 import android.app.Activity;
 import android.content.Intent;
