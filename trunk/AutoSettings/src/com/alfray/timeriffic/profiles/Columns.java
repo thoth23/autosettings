@@ -122,9 +122,9 @@ public class Columns implements BaseColumns {
      */
     public static final String ACTIONS = "actions";
 
-    /** Ringer: N)ormal, S)ilent, V)ibrate */
+    /** Ringer: R)ring, M)muted */
     public static final char ACTION_RINGER      = 'R';
-    /** Vibrate Ringer: W)hen Possible, N)ever, O)nly when silent */
+    /** Vibrate Ringer: V)ibrate, N)o vibrate */
     public static final char ACTION_VIBRATE     = 'V';
     /** Ringer volume. Integer: 0..100 */
     public static final char ACTION_RING_VOLUME = 'G';

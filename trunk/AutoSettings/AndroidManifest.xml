@@ -33,4 +33,5 @@
 
 <uses-permission android:name="android.permission.WRITE_SETTINGS"></uses-permission>
 
+<uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
 </manifest> 

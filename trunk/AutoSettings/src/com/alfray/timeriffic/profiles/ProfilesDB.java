@@ -509,14 +509,14 @@ public class ProfilesDB {
                 true,               //isActive
                 7*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY,
-                "RN,VW,W0",            //actions
+                "RR,VV,W0",            //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
                 false,              //isActive
                 20*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY,
-                "RV",            //actions
+                "RM,VV",            //actions
                 0                   //nextMs
                 );
 
@@ -525,14 +525,14 @@ public class ProfilesDB {
                 false,              //isActive
                 9*60+0,             //hourMin
                 Columns.FRIDAY + Columns.SATURDAY,
-                "RN,VO",               //actions
+                "RR",               //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
                 false,               //isActive
                 22*60+0,             //hourMin
                 Columns.FRIDAY + Columns.SATURDAY,
-                "RS,VO",            //actions
+                "RM,VV",            //actions
                 0                   //nextMs
                 );
 
@@ -541,14 +541,14 @@ public class ProfilesDB {
                 false,               //isActive
                 10*60+30,            //hourMin
                 Columns.SUNDAY,
-                "RN,W1",               //actions
+                "RR,W1",               //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
                 false,               //isActive
                 21*60+0,             //hourMin
                 Columns.SUNDAY,
-                "RS,VN",            //actions
+                "RM,VV",            //actions
                 0                   //nextMs
                 );
     }
@@ -562,14 +562,14 @@ public class ProfilesDB {
                 true,               //isActive
                 9*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY + Columns.FRIDAY + Columns.SATURDAY + Columns.SUNDAY,
-                "RN,VW,B100",            //actions
+                "RR,VV,B75",            //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
                 false,              //isActive
                 21*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY + Columns.FRIDAY + Columns.SATURDAY + Columns.SUNDAY,
-                "RV,VW,B0",            //actions
+                "RM,VN,B5",            //actions
                 0                   //nextMs
                 );
     }
@@ -582,8 +582,8 @@ public class ProfilesDB {
      */
     public String[] getResetLabels() {
         return new String[] {
-            "Default Profiles",
-            "Empty, no profiles",
+            "Fun Profiles",
+            "Empty Profiles",
             "Ralf Profiles"
         };
     }

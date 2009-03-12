@@ -110,7 +110,7 @@ public class TimedActionUtils {
                         for (RingerMode mode : RingerMode.values()) {
                             String name = mode.toString();
                             if (name.charAt(0) == v) {
-                                actions_names.add("Ringer " + name);
+                                actions_names.add(name);   // ringer name
                                 break;
                             }
                         }
@@ -119,7 +119,7 @@ public class TimedActionUtils {
                         for (VibrateRingerMode mode : VibrateRingerMode.values()) {
                             String name = mode.toString();
                             if (name.charAt(0) == v) {
-                                actions_names.add("Vibrate " + name);
+                                actions_names.add(name);   // vibrate name
                                 break;
                             }
                         }

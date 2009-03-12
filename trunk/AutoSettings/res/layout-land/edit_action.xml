@@ -6,161 +6,129 @@
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content" android:scrollY="0dip">
 
-<LinearLayout 
+<TableLayout
+    android:layout_height="wrap_content" 
     android:layout_width="fill_parent"
-	android:layout_height="wrap_content" 
-	android:orientation="vertical"
-	android:padding="5dip"
-	>
+    >
+<TableRow 
+    android:layout_height="wrap_content" 
+    android:layout_width="wrap_content" 
+    >
 
     <!-- Action Section -->
     <TextView
         android:layout_height="wrap_content"
-        android:layout_width="fill_parent" 
-        android:text="Action" 
+        android:layout_width="wrap_content" 
+        android:layout_weight="1"
+        android:gravity="center"
         style="@style/SectionHeader"
+        android:text="Action" 
         />
 
-    <TableLayout
+    <!-- Time Section -->
+    <TextView 
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" 
+        android:layout_weight="1"
+        android:gravity="center"
+        style="@style/SectionHeader"
+        android:text="Trigger Time"
+        />
+
+    <!-- Days Section -->
+    <TextView
         android:layout_height="wrap_content" 
+        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        style="@style/SectionHeader"
+        android:text="Days" 
+        />
+
+</TableRow>
+<TableRow
+    android:layout_height="wrap_content" 
+    android:layout_width="wrap_content" 
+    >
+
+    <!-- Action Section -->
+    <LinearLayout 
         android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="5dip"
         >
-    <TableRow 
-        android:layout_height="wrap_content" 
-        android:layout_width="fill_parent" 
-        >
+        
         <TextView
-            android:layout_width="wrap_content" 
+            android:layout_width="fill_parent" 
             android:layout_height="wrap_content"
-            android:text="Ringer Mode:"
+            android:layout_weight="0"
+            android:gravity="center"
+            android:text="Ringer"
             />
         <Button 
             android:id="@+id/ringerModeButton" 
             android:layout_width="fill_parent" 
             android:layout_height="wrap_content" 
-            android:text="--" 
-            android:layout_weight="1" 
+            android:layout_weight="1"
+            android:text="- -" 
             style="@style/ActionButton"
             />
 
         <TextView 
-            android:layout_width="wrap_content" 
+            android:layout_width="fill_parent" 
             android:layout_height="wrap_content"
-            android:text="Ringer Vibrate:"
+            android:layout_weight="0"
+            android:gravity="center"
+            android:text="Vibrate"
             />
         <Button 
             android:id="@+id/ringerVibButton" 
             android:layout_width="fill_parent" 
             android:layout_height="wrap_content" 
-            android:text="--" 
-            android:layout_weight="1" 
+            android:layout_weight="1"
+            android:text="- -" 
             style="@style/ActionButton"
             />
-    </TableRow>
-    <TableRow 
-        android:layout_height="wrap_content" 
-        android:layout_width="fill_parent" 
-        >
+
         <TextView 
-            android:layout_width="wrap_content" 
+            android:layout_width="fill_parent" 
             android:layout_height="wrap_content"
-            android:text="Ringer Volume:"
+            android:layout_weight="0"
+            android:gravity="center"
+            android:text="Volume"
             />
         <Button 
             android:id="@+id/ringerVolButton" 
             android:layout_width="fill_parent" 
             android:layout_height="wrap_content" 
-            android:text="--" 
-            android:layout_weight="1" 
-            style="@style/ActionButton"
-            />
-    </TableRow>
-    <!-- TableRow 
-        android:layout_height="wrap_content" 
-        android:layout_width="fill_parent" 
-        >
-        <TextView 
-            android:layout_width="wrap_content" 
-            android:layout_height="wrap_content"
-            android:text="Brightness:"
-            />
-        <Button 
-            android:id="@+id/brightnessButton" 
-            android:layout_width="fill_parent" 
-            android:layout_height="wrap_content" 
+            android:layout_weight="1"
             android:text="- -" 
-            android:layout_weight="1" 
             style="@style/ActionButton"
             />
-    </TableRow>
-    <TableRow 
-        android:layout_height="wrap_content" 
-        android:layout_width="fill_parent" 
-        >
-        <TextView 
-            android:layout_width="wrap_content" 
-            android:layout_height="wrap_content"
-            android:text="Wifi:"
-            />
-        <Button 
-            android:id="@+id/wifiButton" 
-            android:layout_width="fill_parent" 
-            android:layout_height="wrap_content" 
-            android:text="- -" 
-            android:layout_weight="1" 
-            style="@style/ActionButton"
-            />
-    </TableRow -->
-    </TableLayout>
-
-<TableLayout
-    android:layout_height="wrap_content"
-    android:layout_width="fill_parent" 
-    android:layout_gravity="center_horizontal"
-    >
-<TableRow
-    android:layout_height="wrap_content"
-    android:layout_width="fill_parent" 
-   >
-    <!-- Time Section -->
-	<TextView 
-        android:layout_height="wrap_content"
-		android:layout_width="fill_parent" 
-		android:text="Trigger Time"
-        style="@style/SectionHeader"
-		/>
-
-    <!-- Days Section -->
-    <TextView
-        android:text="Days" 
-        android:layout_height="wrap_content" 
-        android:layout_width="fill_parent"
-        style="@style/SectionHeader"
-        />
-
-</TableRow>
-<TableRow
-    android:layout_height="wrap_content"
-    android:layout_width="fill_parent" 
-   >
+        
+    </LinearLayout>
 
     <!-- Time Section -->
 	<TimePicker
 	    android:id="@+id/timePicker"
-		android:layout_width="wrap_content" 
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal" 
+        android:layout_weight="1"
+		android:layout_gravity="center_vertical" 
 		/>
 
     <!-- Days Section -->
 	<TableLayout
 		android:layout_height="wrap_content"
-		android:layout_width="fill_parent" 
-		android:layout_gravity="center_horizontal"
+        android:layout_width="fill_parent"
+        android:layout_weight="1"
+		android:layout_gravity="center_vertical"
 		>
 	<TableRow
         android:layout_height="wrap_content"
-        android:layout_width="fill_parent" 
+        android:layout_width="wrap_content" 
 	   >
 		<CheckBox 
 		    android:id="@+id/dayMon"
@@ -169,33 +137,21 @@
 			android:text="Mon" 
 			/>
         <CheckBox 
-            android:id="@+id/dayTue"
-            android:layout_width="wrap_content" 
-            android:layout_height="wrap_content"
-            android:text="Tues" 
-            />
-        <CheckBox 
-            android:id="@+id/dayWed"
-            android:layout_width="wrap_content" 
-            android:layout_height="wrap_content"
-            android:text="Wed" 
-            />
-    </TableRow>
-    <TableRow 
-		android:layout_height="wrap_content" 
-		android:layout_width="fill_parent" 
-		>
-        <CheckBox 
-            android:id="@+id/dayThu"
-            android:layout_width="wrap_content" 
-            android:layout_height="wrap_content"
-            android:text="Thurs" 
-            />
-        <CheckBox 
             android:id="@+id/dayFri"
             android:layout_width="wrap_content" 
             android:layout_height="wrap_content"
             android:text="Fri" 
+            />
+    </TableRow>
+    <TableRow 
+		android:layout_height="wrap_content" 
+		android:layout_width="wrap_content" 
+		>
+        <CheckBox 
+            android:id="@+id/dayTue"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Tues" 
             />
         <CheckBox 
             android:id="@+id/daySat"
@@ -206,8 +162,14 @@
     </TableRow>
     <TableRow 
         android:layout_height="wrap_content" 
-        android:layout_width="fill_parent" 
+        android:layout_width="wrap_content" 
         >
+        <CheckBox 
+            android:id="@+id/dayWed"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Wed" 
+            />
         <CheckBox 
             android:id="@+id/daySun"
             android:layout_width="wrap_content" 
@@ -215,10 +177,20 @@
             android:text="Sun" 
             />
     </TableRow>
+    <TableRow 
+        android:layout_height="wrap_content" 
+        android:layout_width="wrap_content" 
+        >
+        <CheckBox 
+            android:id="@+id/dayThu"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:text="Thurs" 
+            />
+    </TableRow>
     </TableLayout>
 
 </TableRow>
 </TableLayout>
 
-</LinearLayout>
 </ScrollView>

@@ -24,7 +24,7 @@
     android:layout_width="fill_parent"
     android:id="@+id/description" 
     android:text="Profile Name" 
-    android:background="@drawable/profile_bg2"
+    android:background="@drawable/profile_bg_gradient"
     android:textColor="#000" 
     android:textStyle="bold"
     android:gravity="center_vertical" 
