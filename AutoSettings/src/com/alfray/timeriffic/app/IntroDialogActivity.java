@@ -8,6 +8,9 @@ package com.alfray.timeriffic.app;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,7 +35,19 @@ public class IntroDialogActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.intro);
-        setTitle(R.string.intro_title);
+        
+        
+        PackageManager pm = getPackageManager();
+        try {
+            PackageInfo pi = pm.getPackageInfo(this.getPackageName(), 0);
+            String title = getString(R.string.intro_title, pi.versionName);
+            setTitle(title);
+        } catch (NameNotFoundException e1) {
+            String title = getString(R.string.intro_title, "");
+            setTitle(title);
+        }
+        
+        
         
         WebView wv = (WebView) findViewById(R.id.web);
         if (wv != null) {
