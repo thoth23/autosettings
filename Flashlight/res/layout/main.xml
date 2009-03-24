@@ -5,12 +5,37 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
 >
-
     <ImageView
         android:id="@+id/ImageView01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/icon"
-    android:layout_centerInParent="true"></ImageView>
-
+        android:layout_centerInParent="true"
+    />
+    <TextView
+        android:layout_below="@+id/ImageView01"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Label"
+        android:id="@+id/Label"
+    />
+    <Button
+        android:id="@+id/GoBright"
+        android:text="Bright"
+        android:drawableRight="@drawable/bright_icon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+    />
+    <Button
+        android:id="@+id/GoDark"
+        android:text="Dark"
+        android:drawableRight="@drawable/dark_icon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+    />
 </RelativeLayout>
