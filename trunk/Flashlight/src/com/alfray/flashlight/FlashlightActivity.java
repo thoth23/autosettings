@@ -1,22 +1,16 @@
 package com.alfray.flashlight;
 
-import com.alfray.flashlight.R;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.WindowManager;
-import android.widget.TextView;
 
 public class FlashlightActivity extends Activity {
-    private TextView mInfoText;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        mInfoText = (TextView) findViewById(R.id.InfoText);
 
         // Make the screen full bright for this activity using the new
         // cupcake brightness API.
