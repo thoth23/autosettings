@@ -13,6 +13,8 @@ function die() {
   exit 1
 }
 
+[ -z "$1" ] && die
+
 shopt -s extglob  # extended glob pattern
 
 function process() {
@@ -38,6 +40,6 @@ function process() {
 	mv -v "$SRC" "$DEST"
 }
 
-for i in [tT]+([^_]).apk ; do
+for i in [tTfF]+([^_]).apk ; do
 	[ -f "$i" ] && process "$i"
 done
