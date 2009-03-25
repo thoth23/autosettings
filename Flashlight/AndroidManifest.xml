@@ -2,17 +2,14 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.alfray.flashlight"
-    android:versionCode="101"
-    android:versionName="1.0.1"
->
+    android:versionCode="102" android:versionName="1.0.2">
     <application
         android:label="@string/app_name"
-        android:icon="@drawable/icon"
-    >
+        android:description="@string/description" android:icon="@drawable/bright_icon">
         <activity
             android:theme="@style/WhiteTheme"
             android:name="BrightlightActivity"
-            android:label="Brightlight" android:taskAffinity="com.alfray.flashlight.Brightlight">
+            android:taskAffinity="com.alfray.flashlight.Brightlight" android:icon="@drawable/bright_icon" android:label="@string/app_name">
             <intent-filter>
                 <action
                     android:name="android.intent.action.MAIN" />
@@ -25,14 +22,10 @@
             android:label="Darklight"
             android:theme="@style/WhiteTheme"
             android:icon="@drawable/dark_icon" android:taskAffinity="com.alfray.flashlight.Darklight">
-            <intent-filter>
-                <action
-                    android:name="android.intent.action.MAIN" />
-                <category
-                    android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            
         </activity>
-    </application>
+    <activity android:label="About Bright Flashlight" android:name="AboutActivity" android:theme="@android:style/Theme.Dialog"></activity>
+</application>
     <uses-sdk
         android:minSdkVersion="3" />
 </manifest>

@@ -6,14 +6,13 @@
     android:layout_height="fill_parent"
 >
     <ImageView
-        android:id="@+id/ImageView01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon"
+        android:src="@drawable/bright_icon"
         android:layout_centerInParent="true"
-    />
+    android:id="@+id/CentralIcon"/>
     <TextView
-        android:layout_below="@+id/ImageView01"
+        android:layout_below="@+id/CentralIcon"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_centerHorizontal="true"
@@ -22,7 +21,6 @@
     />
     <Button
         android:id="@+id/GoBright"
-        android:text="Bright"
         android:drawableRight="@drawable/bright_icon"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -31,7 +29,6 @@
     />
     <Button
         android:id="@+id/GoDark"
-        android:text="Dark"
         android:drawableRight="@drawable/dark_icon"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"

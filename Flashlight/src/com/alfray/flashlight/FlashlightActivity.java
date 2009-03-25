@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public abstract class FlashlightActivity extends Activity {
@@ -25,26 +28,24 @@ public abstract class FlashlightActivity extends Activity {
 
         findViewById(R.id.GoBright).setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                Intent i = new Intent(FlashlightActivity.this, BrightlightActivity.class);
-                startActivity(i);
-                finish();
+                goBright();
             }
         });
 
         findViewById(R.id.GoDark).setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                Intent i = new Intent(FlashlightActivity.this, DarklightActivity.class);
-                startActivity(i);
-                finish();
+                goDark();
             }
         });
 
         TextView tv = (TextView) findViewById(R.id.Label);
-        initializeOnCreate(tv);
+        ImageView ib = (ImageView) findViewById(R.id.CentralIcon);
+        
+        initializeOnCreate(tv, ib);
         Log.d(mTag, "onCreate");
     }
 
-    protected abstract void initializeOnCreate(TextView tv);
+    protected abstract void initializeOnCreate(TextView label, ImageView icon);
     
     @Override
     protected void onResume() {
@@ -80,5 +81,44 @@ public abstract class FlashlightActivity extends Activity {
         lp.screenBrightness = value;
         getWindow().setAttributes(lp);
         Log.d(mTag, "Set brightness to " + Float.toString(value));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        
+        menu.add(0, R.string.menu_bright, 0, R.string.menu_bright).setIcon(R.drawable.bright_icon);
+        menu.add(0, R.string.menu_dark  , 0, R.string.menu_dark  ).setIcon(R.drawable.dark_icon);
+        menu.add(0, R.string.menu_about , 0, R.string.menu_about ).setIcon(R.drawable.ic_menu_help);
+        
+        return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+        case R.string.menu_bright:
+            goBright();
+            break;
+        case R.string.menu_dark:
+            goDark();
+            break;
+        case R.string.menu_about:
+            Intent i = new Intent(this, AboutActivity.class);
+            startActivity(i);
+            break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void goBright() {
+        Intent i = new Intent(this, BrightlightActivity.class);
+        startActivity(i);
+        finish();
+    }
+
+    private void goDark() {
+        Intent i = new Intent(this, DarklightActivity.class);
+        startActivity(i);
+        finish();
     }
 }

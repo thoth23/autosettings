@@ -1,5 +1,6 @@
 package com.alfray.flashlight;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class BrightlightActivity extends FlashlightActivity {
@@ -9,9 +10,9 @@ public class BrightlightActivity extends FlashlightActivity {
     }
     
     @Override
-    protected void initializeOnCreate(TextView tv) {
-        tv.setText("Bright");
+    protected void initializeOnCreate(TextView label, ImageView icon) {
         setBrightness(1.0f);
+        label.setText("Bright");
+        icon.setImageResource(R.drawable.bright_icon);
     }
-    
 }
