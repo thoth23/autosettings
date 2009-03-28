@@ -18,6 +18,7 @@ public class DarklightActivity extends FlashlightActivity {
     @Override
     protected void initializeOnCreate(TextView label, ImageView icon) {
         setBrightness(0.1f);
+        setTitle("Dark Flashlight");
         label.setText("Dark");
         icon.setImageResource(R.drawable.dark_icon);
     }
