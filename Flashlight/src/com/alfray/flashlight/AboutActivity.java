@@ -1,3 +1,9 @@
+/*
+ * (c) ralfoide gmail com, 2009
+ * Project: Flashlight
+ * License: GPLv3
+ */
+
 package com.alfray.flashlight;
 
 import android.app.Activity;

@@ -1,3 +1,9 @@
+/*
+ * (c) ralfoide gmail com, 2009
+ * Project: Flashlight
+ * License: GPLv3
+ */
+
 package com.alfray.flashlight;
 
 import android.widget.ImageView;
@@ -8,7 +14,7 @@ public class DarklightActivity extends FlashlightActivity {
     public DarklightActivity() {
         super("Dark");
     }
-    
+
     @Override
     protected void initializeOnCreate(TextView label, ImageView icon) {
         setBrightness(0.1f);
