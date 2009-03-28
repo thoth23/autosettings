@@ -1,3 +1,9 @@
+/*
+ * (c) ralfoide gmail com, 2009
+ * Project: Flashlight
+ * License: GPLv3
+ */
+
 package com.alfray.flashlight;
 
 import android.app.Activity;
@@ -19,7 +25,7 @@ public abstract class FlashlightActivity extends Activity {
     public FlashlightActivity(String tag) {
         mTag = tag;
     }
-    
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,13 +46,13 @@ public abstract class FlashlightActivity extends Activity {
 
         TextView tv = (TextView) findViewById(R.id.Label);
         ImageView ib = (ImageView) findViewById(R.id.CentralIcon);
-        
+
         initializeOnCreate(tv, ib);
         Log.d(mTag, "onCreate");
     }
 
     protected abstract void initializeOnCreate(TextView label, ImageView icon);
-    
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -60,7 +66,7 @@ public abstract class FlashlightActivity extends Activity {
 
         Log.d(mTag, "onUserLeaveHint");
     }
-    
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -85,14 +91,14 @@ public abstract class FlashlightActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         menu.add(0, R.string.menu_bright, 0, R.string.menu_bright).setIcon(R.drawable.bright_icon);
         menu.add(0, R.string.menu_dark  , 0, R.string.menu_dark  ).setIcon(R.drawable.dark_icon);
         menu.add(0, R.string.menu_about , 0, R.string.menu_about ).setIcon(R.drawable.ic_menu_help);
-        
+
         return super.onCreateOptionsMenu(menu);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
