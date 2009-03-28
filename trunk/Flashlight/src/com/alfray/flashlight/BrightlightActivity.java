@@ -18,6 +18,7 @@ public class BrightlightActivity extends FlashlightActivity {
     @Override
     protected void initializeOnCreate(TextView label, ImageView icon) {
         setBrightness(1.0f);
+        setTitle("Bright Flashlight");
         label.setText("Bright");
         icon.setImageResource(R.drawable.bright_icon);
     }

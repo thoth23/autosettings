@@ -16,7 +16,7 @@
         <activity
             android:theme="@style/WhiteTheme"
             android:name="BrightlightActivity"
-            android:taskAffinity="com.alfray.flashlight.Brightlight" android:icon="@drawable/bright_icon" android:label="Bright Flashlight">
+            android:taskAffinity="com.alfray.flashlight.Brightlight" android:icon="@drawable/bright_icon">
             <intent-filter>
                 <action
                     android:name="android.intent.action.MAIN" />
@@ -27,10 +27,10 @@
         <activity
             android:name="DarklightActivity"
             android:theme="@style/WhiteTheme"
-            android:icon="@drawable/dark_icon" android:taskAffinity="com.alfray.flashlight.Darklight" android:label="Dark Flashlight">
+            android:icon="@drawable/dark_icon" android:taskAffinity="com.alfray.flashlight.Darklight">
 
         </activity>
-    <activity android:label="About Bright Flashlight" android:name="AboutActivity" android:theme="@android:style/Theme.Dialog"></activity>
+    <activity android:name="AboutActivity" android:theme="@android:style/Theme.Dialog" android:label="About Flashlight for Cupcake"></activity>
 </application>
     <uses-sdk
         android:minSdkVersion="3" />
