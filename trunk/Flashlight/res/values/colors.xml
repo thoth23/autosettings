@@ -8,6 +8,7 @@
 
 <resources>
 
+    <drawable name="transparent">#0FFF</drawable>
     <drawable name="white">#FFF</drawable>
 
 </resources>
