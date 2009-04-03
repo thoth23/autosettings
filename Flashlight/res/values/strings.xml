@@ -7,6 +7,7 @@
 -->
 
 <resources>
+    <string name="menu_color">Color</string>
     <string name="app_name">Flashlight for Cupcake</string>
     <string name="description">Flashlight application demonstrating the Cupcake screen brightness API.</string>
     <string name="menu_bright">Bright</string>
