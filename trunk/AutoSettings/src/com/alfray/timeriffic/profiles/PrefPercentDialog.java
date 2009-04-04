@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -24,15 +25,16 @@ public class PrefPercentDialog extends AlertDialog
     private final PrefPercent[] mPrefPercentOutWrapper;
     private final PrefPercent mPrefPercent;
     private SeekBar mSeekBar;
-    private ToggleButton mToggleButton;
     private TextView mPercentLabel;
     private Accessor mAccessor;
+    private RadioButton mRadioNoChange;
+    private RadioButton mRadioChange;
 
     public interface Accessor {
         public int getPercent();
         public void changePercent(int percent);
     }
-    
+
     protected PrefPercentDialog(Context context, PrefPercent[] prefPercentOutWrapper) {
         super(context);
         mPrefPercentOutWrapper = prefPercentOutWrapper;
@@ -44,17 +46,19 @@ public class PrefPercentDialog extends AlertDialog
         View content = getLayoutInflater().inflate(R.layout.percent_alert, null/* root */);
         setView(content);
 
-        mAccessor = mPrefPercent.getAccessor(); 
+        mAccessor = mPrefPercent.getAccessor();
         mInitialValue = mAccessor == null ? -1 : mAccessor.getPercent();
+
+        mRadioNoChange = (RadioButton) content.findViewById(R.id.radio_nochange);
+        mRadioNoChange.setOnClickListener(this);
+        mRadioChange   = (RadioButton) content.findViewById(R.id.radio_change);
+        mRadioChange.setOnClickListener(this);
 
         mSeekBar = (SeekBar) content.findViewById(R.id.seekbar);
         mSeekBar.setOnSeekBarChangeListener(this);
         mSeekBar.setMax(100);
-        
-        mPercentLabel = (TextView) content.findViewById(R.id.percent);
 
-        mToggleButton = (ToggleButton) content.findViewById(R.id.toggle);
-        mToggleButton.setOnClickListener(this);
+        mPercentLabel = (TextView) content.findViewById(R.id.percent);
 
         setOnDismissListener(this);
 
@@ -64,15 +68,17 @@ public class PrefPercentDialog extends AlertDialog
         int percent = mPrefPercent.getCurrentValue();
         if (percent >= 0) {
             if (mAccessor != null) mAccessor.changePercent(percent);
-            mToggleButton.setChecked(true);
+            mRadioChange.setChecked(true);
+            mRadioNoChange.setChecked(false);
             mSeekBar.setProgress(percent);
             mSeekBar.setEnabled(true);
         } else {
-            mToggleButton.setChecked(false);
+            mRadioChange.setChecked(false);
+            mRadioNoChange.setChecked(true);
             mSeekBar.setProgress(mInitialValue);
             mSeekBar.setEnabled(false);
         }
-        
+
         updatePercentLabel(-1);
     }
 
@@ -103,10 +109,11 @@ public class PrefPercentDialog extends AlertDialog
         // pass
     }
 
+    /** DialogInterface.OnClickListener callback, when dialog is accepted */
     @Override
     public void onClick(DialogInterface dialog, int which) {
         // Update button with percentage selected
-        if (mToggleButton.isChecked()) {
+        if (mRadioChange.isChecked()) {
             mPrefPercent.setValue(mSeekBar.getProgress());
         } else {
             mPrefPercent.setValue(-1);
@@ -116,6 +123,6 @@ public class PrefPercentDialog extends AlertDialog
 
     @Override
     public void onClick(View toggle) {
-        mSeekBar.setEnabled(((ToggleButton) toggle).isChecked());
+        mSeekBar.setEnabled(mRadioChange.isChecked());
     }
 }
