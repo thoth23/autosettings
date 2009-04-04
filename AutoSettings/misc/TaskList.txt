@@ -1,24 +1,26 @@
 TODO v2.0
 
-20090305 Menu "Append New Profile" => "Add New Profile"
 20090305 No action: use alternate view to have button "Create Profile"
-20090305 Landscape layout for edit action
-20090305 Better tab pictures [DK]
 20090305 Set/Change button in Edit Action. Back for cancel (dismiss).
-20090305 Remove Ringer+Vibrate Mode, replace by simplified/unified settings.
 20090305 Reorder actions/profiles
-20090305 More backgrounds/colors. Test how to do gradients.
-20090305 Test header profile: checkbox (separate) + label=>menu + "+" action
 20090305 Import old settings
 20090305 Collapse profiles in profile list
 20090305 Provide actions using options menu (mirror long press => context)
 20090305 Gray text color depending on global toggle
-20090304 Release to market
 
 
 
 DONE
 
+20090404 Update intro text with DK's prose
+20090404 Menu "Append New Profile" => "Add New Profile"
+20090040 Fix UI for percent dialog
+20090040 Dynamically display version number in intro HTML
+20090328 Polish UI (feedback from DK)
+20090311 Add wake lock perm
+20090311 Use gradients instead of background PNG
+20090311 Rework action UI & landscape mode
+20090311 Rework action purposes & names to simplify
 20090305 Open for testing
 20090305 Recompute next event on action changes, display changed event as toast
 20090304 Edit intro text
@@ -50,9 +52,9 @@ DONE
 
 20090124 Cleanup, comments, tasklist
 20090124 Custom CursorAdapter
-20090123 Change for an SQLite DB 
-20090123 Experiment with in-memory ListAdapter 
+20090123 Change for an SQLite DB
+20090123 Experiment with in-memory ListAdapter
 20090121 Experiment with profile UI design
 20090121 setup features for profile/timed-actions design
 20090120 v1.00 on market
-20090119 Add TimePicker preference 
+20090119 Add TimePicker preference
