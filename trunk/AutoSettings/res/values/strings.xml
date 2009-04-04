@@ -12,5 +12,5 @@
 <string name="edit">Edit</string>
 <string name="insert_profile">Insert New Profile</string>
 <string name="reset">Reset</string>
-<string name="append_profile">Append New Profile</string>
+<string name="append_profile">Add New Profile</string>
 </resources>
