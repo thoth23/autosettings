@@ -28,29 +28,50 @@ import com.alfray.timeriffic.prefs.PrefsValues;
 public class IntroDialogActivity extends Activity {
 
     public static final String EXTRA_NO_CONTROLS = "no-controls";
-    
+
+    private class JSTimerifficVersion {
+
+        private String mVersion;
+
+        public String longVersion() {
+            if (mVersion == null) {
+                PackageManager pm = getPackageManager();
+                PackageInfo pi;
+                try {
+                    pi = pm.getPackageInfo(getPackageName(), 0);
+                    mVersion = pi.versionName;
+                } catch (NameNotFoundException e) {
+                    mVersion = ""; // failed, ignored
+                }
+            }
+            return mVersion;
+        }
+
+        public String shortVersion() {
+            String v = longVersion();
+            v = v.substring(0, v.lastIndexOf('.'));
+            return v;
+        }
+    }
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.intro);
-        
-        
-        PackageManager pm = getPackageManager();
-        try {
-            PackageInfo pi = pm.getPackageInfo(this.getPackageName(), 0);
-            String title = getString(R.string.intro_title, pi.versionName);
-            setTitle(title);
-        } catch (NameNotFoundException e1) {
-            String title = getString(R.string.intro_title, "");
-            setTitle(title);
-        }
-        
-        
-        
+
+        JSTimerifficVersion jsVersion = new JSTimerifficVersion();
+
+        String title = getString(R.string.intro_title, jsVersion.shortVersion());
+        setTitle(title);
+
         WebView wv = (WebView) findViewById(R.id.web);
         if (wv != null) {
+
+            wv.getSettings().setJavaScriptEnabled(true);
+            wv.addJavascriptInterface(jsVersion, "JSTimerifficVersion");
+
             wv.loadUrl("file:///android_asset/intro.html");
             wv.setFocusable(true);
             wv.setFocusableInTouchMode(true);
@@ -63,7 +84,7 @@ public class IntroDialogActivity extends Activity {
             Bundle e = i.getExtras();
             if (e != null) hideControls = e.getBoolean(EXTRA_NO_CONTROLS);
         }
-        
+
         CheckBox dismiss = (CheckBox) findViewById(R.id.dismiss);
         if (dismiss != null) {
             if (hideControls) {
@@ -71,7 +92,7 @@ public class IntroDialogActivity extends Activity {
             } else {
                 final PrefsValues pv = new PrefsValues(this);
                 dismiss.setChecked(pv.isIntroDismissed());
-                
+
                 dismiss.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView,
@@ -81,7 +102,7 @@ public class IntroDialogActivity extends Activity {
                 });
             }
         }
-        
+
         Button cont = (Button) findViewById(R.id.cont);
         if (cont != null) {
             if (hideControls) {

@@ -3,16 +3,16 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent" 
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
     >
 
 
 <ScrollView
-    android:layout_width="fill_parent" 
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" 
+    android:orientation="vertical"
     android:layout_weight="1"
     >
 
@@ -23,24 +23,24 @@
 
 </ScrollView>
 
-<ImageView
-    android:layout_width="fill_parent" 
+<!-- ImageView
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:src="@drawable/divider_horizontal_dark"
     android:background="#555"
-    />
+    / -->
 
 <LinearLayout
-    android:layout_width="fill_parent" 
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="#555"
     >
 
-<CheckBox 
+<CheckBox
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
-    android:text="Don't display again" 
+    android:text="Don't display again"
     android:id="@+id/dismiss"
     android:layout_gravity="center_vertical"
     android:layout_weight="1"
