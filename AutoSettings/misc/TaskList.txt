@@ -3,7 +3,6 @@ TODO v2.0
 20090305 No action: use alternate view to have button "Create Profile"
 20090305 Set/Change button in Edit Action. Back for cancel (dismiss).
 20090305 Reorder actions/profiles
-20090305 Import old settings
 20090305 Collapse profiles in profile list
 20090305 Provide actions using options menu (mirror long press => context)
 20090305 Gray text color depending on global toggle
@@ -12,6 +11,7 @@ TODO v2.0
 
 DONE
 
+20090404 Import old settings
 20090404 Update intro text with DK's prose
 20090404 Menu "Append New Profile" => "Add New Profile"
 20090040 Fix UI for percent dialog

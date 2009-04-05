@@ -50,7 +50,7 @@ public class SettingsHelper {
         /** Capitalizes the string */
         @Override
         public String toString() {
-            return (this == NORMAL) ? "Ring" : "Muted";
+            return (this == NORMAL) ? "Ring" : "Mute";
         }
     }
     

@@ -47,6 +47,7 @@ import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.app.AutoReceiver;
 import com.alfray.timeriffic.app.IntroDialogActivity;
 import com.alfray.timeriffic.app.TimerifficApp;
+import com.alfray.timeriffic.prefs.Oldv1PrefsValues;
 import com.alfray.timeriffic.prefs.PrefsActivity;
 import com.alfray.timeriffic.prefs.PrefsValues;
 
@@ -178,6 +179,7 @@ public class ProfilesUI extends Activity {
         if (mProfilesDb == null) {
             mProfilesDb = new ProfilesDB();
             mProfilesDb.onCreate(this);
+            updateOldPrefs();
         }
 
         if (mAdapter == null) {
@@ -209,6 +211,81 @@ public class ProfilesUI extends Activity {
     
             mAdapter = new ProfileCursorAdapter(this, mCursor);
             mProfilesList.setAdapter(mAdapter);
+        }
+    }
+
+    private void updateOldPrefs() {
+        int v = mPrefsValues.getVersion();
+        
+        switch(v) {
+            case Oldv1PrefsValues.VERSION:
+                Log.d(TAG, String.format("Update old prefs: %s to %s", v, PrefsValues.VERSION));
+                
+                try {
+                    Oldv1PrefsValues old = new Oldv1PrefsValues(this);
+                    int startHourMin = old.startHourMin();
+                    int stopHourMin = old.stopHourMin();
+
+                    // need profile headers?
+                    
+                    long prof_index = -1;
+                    if (startHourMin >= 0 || stopHourMin >= 0) {
+                        prof_index = mProfilesDb.insertProfile(
+                                        -1 /*beforeProfileIndex*/,
+                                        "Old Timeriffic Profile" /*title*/,
+                                        true /*isEnabled*/);
+                    }
+                    
+                    long action_index = 0;
+                    if (prof_index > 0 && startHourMin >= 0) {
+                        
+                        StringBuilder actions = new StringBuilder();
+                        actions.append(Columns.ACTION_RINGER).append(old.startMute() ? 'M' : 'R');
+                        actions.append(',');
+                        actions.append(Columns.ACTION_VIBRATE).append(old.startVibrate() ? 'V' : 'N');
+                        
+                        action_index = mProfilesDb.insertTimedAction(
+                                        prof_index,
+                                        0 /*afterActionIndex*/,
+                                        true /*isActive*/,
+                                        startHourMin /*hourMin*/,
+                                        Columns.MONDAY | Columns.TUESDAY | Columns.WEDNESDAY |
+                                        Columns.THURSDAY | Columns.FRIDAY | Columns.SATURDAY |
+                                        Columns.SUNDAY,
+                                        actions.toString(),
+                                        0 /*nextMs*/);
+                    }
+
+                    if (prof_index > 0 && stopHourMin >= 0) {
+                        
+                        StringBuilder actions = new StringBuilder();
+                        actions.append(Columns.ACTION_RINGER).append(old.stopMute() ? 'M' : 'R');
+                        actions.append(',');
+                        actions.append(Columns.ACTION_VIBRATE).append(old.stopVibrate() ? 'V' : 'N');
+                        
+                        mProfilesDb.insertTimedAction(
+                                        prof_index,
+                                        action_index /*afterActionIndex*/,
+                                        true /*isActive*/,
+                                        stopHourMin /*hourMin*/,
+                                        Columns.MONDAY | Columns.TUESDAY | Columns.WEDNESDAY |
+                                        Columns.THURSDAY | Columns.FRIDAY | Columns.SATURDAY |
+                                        Columns.SUNDAY,
+                                        actions.toString(),
+                                        0 /*nextMs*/);
+                    }
+                    
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed update old prefs", e);                    
+                } finally {
+                    mPrefsValues.setVersion();
+                }
+                
+                break;
+                
+            case PrefsValues.VERSION:
+                // pass
+                break;
         }
     }
 

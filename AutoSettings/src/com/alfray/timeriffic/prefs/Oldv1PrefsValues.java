@@ -16,6 +16,8 @@ public class Oldv1PrefsValues {
     public static final String KEY_START_HOUR = "start_hour";
     public static final String KEY_END_HOUR = "end_hour";
 
+    public static final int VERSION = 0;
+    
     private SharedPreferences mPrefs;
     
     public Oldv1PrefsValues(Context context) {
@@ -38,23 +40,25 @@ public class Oldv1PrefsValues {
         return mPrefs.edit().putBoolean("enable_serv", checked).commit();
     }
 
+    /** Returns the start hour-min or -1 if not present. */
     public int startHourMin() {
         try {
-            return mPrefs.getInt(KEY_START_HOUR, 10*60);
+            return mPrefs.getInt(KEY_START_HOUR, -1);
         } catch (ClassCastException e) {
             // The field used to be a String, so it could fail here
-            String s = mPrefs.getString(KEY_START_HOUR, "10");
-            return parseHoursMin(s);
+            String s = mPrefs.getString(KEY_START_HOUR, null);
+            return s == null ? -1 : parseHoursMin(s);
         }
     }
 
+    /** Returns the stop hour-min or -1 if not present. */
     public int stopHourMin() {
         try {
-            return mPrefs.getInt(KEY_END_HOUR, 14*60);
+            return mPrefs.getInt(KEY_END_HOUR, -1);
         } catch (ClassCastException e) {
             // The field used to be a String, so it could fail here
-            String s = mPrefs.getString(KEY_END_HOUR, "14");
-            return parseHoursMin(s);
+            String s = mPrefs.getString(KEY_END_HOUR, null);
+            return s == null ? -1 : parseHoursMin(s);
         }
     }
 
