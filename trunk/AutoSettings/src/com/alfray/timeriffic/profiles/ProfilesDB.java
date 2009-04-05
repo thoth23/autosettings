@@ -557,21 +557,45 @@ public class ProfilesDB {
      * Some simple profiles for me
      */
     private void initRalfProfiles() {
-        long pindex = insertProfile(0, "Ralf", true /*isEnabled*/);
+        long pindex = insertProfile(0, "Ralf Week", true /*isEnabled*/);
         long action = insertTimedAction(pindex, 0,
                 true,               //isActive
                 9*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY + Columns.FRIDAY + Columns.SATURDAY + Columns.SUNDAY,
-                "RR,VV,B75",            //actions
+                "RR,VV,B75",        //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
                 false,              //isActive
                 21*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY + Columns.FRIDAY + Columns.SATURDAY + Columns.SUNDAY,
-                "RM,VN,B5",            //actions
+                "RM,VN,B5",         //actions
                 0                   //nextMs
                 );
+
+        pindex = insertProfile(0, "Ring Volume", true /*isEnabled*/);
+        action = insertTimedAction(pindex, 0,
+                true,               //isActive
+                13*60+30,           //hourMin
+                Columns.SATURDAY + Columns.SUNDAY,
+                "G25",              //actions
+                0                   //nextMs
+                );
+        action = insertTimedAction(pindex, action,
+                false,              //isActive
+                16*60+0,            //hourMin
+                Columns.SATURDAY + Columns.SUNDAY,
+                "G85",              //actions
+                0                   //nextMs
+                );
+        insertTimedAction(pindex, action,
+                false,              //isActive
+                10*60+0,            //hourMin
+                Columns.MONDAY,
+                "G100",             //actions
+                0                   //nextMs
+                );
+
     }
 
     // --------------
