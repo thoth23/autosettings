@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.alfray.timeriffic.R;
 
