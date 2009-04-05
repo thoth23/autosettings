@@ -13,6 +13,8 @@ import android.preference.PreferenceManager;
 
 public class PrefsValues {
 
+    public static final int VERSION = 1;
+
     private SharedPreferences mPrefs;
 	
 	public PrefsValues(Context context) {
@@ -22,6 +24,15 @@ public class PrefsValues {
 	public SharedPreferences getPrefs() {
         return mPrefs;
     }
+	
+	/** Returns pref version or 0 if not present. */
+	public int getVersion() {
+	    return mPrefs.getInt("version", 0);
+	}
+	
+	public void setVersion() {
+	    mPrefs.edit().putInt("version", VERSION).commit();
+	}
 
 	public boolean isServiceEnabled() {
 	    return mPrefs.getBoolean("enable_serv", true);
