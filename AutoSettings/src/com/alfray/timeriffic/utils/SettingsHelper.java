@@ -43,14 +43,14 @@ public class SettingsHelper {
     
     public enum RingerMode {
         /** Normal ringer: actually rings. */
-        NORMAL,
+        RING,
         /** Muted ringed. */
-        SILENT;
+        MUTE;
 
         /** Capitalizes the string */
         @Override
         public String toString() {
-            return (this == NORMAL) ? "Ring" : "Mute";
+            return (this == RING) ? "Ring" : "Mute";
         }
     }
     
@@ -63,7 +63,7 @@ public class SettingsHelper {
         /** Capitalizes the string */
         @Override
         public String toString() {
-            return (this == VIBRATE) ? "Vibrate" : "Don't vibrate";
+            return (this == VIBRATE) ? "Vibrate" : "No vibrate";
         }
     }
     
@@ -77,10 +77,10 @@ public class SettingsHelper {
         if (DEBUG) Log.d(TAG, "changeRingerMode: " + ringer.toString());
         
         switch (ringer) {
-            case NORMAL:
+            case RING:
                 manager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                 break;
-            case SILENT:
+            case MUTE:
                 manager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                 break;
         }

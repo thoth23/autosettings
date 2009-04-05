@@ -108,18 +108,16 @@ public class TimedActionUtils {
                     switch(code) {
                     case Columns.ACTION_RINGER:
                         for (RingerMode mode : RingerMode.values()) {
-                            String name = mode.toString();
-                            if (name.charAt(0) == v) {
-                                actions_names.add(name);   // ringer name
+                            if (mode.name().charAt(0) == v) {
+                                actions_names.add(mode.toString());   // ringer name
                                 break;
                             }
                         }
                         break;
                     case Columns.ACTION_VIBRATE:
                         for (VibrateRingerMode mode : VibrateRingerMode.values()) {
-                            String name = mode.toString();
-                            if (name.charAt(0) == v) {
-                                actions_names.add(name);   // vibrate name
+                            if (mode.name().charAt(0) == v) {
+                                actions_names.add(mode.toString());   // vibrate name
                                 break;
                             }
                         }
