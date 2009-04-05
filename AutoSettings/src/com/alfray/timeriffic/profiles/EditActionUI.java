@@ -26,7 +26,7 @@ import com.alfray.timeriffic.utils.SettingsHelper;
 
 public class EditActionUI extends Activity {
 
-    private static String TAG = "EditActionUI";
+    private static String TAG = "Tmrfc-EditActionUI";
     
     /** Extra long with the action prof_id (not index) to edit. */
     public static final String EXTRA_ACTION_ID = "action_id";

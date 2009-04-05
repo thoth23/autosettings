@@ -28,7 +28,7 @@ import android.util.Log;
  */
 public class SettingsHelper {
 
-    private static final String TAG = "SettingsHelper";
+    private static final String TAG = "Tmrfc-SettingsHelper";
     private static final boolean DEBUG = true;
 
     private final Context mContext;

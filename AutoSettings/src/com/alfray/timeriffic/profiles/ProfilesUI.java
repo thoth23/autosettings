@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -51,7 +52,7 @@ import com.alfray.timeriffic.prefs.PrefsValues;
 
 public class ProfilesUI extends Activity {
 
-    private static final String TAG = "ProfilesUI";
+    private static final String TAG = "Tmrfc-ListProfilesUI";
     private static final boolean DEBUG = true;
     
     private static final int DATA_CHANGED = 42;
@@ -95,6 +96,16 @@ public class ProfilesUI extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        String version = "??";
+        try {
+            version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (NameNotFoundException e) {
+            // pass
+        }
+        Log.d(TAG, String.format("Started %s v%s",
+                        getClass().getSimpleName(),
+                        version));
         
         setContentView(R.layout.profiles_screen);
         mLayoutInflater = getLayoutInflater();
@@ -104,7 +115,7 @@ public class ProfilesUI extends Activity {
         mGrayDot = getResources().getDrawable(R.drawable.gray_dot);
         mCheckOn = getResources().getDrawable(R.drawable.btn_check_on);
         mCheckOff = getResources().getDrawable(R.drawable.btn_check_off);
-        
+
         initButtons();
         showIntro(false);
     }

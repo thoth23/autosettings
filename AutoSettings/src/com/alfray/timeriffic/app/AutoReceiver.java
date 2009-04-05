@@ -38,7 +38,7 @@ import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;
 public class AutoReceiver extends BroadcastReceiver {
 
     private final static boolean DEBUG = true;
-    private final static String TAG = "AutoReceiver";
+    private final static String TAG = "Tmrfc-Receiver";
     
     /** Name of intent to broadcast to activate this receiver. */
     public final static String ACTION_AUTO_CHECK_STATE = "com.alfray.intent.action.AUTO_CHECK_STATE";

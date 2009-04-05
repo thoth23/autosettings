@@ -21,7 +21,7 @@ import android.widget.EditText;
 
 public class EditProfileUI extends Activity {
 
-    private static String TAG = "EditProfileUI";
+    private static String TAG = "Tmrfc-EditProfileUI";
     
     /** Extra long with the profile id (not index) to edit. */
     public static final String EXTRA_PROFILE_ID = "prof_id";
