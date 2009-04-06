@@ -13,7 +13,7 @@ import android.preference.PreferenceManager;
 
 public class PrefsValues {
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
     private SharedPreferences mPrefs;
 	
