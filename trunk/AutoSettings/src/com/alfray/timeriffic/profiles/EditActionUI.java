@@ -104,7 +104,10 @@ public class EditActionUI extends Activity {
             int daysColIndex = c.getColumnIndexOrThrow(Columns.DAYS);
             int actionsColIndex = c.getColumnIndexOrThrow(Columns.ACTIONS);
 
+            
             String actions_str = c.getString(actionsColIndex);
+            Log.d(TAG, String.format("Edit Action=%s", actions_str));
+
             String[] actions = actions_str != null ? actions_str.split(",") : null;
 
             // get UI widgets

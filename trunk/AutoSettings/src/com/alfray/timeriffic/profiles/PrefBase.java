@@ -21,6 +21,8 @@ public abstract class PrefBase {
     }
     
     protected String getActionValue(String[] actions, char prefix) {
+        if (actions == null) return null;
+
         for (String action : actions) {
             if (action.length() > 1 && action.charAt(0) == prefix) {
                 return action.substring(1);
