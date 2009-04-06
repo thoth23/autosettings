@@ -179,7 +179,13 @@ public class ProfilesUI extends Activity {
         if (mProfilesDb == null) {
             mProfilesDb = new ProfilesDB();
             mProfilesDb.onCreate(this);
-            updateOldPrefs();
+            if (updateOldPrefs()) {
+                if (mCursor != null) {
+                    mCursor.close();
+                    mCursor = null;
+                }
+                mAdapter = null;
+            }
         }
 
         if (mAdapter == null) {
@@ -214,7 +220,13 @@ public class ProfilesUI extends Activity {
         }
     }
 
-    private void updateOldPrefs() {
+    /**
+     * Update old prefs
+     * @return 
+     * 
+     * @return Return true if old prefs was imported, false if nothing changed.
+     */
+    private boolean updateOldPrefs() {
         int v = mPrefsValues.getVersion();
         
         switch(v) {
@@ -281,12 +293,13 @@ public class ProfilesUI extends Activity {
                     mPrefsValues.setVersion();
                 }
                 
-                break;
+                return true;
                 
             case PrefsValues.VERSION:
                 // pass
                 break;
         }
+        return false;
     }
 
     /**
