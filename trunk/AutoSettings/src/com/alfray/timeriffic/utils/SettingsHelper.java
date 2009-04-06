@@ -28,7 +28,7 @@ import android.util.Log;
  */
 public class SettingsHelper {
 
-    private static final String TAG = "Tmrfc-SettingsHelper";
+    private static final String TAG = "Tmrfc-Settings";
     private static final boolean DEBUG = true;
 
     private final Context mContext;
@@ -71,37 +71,47 @@ public class SettingsHelper {
         mContext = context;
     }
     
-    public void changeRingerMode(RingerMode ringer) {
+    public void changeRingerVibrate(RingerMode ringer, VibrateRingerMode vib) {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
         if (DEBUG) Log.d(TAG, "changeRingerMode: " + ringer.toString());
-        
-        switch (ringer) {
-            case RING:
-                manager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                break;
-            case MUTE:
-                manager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                break;
+        if (DEBUG) Log.d(TAG, String.format("changeRingerVibrate: %s + %s",
+                        ringer != null ? ringer.toString() : "ringer-null",
+                        vib != null ? vib.toString() : "vib-null"));
+
+        if (vib != null) {
+            switch(vib) {
+                case VIBRATE:
+                    manager.setVibrateSetting(
+                            AudioManager.VIBRATE_TYPE_RINGER,
+                            AudioManager.VIBRATE_SETTING_ON);
+                    break;
+                case NO_VIBRATE:
+                    manager.setVibrateSetting(
+                            AudioManager.VIBRATE_TYPE_RINGER,
+                            AudioManager.VIBRATE_SETTING_OFF);
+                    break;
+            }
         }
-    }
-    
-    public void changeRingerVibrate(VibrateRingerMode vib) {
-        AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-
-        if (DEBUG) Log.d(TAG, "changeRingerVibrate: " + vib.toString());
-
-        switch(vib) {
-            case VIBRATE:
-                manager.setVibrateSetting(
-                        AudioManager.VIBRATE_TYPE_RINGER,
-                        AudioManager.VIBRATE_SETTING_ON);
-                break;
-            case NO_VIBRATE:
-                manager.setVibrateSetting(
-                        AudioManager.VIBRATE_TYPE_RINGER,
-                        AudioManager.VIBRATE_SETTING_OFF);
-                break;
+        
+        if (ringer != null) {
+            switch (ringer) {
+                case RING:
+                    // normal may or may not vibrate, cf setting above
+                    manager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                    break;
+                case MUTE:
+                    if (vib != null && vib == VibrateRingerMode.VIBRATE) {
+                        manager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                    } else {
+                        // this turns of the vibrate, which unfortunately doesn't respect
+                        // the case where vibrate should not be changed when going silent.
+                        // TODO read the system pref for the default "vibrate" mode and use
+                        // when vib==null.
+                        manager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                    }
+                    break;
+            }
         }
     }
     

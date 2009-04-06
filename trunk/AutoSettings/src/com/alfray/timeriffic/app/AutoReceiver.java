@@ -130,6 +130,9 @@ public class AutoReceiver extends BroadcastReceiver {
     private void performAction(SettingsHelper settings, String actions) {
         if (actions == null) return;
         
+        RingerMode ringerMode = null;
+        VibrateRingerMode vibRingerMode = null;
+        
         for (String action : actions.split(",")) {
             int value = -1;
             if (action.length() > 1) {
@@ -141,7 +144,7 @@ public class AutoReceiver extends BroadcastReceiver {
                     for (RingerMode mode : RingerMode.values()) {
                         String name = mode.toString();
                         if (name.charAt(0) == v) {
-                            settings.changeRingerMode(mode);
+                            ringerMode = mode;
                             break;
                         }
                     }
@@ -150,7 +153,7 @@ public class AutoReceiver extends BroadcastReceiver {
                     for (VibrateRingerMode mode : VibrateRingerMode.values()) {
                         String name = mode.toString();
                         if (name.charAt(0) == v) {
-                            settings.changeRingerVibrate(mode);
+                            vibRingerMode = mode;
                             break;
                         }
                     }
@@ -177,6 +180,11 @@ public class AutoReceiver extends BroadcastReceiver {
                 }
             }
         }
+
+        if (ringerMode != null || vibRingerMode != null) {
+            settings.changeRingerVibrate(ringerMode, vibRingerMode);
+        }
+
     }
 
     /** Notify UI to update */
