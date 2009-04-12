@@ -7,4 +7,10 @@
     <drawable name="transp_grey">#80808080</drawable>
     <drawable name="transp_black">#80000000</drawable>
     <color name="yellow">#FFF0</color>
+
+    <color name="profile_start">#CCF</color>
+    <color name="profile_default">#FF35228A</color>
+    <color name="profile_selected">#F90</color>
+    <color name="profile_pressed">#FF0</color>
+
 </resources>
