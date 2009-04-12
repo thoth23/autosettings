@@ -13,6 +13,8 @@
 <item>
     <bitmap
         android:src="@drawable/profile_trans"
+        android:tileMode="disabled"
+        android:gravity="right"
         />
 </item>
 
