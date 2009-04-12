@@ -47,7 +47,6 @@ import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.app.AutoReceiver;
 import com.alfray.timeriffic.app.IntroDialogActivity;
 import com.alfray.timeriffic.app.TimerifficApp;
-import com.alfray.timeriffic.prefs.Oldv1PrefsValues;
 import com.alfray.timeriffic.prefs.PrefsActivity;
 import com.alfray.timeriffic.prefs.PrefsValues;
 
@@ -55,7 +54,7 @@ public class ProfilesUI extends Activity {
 
     private static final String TAG = "Tmrfc-ListProfilesUI";
     private static final boolean DEBUG = true;
-    
+
     private static final int DATA_CHANGED = 42;
     private static final int SETTINGS_UPDATED = 43;
 
@@ -63,7 +62,7 @@ public class ProfilesUI extends Activity {
     public static final int DIALOG_DELETE_ACTION = 1;
     public static final int DIALOG_DELETE_PROFILE = 2;
 
-    
+
     private ListView mProfilesList;
     private ProfileCursorAdapter mAdapter;
     private LayoutInflater mLayoutInflater;
@@ -81,7 +80,7 @@ public class ProfilesUI extends Activity {
     private Drawable mCheckOff;
 
     private ToggleButton mGlobalToggle;
-    
+
     private long mTempDialogRowId;
     private String mTempDialogTitle;
 
@@ -107,7 +106,7 @@ public class ProfilesUI extends Activity {
         Log.d(TAG, String.format("Started %s v%s",
                         getClass().getSimpleName(),
                         version));
-        
+
         setContentView(R.layout.profiles_screen);
         mLayoutInflater = getLayoutInflater();
 
@@ -132,14 +131,14 @@ public class ProfilesUI extends Activity {
                 force = true;
             }
         }
-        
+
         if (force) {
             Intent i = new Intent(this, IntroDialogActivity.class);
             if (hideControls) i.putExtra(IntroDialogActivity.EXTRA_NO_CONTROLS, true);
             startActivity(i);
         }
     }
-    
+
     private TimerifficApp getApp() {
         Application app = getApplication();
         if (app instanceof TimerifficApp) return (TimerifficApp) app;
@@ -151,26 +150,29 @@ public class ProfilesUI extends Activity {
      * Creates a db connection.
      */
     private void initProfileList() {
+
+        Log.d(TAG, "init profile list");
+
         if (mProfilesList == null) {
             mProfilesList = (ListView) findViewById(R.id.profilesList);
             mProfilesList.setRecyclerListener(new ProfileRecyclerListener());
-            
+
             mProfilesList.setOnItemClickListener(new OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                public void onItemClick(AdapterView<?> parent, View clickedView, int position, long id) {
                     if (DEBUG) Log.d(TAG, String.format("onItemClick: pos %d, id %d", position, id));
                     BaseHolder h = null;
-                    h = getHolderAtPosition(null, position);
+                    h = getHolder(null, clickedView);
                     if (h != null) h.onItemSelected();
                 }
             });
 
             mProfilesList.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
                 @Override
-                public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+                public void onCreateContextMenu(ContextMenu menu, View listview, ContextMenuInfo menuInfo) {
                     if (DEBUG) Log.d(TAG, "onCreateContextMenu");
                     BaseHolder h = null;
-                    h = getHolderAtPosition(menuInfo, -1);
+                    h = getHolder(menuInfo, null);
                     if (h != null) h.onCreateContextMenu(menu);
                 }
             });
@@ -192,9 +194,9 @@ public class ProfilesUI extends Activity {
             if (mCursor != null) mCursor.close();
             mCursor = mProfilesDb.query(
                     -1, //id
-                    new String[] { 
+                    new String[] {
                         Columns._ID,
-                        Columns.TYPE, 
+                        Columns.TYPE,
                         Columns.DESCRIPTION,
                         Columns.IS_ENABLED,
                         Columns.PROFILE_ID,
@@ -208,26 +210,27 @@ public class ProfilesUI extends Activity {
                     null, //selectionArgs
                     null //sortOrder
                     );
-    
+
             mIdColIndex = mCursor.getColumnIndexOrThrow(Columns._ID);
             mTypeColIndex = mCursor.getColumnIndexOrThrow(Columns.TYPE);
             mDescColIndex = mCursor.getColumnIndexOrThrow(Columns.DESCRIPTION);
             mEnableColIndex = mCursor.getColumnIndexOrThrow(Columns.IS_ENABLED);
             mProfIdColIndex = mCursor.getColumnIndexOrThrow(Columns.PROFILE_ID);
-    
+
             mAdapter = new ProfileCursorAdapter(this, mCursor);
             mProfilesList.setAdapter(mAdapter);
+
+            Log.d(TAG, String.format("adapter count: %d", mProfilesList.getCount()));
         }
     }
 
     /**
      * Update old prefs
-     * @return 
-     * 
+     * @return
+     *
      * @return Return true if old prefs was imported, false if nothing changed.
      */
     private boolean updateOldPrefs() {
-        int v = mPrefsValues.getVersion();
 
         // Version:
         // 0=old 1.0
@@ -238,18 +241,19 @@ public class ProfilesUI extends Activity {
         // All this is disabled because it creates something weird
         // and the generated profile header is treaded as a timed action.
         // TODO fix and debug then reactivate or drop it.
-        
+
+//        int v = mPrefsValues.getVersion();
 //        switch(v) {
 //            case Oldv1PrefsValues.VERSION:
 //                Log.d(TAG, String.format("Update old prefs: %s to %s", v, PrefsValues.VERSION));
-//                
+//
 //                try {
 //                    Oldv1PrefsValues old = new Oldv1PrefsValues(this);
 //                    int startHourMin = old.startHourMin();
 //                    int stopHourMin = old.stopHourMin();
 //
 //                    // need profile headers?
-//                    
+//
 //                    long prof_index = -1;
 //                    if (startHourMin >= 0 || stopHourMin >= 0) {
 //                        prof_index = mProfilesDb.insertProfile(
@@ -257,15 +261,15 @@ public class ProfilesUI extends Activity {
 //                                        "Old Timeriffic Profile" /*title*/,
 //                                        true /*isEnabled*/);
 //                    }
-//                    
+//
 //                    long action_index = 0;
 //                    if (prof_index > 0 && startHourMin >= 0) {
-//                        
+//
 //                        StringBuilder actions = new StringBuilder();
 //                        actions.append(Columns.ACTION_RINGER).append(old.startMute() ? 'M' : 'R');
 //                        actions.append(',');
 //                        actions.append(Columns.ACTION_VIBRATE).append(old.startVibrate() ? 'V' : 'N');
-//                        
+//
 //                        action_index = mProfilesDb.insertTimedAction(
 //                                        prof_index,
 //                                        0 /*afterActionIndex*/,
@@ -279,12 +283,12 @@ public class ProfilesUI extends Activity {
 //                    }
 //
 //                    if (prof_index > 0 && stopHourMin >= 0) {
-//                        
+//
 //                        StringBuilder actions = new StringBuilder();
 //                        actions.append(Columns.ACTION_RINGER).append(old.stopMute() ? 'M' : 'R');
 //                        actions.append(',');
 //                        actions.append(Columns.ACTION_VIBRATE).append(old.stopVibrate() ? 'V' : 'N');
-//                        
+//
 //                        mProfilesDb.insertTimedAction(
 //                                        prof_index,
 //                                        action_index /*afterActionIndex*/,
@@ -296,15 +300,15 @@ public class ProfilesUI extends Activity {
 //                                        actions.toString(),
 //                                        0 /*nextMs*/);
 //                    }
-//                    
+//
 //                } catch (Exception e) {
-//                    Log.e(TAG, "Failed update old prefs", e);                    
+//                    Log.e(TAG, "Failed update old prefs", e);
 //                } finally {
 //                    mPrefsValues.setVersion();
 //                }
-//                
+//
 //                return true;
-//                
+//
 //            case PrefsValues.VERSION:
 //                // pass
 //                break;
@@ -324,7 +328,7 @@ public class ProfilesUI extends Activity {
         initProfileList();
         setDataListener();
     }
-    
+
     /**
      * Called when the activity is getting paused. It might get destroyed
      * at any point.
@@ -361,19 +365,19 @@ public class ProfilesUI extends Activity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        
+
         mTempDialogRowId = savedInstanceState.getLong("dlg_rowid");
         mTempDialogTitle = savedInstanceState.getString("dlg_title");
     }
-    
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        
+
         outState.putLong("dlg_rowid", mTempDialogRowId);
         outState.putString("dlg_title", mTempDialogTitle);
     }
-    
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -396,11 +400,11 @@ public class ProfilesUI extends Activity {
             mProfilesList = null;
         }
     }
-    
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        
+
         switch(requestCode) {
         case DATA_CHANGED:
             onDataChanged();
@@ -436,28 +440,26 @@ public class ProfilesUI extends Activity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         ContextMenuInfo info = item.getMenuInfo();
-        BaseHolder h = getHolderAtPosition(info, -1);
+        BaseHolder h = getHolder(info, null);
         if (h != null) {
             h.onContextMenuSelected(item);
             return true;
         }
-        
+
         return super.onContextItemSelected(item);
     }
 
-    private BaseHolder getHolderAtPosition(ContextMenuInfo menuInfo, int position) {
-        if (menuInfo instanceof AdapterContextMenuInfo) {
-            position = ((AdapterContextMenuInfo) menuInfo).position;
+    private BaseHolder getHolder(ContextMenuInfo menuInfo, View selectedView) {
+        if (selectedView == null && menuInfo instanceof AdapterContextMenuInfo) {
+            selectedView = ((AdapterContextMenuInfo) menuInfo).targetView;
         }
-        if (position >= 0 && position < mProfilesList.getChildCount()) {
-            Object item = mProfilesList.getChildAt(position);
-            if (item instanceof View) {
-                Object tag = ((View) item).getTag();
-                if (tag instanceof BaseHolder) {
-                    return (BaseHolder) tag;
-                }
-            }
+
+        Object tag = selectedView.getTag();
+        if (tag instanceof BaseHolder) {
+            return (BaseHolder) tag;
         }
+
+        Log.d(TAG, "Holder missing");
         return null;
     }
 
@@ -476,16 +478,16 @@ public class ProfilesUI extends Activity {
                 requestSettingsCheck(AutoReceiver.TOAST_ALWAYS);
             }
         });
-        
+
         Button b = (Button) findViewById(R.id.check_now);
-        
+
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestSettingsCheck(AutoReceiver.TOAST_ALWAYS);
             }
         });
-        
+
         b.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -494,16 +496,16 @@ public class ProfilesUI extends Activity {
                         mPrefsValues.getStatusMsg(),
                         Toast.LENGTH_LONG);
                 t.show();
-                
+
                 return true; // we consumed the long view
             }
         });
     }
-    
+
     private void updateGlobalToggleFromPrefs() {
         mGlobalToggle.setChecked(mPrefsValues.isServiceEnabled());
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, R.string.append_profile,  0, R.string.append_profile).setIcon(R.drawable.ic_menu_add);
@@ -514,7 +516,7 @@ public class ProfilesUI extends Activity {
 
         return super.onCreateOptionsMenu(menu);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
@@ -547,11 +549,11 @@ public class ProfilesUI extends Activity {
         i.putExtra(AutoReceiver.EXTRA_TOAST_NEXT_EVENT, displayToast);
         sendBroadcast(i);
     }
-    
+
     protected void showResetChoices() {
         showDialog(DIALOG_RESET_CHOICES);
     }
-    
+
     private Dialog createDialogResetChoices() {
         Builder d = new AlertDialog.Builder(this);
 
@@ -569,21 +571,21 @@ public class ProfilesUI extends Activity {
                     requestSettingsCheck(AutoReceiver.TOAST_IF_CHANGED);
                 }
         });
-        
+
         d.setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
                 removeDialog(DIALOG_RESET_CHOICES);
             }
         });
-        
+
         d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeDialog(DIALOG_RESET_CHOICES);
             }
         });
-        
+
         return d.create();
     }
 
@@ -610,7 +612,7 @@ public class ProfilesUI extends Activity {
         private final static int TYPE_PROFILE = 0;
         /** View type is a timed action item. */
         private final static int TYPE_TIMED_ACTION = 1;
-        
+
 
         /**
          * Creates a new {@link ProfileCursorAdapter} for that cursor
@@ -619,7 +621,7 @@ public class ProfilesUI extends Activity {
         public ProfileCursorAdapter(Context context, Cursor cursor) {
             super(context, cursor);
         }
-        
+
         /**
          * All items are always enabled in this view.
          */
@@ -670,14 +672,14 @@ public class ProfilesUI extends Activity {
          * It then associates the tag with a new {@link ProfileHeaderHolder}
          * or {@link TimedActionHolder} and initializes the holder using
          * {@link BaseHolder#setUiData(Cursor)}.
-         * 
+         *
          */
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
 
             View v = null;
             BaseHolder h = null;
-            
+
             int type = cursor.getInt(mTypeColIndex);
             if (type == Columns.TYPE_IS_PROFILE) {
                 v = mLayoutInflater.inflate(R.layout.profile_header, null);
@@ -692,7 +694,7 @@ public class ProfilesUI extends Activity {
             }
             return v;
         }
-        
+
         /**
          * To recycle a view, we just re-associate its tag using
          * {@link BaseHolder#setUiData(Cursor)}.
@@ -708,7 +710,7 @@ public class ProfilesUI extends Activity {
             }
         }
     }
-    
+
     //--------------
 
     /**
@@ -721,7 +723,7 @@ public class ProfilesUI extends Activity {
         public void onMovedToScrapHeap(View view) {
             Object tag = view.getTag();
             if (tag instanceof BaseHolder) {
-                ((BaseHolder) tag).clearCursor(); 
+                ((BaseHolder) tag).clearCursor();
             }
         }
     }
@@ -733,7 +735,7 @@ public class ProfilesUI extends Activity {
      * and the common widgets of the two derived holders.
      */
     private abstract class BaseHolder {
-        
+
         /**
          * The current cursor associated with that holder.
          * It is null if the view is not associated with a cursor anymore.
@@ -749,15 +751,15 @@ public class ProfilesUI extends Activity {
         public BaseHolder(View view) {
             mDescription = view != null ? (TextView) view.findViewById(R.id.description) : null;
         }
-        
+
         public Cursor getCursor() {
             return mCursor;
         }
-        
+
         public void clearCursor() {
             mCursor = null;
         }
-        
+
         protected void setUiData(Cursor cursor,
                 String description,
                 Drawable state) {
@@ -772,7 +774,7 @@ public class ProfilesUI extends Activity {
         public abstract void onCreateContextMenu(ContextMenu menu);
         public abstract void onContextMenuSelected(MenuItem item);
 
-        
+
         // --- profile actions ---
 
         private void startEditActivity(Class<?> activity, String extra_id, long extra_value) {
@@ -783,22 +785,22 @@ public class ProfilesUI extends Activity {
 
             startActivityForResult(intent, DATA_CHANGED);
         }
-        
+
         protected void deleteProfile(Cursor cursor) {
             final long row_id = cursor.getLong(mIdColIndex);
             String title = cursor.getString(mDescColIndex);
-            
+
             mTempDialogRowId = row_id;
             mTempDialogTitle = title;
             showDialog(DIALOG_DELETE_PROFILE);
         }
-        
+
         protected void insertNewProfile(Cursor beforeCursor) {
             long prof_index = 0;
             if (beforeCursor != null) {
                 prof_index = beforeCursor.getLong(mProfIdColIndex) >> Columns.PROFILE_SHIFT;
             }
-            
+
             prof_index = mProfilesDb.insertProfile(prof_index, "New Profile", true /*isEnabled*/);
 
             startEditActivity(EditProfileUI.class,
@@ -815,10 +817,10 @@ public class ProfilesUI extends Activity {
 
 
         protected void deleteTimedAction(Cursor cursor) {
-            
+
             final long row_id = cursor.getLong(mIdColIndex);
             String description = cursor.getString(mDescColIndex);
-            
+
             mTempDialogRowId = row_id;
             mTempDialogTitle = description;
             showDialog(DIALOG_DELETE_ACTION);
@@ -832,11 +834,11 @@ public class ProfilesUI extends Activity {
                 action_index = prof_index & Columns.ACTION_MASK;
                 prof_index = prof_index >> Columns.PROFILE_SHIFT;
             }
-            
+
             Calendar c = new GregorianCalendar();
             c.setTimeInMillis(System.currentTimeMillis());
             int hourMin = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
-            
+
             int day = TimedActionUtils.calendarDayToActionDay(c);
 
             action_index = mProfilesDb.insertTimedAction(
@@ -853,7 +855,7 @@ public class ProfilesUI extends Activity {
 
             startEditActivity(EditActionUI.class, EditActionUI.EXTRA_ACTION_ID, action_id);
         }
-        
+
         protected void editAction(Cursor cursor) {
             long action_id = cursor.getLong(mProfIdColIndex);
 
@@ -861,7 +863,7 @@ public class ProfilesUI extends Activity {
         }
 
     }
-    
+
     private Dialog createDeleteProfileDialog() {
         final long row_id = mTempDialogRowId;
         final String title = mTempDialogTitle;
@@ -873,21 +875,21 @@ public class ProfilesUI extends Activity {
         d.setIcon(R.drawable.timeriffic_icon);
         d.setMessage(String.format(
                 "Are you sure you want to delete profile '%s' and all its actions?", title));
-        
+
         d.setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
                 removeDialog(DIALOG_DELETE_PROFILE);
             }
         });
-        
+
         d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeDialog(DIALOG_DELETE_PROFILE);
             }
         });
-        
+
         d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -899,15 +901,15 @@ public class ProfilesUI extends Activity {
                 removeDialog(DIALOG_DELETE_PROFILE);
             }
         });
-        
+
         return d.create();
     }
 
     private Dialog createDialogDeleteTimedAction() {
-        
+
         final long row_id = mTempDialogRowId;
         final String description = mTempDialogTitle;
-        
+
         Builder d = new AlertDialog.Builder(ProfilesUI.this);
 
         d.setCancelable(true);
@@ -915,21 +917,21 @@ public class ProfilesUI extends Activity {
         d.setIcon(R.drawable.timeriffic_icon);
         d.setMessage(String.format(
                 "Are you sure you want to delete action '%s'?", description));
-        
+
         d.setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
                 removeDialog(DIALOG_DELETE_ACTION);
             }
         });
-        
+
         d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeDialog(DIALOG_DELETE_ACTION);
             }
         });
-        
+
         d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -961,11 +963,11 @@ public class ProfilesUI extends Activity {
      * The holder for a profile header row.
      */
     private class ProfileHeaderHolder extends BaseHolder {
-        
+
         public ProfileHeaderHolder(View view) {
             super(view);
         }
-        
+
         @Override
         public void setUiData(Cursor cursor) {
             super.setUiData(cursor,
@@ -990,7 +992,7 @@ public class ProfilesUI extends Activity {
 
             boolean enabled = cursor.getInt(mEnableColIndex) != 0;
             enabled = !enabled;
-            
+
             mProfilesDb.updateProfile(
                     cursor.getLong(mProfIdColIndex),
                     null, // name
@@ -1033,7 +1035,7 @@ public class ProfilesUI extends Activity {
      * The holder for a timed action row.
      */
     private class TimedActionHolder extends BaseHolder {
-        
+
         public TimedActionHolder(View view) {
             super(view);
         }
