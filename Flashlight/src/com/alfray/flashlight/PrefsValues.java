@@ -30,4 +30,12 @@ public class PrefsValues {
     public void setColorIndex(int colorIndex) {
         mPrefs.edit().putInt("colorIndex", colorIndex).commit();
     }
+
+    public float getBrightness() {
+        return mPrefs.getFloat("brightness", 1.0f);
+    }
+
+    public void setBrightness(float brigthness) {
+        mPrefs.edit().putFloat("brightness", brigthness).commit();
+    }
 }

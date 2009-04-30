@@ -6,8 +6,6 @@
 
 package com.alfray.flashlight;
 
-import java.net.URL;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
