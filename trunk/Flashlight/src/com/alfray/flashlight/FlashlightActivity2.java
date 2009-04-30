@@ -23,11 +23,15 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public abstract class FlashlightActivity extends Activity {
+public class FlashlightActivity2 extends Activity {
 
     private final String mTag;
 
     private PrefsValues mPrefs;
+
+    private TextView mCurrentLabel;
+
+    private ImageView mCurrentIcon;
 
     private static final String sColorNames[] = {
         "White",
@@ -51,7 +55,7 @@ public abstract class FlashlightActivity extends Activity {
         0xFFFF00FF        // purple
     };
 
-    public FlashlightActivity(String tag) {
+    public FlashlightActivity2(String tag) {
         mTag = tag;
     }
 
@@ -76,50 +80,37 @@ public abstract class FlashlightActivity extends Activity {
             }
         });
 
-        TextView tv = (TextView) findViewById(R.id.Label);
-        ImageView ib = (ImageView) findViewById(R.id.CentralIcon);
+        mCurrentLabel = (TextView) findViewById(R.id.Label);
+        mCurrentIcon = (ImageView) findViewById(R.id.CentralIcon);
 
-        initializeOnCreate(tv, ib);
-        Log.d(mTag, "onCreate");
+        applyCurrentSetting();
+        // DEBUG -- Log.d(mTag, "onCreate");
     }
 
-    protected abstract void initializeOnCreate(TextView label, ImageView icon);
+    // ---- android workflow ----
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        Log.d(mTag, "onResume");
+        // DEBUG -- Log.d(mTag, "onResume");
     }
 
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
 
-        Log.d(mTag, "onUserLeaveHint");
+        // DEBUG -- Log.d(mTag, "onUserLeaveHint");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        Log.d(mTag, "onPause");
+        // DEBUG -- Log.d(mTag, "onPause");
     }
 
-    protected void setBrightness(float value) {
-        // Make the screen full bright for this activity using the new
-        // cupcake brightness API.
-        //
-        // Reference:
-        //   ./development/apps/Development/src/com/android/development/PointerLocation.java
-        // or
-        //   http://android.git.kernel.org/?p=platform/development.git;a=blob;f=apps/Development/src/com/android/development/PointerLocation.java;h=668e9ba167f590c97481e348ced5f97d45f307c9;hb=HEAD
-
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.screenBrightness = value;
-        getWindow().setAttributes(lp);
-        Log.d(mTag, "Set brightness to " + Float.toString(value));
-    }
+    // ----- menu ------
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,18 +143,6 @@ public abstract class FlashlightActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void goBright() {
-        Intent i = new Intent(this, BrightlightActivity.class);
-        startActivity(i);
-        finish();
-    }
-
-    private void goDark() {
-        Intent i = new Intent(this, DarklightActivity.class);
-        startActivity(i);
-        finish();
-    }
-
     @Override
     protected Dialog onCreateDialog(final int id) {
 
@@ -186,6 +165,40 @@ public abstract class FlashlightActivity extends Activity {
         }
 
         return super.onCreateDialog(id);
+    }
+
+    // ---- internal stuff ------
+
+    private void goBright() {
+        mPrefs.setBrightness(1.0f);
+        applyCurrentSetting();
+    }
+
+    private void goDark() {
+        mPrefs.setBrightness(0.1f);
+        applyCurrentSetting();
+    }
+
+    private void applyCurrentSetting() {
+        float f = mPrefs.getBrightness();
+        setBrightness(f);
+        mCurrentLabel.setText(f < 0.5 ? "Dark" : "Bright");
+        mCurrentIcon.setImageResource(f < 0.5 ? R.drawable.dark_icon : R.drawable.bright_icon);
+    }
+
+    private void setBrightness(float value) {
+        // Make the screen full bright for this activity using the new
+        // cupcake brightness API.
+        //
+        // Reference:
+        //   ./development/apps/Development/src/com/android/development/PointerLocation.java
+        // or
+        //   http://android.git.kernel.org/?p=platform/development.git;a=blob;f=apps/Development/src/com/android/development/PointerLocation.java;h=668e9ba167f590c97481e348ced5f97d45f307c9;hb=HEAD
+
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.screenBrightness = value;
+        getWindow().setAttributes(lp);
+        Log.d(mTag, "Set brightness to " + Float.toString(value));
     }
 
     private void changeColor(int colorIndex) {
