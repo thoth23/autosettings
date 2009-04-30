@@ -1,0 +1,25 @@
+#labels Featured
+<img src="http://autosettings.googlecode.com/svn/trunk/AutoSettings/res/drawable/timeriffic_icon.png" align="right"> *Timeriffic* does one thing: it can mute or un-mute the global Android ringer at a specified time of the day. 
+
+_Time: Finite, and now well managed._ <br>
+_Turn mute and vibrate on/off custom to your schedule._ <br>
+_Simple. Easy._
+*[http://autosettings.googlecode.com/ Timeriffic]*.<br>
+_No useless features._ <br>
+_Won't hurt your battery!_
+
+<img src="http://autosettings.googlecode.com/svn/distrib/qr_url.png" align="right" name="URL for Barcode Scanner">
+Example: Got class M, W, F at 8am (we're sorry for ya),
+use Timeriffic to:
+  * un-mute your volume from 7am - 8am during the ride to class,
+  * switch to vibrate at 8am,
+  * and then back to full volume at 9am.
+
+(If you're a grownup substitute "class" with "work").
+
+Version 1.3 adds the following new features:
+  * Profiles let you group actions together and enable or disable them at once.
+  * Actions can be set for given days, such as actions for the week days and others for the week-end.
+
+http://autosettings.googlecode.com/svn/trunk/AutoSettings/help/img13_proflist.png
+
