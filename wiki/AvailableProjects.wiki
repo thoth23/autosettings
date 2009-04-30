@@ -1,0 +1,7 @@
+#summary List of projects availables on this site
+
+*autosettings* is a Google Code site that contains the following projects:
+
+|| *[Timerrific]* || *[Flashlight]* ||
+|| <img src="http://autosettings.googlecode.com/svn/trunk/AutoSettings/res/drawable/timeriffic_icon.png" align="left">  *Timeriffic* does one thing: it can mute or un-mute the global Android ringer at a specified time of the day. || <img src="http://autosettings.googlecode.com/svn/trunk/Flashlight/res/drawable/bright_icon.png"align="left"> *Flashlight for Cupcake* is a flashlight application that _actually_ works on Android 1.5 "cupcake". ||
+|| http://autosettings.googlecode.com/svn/trunk/AutoSettings/help/img13_proflist.png || http://code.google.com/p/autosettings/source/browse/distrib/flashlight_white.png ||
