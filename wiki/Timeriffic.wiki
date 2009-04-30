@@ -1,4 +1,6 @@
+#summary Timeriffic, mute or un-mute the global Android ringer at a specified time of the day.
 #labels Featured
+
 <img src="http://autosettings.googlecode.com/svn/trunk/AutoSettings/res/drawable/timeriffic_icon.png" align="right"> *Timeriffic* does one thing: it can mute or un-mute the global Android ringer at a specified time of the day. 
 
 _Time: Finite, and now well managed._ <br>
@@ -22,4 +24,3 @@ Version 1.3 adds the following new features:
   * Actions can be set for given days, such as actions for the week days and others for the week-end.
 
 http://autosettings.googlecode.com/svn/trunk/AutoSettings/help/img13_proflist.png
-
