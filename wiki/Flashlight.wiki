@@ -1,0 +1,10 @@
+#summary Flashlight for Cupcake
+#labels Featured
+
+= Flashlight for Cupcake =
+
+This application is a Flashlight that works on Android 1.5 "cupcake" devices.
+
+You can find it on Market.
+
+Source is available here: http://code.google.com/p/autosettings/source/browse/#svn/trunk/Flashlight
