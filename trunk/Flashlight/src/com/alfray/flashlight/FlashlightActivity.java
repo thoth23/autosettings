@@ -23,9 +23,9 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class FlashlightActivity2 extends Activity {
+public class FlashlightActivity extends Activity {
 
-    private final String mTag;
+    private static final String TAG = "Flashlight";
 
     private PrefsValues mPrefs;
 
@@ -55,10 +55,6 @@ public class FlashlightActivity2 extends Activity {
         0xFFFF00FF        // purple
     };
 
-    public FlashlightActivity2(String tag) {
-        mTag = tag;
-    }
-
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,7 +80,7 @@ public class FlashlightActivity2 extends Activity {
         mCurrentIcon = (ImageView) findViewById(R.id.CentralIcon);
 
         applyCurrentSetting();
-        // DEBUG -- Log.d(mTag, "onCreate");
+        // DEBUG -- Log.d(TAG, "onCreate");
     }
 
     // ---- android workflow ----
@@ -93,21 +89,21 @@ public class FlashlightActivity2 extends Activity {
     protected void onResume() {
         super.onResume();
 
-        // DEBUG -- Log.d(mTag, "onResume");
+        // DEBUG -- Log.d(TAG, "onResume");
     }
 
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
 
-        // DEBUG -- Log.d(mTag, "onUserLeaveHint");
+        // DEBUG -- Log.d(TAG, "onUserLeaveHint");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        // DEBUG -- Log.d(mTag, "onPause");
+        // DEBUG -- Log.d(TAG, "onPause");
     }
 
     // ----- menu ------
@@ -198,7 +194,7 @@ public class FlashlightActivity2 extends Activity {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.screenBrightness = value;
         getWindow().setAttributes(lp);
-        Log.d(mTag, "Set brightness to " + Float.toString(value));
+        Log.d(TAG, "Set brightness to " + Float.toString(value));
     }
 
     private void changeColor(int colorIndex) {

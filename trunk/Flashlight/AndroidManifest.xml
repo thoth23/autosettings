@@ -22,7 +22,7 @@
         <activity
             android:theme="@style/WhiteTheme"
             android:icon="@drawable/bright_icon"
-            android:screenOrientation="portrait" android:name="FlashlightActivity2">
+            android:screenOrientation="portrait" android:name="FlashlightActivity">
             <intent-filter>
                 <action
                     android:name="android.intent.action.MAIN" />
