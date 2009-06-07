@@ -7,8 +7,10 @@
 package com.alfray.timeriffic.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
@@ -36,11 +38,12 @@ public class SettingsHelper {
     public boolean canControlWifi() {
         return false;
     }
-    
+
     public boolean canControlBrigthness() {
-        return false;
+        int sdk = Integer.parseInt(Build.VERSION.SDK);
+        return sdk >= 3;
     }
-    
+
     public enum RingerMode {
         /** Normal ringer: actually rings. */
         RING,
@@ -53,7 +56,7 @@ public class SettingsHelper {
             return (this == RING) ? "Ring" : "Mute";
         }
     }
-    
+
     public enum VibrateRingerMode {
         /** Vibrate is on */
         VIBRATE,
@@ -66,11 +69,11 @@ public class SettingsHelper {
             return (this == VIBRATE) ? "Vibrate" : "No vibrate";
         }
     }
-    
+
     public SettingsHelper(Context context) {
         mContext = context;
     }
-    
+
     public void changeRingerVibrate(RingerMode ringer, VibrateRingerMode vib) {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
@@ -93,7 +96,7 @@ public class SettingsHelper {
                     break;
             }
         }
-        
+
         if (ringer != null) {
             switch (ringer) {
                 case RING:
@@ -114,7 +117,7 @@ public class SettingsHelper {
             }
         }
     }
-    
+
     public void changeRingerVolume(int percent) {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
@@ -124,13 +127,13 @@ public class SettingsHelper {
         int vol = (max * percent) / 100;
         manager.setStreamVolume(AudioManager.STREAM_RING, vol, 0 /*flags*/);
     }
-    
+
     public int getRingerVolume() {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
         int vol = manager.getStreamVolume(AudioManager.STREAM_RING);
         int max = manager.getStreamMaxVolume(AudioManager.STREAM_RING);
-        
+
         return (vol * 100 / max);
     }
 
@@ -141,7 +144,7 @@ public class SettingsHelper {
 
         manager.setWifiEnabled(enabled);
     }
-    
+
     private static int MIN_BRIGHTNESS = 10;  // android.os.Power.BRIGHTNESS_DIM + 10;
     private static int MAX_BRIGHTNESS = 255; // android.os.Power.BRIGHTNESS_ON;
 
@@ -161,16 +164,21 @@ public class SettingsHelper {
         // - To get value: Settings.System.getInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
         // - To set value: Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, v);
 
-//        Log.d(TAG, "changeBrightness: " + Integer.toString(percent));
-//        
-//        int v = MIN_BRIGHTNESS + percent * (MAX_BRIGHTNESS - MIN_BRIGHTNESS) / 100;
-//        
+        Log.d(TAG, "changeBrightness: " + Integer.toString(percent));
+
+        Intent i = new Intent(mContext, ChangeBrightnessActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.putExtra(ChangeBrightnessActivity.INTENT_EXTRA_BRIGHTNESS, percent / 100.0f);
+        mContext.startActivity(i);
+
+//        float v = MIN_BRIGHTNESS + percent * (MAX_BRIGHTNESS - MIN_BRIGHTNESS) / 100.f;
+//
 //        if (persistent) {
 //            Settings.System.putInt(mContext.getContentResolver(),
 //                    Settings.System.SCREEN_BRIGHTNESS,
 //                    v);
 //        }
-//        
+//
 //        try {
 //            IHardwareService hs = IHardwareService.Stub.asInterface(ServiceManager.getService("hardware"));
 //            if (hs != null) hs.setScreenBacklight(v);

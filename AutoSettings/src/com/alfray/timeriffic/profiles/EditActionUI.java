@@ -27,7 +27,7 @@ import com.alfray.timeriffic.utils.SettingsHelper;
 public class EditActionUI extends Activity {
 
     private static String TAG = "Tmrfc-EditActionUI";
-    
+
     /** Extra long with the action prof_id (not index) to edit. */
     public static final String EXTRA_ACTION_ID = "action_id";
 
@@ -56,15 +56,15 @@ public class EditActionUI extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         setContentView(R.layout.edit_action);
         setTitle("Edit Timed Action");
-        
+
         Intent intent = getIntent();
         mActionId = intent.getExtras().getLong(EXTRA_ACTION_ID);
-        
+
         Log.d(TAG, String.format("edit prof_id: %08x", mActionId));
-        
+
         if (mActionId == 0) {
             Log.e(TAG, "action id not found in intent.");
             finish();
@@ -76,7 +76,7 @@ public class EditActionUI extends Activity {
         // get profiles db helper
         ProfilesDB profilesDb = new ProfilesDB();
         profilesDb.onCreate(this);
-        
+
         // get cursor
         String prof_id_select = String.format("%s=%d", Columns.PROFILE_ID, mActionId);
         Cursor c = profilesDb.query(
@@ -98,13 +98,13 @@ public class EditActionUI extends Activity {
                 finish();
                 return;
             }
-            
+
             // get column indexes
             int hourMinColIndex = c.getColumnIndexOrThrow(Columns.HOUR_MIN);
             int daysColIndex = c.getColumnIndexOrThrow(Columns.DAYS);
             int actionsColIndex = c.getColumnIndexOrThrow(Columns.ACTIONS);
 
-            
+
             String actions_str = c.getString(actionsColIndex);
             Log.d(TAG, String.format("Edit Action=%s", actions_str));
 
@@ -112,21 +112,21 @@ public class EditActionUI extends Activity {
 
             // get UI widgets
             mTimePicker = (TimePicker) findViewById(R.id.timePicker);
-            
+
             mPrefRingerMode = new PrefEnum(this,
-                    R.id.ringerModeButton, 
+                    R.id.ringerModeButton,
                     SettingsHelper.RingerMode.values(),
                     actions,
                     Columns.ACTION_RINGER,
                     "Ringer Mode");
-            
+
             mPrefRingerVibrate = new PrefEnum(this,
-                    R.id.ringerVibButton, 
+                    R.id.ringerVibButton,
                     SettingsHelper.VibrateRingerMode.values(),
                     actions,
                     Columns.ACTION_VIBRATE,
                     "Ringer Vibrate");
-            
+
 //            mPrefWifi = new PrefToggle(this,
 //                    R.id.wifiButton,
 //                    actions,
@@ -152,24 +152,24 @@ public class EditActionUI extends Activity {
                         }
                     });
 
-//            mPrefBrightness = new PrefPercent(this,
-//                    mPrefPercentOutWrapper,
-//                    R.id.brightnessButton,
-//                    actions,
-//                    Columns.ACTION_BRIGHTNESS,
-//                    "Brightness",
-//                    R.drawable.brightness,
-//                    new Accessor() {
-//                        @Override
-//                        public void changePercent(int percent) {
-//                            mSettingsHelper.changeBrightness(percent, false /*persist*/);
-//                        }
-//
-//                        @Override
-//                        public int getPercent() {
-//                            return mSettingsHelper.getCurrentBrightness();
-//                        }
-//                    });
+            mPrefBrightness = new PrefPercent(this,
+                    mPrefPercentOutWrapper,
+                    R.id.brightnessButton,
+                    actions,
+                    Columns.ACTION_BRIGHTNESS,
+                    "Brightness",
+                    R.drawable.ic_menu_view_brightness,
+                    new Accessor() {
+                        @Override
+                        public void changePercent(int percent) {
+                            mSettingsHelper.changeBrightness(percent, false /*persist*/);
+                        }
+
+                        @Override
+                        public int getPercent() {
+                            return mSettingsHelper.getCurrentBrightness();
+                        }
+                    });
 
             mCheckDays = new CheckBox[] {
                     (CheckBox) findViewById(R.id.dayMon),
@@ -183,12 +183,12 @@ public class EditActionUI extends Activity {
 
             // fill in UI from cursor data
             setTimePickerValue(mTimePicker, c.getInt(hourMinColIndex));
-            
+
             int days = c.getInt(daysColIndex);
             for (int i = Columns.MONDAY_BIT_INDEX; i <= Columns.SUNDAY_BIT_INDEX; i++) {
                 mCheckDays[i].setChecked((days & (1<<i)) != 0);
             }
-            
+
         } finally {
             c.close();
             profilesDb.onDestroy();
@@ -199,16 +199,16 @@ public class EditActionUI extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View view,
                     ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, view, menuInfo);
-        
+
         mCurrentContextMenuView = null;
-        
+
         Object tag = view.getTag();
         if (tag instanceof PrefBase) {
             ((PrefBase) tag).onCreateContextMenu(menu);
             mCurrentContextMenuView = view;
         }
     }
-    
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
@@ -220,23 +220,23 @@ public class EditActionUI extends Activity {
         }
         return super.onContextItemSelected(item);
     }
-    
+
     @Override
     public void onContextMenuClosed(Menu menu) {
         super.onContextMenuClosed(menu);
         mCurrentContextMenuView = null;
     }
-    
+
     @Override
     protected Dialog onCreateDialog(int id) {
-        
+
         if (id == DIALOG_EDIT_PERCENT && mPrefPercentOutWrapper[0] != null) {
             return new PrefPercentDialog(this, mPrefPercentOutWrapper);
         }
-        
+
         return super.onCreateDialog(id);
     }
-    
+
     // -----------
 
 
@@ -247,9 +247,9 @@ public class EditActionUI extends Activity {
         ProfilesDB profilesDb = new ProfilesDB();
         try {
             profilesDb.onCreate(this);
-            
+
             int hourMin = getTimePickerHourMin(mTimePicker);
-            
+
             int days = 0;
 
             for (int i = Columns.MONDAY_BIT_INDEX; i <= Columns.SUNDAY_BIT_INDEX; i++) {
@@ -270,20 +270,20 @@ public class EditActionUI extends Activity {
 
             String description = TimedActionUtils.computeDescription(
                     this, hourMin, days, actions.toString());
-            
+
             int count = profilesDb.updateTimedAction(mActionId,
                     hourMin,
                     days,
                     actions.toString(),
                     description);
-            
+
             Log.d(TAG, "written rows: " + Integer.toString(count));
-            
+
         } finally {
             profilesDb.onDestroy();
         }
     }
-    
+
     // -----------
 
 
@@ -299,7 +299,7 @@ public class EditActionUI extends Activity {
         if (hourMin >= 24*60) hourMin = 24*60-1;
         int hours = hourMin / 60;
         int minutes = hourMin % 60;
-        
+
         timePicker.setCurrentHour(hours);
         timePicker.setCurrentMinute(minutes);
     }
