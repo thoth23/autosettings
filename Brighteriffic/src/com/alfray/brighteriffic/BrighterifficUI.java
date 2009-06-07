@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 
 public class BrighterifficUI extends Activity {
@@ -17,13 +18,14 @@ public class BrighterifficUI extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.main);
 
         findViewById(R.id.Button01).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
-                i.putExtra(ChangeBrightnessActivity.INTENT_EXTRA_BRIGHTNESS, 0.1f);
+                i.putExtra(ChangeBrightnessActivity.INTENT_SET_BRIGHTNESS, 0.1f);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
             }
@@ -33,7 +35,8 @@ public class BrighterifficUI extends Activity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
-                i.putExtra(ChangeBrightnessActivity.INTENT_EXTRA_BRIGHTNESS, 0.75f);
+                i.putExtra(ChangeBrightnessActivity.INTENT_SET_BRIGHTNESS, 0.75f);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
             }
         });
@@ -50,6 +53,8 @@ public class BrighterifficUI extends Activity {
 
         // The intent we generate
         Intent intent = new Intent("com.alfray.brighteriffic.TOGGLE_BRIGHTNESS");
+        intent.putExtra(ChangeBrightnessActivity.INTENT_TOGGLE_BRIGHTNESS, true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         Intent result = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
         result.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
@@ -58,7 +63,7 @@ public class BrighterifficUI extends Activity {
         result.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Toggle Brightness");
 
         // Build the icon info for the activity
-        Drawable drawable = getResources().getDrawable(R.drawable.icon);
+        Drawable drawable = getResources().getDrawable(R.drawable.icon96);
 
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bd = (BitmapDrawable) drawable;
