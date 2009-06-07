@@ -40,6 +40,6 @@ function process() {
 	mv -v "$SRC" "$DEST"
 }
 
-for i in [tTfF]+([^_]).apk ; do
+for i in [tTfFB]+([^_]).apk ; do
 	[ -f "$i" ] && process "$i"
 done
