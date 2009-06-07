@@ -23,8 +23,8 @@ public class BrighterifficUI extends Activity {
         findViewById(R.id.Button01).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(BrighterifficUI.this, BrightnessActivity.class);
-                i.putExtra(BrightnessActivity.INTENT_EXTRA_BRIGHTNESS, 0.1f);
+                Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
+                i.putExtra(ChangeBrightnessActivity.INTENT_EXTRA_BRIGHTNESS, 0.1f);
                 startActivity(i);
             }
         });
@@ -32,8 +32,8 @@ public class BrighterifficUI extends Activity {
         findViewById(R.id.Button02).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(BrighterifficUI.this, BrightnessActivity.class);
-                i.putExtra(BrightnessActivity.INTENT_EXTRA_BRIGHTNESS, 0.75f);
+                Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
+                i.putExtra(ChangeBrightnessActivity.INTENT_EXTRA_BRIGHTNESS, 0.75f);
                 startActivity(i);
             }
         });
