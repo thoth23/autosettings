@@ -10,7 +10,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    <activity android:name="BrightnessActivity"
+    <activity android:name="ChangeBrightnessActivity"
         android:theme="@style/Theme.Translucent"></activity>
 </application>
     <uses-sdk android:minSdkVersion="3" />

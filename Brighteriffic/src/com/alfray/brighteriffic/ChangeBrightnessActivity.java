@@ -22,17 +22,17 @@ import android.view.WindowManager.LayoutParams;
  * @author ralf
  *
  */
-public class BrightnessActivity extends Activity {
+public class ChangeBrightnessActivity extends Activity {
 
     public static final String INTENT_EXTRA_BRIGHTNESS = "brightness";
     Handler mHandler;
 
-    public BrightnessActivity() {
+    public ChangeBrightnessActivity() {
         mHandler = new Handler() {
           @Override
             public void handleMessage(Message msg) {
                 if (msg.what == 42) {
-                    BrightnessActivity.this.finish();
+                    ChangeBrightnessActivity.this.finish();
                 }
                 super.handleMessage(msg);
             }
