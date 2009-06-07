@@ -5,9 +5,11 @@
  */
 
 /**
- * 
+ *
  */
 package com.alfray.timeriffic.app;
+
+import com.alfray.timeriffic.utils.SettingsHelper;
 
 import android.app.Application;
 
@@ -20,21 +22,21 @@ public class TimerifficApp extends Application {
     public void onCreate() {
         super.onCreate();
     }
-    
+
     public boolean isIntroDisplayed() {
         return mIntroDisplayed;
     }
-    
+
     public void setIntroDisplayed(boolean introDisplayed) {
         mIntroDisplayed = introDisplayed;
     }
-    
+
     //---------------------
-    
+
     public void setDataListener(Runnable listener) {
         mDataListener = listener;
     }
-    
+
     public void invokeDataListener() {
         if (mDataListener != null) mDataListener.run();
     }
