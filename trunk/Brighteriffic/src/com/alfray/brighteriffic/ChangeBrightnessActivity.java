@@ -52,7 +52,6 @@ public class ChangeBrightnessActivity extends Activity {
                     Settings.System.SCREEN_BRIGHTNESS,
                     (int)(255 * f));
 
-
             Window win = getWindow();
             LayoutParams attr = win.getAttributes();
             attr.screenBrightness = f;
@@ -60,7 +59,7 @@ public class ChangeBrightnessActivity extends Activity {
         }
 
         Message msg = mHandler.obtainMessage(42);
-        mHandler.sendMessageDelayed(msg, 1000);
+        mHandler.sendMessageDelayed(msg, 1000); // this makes it all work
     }
 
 }
