@@ -2,6 +2,9 @@ package com.alfray.brighteriffic;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,5 +37,35 @@ public class BrighterifficUI extends Activity {
                 startActivity(i);
             }
         });
+
+        findViewById(R.id.Button03).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                installToggleShortcut();
+            }
+        });
+    }
+
+    private void installToggleShortcut() {
+
+        // The intent we generate
+        Intent intent = new Intent("com.alfray.brighteriffic.TOGGLE_BRIGHTNESS");
+
+        Intent result = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+        result.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
+
+        // Set the name of the activity
+        result.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Toggle Brightness");
+
+        // Build the icon info for the activity
+        Drawable drawable = getResources().getDrawable(R.drawable.icon);
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bd = (BitmapDrawable) drawable;
+            Bitmap bitmap = bd.getBitmap();
+            result.putExtra(Intent.EXTRA_SHORTCUT_ICON, bitmap);
+        }
+
+        sendBroadcast(result);
     }
 }

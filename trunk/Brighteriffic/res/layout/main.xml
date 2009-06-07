@@ -3,12 +3,13 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
+    android:gravity="center_horizontal">
 <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:text="@string/hello"
     />
-<Button android:text="Set Brigthnes to 10%" android:id="@+id/Button01" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-<Button android:text="Set Brigthnes to 75%" android:id="@+id/Button02" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+<Button android:text="Set Brigthnes to 10%" android:id="@+id/Button01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dip"></Button>
+<Button android:text="Set Brigthnes to 75%" android:id="@+id/Button02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="20dip"></Button>
+<Button android:text="Install Toggle shortcut on Home" android:id="@+id/Button03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:drawableTop="@drawable/icon" android:layout_marginTop="20dip"></Button>
 </LinearLayout>
