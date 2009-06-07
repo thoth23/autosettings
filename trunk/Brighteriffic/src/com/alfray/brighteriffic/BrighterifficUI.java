@@ -2,6 +2,8 @@ package com.alfray.brighteriffic;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.IHardwareService;
+import android.os.ServiceManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -56,7 +58,7 @@ public class BrighterifficUI extends Activity {
 
         try {
             IHardwareService hs = IHardwareService.Stub.asInterface(ServiceManager.getService("hardware"));
-            if (hs != null) hs.setScreenBacklight(v);
+            if (hs != null) hs.setBacklights(v);
         } catch (Throwable t) {
             Log.e(TAG, "Failed to set brightness to " + Integer.toString(v), t);
         }
