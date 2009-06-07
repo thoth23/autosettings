@@ -11,9 +11,13 @@
             </intent-filter>
         </activity>
     <activity android:name="ChangeBrightnessActivity"
-        android:theme="@style/Theme.Translucent"></activity>
+        android:theme="@style/Theme.Translucent" android:taskAffinity="com.alfray.brighteriffic.Change"></activity>
+<activity android:name="ToggleActivity" android:taskAffinity="com.alfray.brighteriffic.Toggle"><intent-filter><action android:name="com.alfray.brighteriffic.TOGGLE_BRIGHTNESS"></action>
+<category android:name="android.intent.category.DEFAULT"></category>
+</intent-filter>
+</activity>
 </application>
     <uses-sdk android:minSdkVersion="3" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS"></uses-permission>
-<uses-permission android:name="android.permission.HARDWARE_TEST"></uses-permission>
+<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 </manifest>
