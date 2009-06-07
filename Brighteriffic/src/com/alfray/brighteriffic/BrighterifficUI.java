@@ -25,6 +25,7 @@ public class BrighterifficUI extends Activity {
             public void onClick(View v) {
                 Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
                 i.putExtra(ChangeBrightnessActivity.INTENT_EXTRA_BRIGHTNESS, 0.1f);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
             }
         });
