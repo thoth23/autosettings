@@ -10,7 +10,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+    <activity android:name="BrightnessActivity"
+        android:theme="@style/Theme.Translucent"></activity>
+</application>
     <uses-sdk android:minSdkVersion="3" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS"></uses-permission>
 <uses-permission android:name="android.permission.HARDWARE_TEST"></uses-permission>
