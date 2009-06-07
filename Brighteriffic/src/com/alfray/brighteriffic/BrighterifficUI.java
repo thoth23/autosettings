@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 public class BrighterifficUI extends Activity {
 
@@ -14,6 +16,13 @@ public class BrighterifficUI extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        findViewById(R.id.Button01).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeBrightness(50, true);
+            }
+        });
     }
 
     private static int MIN_BRIGHTNESS = 10;  // android.os.Power.BRIGHTNESS_DIM + 10;
