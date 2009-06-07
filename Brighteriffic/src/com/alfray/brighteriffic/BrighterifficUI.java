@@ -1,6 +1,7 @@
 package com.alfray.brighteriffic;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.IHardwareService;
 import android.os.ServiceManager;
@@ -22,7 +23,18 @@ public class BrighterifficUI extends Activity {
         findViewById(R.id.Button01).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeBrightness(50, true);
+                Intent i = new Intent(BrighterifficUI.this, BrightnessActivity.class);
+                i.putExtra(BrightnessActivity.INTENT_EXTRA_BRIGHTNESS, 0.1f);
+                startActivity(i);
+            }
+        });
+
+        findViewById(R.id.Button02).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(BrighterifficUI.this, BrightnessActivity.class);
+                i.putExtra(BrightnessActivity.INTENT_EXTRA_BRIGHTNESS, 0.75f);
+                startActivity(i);
             }
         });
     }
