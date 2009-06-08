@@ -1,4 +1,5 @@
 #summary Brighteriffic
+#labels Featured
 
 <img src="http://autosettings.googlecode.com/svn/distrib/brighteriffc1.png" align="right">
 = Brighteriffic =
