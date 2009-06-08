@@ -1,12 +1,9 @@
 /*
  * (c) ralfoide gmail com, 2009
  * Project: Brighteriffic
- * License TBD
+ * License gpl v3
  */
 
-/**
- *
- */
 package com.alfray.brighteriffic;
 
 import java.lang.reflect.Field;
@@ -26,10 +23,6 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 
-/**
- * @author ralf
- *
- */
 public class ChangeBrightnessActivity extends Activity {
 
     private static final String TAG = "ChangeBrightness";

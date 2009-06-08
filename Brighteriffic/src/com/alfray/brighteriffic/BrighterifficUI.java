@@ -1,3 +1,9 @@
+/*
+ * (c) ralfoide gmail com, 2009
+ * Project: Brighteriffic
+ * License gpl v3
+ */
+
 package com.alfray.brighteriffic;
 
 import android.app.Activity;
