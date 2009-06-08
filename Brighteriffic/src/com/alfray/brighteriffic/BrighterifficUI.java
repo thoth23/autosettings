@@ -2,17 +2,20 @@ package com.alfray.brighteriffic;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 public class BrighterifficUI extends Activity {
 
-    private static final String TAG = "BrighterifficUI";
+    //private static final String TAG = "BrighterifficUI";
 
     /** Called when the activity is first created. */
     @Override
@@ -20,6 +23,9 @@ public class BrighterifficUI extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main);
+
+        ((TextView) findViewById(R.id.introText)).setText(
+                getResources().getString(R.string.hello, longVersion()));
 
         findViewById(R.id.Button01).setOnClickListener(new OnClickListener() {
             @Override
@@ -47,6 +53,17 @@ public class BrighterifficUI extends Activity {
                 installToggleShortcut();
             }
         });
+    }
+
+    public String longVersion() {
+        PackageManager pm = getPackageManager();
+        PackageInfo pi;
+        try {
+            pi = pm.getPackageInfo(getPackageName(), 0);
+            return pi.versionName;
+        } catch (NameNotFoundException e) {
+            return "??"; // failed, ignored
+        }
     }
 
     private void installToggleShortcut() {

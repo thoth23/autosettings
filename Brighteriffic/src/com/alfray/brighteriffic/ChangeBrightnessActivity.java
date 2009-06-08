@@ -10,13 +10,16 @@
 package com.alfray.brighteriffic;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IHardwareService;
 import android.os.Message;
+import android.os.ServiceManager;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
@@ -78,30 +81,50 @@ public class ChangeBrightnessActivity extends Activity {
     }
 
     private void setCurrentBrightness(float f) {
+
+        int v = (int) (255 * f);
+        if (v < 10) {
+            // never set backlight too dark
+            v = 10;
+            f = v / 255.f;
+        }
+
         Settings.System.putInt(this.getContentResolver(),
                 Settings.System.SCREEN_BRIGHTNESS,
-                (int)(255 * f));
+                v);
 
         int sdk = Integer.parseInt(Build.VERSION.SDK);
         if (sdk >= 3) {
 
-            Window win = getWindow();
-            LayoutParams attr = win.getAttributes();
-
-            Field field;
             try {
-                field = attr.getClass().getField("screenBrightness");
+                Window win = getWindow();
+                LayoutParams attr = win.getAttributes();
+                Field field = attr.getClass().getField("screenBrightness");
                 field.setFloat(attr, f);
+
+                win.setAttributes(attr);
 
                 Log.i(TAG, String.format("Changed brightness to %.2f [SDK 3+]", f));
 
-            } catch (SecurityException e) {
-            } catch (NoSuchFieldException e) {
-            } catch (IllegalArgumentException e) {
-            } catch (IllegalAccessException e) {
+            } catch (Throwable t) {
+                Log.e(TAG, String.format("Failed to set brightness to %.2f [SDK 3+]", f), t);
             }
 
-            win.setAttributes(attr);
+        } else {
+            // Older SDKs
+            try {
+                IHardwareService hs = IHardwareService.Stub.asInterface(
+                        ServiceManager.getService("hardware"));
+                if (hs != null) {
+                    Method m = hs.getClass().getMethod("setScreenBacklight", new Class[] { int.class });
+                    if (m != null) {
+                        m.invoke(hs, new Object[] { v });
+                        Log.i(TAG, String.format("Changed brightness to %d [SDK<3]", v));
+                    }
+                }
+            } catch (Throwable t) {
+                Log.e(TAG, String.format("Failed to set brightness to %d [SDK<3]", v), t);
+            }
         }
     }
 

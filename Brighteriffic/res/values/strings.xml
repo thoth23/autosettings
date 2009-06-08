@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, BrighterifficUI!</string>
+    <string name="hello">Brighteriffic %s let's you toggle the global screen brightness using a Home shortcut.</string>
     <string name="app_name">Brighteriffic</string>
 </resources>
