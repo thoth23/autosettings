@@ -10,7 +10,8 @@ _Simple. Easy._
 _No useless features._ <br>
 _Won't hurt your battery!_
 
-<img src="http://autosettings.googlecode.com/svn/distrib/qr_url.png" align="right" name="URL for Barcode Scanner">
+<img src="http://chart.apis.google.com/chart?cht=qr&chs=120x120&chl=market://search?q=pname:com.alfray.timeriffic&force_img.png" align="right">
+
 Example: Got class M, W, F at 8am (we're sorry for ya),
 use Timeriffic to:
   * un-mute your volume from 7am - 8am during the ride to class,
