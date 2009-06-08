@@ -5,6 +5,7 @@
 = Flashlight for Cupcake =
 
 This application is a Flashlight that works on Android 1.5 "cupcake" devices.
+<img src="http://chart.apis.google.com/chart?cht=qr&chs=120x120&chl=market://search?q=pname:com.alfray.flashlight&force_img.png" align="right">
 
 You can find it on Market.
 
