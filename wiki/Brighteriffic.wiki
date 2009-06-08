@@ -1,0 +1,9 @@
+#summary Brighteriffic
+
+= Brighteriffic =
+
+This application creates a Home shortcut that lets you toggle the global screen brightness. Work for both Android 1.1 and 1.5 (a.k.a. Cupcake).
+
+You can find it on Market.
+
+Source is available here: http://code.google.com/p/autosettings/source/browse/#svn/trunk/Brighteriffic
