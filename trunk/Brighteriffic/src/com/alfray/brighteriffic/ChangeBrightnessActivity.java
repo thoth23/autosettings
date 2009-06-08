@@ -19,8 +19,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
+import android.util.Log;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 
 /**
@@ -29,9 +29,12 @@ import android.view.WindowManager.LayoutParams;
  */
 public class ChangeBrightnessActivity extends Activity {
 
+    private static final String TAG = "ChangeBrightness";
+
     public static final String INTENT_SET_BRIGHTNESS = "set";
     public static final String INTENT_TOGGLE_BRIGHTNESS = "toggle";
-    Handler mHandler;
+
+    private Handler mHandler;
 
     public ChangeBrightnessActivity() {
         mHandler = new Handler() {
@@ -51,8 +54,8 @@ public class ChangeBrightnessActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         // Have the system blur any windows behind this one.
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
-                             WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
+        //                     WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
         setContentView(R.layout.empty);
 
         Intent i = getIntent();
@@ -62,7 +65,7 @@ public class ChangeBrightnessActivity extends Activity {
             setCurrentBrightness(f);
 
         } else if (i.getBooleanExtra(INTENT_TOGGLE_BRIGHTNESS, false)) {
-            if (getCurrentBrightness() > 50) {
+            if (getCurrentBrightness() > 0.5f) {
                 setCurrentBrightness(0.1f);
             } else {
                 setCurrentBrightness(0.75f);
@@ -89,6 +92,9 @@ public class ChangeBrightnessActivity extends Activity {
             try {
                 field = attr.getClass().getField("screenBrightness");
                 field.setFloat(attr, f);
+
+                Log.i(TAG, String.format("Changed brightness to %.2f [SDK 3+]", f));
+
             } catch (SecurityException e) {
             } catch (NoSuchFieldException e) {
             } catch (IllegalArgumentException e) {
