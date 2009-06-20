@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.provider.Settings;
-import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 
 /**
@@ -145,9 +143,6 @@ public class SettingsHelper {
         manager.setWifiEnabled(enabled);
     }
 
-    private static int MIN_BRIGHTNESS = 10;  // android.os.Power.BRIGHTNESS_DIM + 10;
-    private static int MAX_BRIGHTNESS = 255; // android.os.Power.BRIGHTNESS_ON;
-
     /**
      * @param percent The new value in 0..100 range (will get mapped to adequate OS values)
      * @param persistent True if the setting should be made persistent, e.g. written to system pref.
@@ -168,43 +163,17 @@ public class SettingsHelper {
 
         Intent i = new Intent(mContext, ChangeBrightnessActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.putExtra(ChangeBrightnessActivity.INTENT_EXTRA_BRIGHTNESS, percent / 100.0f);
+        i.putExtra(ChangeBrightnessActivity.INTENT_SET_BRIGHTNESS, percent / 100.0f);
         mContext.startActivity(i);
-
-//        float v = MIN_BRIGHTNESS + percent * (MAX_BRIGHTNESS - MIN_BRIGHTNESS) / 100.f;
-//
-//        if (persistent) {
-//            Settings.System.putInt(mContext.getContentResolver(),
-//                    Settings.System.SCREEN_BRIGHTNESS,
-//                    v);
-//        }
-//
-//        try {
-//            IHardwareService hs = IHardwareService.Stub.asInterface(ServiceManager.getService("hardware"));
-//            if (hs != null) hs.setScreenBacklight(v);
-//        } catch (Throwable t) {
-//            Log.e(TAG, "Failed to set brightness to " + Integer.toString(v), t);
-//        }
     }
 
     /**
      * Returns screen brightness in range 0..100%.
      * <p/>
-     * See comments in {@link #changeBrightness(int)}. The real range is 0..255
-     * but 10..255 is only usable (to avoid a non-readable screen). So map 10..255
-     * to 0..100%.
+     * See comments in {@link #changeBrightness(int)}. The real range is 0..255,
+     * maps it 0..100.
      */
     public int getCurrentBrightness() {
-        try {
-            int v = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.SCREEN_BRIGHTNESS);
-            // transform 10..255 into 0..100
-            v = (v - MIN_BRIGHTNESS) * 100 / (MAX_BRIGHTNESS - MIN_BRIGHTNESS);
-            // clip to 0..100
-            return Math.min(100, Math.max(0, v));
-        } catch (SettingNotFoundException e) {
-            // If not found, return max
-            return MAX_BRIGHTNESS;
-        }
+        return (int) (100 * ChangeBrightnessActivity.getCurrentBrightness(mContext));
     }
 }
