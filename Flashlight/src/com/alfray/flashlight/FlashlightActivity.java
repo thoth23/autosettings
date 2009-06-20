@@ -10,10 +10,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.AlertDialog.Builder;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,12 +29,15 @@ import android.widget.TextView;
 public class FlashlightActivity extends Activity {
 
     private static final String TAG = "Flashlight";
+    private static final boolean DEBUG = false;
 
     private PrefsValues mPrefs;
 
     private TextView mCurrentLabel;
 
     private ImageView mCurrentIcon;
+
+    private WakeLock mWakeLock;
 
     private static final String sColorNames[] = {
         "White",
@@ -80,7 +86,7 @@ public class FlashlightActivity extends Activity {
         mCurrentIcon = (ImageView) findViewById(R.id.CentralIcon);
 
         applyCurrentSetting();
-        // DEBUG -- Log.d(TAG, "onCreate");
+        if (DEBUG) Log.d(TAG, "onCreate");
     }
 
     // ---- android workflow ----
@@ -89,21 +95,26 @@ public class FlashlightActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        // DEBUG -- Log.d(TAG, "onResume");
-    }
+        if (DEBUG) Log.d(TAG, "onResume");
 
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-
-        // DEBUG -- Log.d(TAG, "onUserLeaveHint");
+        // Make sure the screen remains bright, does not dim and does not
+        // turn off. The wake lock is released in onPause()
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, TAG);
+        mWakeLock.acquire();
     }
 
     @Override
     protected void onPause() {
+        if (mWakeLock != null) {
+            // Release the bright-screen wake lock
+            mWakeLock.release();
+            mWakeLock = null;
+        }
         super.onPause();
 
-        // DEBUG -- Log.d(TAG, "onPause");
+        if (DEBUG) Log.d(TAG, "onPause");
+
     }
 
     // ----- menu ------
