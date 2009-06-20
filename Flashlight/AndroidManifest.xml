@@ -37,4 +37,5 @@
 
     <activity android:theme="@android:style/Theme.Dialog" android:label="About Flashlight for Cupcake" android:name=".AboutActivity"></activity>
     </application>
+<uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
 </manifest>
