@@ -30,7 +30,7 @@
 
 	</application>
 
-	<uses-sdk android:minSdkVersion="1"></uses-sdk>
+	<uses-sdk android:minSdkVersion="2"></uses-sdk>
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
 
 
