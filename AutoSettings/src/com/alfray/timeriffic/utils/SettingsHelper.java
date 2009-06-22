@@ -38,8 +38,7 @@ public class SettingsHelper {
     }
 
     public boolean canControlBrigthness() {
-        int sdk = Integer.parseInt(Build.VERSION.SDK);
-        return sdk >= 3;
+        return true;
     }
 
     public enum RingerMode {
@@ -136,11 +135,13 @@ public class SettingsHelper {
     }
 
     public void changeWifi(boolean enabled) {
-        WifiManager manager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+        if (canControlWifi()) {
+            WifiManager manager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
 
-        if (DEBUG) Log.d(TAG, "changeWifi: " + (enabled ? "on" : "off"));
+            if (DEBUG) Log.d(TAG, "changeWifi: " + (enabled ? "on" : "off"));
 
-        manager.setWifiEnabled(enabled);
+            manager.setWifiEnabled(enabled);
+        }
     }
 
     /**
@@ -149,22 +150,24 @@ public class SettingsHelper {
      *  If false, only the current hardware value is changed.
      */
     public void changeBrightness(int percent, boolean persistent) {
-        // Reference:
-        // http://android.git.kernel.org/?p=platform/packages/apps/Settings.git;a=blob;f=src/com/android/settings/BrightnessPreference.java
-        // The source indicates
-        // - Backlight range is 0..255
-        // - Must not set to 0 (user would see nothing) so they use 10 as minimum
-        // - All constants are in android.os.Power which is hidden from the SDK in 1.0
-        //   yet available in 1.1
-        // - To get value: Settings.System.getInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
-        // - To set value: Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, v);
+        if (canControlBrigthness()) {
+            // Reference:
+            // http://android.git.kernel.org/?p=platform/packages/apps/Settings.git;a=blob;f=src/com/android/settings/BrightnessPreference.java
+            // The source indicates
+            // - Backlight range is 0..255
+            // - Must not set to 0 (user would see nothing) so they use 10 as minimum
+            // - All constants are in android.os.Power which is hidden from the SDK in 1.0
+            //   yet available in 1.1
+            // - To get value: Settings.System.getInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+            // - To set value: Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, v);
 
-        Log.d(TAG, "changeBrightness: " + Integer.toString(percent));
+            Log.d(TAG, "changeBrightness: " + Integer.toString(percent));
 
-        Intent i = new Intent(mContext, ChangeBrightnessActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.putExtra(ChangeBrightnessActivity.INTENT_SET_BRIGHTNESS, percent / 100.0f);
-        mContext.startActivity(i);
+            Intent i = new Intent(mContext, ChangeBrightnessActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra(ChangeBrightnessActivity.INTENT_SET_BRIGHTNESS, percent / 100.0f);
+            mContext.startActivity(i);
+        }
     }
 
     /**

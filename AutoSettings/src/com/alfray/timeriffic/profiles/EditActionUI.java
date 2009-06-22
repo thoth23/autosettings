@@ -162,7 +162,8 @@ public class EditActionUI extends Activity {
                     new Accessor() {
                         @Override
                         public void changePercent(int percent) {
-                            mSettingsHelper.changeBrightness(percent, false /*persist*/);
+                            // disable the immediate slider feedback, it flickers too much and is very slow.
+                            // mSettingsHelper.changeBrightness(percent, false /*persist*/);
                         }
 
                         @Override
