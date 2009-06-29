@@ -64,7 +64,7 @@ public class ChangeBrightnessActivity extends Activity {
         Intent i = getIntent();
         float f = i.getFloatExtra(INTENT_SET_BRIGHTNESS, -1);
 
-        if (f >= 0.1) {
+        if (f >= 0) {
             setCurrentBrightness(f);
 
         } else if (i.getBooleanExtra(INTENT_TOGGLE_BRIGHTNESS, false)) {
