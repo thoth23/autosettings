@@ -68,6 +68,11 @@ public class ChangeBrightnessActivity extends Activity {
             PrefsValues prefValues = new PrefsValues(this);
             float _min = prefValues.getMinBrightness() / 100.0f;
             float _max = prefValues.getMaxBrightness() / 100.0f;
+            if (_min > _max) {
+                float t = _min;
+                _min = _max;
+                _max = t;
+            }
 
             float median = (_min + _max) / 2;
 
