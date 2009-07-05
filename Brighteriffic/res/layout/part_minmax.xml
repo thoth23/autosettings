@@ -28,6 +28,7 @@
         android:id="@+id/minMaxSeekBar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:saveEnabled="false"
         android:max="100"
         android:secondaryProgress="0"
         android:layout_margin="10dip"
