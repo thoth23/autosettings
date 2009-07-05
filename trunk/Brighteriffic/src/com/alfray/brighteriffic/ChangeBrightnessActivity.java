@@ -22,6 +22,7 @@ import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
+import android.widget.Toast;
 
 public class ChangeBrightnessActivity extends Activity {
 
@@ -57,23 +58,42 @@ public class ChangeBrightnessActivity extends Activity {
         Intent i = getIntent();
         float f = i.getFloatExtra(INTENT_SET_BRIGHTNESS, -1);
 
-        if (f >= 0.1) {
-            setCurrentBrightness(f);
+        float result = -1;
+
+        if (f >= 0) {
+            result = setCurrentBrightness(f);
 
         } else if (i.getBooleanExtra(INTENT_TOGGLE_BRIGHTNESS, false)) {
-            if (getCurrentBrightness() > 0.5f) {
-                setCurrentBrightness(0.1f);
+
+            PrefsValues prefValues = new PrefsValues(this);
+            float _min = prefValues.getMinBrightness() / 100.0f;
+            float _max = prefValues.getMaxBrightness() / 100.0f;
+
+            float median = (_min + _max) / 2;
+
+            if (getCurrentBrightness() > median) {
+                result = setCurrentBrightness(_min);
             } else {
-                setCurrentBrightness(0.75f);
+                result = setCurrentBrightness(_max);
             }
 
         }
 
         Message msg = mHandler.obtainMessage(42);
         mHandler.sendMessageDelayed(msg, 1000); // this makes it all work
+
+        if (result >= 0) {
+            Toast
+                .makeText(this,
+                    String.format("Brightness changed to %d%%", (int)(100*result)),
+                    Toast.LENGTH_SHORT)
+                .show();
+        }
     }
 
-    private void setCurrentBrightness(float f) {
+    /** Sets the actual brightness. Enforce that you never set it to zero.
+     * Returns float > 0 if actually managed to change the brightness */
+    private float setCurrentBrightness(float f) {
 
         int v = (int) (255 * f);
         if (v < 10) {
@@ -99,6 +119,8 @@ public class ChangeBrightnessActivity extends Activity {
 
                 Log.i(TAG, String.format("Changed brightness to %.2f [SDK 3+]", f));
 
+                return f;
+
             } catch (Throwable t) {
                 Log.e(TAG, String.format("Failed to set brightness to %.2f [SDK 3+]", f), t);
             }
@@ -113,12 +135,15 @@ public class ChangeBrightnessActivity extends Activity {
                     if (m != null) {
                         m.invoke(hs, new Object[] { v });
                         Log.i(TAG, String.format("Changed brightness to %d [SDK<3]", v));
+                        return f;
                     }
                 }
             } catch (Throwable t) {
                 Log.e(TAG, String.format("Failed to set brightness to %d [SDK<3]", v), t);
             }
         }
+
+        return -1;
     }
 
     /**
@@ -131,7 +156,7 @@ public class ChangeBrightnessActivity extends Activity {
 
             return v / 255.0f;
         } catch (SettingNotFoundException e) {
-            // If not found, return default
+            // If not found, return some default
             return 0.75f;
         }
     }

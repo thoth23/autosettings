@@ -17,11 +17,23 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class BrighterifficUI extends Activity {
 
     //private static final String TAG = "BrighterifficUI";
+
+    private interface IMinMaxActions {
+        /** Returns the current pref. */
+        public int getPrefValue();
+        /** Returns true if pref was correctly saved. */
+        public boolean setPrefValue(int percent);
+        /** Changes the brightness to the one from the current pref. */
+        public void applyValue();
+    }
 
     /** Called when the activity is first created. */
     @Override
@@ -30,33 +42,94 @@ public class BrighterifficUI extends Activity {
 
         setContentView(R.layout.main);
 
-        ((TextView) findViewById(R.id.introText)).setText(
+        final PrefsValues prefValues = new PrefsValues(this);
+
+        TextView desc = ((TextView) findViewById(R.id.introText));
+        desc.setText(
                 getResources().getString(R.string.hello, longVersion()));
 
-        findViewById(R.id.Button01).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
-                i.putExtra(ChangeBrightnessActivity.INTENT_SET_BRIGHTNESS, 0.1f);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-            }
-        });
-
-        findViewById(R.id.Button02).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
-                i.putExtra(ChangeBrightnessActivity.INTENT_SET_BRIGHTNESS, 0.75f);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-            }
-        });
-
-        findViewById(R.id.Button03).setOnClickListener(new OnClickListener() {
-            @Override
+        View v = findViewById(R.id.toggleButton);
+        v.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 installToggleShortcut();
+            }
+        });
+
+        initMinMaxPart(R.id.part_min,
+                "Min Brightness",
+                "Set Min to %d%%",
+                new IMinMaxActions() {
+                    public int getPrefValue() {
+                        return prefValues.getMinBrightness();
+                    }
+                    public boolean setPrefValue(int percent) {
+                        return prefValues.setMinBrightness(percent);
+                    }
+                    public void applyValue() {
+                        Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
+                        i.putExtra(ChangeBrightnessActivity.INTENT_SET_BRIGHTNESS,
+                                        getPrefValue() / 100.0f);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                    }
+                }
+        );
+
+        initMinMaxPart(R.id.part_max,
+                "Max Brightness",
+                "Set Max to %d%%",
+                new IMinMaxActions() {
+                    public int getPrefValue() {
+                        return prefValues.getMaxBrightness();
+                    }
+                    public boolean setPrefValue(int percent) {
+                        return prefValues.setMaxBrightness(percent);
+                    }
+                    public void applyValue() {
+                        Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
+                        i.putExtra(ChangeBrightnessActivity.INTENT_SET_BRIGHTNESS,
+                                        getPrefValue() / 100.0f);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                    }
+                }
+        );
+    }
+
+    private void initMinMaxPart(
+            int id,
+            String title,
+            final String buttonLabel,
+            final IMinMaxActions actions) {
+
+        View group = findViewById(id);
+
+        TextView tv = (TextView) group.findViewById(R.id.minMaxTitle);
+        tv.setText(title);
+
+        final Button button = (Button) group.findViewById(R.id.minMaxSetButton);
+        button.setText(String.format(buttonLabel, actions.getPrefValue()));
+        button.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                actions.applyValue();
+            }
+        });
+
+        SeekBar seekBar = (SeekBar) group.findViewById(R.id.minMaxSeekBar);
+        seekBar.setProgress(actions.getPrefValue());
+        seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // pass
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // pass
+            }
+
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                actions.setPrefValue(progress);
+                button.setText(String.format(buttonLabel, actions.getPrefValue()));
             }
         });
     }
