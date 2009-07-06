@@ -69,6 +69,10 @@ class PrefEnum extends PrefBase
         return mButton.isEnabled();
     }
 
+    public void requestFocus() {
+        mButton.requestFocus();
+    }
+
     protected void initChoices(Object[] values, String[] actions, char prefix) {
 
         String currentValue = getActionValue(actions, prefix);

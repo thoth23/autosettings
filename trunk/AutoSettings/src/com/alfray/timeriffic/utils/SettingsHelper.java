@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -76,6 +75,8 @@ public class SettingsHelper {
         mContext = context;
     }
 
+    // --- ringer: vibrate & volume ---
+
     public void changeRingerVibrate(RingerMode ringer, VibrateRingerMode vib) {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
@@ -139,15 +140,7 @@ public class SettingsHelper {
         return (vol * 100 / max);
     }
 
-    public void changeWifi(boolean enabled) {
-        if (canControlWifi()) {
-            WifiManager manager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
-
-            if (DEBUG) Log.d(TAG, "changeWifi: " + (enabled ? "on" : "off"));
-
-            manager.setWifiEnabled(enabled);
-        }
-    }
+    // --- global brightness --
 
     /**
      * @param percent The new value in 0..100 range (will get mapped to adequate OS values)
@@ -185,6 +178,23 @@ public class SettingsHelper {
         return (int) (100 * ChangeBrightnessActivity.getCurrentBrightness(mContext));
     }
 
+    // --- wifi ---
+
+    public void changeWifi(boolean enabled) {
+        // This requires two permissions:
+        //     android.permission.ACCESS_WIFI_STATE
+        // and android.permission.CHANGE_WIFI_STATE
+
+        if (canControlWifi()) {
+            WifiManager manager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+
+            if (DEBUG) Log.d(TAG, "changeWifi: " + (enabled ? "on" : "off"));
+
+            manager.setWifiEnabled(enabled);
+        }
+    }
+
+    // --- airplane mode ---
 
     /** Changes the airplane mode */
     public void changeAirplaneMode(boolean turnOn) {
@@ -207,15 +217,4 @@ public class SettingsHelper {
             if (DEBUG) Log.d(TAG, "changeAirplaneMode: " + (turnOn ? "on" : "off"));
         }
     }
-
-    /** Returns true if airplane mode is currently activated, false otherwise. */
-    public boolean getAirplaneMode()
-    {
-        int v = Settings.System.getInt(
-                        mContext.getContentResolver(),
-                        Settings.System.AIRPLANE_MODE_ON,
-                        0);
-        return v != 0;
-    }
-
 }

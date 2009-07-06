@@ -28,9 +28,9 @@ class PrefToggle extends PrefEnum {
     @Override
     protected void initChoices(Object[] values, String[] actions, char prefix) {
 
-        Choice c1 = new Choice('1', "Enabled");
-        Choice c0 = new Choice('0', "Disabled");
-        
+        Choice c1 = new Choice('1', "Turn on");
+        Choice c0 = new Choice('0', "Turn off");
+
         mChoices.add(c1);
         mChoices.add(c0);
 
