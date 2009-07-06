@@ -29,13 +29,28 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 
-
+/**
+ * Changes the global brightness, either setting an actual value.
+ *
+ * This <en>ensures</en> you can't shoot yourself in the foot by never
+ * actually setting the brightness to zero. The minimun used is 10/255
+ * which matches the code from the hidden PowerManager class.
+ *
+ * This is an ugly hack:
+ * - for pre-Cupcake (sdk 3), uses the IHardwareTest hack.
+ * - for Cupcake, uses the Window brightness mixed with a global setting
+ *   that works for some obscure reason (it's actually a bug, which means it
+ *   will be fixed.)
+ *
+ * Requires the following permissions:
+ * - android.permission.HARDWARE_TEST for the pre-Cupcake hack
+ * - android.permission.WRITE_SETTINGS to set the global setting
+ */
 public class ChangeBrightnessActivity extends Activity {
 
     private static final String TAG = "ChangeBrightness";
 
     public static final String INTENT_SET_BRIGHTNESS = "set";
-    public static final String INTENT_TOGGLE_BRIGHTNESS = "toggle";
 
     private Handler mHandler;
 
@@ -56,9 +71,6 @@ public class ChangeBrightnessActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Have the system blur any windows behind this one.
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
-        //                     WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
         setContentView(R.layout.empty);
 
         Intent i = getIntent();
@@ -66,14 +78,6 @@ public class ChangeBrightnessActivity extends Activity {
 
         if (f >= 0) {
             setCurrentBrightness(f);
-
-        } else if (i.getBooleanExtra(INTENT_TOGGLE_BRIGHTNESS, false)) {
-            if (getCurrentBrightness(this) > 0.5f) {
-                setCurrentBrightness(0.1f);
-            } else {
-                setCurrentBrightness(0.75f);
-            }
-
         }
 
         Message msg = mHandler.obtainMessage(42);
@@ -129,7 +133,7 @@ public class ChangeBrightnessActivity extends Activity {
     }
 
     /**
-     * Returns screen brightness in range 0..1%.
+     * Returns screen brightness in range 0..1.
      */
     public static float getCurrentBrightness(Context context) {
         try {
@@ -138,7 +142,7 @@ public class ChangeBrightnessActivity extends Activity {
 
             return v / 255.0f;
         } catch (SettingNotFoundException e) {
-            // If not found, return default
+            // If not found, return some acceptable default
             return 0.75f;
         }
     }

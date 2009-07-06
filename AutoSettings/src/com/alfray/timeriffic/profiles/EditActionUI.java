@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.CheckBox;
+import android.widget.ScrollView;
 import android.widget.TimePicker;
 
 import com.alfray.timeriffic.R;
@@ -60,6 +61,9 @@ public class EditActionUI extends Activity {
 
         setContentView(R.layout.edit_action);
         setTitle("Edit Timed Action");
+
+        ScrollView scrollview = (ScrollView) findViewById(R.id.scroller);
+        scrollview.scrollTo(0, 0);
 
         Intent intent = getIntent();
         mActionId = intent.getExtras().getLong(EXTRA_ACTION_ID);
@@ -199,6 +203,8 @@ public class EditActionUI extends Activity {
             for (int i = Columns.MONDAY_BIT_INDEX; i <= Columns.SUNDAY_BIT_INDEX; i++) {
                 mCheckDays[i].setChecked((days & (1<<i)) != 0);
             }
+
+            mPrefRingerMode.requestFocus();
 
         } finally {
             c.close();

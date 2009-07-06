@@ -21,6 +21,8 @@
 
 <style name="ActionButton">
     <item name="android:paddingTop">10sp</item>
+    <item name="android:focusable">true</item>
+    <item name="android:focusableInTouchMode">true</item>
 </style>
 
 </resources>

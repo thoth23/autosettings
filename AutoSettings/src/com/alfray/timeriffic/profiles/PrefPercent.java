@@ -64,6 +64,10 @@ class PrefPercent extends PrefBase
         return mButton.isEnabled();
     }
 
+    public void requestFocus() {
+        mButton.requestFocus();
+    }
+
     public String getDialogTitle() {
         return mDialogTitle;
     }
