@@ -62,9 +62,6 @@ public class EditActionUI extends Activity {
         setContentView(R.layout.edit_action);
         setTitle("Edit Timed Action");
 
-        ScrollView scrollview = (ScrollView) findViewById(R.id.scroller);
-        scrollview.scrollTo(0, 0);
-
         Intent intent = getIntent();
         mActionId = intent.getExtras().getLong(EXTRA_ACTION_ID);
 
@@ -205,6 +202,8 @@ public class EditActionUI extends Activity {
             }
 
             mPrefRingerMode.requestFocus();
+            ScrollView sv = (ScrollView) findViewById(R.id.scroller);
+            sv.scrollTo(0, 0);
 
         } finally {
             c.close();

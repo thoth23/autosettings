@@ -19,10 +19,10 @@
 
 </style>
 
-<style name="ActionButton">
+<style name="ActionButton" parent="android:Widget.Button">
     <item name="android:paddingTop">10sp</item>
-    <item name="android:focusable">true</item>
-    <item name="android:focusableInTouchMode">true</item>
+    <!-- don't set item name="android:focusableInTouchMode" to true, it makes
+         the button take focus on touch instead of invoking it. -->
 </style>
 
 </resources>
