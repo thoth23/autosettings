@@ -49,13 +49,6 @@
             android:gravity="center"
             android:text="Volume"
             />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Brightness"
-            />
     </TableRow>
     <TableRow
         android:layout_height="wrap_content"
@@ -85,32 +78,6 @@
             android:text="- -"
             style="@style/ActionButton"
             />
-        <Button
-            android:id="@+id/brightnessButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="- -"
-            style="@style/ActionButton"
-            />
-    </TableRow>
-    <!-- TableRow
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Brightness:"
-            />
-        <Button
-            android:id="@+id/brightnessButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="- -"
-            android:layout_weight="1"
-            style="@style/ActionButton"
-            />
     </TableRow>
     <TableRow
         android:layout_height="wrap_content"
@@ -119,17 +86,54 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Wifi:"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Brightness"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Wifi"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Airplane Mode"
+            />
+    </TableRow>
+    <TableRow
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        >
+        <Button
+            android:id="@+id/brightnessButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="- -"
+            style="@style/ActionButton"
             />
         <Button
             android:id="@+id/wifiButton"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="- -"
             android:layout_weight="1"
+            android:text="- -"
             style="@style/ActionButton"
             />
-    </TableRow -->
+        <Button
+            android:id="@+id/airplaneButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="- -"
+            style="@style/ActionButton"
+            />
+    </TableRow>
     </TableLayout>
 
     <!-- Time Section -->

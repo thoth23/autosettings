@@ -55,19 +55,27 @@ class PrefPercent extends PrefBase
         initValue(actions, actionPrefix);
         updateButtonText();
     }
-    
+
+    public void setEnabled(boolean enabled) {
+        mButton.setEnabled(enabled);
+    }
+
+    public boolean isEnabled() {
+        return mButton.isEnabled();
+    }
+
     public String getDialogTitle() {
         return mDialogTitle;
     }
-    
+
     public int getIconResId() {
         return mIconResId;
     }
-    
+
     public Accessor getAccessor() {
         return mAccessor;
     }
-    
+
     /** -1 if unchanged, or 0..100 */
     public int getCurrentValue() {
         return mCurrentValue;
@@ -88,7 +96,7 @@ class PrefPercent extends PrefBase
             mCurrentValue = -1;
         }
     }
-    
+
     private void updateButtonText() {
         if (mCurrentValue < 0) {
             mButton.setText(UNCHANGED_UI_NAME);
@@ -102,7 +110,7 @@ class PrefPercent extends PrefBase
             appendAction(actions, mActionPrefix, Integer.toString(mCurrentValue));
         }
     }
-    
+
     @Override
     public void onContextItemSelected(MenuItem item) {
         // from PrefBase, not used here

@@ -20,7 +20,7 @@ import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;
 
 public class TimedActionUtils {
 
-    static private final int[] CALENDAR_DAYS = { 
+    static private final int[] CALENDAR_DAYS = {
             Calendar.MONDAY,
             Calendar.TUESDAY,
             Calendar.WEDNESDAY,
@@ -45,9 +45,9 @@ public class TimedActionUtils {
 
     static public String computeDescription(
             Context context, int hourMin, int days, String actions) {
-        
+
         SettingsHelper sh = new SettingsHelper(context);
-        
+
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(System.currentTimeMillis());
         c.set(Calendar.HOUR_OF_DAY, hourMin / 60);
@@ -59,14 +59,14 @@ public class TimedActionUtils {
         } else {
             desc_time = String.format("%1$tl %1$tp", c);
         }
-            
+
         int start = -2;
         int count = 0;
         StringBuilder desc_days = new StringBuilder();
 
         for (int i = Columns.MONDAY_BIT_INDEX; i <= Columns.SUNDAY_BIT_INDEX; i++) {
             if ((days & (1<<i)) != 0 ) {
-                
+
                 if (start == i-1) {
                     // continue range
                     start = i;
@@ -95,7 +95,7 @@ public class TimedActionUtils {
         }
         if (desc_days.length() == 0) desc_days.append("Never");
 
-        
+
         ArrayList<String> actions_names = new ArrayList<String>();
 
         if (actions != null) {
@@ -104,7 +104,7 @@ public class TimedActionUtils {
                 if (action.length() > 1) {
                     char code = action.charAt(0);
                     char v = action.charAt(1);
-                    
+
                     switch(code) {
                     case Columns.ACTION_RINGER:
                         for (RingerMode mode : RingerMode.values()) {
@@ -127,11 +127,6 @@ public class TimedActionUtils {
                             value = Integer.parseInt(action.substring(1));
 
                             switch(code) {
-                            case Columns.ACTION_WIFI:
-                                if (sh.canControlWifi()) {
-                                    actions_names.add(value > 0 ? "Wifi on" : "Wifi off");
-                                }
-                                break;
                             case Columns.ACTION_BRIGHTNESS:
                                 if (sh.canControlBrigthness()) {
                                     actions_names.add(String.format("Brightness %d%%", value));
@@ -140,8 +135,18 @@ public class TimedActionUtils {
                             case Columns.ACTION_RING_VOLUME:
                                 actions_names.add(String.format("Ringer %d%%", value));
                                 break;
+                            case Columns.ACTION_WIFI:
+                                if (sh.canControlWifi()) {
+                                    actions_names.add(value > 0 ? "Wifi on" : "Wifi off");
+                                }
+                                break;
+                            case Columns.ACTION_AIRPLANE:
+                                if (sh.canControlAirplaneMode()) {
+                                    actions_names.add(value > 0 ? "Airplane on" : "Airplane off");
+                                }
+                                break;
                             }
-                            
+
                         } catch (NumberFormatException e) {
                             // pass
                         }
@@ -149,7 +154,7 @@ public class TimedActionUtils {
                 }
             }
         }
-        
+
         StringBuilder desc_actions = new StringBuilder();
 
         if (actions_names.size() == 0) {
@@ -164,5 +169,5 @@ public class TimedActionUtils {
         String description = String.format("%s %s, %s", desc_time, desc_days, desc_actions);
         return description;
     }
-    
+
 }

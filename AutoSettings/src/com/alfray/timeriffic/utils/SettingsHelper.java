@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.Log;
 
 /**
@@ -34,10 +35,14 @@ public class SettingsHelper {
     private final Context mContext;
 
     public boolean canControlWifi() {
-        return false;
+        return true;
     }
 
     public boolean canControlBrigthness() {
+        return true;
+    }
+
+    public boolean canControlAirplaneMode() {
         return true;
     }
 
@@ -179,4 +184,38 @@ public class SettingsHelper {
     public int getCurrentBrightness() {
         return (int) (100 * ChangeBrightnessActivity.getCurrentBrightness(mContext));
     }
+
+
+    /** Changes the airplane mode */
+    public void changeAirplaneMode(boolean turnOn) {
+        // Reference: settings source is in the cupcake gitweb tree at
+        //   packages/apps/Settings/src/com/android/settings/AirplaneModeEnabler.java
+        // http://android.git.kernel.org/?p=platform/packages/apps/Settings.git;a=blob;f=src/com/android/settings/AirplaneModeEnabler.java;h=f105712260fd7b2d7804460dd180d1d6cea01afa;hb=HEAD
+
+        if (canControlAirplaneMode()) {
+            // Change the system setting
+            Settings.System.putInt(
+                            mContext.getContentResolver(),
+                            Settings.System.AIRPLANE_MODE_ON,
+                            turnOn ? 1 : 0);
+
+            // Post the intent
+            Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+            intent.putExtra("state", turnOn);
+            mContext.sendBroadcast(intent);
+
+            if (DEBUG) Log.d(TAG, "changeAirplaneMode: " + (turnOn ? "on" : "off"));
+        }
+    }
+
+    /** Returns true if airplane mode is currently activated, false otherwise. */
+    public boolean getAirplaneMode()
+    {
+        int v = Settings.System.getInt(
+                        mContext.getContentResolver(),
+                        Settings.System.AIRPLANE_MODE_ON,
+                        0);
+        return v != 0;
+    }
+
 }

@@ -43,16 +43,16 @@ public class Columns implements BaseColumns {
      * - Profile: user-selected enabled toggle.
      * - Timed action: is executing (pre-computed value).
      * <p/>
-     * Type: INTEGER (boolean) 0 or 1 
+     * Type: INTEGER (boolean) 0 or 1
      */
     public static final String IS_ENABLED = "enable";
 
     // --- fields for a profile definition
 
-    
-    
+
+
     // --- fields for a timed action
-    
+
     /** Profile ID = profile_index << PROFILE_SHIFT + action_index.
      * <p/>
      * - Profile: The base number of the profile << {@link #PROFILE_SHIFT}
@@ -81,7 +81,7 @@ public class Columns implements BaseColumns {
     public static final int PROFILE_GAP = 256;
     public static final int TIMED_ACTION_GAP = 256;
 
-    
+
     /** Hour-Min Time, computed as hour*60+min in a day (from 0 to 23*60+59)
      * <p/>
      * Type: INTEGER
@@ -128,11 +128,13 @@ public class Columns implements BaseColumns {
     public static final char ACTION_VIBRATE     = 'V';
     /** Ringer volume. Integer: 0..100 */
     public static final char ACTION_RING_VOLUME = 'G';
-    /** Wifi. Boolean: 0..1 */
-    public static final char ACTION_WIFI        = 'W';
     /** Screen Brightness. Integer: 0..100 */
     public static final char ACTION_BRIGHTNESS  = 'B';
-    
+    /** Wifi. Boolean: 0..1 */
+    public static final char ACTION_WIFI        = 'W';
+    /** AirplaneMode. Boolean: 0..1 */
+    public static final char ACTION_AIRPLANE    = 'A';
+
 
     /**
      * The precomputed System.currentTimeMillis timestamp of the last event for this action.
