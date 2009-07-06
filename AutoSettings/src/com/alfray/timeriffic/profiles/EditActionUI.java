@@ -8,7 +8,9 @@ package com.alfray.timeriffic.profiles;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnDismissListener;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -244,10 +246,21 @@ public class EditActionUI extends Activity {
     }
 
     @Override
-    protected Dialog onCreateDialog(int id) {
+    protected Dialog onCreateDialog(final int id) {
 
         if (id == DIALOG_EDIT_PERCENT && mPrefPercentOutWrapper[0] != null) {
-            return new PrefPercentDialog(this, mPrefPercentOutWrapper);
+            PrefPercentDialog d = new PrefPercentDialog(this, mPrefPercentOutWrapper);
+
+            // We need to make sure to remove the dialog once it gets dismissed
+            // otherwise the next use of the same dialog might reuse the previous
+            // dialog from another setting!
+            d.setOnDismissListener(new OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    removeDialog(id);
+                }
+            });
+            return d;
         }
 
         return super.onCreateDialog(id);
