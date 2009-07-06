@@ -39,9 +39,10 @@ public class EditActionUI extends Activity {
 
     private PrefEnum mPrefRingerMode;
     private PrefEnum mPrefRingerVibrate;
-    private PrefToggle mPrefWifi;
     private PrefPercent mPrefRingerVolume;
     private PrefPercent mPrefBrightness;
+    private PrefToggle mPrefAirplane;
+    private PrefToggle mPrefWifi;
 
     /**
      * Day checkboxes, in the same index order than {@link Columns#MONDAY_BIT_INDEX}
@@ -127,12 +128,6 @@ public class EditActionUI extends Activity {
                     Columns.ACTION_VIBRATE,
                     "Ringer Vibrate");
 
-//            mPrefWifi = new PrefToggle(this,
-//                    R.id.wifiButton,
-//                    actions,
-//                    Columns.ACTION_WIFI,
-//                    "Wifi Toggle");
-
             mPrefRingerVolume = new PrefPercent(this,
                     mPrefPercentOutWrapper,
                     R.id.ringerVolButton,
@@ -171,6 +166,21 @@ public class EditActionUI extends Activity {
                             return mSettingsHelper.getCurrentBrightness();
                         }
                     });
+            mPrefBrightness.setEnabled(mSettingsHelper.canControlBrigthness());
+
+            mPrefWifi = new PrefToggle(this,
+                            R.id.wifiButton,
+                            actions,
+                            Columns.ACTION_WIFI,
+                            "Wifi Toggle");
+            mPrefWifi.setEnabled(mSettingsHelper.canControlWifi());
+
+            mPrefAirplane = new PrefToggle(this,
+                            R.id.airplaneButton,
+                            actions,
+                            Columns.ACTION_AIRPLANE,
+                            "Airplane Toggle");
+            mPrefAirplane.setEnabled(mSettingsHelper.canControlAirplaneMode());
 
             mCheckDays = new CheckBox[] {
                     (CheckBox) findViewById(R.id.dayMon),
@@ -264,8 +274,15 @@ public class EditActionUI extends Activity {
             mPrefRingerMode.collectResult(actions);
             mPrefRingerVibrate.collectResult(actions);
             mPrefRingerVolume.collectResult(actions);
-            if (mPrefWifi != null) mPrefWifi.collectResult(actions);
-            if (mPrefBrightness != null) mPrefBrightness.collectResult(actions);
+            if (mPrefWifi != null && mPrefWifi.isEnabled()) {
+                mPrefWifi.collectResult(actions);
+            }
+            if (mPrefAirplane != null && mPrefAirplane.isEnabled()) {
+                mPrefAirplane.collectResult(actions);
+            }
+            if (mPrefBrightness != null && mPrefBrightness.isEnabled()) {
+                mPrefBrightness.collectResult(actions);
+            }
 
             Log.d(TAG, "new actions: " + actions.toString());
 

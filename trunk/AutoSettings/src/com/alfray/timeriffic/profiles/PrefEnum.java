@@ -31,12 +31,12 @@ class PrefEnum extends PrefBase
             mUiName = uiName;
         }
     }
-    
+
     protected ArrayList<Choice> mChoices = new ArrayList<Choice>();
     protected Choice mCurrentChoice;
     private Button mButton;
     private final String mMenuTitle;
-    
+
     public PrefEnum(Activity activity,
                     int buttonResId,
                     Object[] values,
@@ -51,7 +51,7 @@ class PrefEnum extends PrefBase
         mActivity.registerForContextMenu(mButton);
         mButton.setOnClickListener(this);
         mButton.setTag(this);
-        
+
         Choice c = new Choice(UNCHANGED_KEY, UNCHANGED_UI_NAME);
         mChoices.add(c);
         mCurrentChoice = c;
@@ -61,16 +61,24 @@ class PrefEnum extends PrefBase
         mButton.setText(mCurrentChoice.mUiName);
     }
 
+    public void setEnabled(boolean enable) {
+        mButton.setEnabled(enable);
+    }
+
+    public boolean isEnabled() {
+        return mButton.isEnabled();
+    }
+
     protected void initChoices(Object[] values, String[] actions, char prefix) {
 
         String currentValue = getActionValue(actions, prefix);
-        
+
         for (Object value : values) {
             String s = value.toString();
             char p = s.charAt(0);
             Choice c = new Choice(p, s);
             mChoices.add(c);
-            
+
             if (currentValue != null &&
                     currentValue.length() >= 1 &&
                     currentValue.charAt(0) == p) {
@@ -86,7 +94,7 @@ class PrefEnum extends PrefBase
 
     @Override
     public void onCreateContextMenu(ContextMenu menu) {
-        
+
         menu.setHeaderTitle(mMenuTitle);
 
         for (Choice choice : mChoices) {
@@ -96,7 +104,7 @@ class PrefEnum extends PrefBase
 
     @Override
     public void onContextItemSelected(MenuItem item) {
-        
+
         CharSequence title = item.getTitle();
 
         for (Choice choice : mChoices) {

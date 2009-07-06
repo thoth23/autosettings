@@ -39,17 +39,17 @@ public class AutoReceiver extends BroadcastReceiver {
 
     private final static boolean DEBUG = true;
     private final static String TAG = "Tmrfc-Receiver";
-    
+
     /** Name of intent to broadcast to activate this receiver. */
     public final static String ACTION_AUTO_CHECK_STATE = "com.alfray.intent.action.AUTO_CHECK_STATE";
-    
+
     /** Name of an extra int: how we should display a toast for next event. */
     public final static String EXTRA_TOAST_NEXT_EVENT = "toast-next";
-    
+
     public final static int TOAST_NONE = 0;
     public final static int TOAST_IF_CHANGED = 1;
     public final static int TOAST_ALWAYS = 2;
-    
+
     @Override
     public void onReceive(Context context, Intent intent) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -58,7 +58,7 @@ public class AutoReceiver extends BroadcastReceiver {
             wl.acquire();
 
             // boolean isBoot = Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction());
-            
+
             int displayToast = TOAST_NONE;
             Bundle extras = intent.getExtras();
             if (extras != null) displayToast = extras.getInt(EXTRA_TOAST_NEXT_EVENT, TOAST_NONE);
@@ -76,7 +76,7 @@ public class AutoReceiver extends BroadcastReceiver {
             Log.d(TAG, "Checking enabled");
 
             checkProfiles(context, displayToast, prefs);
-            
+
             notifyDataChanged(context);
 
         } finally {
@@ -89,9 +89,9 @@ public class AutoReceiver extends BroadcastReceiver {
         ProfilesDB profilesDb = new ProfilesDB();
         try {
             profilesDb.onCreate(context);
-            
+
             profilesDb.removeAllActionExecFlags();
-            
+
             // Only do something if at least one profile is enabled.
             long[] prof_indexes = profilesDb.getEnabledProfiles();
             if (prof_indexes != null && prof_indexes.length != 0) {
@@ -100,7 +100,7 @@ public class AutoReceiver extends BroadcastReceiver {
                 c.setTimeInMillis(System.currentTimeMillis());
                 int hourMin = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
                 int day = TimedActionUtils.calendarDayToActionDay(c);
-                
+
                 ArrayList<ActionInfo> actions = profilesDb.getWeekActivableActions(hourMin, day, prof_indexes);
 
                 if (actions != null && actions.size() > 0) {
@@ -115,7 +115,7 @@ public class AutoReceiver extends BroadcastReceiver {
                     scheduleAlarm(context, prefs, c, nextEventMin, displayToast);
                 }
             }
-            
+
         } finally {
             profilesDb.onDestroy();
         }
@@ -129,16 +129,16 @@ public class AutoReceiver extends BroadcastReceiver {
 
     private void performAction(SettingsHelper settings, String actions) {
         if (actions == null) return;
-        
+
         RingerMode ringerMode = null;
         VibrateRingerMode vibRingerMode = null;
-        
+
         for (String action : actions.split(",")) {
             int value = -1;
             if (action.length() > 1) {
                 char code = action.charAt(0);
                 char v = action.charAt(1);
-                
+
                 switch(code) {
                 case Columns.ACTION_RINGER:
                     for (RingerMode mode : RingerMode.values()) {
@@ -163,17 +163,20 @@ public class AutoReceiver extends BroadcastReceiver {
                         value = Integer.parseInt(action.substring(1));
 
                         switch(code) {
-                        case Columns.ACTION_WIFI:
-                            settings.changeWifi(value > 0);
-                            break;
                         case Columns.ACTION_BRIGHTNESS:
                             settings.changeBrightness(value, true /*persist*/);
                             break;
                         case Columns.ACTION_RING_VOLUME:
                             settings.changeRingerVolume(value);
                             break;
+                        case Columns.ACTION_WIFI:
+                            settings.changeWifi(value > 0);
+                            break;
+                        case Columns.ACTION_AIRPLANE:
+                            settings.changeAirplaneMode(value > 0);
+                            break;
                         }
-                        
+
                     } catch (NumberFormatException e) {
                         // pass
                     }
@@ -197,7 +200,7 @@ public class AutoReceiver extends BroadcastReceiver {
 
     /**
      * Schedule an alarm to happen at nextEventMin minutes from now.
-     * 
+     *
      * @param context App context to get alarm service.
      * @param prefs Access to prefs (for status update)
      * @param now The time that was used at the beginning of the update.
@@ -210,7 +213,7 @@ public class AutoReceiver extends BroadcastReceiver {
             int nextEventMin,
             int displayToast) {
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        
+
         Intent intent = new Intent(ACTION_AUTO_CHECK_STATE);
         PendingIntent op = PendingIntent.getBroadcast(context, 0 /*requestCode*/, intent, PendingIntent.FLAG_ONE_SHOT);
 
@@ -226,14 +229,14 @@ public class AutoReceiver extends BroadcastReceiver {
         if (displayToast == TOAST_IF_CHANGED) {
             shouldDisplayToast = timeMs != prefs.getLastScheduledAlarm();
         }
-        
+
         prefs.setLastScheduledAlarm(timeMs);
-        
+
         if (DEBUG || shouldDisplayToast) {
             try {
                 Configuration config = new Configuration();
                 Settings.System.getConfiguration(context.getContentResolver(), config);
-                
+
                 DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, config.locale);
                 String s2 = df.format(now.getTime());
                 s2 = "Next Change: " + s2;
