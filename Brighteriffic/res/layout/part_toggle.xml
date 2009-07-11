@@ -17,13 +17,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center"
-        android:text="Home Shortcut"
+        android:text="@string/part_toggle_title"
         android:background="#FAAA"
         android:textColor="#F000"
     />
 
     <Button
-        android:text="Install toggle shortcut on Home"
+        android:text="@string/part_toggle_desc"
         android:id="@+id/toggleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
