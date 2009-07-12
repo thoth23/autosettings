@@ -80,6 +80,11 @@ public class SettingsHelper {
     public void changeRingerVibrate(RingerMode ringer, VibrateRingerMode vib) {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
+        if (manager == null) {
+            Log.w(TAG, "changeRingerMode: AUDIO_SERVICE missing!");
+            return;
+        }
+
         if (DEBUG) Log.d(TAG, "changeRingerMode: " + ringer.toString());
         if (DEBUG) Log.d(TAG, String.format("changeRingerVibrate: %s + %s",
                         ringer != null ? ringer.toString() : "ringer-null",
@@ -124,6 +129,11 @@ public class SettingsHelper {
     public void changeRingerVolume(int percent) {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
+        if (manager == null) {
+            Log.w(TAG, "changeRingerVolume: AUDIO_SERVICE missing!");
+            return;
+        }
+
         if (DEBUG) Log.d(TAG, "changeRingerVolume: " + Integer.toString(percent));
 
         int max = manager.getStreamMaxVolume(AudioManager.STREAM_RING);
@@ -133,6 +143,11 @@ public class SettingsHelper {
 
     public int getRingerVolume() {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+
+        if (manager == null) {
+            if (DEBUG) Log.d(TAG, "getRingerVolume: AUDIO_SERVICE missing!");
+            return 50;
+        }
 
         int vol = manager.getStreamVolume(AudioManager.STREAM_RING);
         int max = manager.getStreamMaxVolume(AudioManager.STREAM_RING);
@@ -187,6 +202,11 @@ public class SettingsHelper {
 
         if (canControlWifi()) {
             WifiManager manager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+
+            if (manager == null) {
+                if (DEBUG) Log.d(TAG, "changeWifi: WIFI_SERVICE missing!");
+                return;
+            }
 
             if (DEBUG) Log.d(TAG, "changeWifi: " + (enabled ? "on" : "off"));
 
