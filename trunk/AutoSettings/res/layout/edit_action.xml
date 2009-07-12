@@ -16,7 +16,7 @@
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:text="Action"
+        android:text="@string/editaction_title_action"
         style="@style/SectionHeader"
         />
 
@@ -33,21 +33,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Ringer"
+            android:text="@string/editaction_ringer"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Vibrate"
+            android:text="@string/editaction_vibrate"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Volume"
+            android:text="@string/editaction_volume"
             />
     </TableRow>
     <TableRow
@@ -88,21 +88,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Brightness"
+            android:text="@string/editaction_brightness"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Wifi"
+            android:text="@string/editaction_wifi"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Airplane Mode"
+            android:text="@string/editaction_airplane"
             />
     </TableRow>
     <TableRow
@@ -140,7 +140,7 @@
 	<TextView
         android:layout_height="wrap_content"
 		android:layout_width="fill_parent"
-		android:text="Trigger Time"
+		android:text="@string/editaction_title_trigger_time"
         style="@style/SectionHeader"
 		/>
 
@@ -153,7 +153,7 @@
 
     <!-- Days Section -->
 	<TextView
-		android:text="Days"
+		android:text="@string/editaction_title_days"
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent"
         style="@style/SectionHeader"

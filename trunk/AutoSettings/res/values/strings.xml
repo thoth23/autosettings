@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="editaction_airplane">Airplane Mode</string>
+    <string name="editaction_wifi">Wifi</string>
+    <string name="editaction_brightness">Brightness</string>
+    <string name="editaction_volume">Volume</string>
+    <string name="editaction_vibrate">Vibrate</string>
+    <string name="editaction_ringer">Ringer</string>
+    <string name="editaction_title_days">Days</string>
+    <string name="editaction_title_trigger_time">Trigger Time</string>
+    <string name="editaction_title_action">Action</string>
     
     <string name="app_name">Timeriffic</string>
 <string name="prefs_title">Timeriffic - Preferences</string><string name="intro_title">Timeriffic %s - Introduction</string>
