@@ -20,8 +20,20 @@ use Timeriffic to:
 
 (If you're a grownup substitute "class" with "work").
 
-Version 1.3 adds the following new features:
-  * Profiles let you group actions together and enable or disable them at once.
-  * Actions can be set for given days, such as actions for the week days and others for the week-end.
+Features:
+  * *Version 1.5*:
+    * Wifi setting.
+    * Airplane mode setting.
+  * *Version 1.4*:
+    * Global brightness setting.
+  * *Version 1.3*:
+    * Profiles let you group actions together and enable or disable them at once.
+    * Actions can be set for given days, such as actions for the week days and others for the week-end.
+
+
+A couple of default profiles are provided to get you started.
+
+To edit a profile, use long press on a profile item or an action item.
+A menu will appear to let you edit, insert or delete the item.
 
 http://autosettings.googlecode.com/svn/distrib/autosettings1.png
