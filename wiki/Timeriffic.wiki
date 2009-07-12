@@ -24,4 +24,4 @@ Version 1.3 adds the following new features:
   * Profiles let you group actions together and enable or disable them at once.
   * Actions can be set for given days, such as actions for the week days and others for the week-end.
 
-http://autosettings.googlecode.com/svn/trunk/AutoSettings/help/img13_proflist.png
+http://autosettings.googlecode.com/svn/distrib/autosettings1.png
