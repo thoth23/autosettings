@@ -16,7 +16,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/editaction_title_action"
+        android:text="@string/editaction_section_action"
         style="@style/SectionHeader"
         />
 
@@ -150,13 +150,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="@string/editaction_title_trigger_time"
+        android:text="@string/editaction_section_trigger_time"
         style="@style/SectionHeader"
         />
 
     <!-- Days Section -->
     <TextView
-        android:text="@string/editaction_title_days"
+        android:text="@string/editaction_section_days"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"

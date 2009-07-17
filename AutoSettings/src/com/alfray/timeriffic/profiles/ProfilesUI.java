@@ -156,6 +156,7 @@ public class ProfilesUI extends Activity {
         if (mProfilesList == null) {
             mProfilesList = (ListView) findViewById(R.id.profilesList);
             mProfilesList.setRecyclerListener(new ProfileRecyclerListener());
+            mProfilesList.setEmptyView(findViewById(R.id.empty));
 
             mProfilesList.setOnItemClickListener(new OnItemClickListener() {
                 @Override
@@ -226,7 +227,6 @@ public class ProfilesUI extends Activity {
 
     /**
      * Update old prefs
-     * @return
      *
      * @return Return true if old prefs was imported, false if nothing changed.
      */
@@ -558,7 +558,7 @@ public class ProfilesUI extends Activity {
         Builder d = new AlertDialog.Builder(this);
 
         d.setCancelable(true);
-        d.setTitle("Delete and Reset all Profiles? No undo!");
+        d.setTitle(R.string.resetprofiles_msg_confirm_delete);
         d.setIcon(R.drawable.timeriffic_icon);
         //d.setMessage("Are you sure you want to delete all profiles?");
         d.setItems(mProfilesDb.getResetLabels(),
@@ -579,7 +579,7 @@ public class ProfilesUI extends Activity {
             }
         });
 
-        d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        d.setNegativeButton(R.string.resetprofiles_button_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeDialog(DIALOG_RESET_CHOICES);
@@ -801,7 +801,9 @@ public class ProfilesUI extends Activity {
                 prof_index = beforeCursor.getLong(mProfIdColIndex) >> Columns.PROFILE_SHIFT;
             }
 
-            prof_index = mProfilesDb.insertProfile(prof_index, "New Profile", true /*isEnabled*/);
+            prof_index = mProfilesDb.insertProfile(prof_index,
+                            getString(R.string.insertprofile_new_profile_title),
+                            true /*isEnabled*/);
 
             startEditActivity(EditProfileUI.class,
                     EditProfileUI.EXTRA_PROFILE_ID, prof_index << Columns.PROFILE_SHIFT);
@@ -871,10 +873,10 @@ public class ProfilesUI extends Activity {
         Builder d = new AlertDialog.Builder(ProfilesUI.this);
 
         d.setCancelable(true);
-        d.setTitle("Delete profile");
+        d.setTitle(R.string.deleteprofile_title);
         d.setIcon(R.drawable.timeriffic_icon);
         d.setMessage(String.format(
-                "Are you sure you want to delete profile '%s' and all its actions?", title));
+                getString(R.string.deleteprofile_msgbody), title));
 
         d.setOnCancelListener(new OnCancelListener() {
             @Override
@@ -883,14 +885,14 @@ public class ProfilesUI extends Activity {
             }
         });
 
-        d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        d.setNegativeButton(R.string.deleteprofile_button_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeDialog(DIALOG_DELETE_PROFILE);
             }
         });
 
-        d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+        d.setPositiveButton(R.string.deleteprofile_button_delete, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int count = mProfilesDb.deleteProfile(row_id);
@@ -913,10 +915,9 @@ public class ProfilesUI extends Activity {
         Builder d = new AlertDialog.Builder(ProfilesUI.this);
 
         d.setCancelable(true);
-        d.setTitle("Delete action");
+        d.setTitle(R.string.deleteaction_title);
         d.setIcon(R.drawable.timeriffic_icon);
-        d.setMessage(String.format(
-                "Are you sure you want to delete action '%s'?", description));
+        d.setMessage(getString(R.string.deleteaction_msgbody, description));
 
         d.setOnCancelListener(new OnCancelListener() {
             @Override
@@ -925,14 +926,14 @@ public class ProfilesUI extends Activity {
             }
         });
 
-        d.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        d.setNegativeButton(R.string.deleteaction_button_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeDialog(DIALOG_DELETE_ACTION);
             }
         });
 
-        d.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+        d.setPositiveButton(R.string.deleteaction_button_delete, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int count = mProfilesDb.deleteAction(row_id);
@@ -949,7 +950,9 @@ public class ProfilesUI extends Activity {
 
 
     public void appendNewProfile() {
-        long prof_index = mProfilesDb.insertProfile(0, "New Profile", true /*isEnabled*/);
+        long prof_index = mProfilesDb.insertProfile(0,
+                        getString(R.string.insertprofile_new_profile_title),
+                        true /*isEnabled*/);
 
         Intent intent = new Intent(ProfilesUI.this, EditProfileUI.class);
         intent.putExtra(EditProfileUI.EXTRA_PROFILE_ID, prof_index << Columns.PROFILE_SHIFT);
@@ -977,7 +980,7 @@ public class ProfilesUI extends Activity {
 
         @Override
         public void onCreateContextMenu(ContextMenu menu) {
-            menu.setHeaderTitle("Profile");
+            menu.setHeaderTitle(R.string.profilecontextmenu_title);
 
             menu.add(0, R.string.insert_profile, 0, R.string.insert_profile);
             menu.add(0, R.string.insert_action, 0, R.string.insert_action);
@@ -1049,7 +1052,7 @@ public class ProfilesUI extends Activity {
 
         @Override
         public void onCreateContextMenu(ContextMenu menu) {
-            menu.setHeaderTitle("Timed Action");
+            menu.setHeaderTitle(R.string.timedactioncontextmenu_title);
 
             menu.add(0, R.string.insert_action, 0, R.string.insert_action);
             menu.add(0, R.string.delete, 0, R.string.delete);

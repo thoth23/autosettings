@@ -19,7 +19,11 @@ public abstract class PrefBase {
     public PrefBase(Activity activity) {
         mActivity = activity;
     }
-    
+
+    public Activity getActivity() {
+        return mActivity;
+    }
+
     protected String getActionValue(String[] actions, char prefix) {
         if (actions == null) return null;
 
@@ -28,7 +32,7 @@ public abstract class PrefBase {
                 return action.substring(1);
             }
         }
-        
+
         return null;
     }
 

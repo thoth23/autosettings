@@ -22,7 +22,7 @@ import android.widget.EditText;
 public class EditProfileUI extends Activity {
 
     private static String TAG = "Tmrfc-EditProfileUI";
-    
+
     /** Extra long with the profile id (not index) to edit. */
     public static final String EXTRA_PROFILE_ID = "prof_id";
     private EditText mNameField;
@@ -33,26 +33,26 @@ public class EditProfileUI extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         setContentView(R.layout.edit_profile);
-        setTitle("Edit Profile");
-        
+        setTitle(R.string.editprofile_title);
+
         Intent intent = getIntent();
         mProfId = intent.getExtras().getLong(EXTRA_PROFILE_ID);
-        
+
         Log.d(TAG, String.format("edit prof_id: %08x", mProfId));
-        
+
         if (mProfId == 0) {
             Log.e(TAG, "profile id not found in intent.");
             finish();
             return;
         }
-        
-        
+
+
         // get profiles db helper
         ProfilesDB profilesDb = new ProfilesDB();
         profilesDb.onCreate(this);
-        
+
         // get cursor
         String prof_id_select = String.format("%s=%d", Columns.PROFILE_ID, mProfId);
         Cursor c = profilesDb.query(
@@ -77,7 +77,7 @@ public class EditProfileUI extends Activity {
             // get UI widgets
             mNameField = (EditText) findViewById(R.id.name);
             mEnabledCheck = (CheckBox) findViewById(R.id.enabled);
-            
+
             // get column indexes
             int descColIndex = c.getColumnIndexOrThrow(Columns.DESCRIPTION);
             int enColIndex = c.getColumnIndexOrThrow(Columns.IS_ENABLED);
@@ -89,7 +89,7 @@ public class EditProfileUI extends Activity {
             c.close();
             profilesDb.onDestroy();
         }
-        
+
         Button accept = (Button) findViewById(R.id.ok);
         accept.setOnClickListener(new OnClickListener() {
             @Override
@@ -98,7 +98,7 @@ public class EditProfileUI extends Activity {
             }
         });
     }
-    
+
     private void accept() {
         ProfilesDB profilesDb = new ProfilesDB();
         try {
@@ -112,7 +112,7 @@ public class EditProfileUI extends Activity {
         }
         finish();
     }
-    
+
     @Override
     protected void onPause() {
         super.onPause();

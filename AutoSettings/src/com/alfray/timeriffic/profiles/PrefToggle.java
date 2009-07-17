@@ -7,6 +7,7 @@
 package com.alfray.timeriffic.profiles;
 
 import android.app.Activity;
+import com.alfray.timeriffic.R;
 
 //-----------------------------------------------
 
@@ -28,8 +29,8 @@ class PrefToggle extends PrefEnum {
     @Override
     protected void initChoices(Object[] values, String[] actions, char prefix) {
 
-        Choice c1 = new Choice('1', "Turn on");
-        Choice c0 = new Choice('0', "Turn off");
+        Choice c1 = new Choice('1', getActivity().getResources().getString(R.string.toggle_turn_on));
+        Choice c0 = new Choice('0', getActivity().getResources().getString(R.string.toggle_turn_off));
 
         mChoices.add(c1);
         mChoices.add(c0);

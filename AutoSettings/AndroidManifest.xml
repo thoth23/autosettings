@@ -24,7 +24,8 @@
 
 			</intent-filter>
 		</activity>
-		<activity android:theme="@android:style/Theme.Dialog" android:label="EditProfile" android:name=".profiles.EditProfileUI"></activity><activity android:name=".profiles.EditActionUI" android:label="EditAction"></activity>
+		<activity android:theme="@android:style/Theme.Dialog" android:name=".profiles.EditProfileUI" android:label="@string/editprofile_title"></activity>
+        <activity android:name=".profiles.EditActionUI" android:label="@string/editaction_title"></activity>
 
     <activity android:name=".utils.ChangeBrightnessActivity" android:theme="@style/NoBackground" android:taskAffinity="com.alfray.timeriffic.Change"></activity>
 

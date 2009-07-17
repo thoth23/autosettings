@@ -9,8 +9,6 @@
  */
 package com.alfray.timeriffic.app;
 
-import com.alfray.timeriffic.utils.SettingsHelper;
-
 import android.app.Application;
 
 

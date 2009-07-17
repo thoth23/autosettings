@@ -12,14 +12,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.profiles.PrefPercentDialog.Accessor;
 
 //-----------------------------------------------
 
-class PrefPercent extends PrefBase
-    implements View.OnClickListener {
-
-    private static final String UNCHANGED_UI_NAME = "Unchanged";
+class PrefPercent extends PrefBase implements View.OnClickListener {
 
     private char mActionPrefix;
     private Button mButton;
@@ -103,7 +101,7 @@ class PrefPercent extends PrefBase
 
     private void updateButtonText() {
         if (mCurrentValue < 0) {
-            mButton.setText(UNCHANGED_UI_NAME);
+            mButton.setText(R.string.percent_button_unchanged);
         } else {
             mButton.setText(String.format("%d%%", mCurrentValue));
         }

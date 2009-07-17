@@ -13,6 +13,7 @@ import java.util.GregorianCalendar;
 
 import android.content.Context;
 
+import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.utils.SettingsHelper;
 import com.alfray.timeriffic.utils.SettingsHelper.RingerMode;
 import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;
@@ -43,8 +44,7 @@ public class TimedActionUtils {
         return day;
     }
 
-    static public String computeDescription(
-            Context context, int hourMin, int days, String actions) {
+    static public String computeDescription(Context context, int hourMin, int days, String actions) {
 
         SettingsHelper sh = new SettingsHelper(context);
 
@@ -55,9 +55,9 @@ public class TimedActionUtils {
         c.set(Calendar.MINUTE, min);
         String desc_time = null;
         if (min != 0) {
-            desc_time = String.format("%1$tl:%1$tM %1$tp", c);
+            desc_time = context.getString(R.string.timedaction_time_with_minutes, c);
         } else {
-            desc_time = String.format("%1$tl %1$tp", c);
+            desc_time = context.getString(R.string.timedaction_time_0_minute, c);
         }
 
         int start = -2;
@@ -93,7 +93,9 @@ public class TimedActionUtils {
             desc_days.append(" - ");
             desc_days.append(DAYS_NAMES[start]);
         }
-        if (desc_days.length() == 0) desc_days.append("Never");
+        if (desc_days.length() == 0) {
+            desc_days.append(context.getString(R.string.timedaction_nodays_never));
+        }
 
 
         ArrayList<String> actions_names = new ArrayList<String>();
@@ -108,16 +110,16 @@ public class TimedActionUtils {
                     switch(code) {
                     case Columns.ACTION_RINGER:
                         for (RingerMode mode : RingerMode.values()) {
-                            if (mode.name().charAt(0) == v) {
-                                actions_names.add(mode.toString());   // ringer name
+                            if (mode.getActionLetter() == v) {
+                                actions_names.add(mode.toUiString(context));   // ringer name
                                 break;
                             }
                         }
                         break;
                     case Columns.ACTION_VIBRATE:
                         for (VibrateRingerMode mode : VibrateRingerMode.values()) {
-                            if (mode.name().charAt(0) == v) {
-                                actions_names.add(mode.toString());   // vibrate name
+                            if (mode.getActionLetter() == v) {
+                                actions_names.add(mode.toUiString(context));   // vibrate name
                                 break;
                             }
                         }
@@ -129,20 +131,32 @@ public class TimedActionUtils {
                             switch(code) {
                             case Columns.ACTION_BRIGHTNESS:
                                 if (sh.canControlBrigthness()) {
-                                    actions_names.add(String.format("Brightness %d%%", value));
+                                    actions_names.add(
+                                            context.getString(
+                                                    R.string.timedaction_brightness_int,
+                                                    value));
                                 }
                                 break;
                             case Columns.ACTION_RING_VOLUME:
-                                actions_names.add(String.format("Ringer %d%%", value));
+                                actions_names.add(
+                                        context.getString(
+                                                R.string.timedaction_ringer_int,
+                                                value));
                                 break;
                             case Columns.ACTION_WIFI:
                                 if (sh.canControlWifi()) {
-                                    actions_names.add(value > 0 ? "Wifi on" : "Wifi off");
+                                    actions_names.add(
+                                            context.getString(
+                                                    value > 0 ? R.string.timedaction_wifi_on :
+                                                                R.string.timedaction_wifi_off));
                                 }
                                 break;
                             case Columns.ACTION_AIRPLANE:
                                 if (sh.canControlAirplaneMode()) {
-                                    actions_names.add(value > 0 ? "Airplane on" : "Airplane off");
+                                    actions_names.add(
+                                            context.getString(
+                                                    value > 0 ? R.string.timedaction_airplane_on :
+                                                                R.string.timedaction_airplane_off));
                                 }
                                 break;
                             }
@@ -158,7 +172,7 @@ public class TimedActionUtils {
         StringBuilder desc_actions = new StringBuilder();
 
         if (actions_names.size() == 0) {
-            desc_actions.append("No action");
+            desc_actions.append(context.getString(R.string.timedaction_no_action));
         } else {
             for (String name : actions_names) {
                 if (desc_actions.length() > 0) desc_actions.append(", ");

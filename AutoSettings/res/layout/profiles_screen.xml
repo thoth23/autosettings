@@ -17,8 +17,8 @@
 
 <ToggleButton
     android:id="@+id/global_toggle"
-    android:textOff="Timeriffic Disabled"
-    android:textOn="Timeriffic Enabled"
+    android:textOff="@string/profiles_timeriffictoggle_disabled"
+    android:textOn="@string/profiles_timeriffictoggle_enabled"
     android:layout_width="wrap_content"
     android:layout_height="62dip"
     android:layout_toLeftOf="@+id/icon"
@@ -41,15 +41,29 @@
     android:layout_marginTop="1dip"
 	/>
 
-<ListView
+<FrameLayout
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/profilesList"
-    android:orientation="vertical"
     android:layout_below="@id/icon"
     android:layout_alignParentLeft="true"
     android:layout_alignParentRight="true"
     android:layout_alignParentBottom="true"
-    />
+    >
 
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profilesList"
+        android:orientation="vertical"
+        />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/empty"
+        android:gravity="center_horizontal"
+        android:text="@string/profiles_empty_help"
+        />
+
+</FrameLayout>
 </RelativeLayout>

@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout 
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" 
+	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
     android:padding="5dip"
 	>
 
 <TextView
-    android:id="@+id/label" 
+    android:id="@+id/label"
     android:layout_width="wrap_content"
-	android:layout_height="wrap_content" 
-	android:text="Profile Name:"
+	android:layout_height="wrap_content"
+	android:text="@string/editprofile_profile_name"
 	/>
 
-<EditText 
+<EditText
     android:text=""
     android:id="@+id/name"
-	android:layout_width="fill_parent" 
+	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:singleLine="true"
+    android:hint="@string/editprofile_profile_hint"
 	/>
 
-<CheckBox 
-    android:text="Enabled"
+<CheckBox
+    android:text="@string/editprofile_checkbox_enabled"
     android:id="@+id/enabled"
 	android:layout_height="wrap_content"
 	android:paddingTop="5sp"
@@ -32,22 +33,22 @@
 	/>
 
 <ImageView
-    android:id="@+id/divider" 
+    android:id="@+id/divider"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content" 
+    android:layout_height="wrap_content"
     android:src="@drawable/divider_horizontal_dark"
     android:layout_gravity="center_horizontal"
     />
 
 <Button
-    android:id="@+id/ok" 
+    android:id="@+id/ok"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content" 
+    android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:paddingTop="5dip" 
-    android:paddingLeft="20dip" 
-    android:paddingRight="20dip" 
-    android:text="Accept"
+    android:paddingTop="5dip"
+    android:paddingLeft="20dip"
+    android:paddingRight="20dip"
+    android:text="@string/editprofile_button_accept"
     />
 
 </LinearLayout>

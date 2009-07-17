@@ -6,6 +6,10 @@
 
 package com.alfray.timeriffic.profiles;
 
+import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.profiles.PrefPercentDialog.Accessor;
+import com.alfray.timeriffic.utils.SettingsHelper;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -23,12 +27,9 @@ import android.widget.CheckBox;
 import android.widget.ScrollView;
 import android.widget.TimePicker;
 
-import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.profiles.PrefPercentDialog.Accessor;
-import com.alfray.timeriffic.utils.SettingsHelper;
-
 public class EditActionUI extends Activity {
 
+    private static boolean DEBUG = false;
     private static String TAG = "Tmrfc-EditActionUI";
 
     /** Extra long with the action prof_id (not index) to edit. */
@@ -62,12 +63,12 @@ public class EditActionUI extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.edit_action);
-        setTitle("Edit Timed Action");
+        setTitle(R.string.editaction_title);
 
         Intent intent = getIntent();
         mActionId = intent.getExtras().getLong(EXTRA_ACTION_ID);
 
-        Log.d(TAG, String.format("edit prof_id: %08x", mActionId));
+        if (DEBUG) Log.d(TAG, String.format("edit prof_id: %08x", mActionId));
 
         if (mActionId == 0) {
             Log.e(TAG, "action id not found in intent.");
@@ -110,7 +111,7 @@ public class EditActionUI extends Activity {
 
 
             String actions_str = c.getString(actionsColIndex);
-            Log.d(TAG, String.format("Edit Action=%s", actions_str));
+            if (DEBUG) Log.d(TAG, String.format("Edit Action=%s", actions_str));
 
             String[] actions = actions_str != null ? actions_str.split(",") : null;
 
@@ -122,21 +123,21 @@ public class EditActionUI extends Activity {
                     SettingsHelper.RingerMode.values(),
                     actions,
                     Columns.ACTION_RINGER,
-                    "Ringer Mode");
+                    getResources().getString(R.string.editaction_ringer));
 
             mPrefRingerVibrate = new PrefEnum(this,
                     R.id.ringerVibButton,
                     SettingsHelper.VibrateRingerMode.values(),
                     actions,
                     Columns.ACTION_VIBRATE,
-                    "Ringer Vibrate");
+                    getResources().getString(R.string.editaction_vibrate));
 
             mPrefRingerVolume = new PrefPercent(this,
                     mPrefPercentOutWrapper,
                     R.id.ringerVolButton,
                     actions,
                     Columns.ACTION_RING_VOLUME,
-                    "Volume",
+                    getResources().getString(R.string.editaction_volume),
                     0,
                     new Accessor() {
                         @Override
@@ -155,7 +156,7 @@ public class EditActionUI extends Activity {
                     R.id.brightnessButton,
                     actions,
                     Columns.ACTION_BRIGHTNESS,
-                    "Brightness",
+                    getResources().getString(R.string.editaction_brightness),
                     R.drawable.ic_menu_view_brightness,
                     new Accessor() {
                         @Override
@@ -175,14 +176,14 @@ public class EditActionUI extends Activity {
                             R.id.wifiButton,
                             actions,
                             Columns.ACTION_WIFI,
-                            "Wifi Toggle");
+                            getResources().getString(R.string.editaction_wifi));
             mPrefWifi.setEnabled(mSettingsHelper.canControlWifi());
 
             mPrefAirplane = new PrefToggle(this,
                             R.id.airplaneButton,
                             actions,
                             Columns.ACTION_AIRPLANE,
-                            "Airplane Toggle");
+                            getResources().getString(R.string.editaction_airplane));
             mPrefAirplane.setEnabled(mSettingsHelper.canControlAirplaneMode());
 
             mCheckDays = new CheckBox[] {
@@ -201,6 +202,7 @@ public class EditActionUI extends Activity {
             int days = c.getInt(daysColIndex);
             for (int i = Columns.MONDAY_BIT_INDEX; i <= Columns.SUNDAY_BIT_INDEX; i++) {
                 mCheckDays[i].setChecked((days & (1<<i)) != 0);
+                // TODO change label depending on Locale
             }
 
             mPrefRingerMode.requestFocus();
@@ -302,7 +304,7 @@ public class EditActionUI extends Activity {
                 mPrefBrightness.collectResult(actions);
             }
 
-            Log.d(TAG, "new actions: " + actions.toString());
+            if (DEBUG) Log.d(TAG, "new actions: " + actions.toString());
 
             String description = TimedActionUtils.computeDescription(
                     this, hourMin, days, actions.toString());
@@ -313,7 +315,7 @@ public class EditActionUI extends Activity {
                     actions.toString(),
                     description);
 
-            Log.d(TAG, "written rows: " + Integer.toString(count));
+            if (DEBUG) Log.d(TAG, "written rows: " + Integer.toString(count));
 
         } finally {
             profilesDb.onDestroy();
