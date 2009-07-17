@@ -40,7 +40,7 @@
 <CheckBox
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
-    android:text="Don't display again"
+    android:text="@string/intro_checkbox_dont_display_again"
     android:id="@+id/dismiss"
     android:layout_gravity="center_vertical"
     android:layout_weight="1"
@@ -49,7 +49,7 @@
 <Button
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
-    android:text="Continue"
+    android:text="@string/intro_button_continue"
     android:id="@+id/cont"
     android:layout_gravity="center_vertical"
     android:layout_weight="1"

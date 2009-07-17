@@ -25,6 +25,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.Columns;
 import com.alfray.timeriffic.profiles.ProfilesDB;
@@ -68,7 +69,10 @@ public class AutoReceiver extends BroadcastReceiver {
             if (!prefs.isServiceEnabled()) {
                 Log.d(TAG, "Checking disabled");
                 if (displayToast == TOAST_ALWAYS) {
-                    Toast.makeText(context, "Timeriffic Disabled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context,
+                                    R.string.profiles_timeriffictoggle_disabled,
+                                    Toast.LENGTH_LONG)
+                         .show();
                 }
                 return;
             }
@@ -142,8 +146,7 @@ public class AutoReceiver extends BroadcastReceiver {
                 switch(code) {
                 case Columns.ACTION_RINGER:
                     for (RingerMode mode : RingerMode.values()) {
-                        String name = mode.toString();
-                        if (name.charAt(0) == v) {
+                        if (mode.getActionLetter() == v) {
                             ringerMode = mode;
                             break;
                         }
@@ -151,8 +154,7 @@ public class AutoReceiver extends BroadcastReceiver {
                     break;
                 case Columns.ACTION_VIBRATE:
                     for (VibrateRingerMode mode : VibrateRingerMode.values()) {
-                        String name = mode.toString();
-                        if (name.charAt(0) == v) {
+                        if (mode.getActionLetter() == v) {
                             vibRingerMode = mode;
                             break;
                         }
@@ -232,31 +234,35 @@ public class AutoReceiver extends BroadcastReceiver {
 
         prefs.setLastScheduledAlarm(timeMs);
 
-        if (DEBUG || shouldDisplayToast) {
-            try {
-                Configuration config = new Configuration();
-                Settings.System.getConfiguration(context.getContentResolver(), config);
+        if (shouldDisplayToast || DEBUG) {
+            // The DateFormat usage is commented out for 2 reasons:
+            // 1- It gives weird results in French. Isolate code and file a bug report.
+            // 2- We have a translatable time format that is used in the catch section only.
+            //    It gives a false sense that the resource string might be used when it's not.
+//            try {
+//                Configuration config = new Configuration();
+//                Settings.System.getConfiguration(context.getContentResolver(), config);
+//
+//                DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, config.locale);
+//                String s2 = df.format(now.getTime());
+//                s2 = context.getString(R.string.toast_next_change_at_datetime, s2);
+//
+//                prefs.setStatusMsg(s2);
+//                if (shouldDisplayToast) Toast.makeText(context, s2, Toast.LENGTH_LONG).show();
+//                if (DEBUG) Log.d(TAG, s2);
+//
+//            } catch (Throwable t) {
+//                Log.w(TAG, t);
 
-                DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, config.locale);
-                String s2 = df.format(now.getTime());
-                s2 = "Next Change: " + s2;
-
-                prefs.setStatusMsg(s2);
-                if (shouldDisplayToast) Toast.makeText(context, s2, Toast.LENGTH_LONG).show();
-                if (DEBUG) Log.d(TAG, s2);
-
-            } catch (Throwable t) {
-                Log.w(TAG, t);
-
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                SimpleDateFormat sdf = new SimpleDateFormat(context.getString(R.string.toast_next_alarm_date_time));
                 sdf.setCalendar(now);
                 String s2 = sdf.format(now.getTime());
-                s2 = String.format("Next Change: %s", s2);
+                s2 = context.getString(R.string.toast_next_change_at_datetime, s2);
 
                 prefs.setStatusMsg(s2);
                 if (shouldDisplayToast) Toast.makeText(context, s2, Toast.LENGTH_LONG).show();
                 if (DEBUG) Log.d(TAG, s2);
-            }
+//            }
         }
     }
 }

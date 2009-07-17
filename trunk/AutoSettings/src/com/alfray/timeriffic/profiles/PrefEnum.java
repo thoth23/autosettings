@@ -13,6 +13,9 @@ import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.utils.SettingsHelper.RingerMode;
+import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;
 
 //-----------------------------------------------
 
@@ -20,7 +23,6 @@ class PrefEnum extends PrefBase
     implements View.OnClickListener {
 
     protected static final char UNCHANGED_KEY = '-';
-    protected static final String UNCHANGED_UI_NAME = "Unchanged";
     private final char mActionPrefix;
 
     protected static class Choice {
@@ -52,7 +54,8 @@ class PrefEnum extends PrefBase
         mButton.setOnClickListener(this);
         mButton.setTag(this);
 
-        Choice c = new Choice(UNCHANGED_KEY, UNCHANGED_UI_NAME);
+        Choice c = new Choice(UNCHANGED_KEY,
+                              activity.getResources().getString(R.string.enum_unchanged));
         mChoices.add(c);
         mCurrentChoice = c;
 
@@ -78,8 +81,16 @@ class PrefEnum extends PrefBase
         String currentValue = getActionValue(actions, prefix);
 
         for (Object value : values) {
-            String s = value.toString();
-            char p = s.charAt(0);
+            String s = "#PrefEnum: Error Unknown Setting#";
+            char p = 0;
+            if (value instanceof RingerMode) {
+                p = ((RingerMode) value).getActionLetter();
+                s = ((RingerMode) value).toUiString(getActivity());
+            } else if (value instanceof VibrateRingerMode) {
+                p = ((VibrateRingerMode) value).getActionLetter();
+                s = ((VibrateRingerMode) value).toUiString(getActivity());
+            }
+
             Choice c = new Choice(p, s);
             mChoices.add(c);
 
@@ -121,8 +132,7 @@ class PrefEnum extends PrefBase
     }
 
     public void collectResult(StringBuilder actions) {
-        if (mCurrentChoice != null &&
-                mCurrentChoice.mKey != UNCHANGED_KEY) {
+        if (mCurrentChoice != null && mCurrentChoice.mKey != UNCHANGED_KEY) {
             appendAction(actions, mActionPrefix, Character.toString(mCurrentChoice.mKey));
         }
     }

@@ -61,7 +61,7 @@ public class PrefPercentDialog extends AlertDialog
 
         setOnDismissListener(this);
 
-        setButton("Accept", this);
+        setButton(context.getResources().getString(R.string.percent_button_accept), this);
 
         // set initial value
         int percent = mPrefPercent.getCurrentValue();

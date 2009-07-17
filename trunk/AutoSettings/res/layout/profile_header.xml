@@ -1,29 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--  LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_height="wrap_content"
-	android:id="@+id/headerGroup"
-	android:layout_width="fill_parent"
-	android:background="@drawable/profile_bg2">
-
-    <CheckBox
-        android:text="Profile Name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/profileTitle"
-        android:layout_weight="1"
-        android:paddingRight="5dip"
-        android:textColor="#000"
-        android:textStyle="bold"
-        />
-</LinearLayout -->
-
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="fill_parent"
     android:id="@+id/description"
-    android:text="Profile Name"
+    android:text="[NT] Profile Name"
     android:background="@drawable/profile_bg_selector"
     android:textColor="#000"
     android:textStyle="bold"

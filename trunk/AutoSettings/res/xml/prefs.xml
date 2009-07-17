@@ -3,7 +3,7 @@
 
 	<CheckBoxPreference android:defaultValue="true"
 		android:key="enable_serv"
-		android:summaryOff="Timeriffic is disabled." android:summaryOn="Timeriffic is enabled." android:title="Enable Timeriffic"/><CheckBoxPreference android:key="dismiss_intro" android:title="Don't display introduction" android:summaryOff="Introduction is visible." android:summaryOn="Introduction is skipped." android:defaultValue="false"/>
+		android:title="@string/prefs_enable_label" android:summaryOff="@string/prefs_enable_off" android:summaryOn="@string/prefs_enable_on"/><CheckBoxPreference android:key="dismiss_intro" android:defaultValue="false" android:title="@string/prefs_dismiss_intro_label" android:summaryOff="@string/prefs_dismiss_intro_off" android:summaryOn="@string/prefs_dismiss_intro_on"/>
 
 	
 

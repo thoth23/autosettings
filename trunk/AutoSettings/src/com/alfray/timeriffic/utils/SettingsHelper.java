@@ -12,6 +12,7 @@ import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.util.Log;
+import com.alfray.timeriffic.R;
 
 /**
  * Helper class that changes settings.
@@ -51,10 +52,15 @@ public class SettingsHelper {
         /** Muted ringed. */
         MUTE;
 
+        public char getActionLetter() {
+            return (this == RING) ? 'R' : 'M';
+        }
+
         /** Capitalizes the string */
-        @Override
-        public String toString() {
-            return (this == RING) ? "Ring" : "Mute";
+        public String toUiString(Context context) {
+            return (this == RING) ?
+                context.getString(R.string.ringermode_ring) :
+                context.getString(R.string.ringermode_mute);
         }
     }
 
@@ -64,10 +70,15 @@ public class SettingsHelper {
         /** Vibrate is off */
         NO_VIBRATE;
 
+        public char getActionLetter() {
+            return (this == VIBRATE) ? 'V' : 'N';
+        }
+
         /** Capitalizes the string */
-        @Override
-        public String toString() {
-            return (this == VIBRATE) ? "Vibrate" : "No vibrate";
+        public String toUiString(Context context) {
+            return (this == VIBRATE) ?
+                context.getString(R.string.vibrateringermode_vibrate) :
+                context.getString(R.string.vibrateringermode_no_vibrate);
         }
     }
 
