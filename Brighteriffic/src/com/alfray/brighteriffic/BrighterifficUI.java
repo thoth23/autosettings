@@ -45,7 +45,7 @@ public class BrighterifficUI extends Activity {
         final PrefsValues prefValues = new PrefsValues(this);
 
         TextView desc = ((TextView) findViewById(R.id.introText));
-        desc.setText(getResources().getString(R.string.intro_text, longVersion()));
+        desc.setText(getString(R.string.intro_text, longVersion()));
 
         View v = findViewById(R.id.toggleButton);
         v.setOnClickListener(new OnClickListener() {
@@ -55,8 +55,8 @@ public class BrighterifficUI extends Activity {
         });
 
         initMinMaxPart(R.id.part_min,
-                getResources().getString(R.string.min_title),
-                getResources().getString(R.string.min_button_percent),
+                getString(R.string.min_title),
+                getString(R.string.min_button_percent),
                 new IMinMaxActions() {
                     public int getPrefValue() {
                         return prefValues.getMinBrightness();
@@ -75,8 +75,8 @@ public class BrighterifficUI extends Activity {
         );
 
         initMinMaxPart(R.id.part_max,
-                getResources().getString(R.string.max_title),
-                getResources().getString(R.string.max_button_percent),
+                getString(R.string.max_title),
+                getString(R.string.max_button_percent),
                 new IMinMaxActions() {
                     public int getPrefValue() {
                         return prefValues.getMaxBrightness();
@@ -155,8 +155,7 @@ public class BrighterifficUI extends Activity {
         result.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
 
         // Set the name of the activity
-        result.putExtra(Intent.EXTRA_SHORTCUT_NAME,
-                getResources().getString(R.string.home_shortcut_label));
+        result.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.home_shortcut_label));
 
         // Build the icon info for the activity
         Drawable drawable = getResources().getDrawable(R.drawable.icon96);
