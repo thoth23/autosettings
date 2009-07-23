@@ -111,8 +111,8 @@ public class ProfilesUI extends Activity {
         mLayoutInflater = getLayoutInflater();
 
         mPrefsValues = new PrefsValues(this);
-        mGreenDot = getResources().getDrawable(R.drawable.green_dot);
-        mGrayDot = getResources().getDrawable(R.drawable.gray_dot);
+        mGreenDot = getResources().getDrawable(R.drawable.dot_green);
+        mGrayDot = getResources().getDrawable(R.drawable.dot_gray);
         mCheckOn = getResources().getDrawable(R.drawable.btn_check_on);
         mCheckOff = getResources().getDrawable(R.drawable.btn_check_off);
 

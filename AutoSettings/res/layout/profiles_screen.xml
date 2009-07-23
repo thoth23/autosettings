@@ -1,53 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:orientation="vertical"
     >
 
-<ImageView
-    android:id="@+id/icon"
-    android:src="@drawable/timeriffic_icon"
-    android:layout_width="40dip"
-    android:layout_height="60dip"
-    android:layout_alignParentTop="true"
-    android:layout_centerHorizontal="true"
-    android:scaleType="fitCenter"
-    />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        >
 
-<ToggleButton
-    android:id="@+id/global_toggle"
-    android:textOff="@string/profiles_timeriffictoggle_disabled"
-    android:textOn="@string/profiles_timeriffictoggle_enabled"
-    android:layout_width="wrap_content"
-    android:layout_height="62dip"
-    android:layout_toLeftOf="@+id/icon"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentLeft="true"
-    android:paddingLeft="10dip"
-    android:paddingRight="10dip"
-    android:layout_marginTop="2dip"
-    />
+        <ToggleButton
+            android:id="@+id/global_toggle"
+            android:textOff="@string/profiles_timeriffictoggle_disabled"
+            android:textOn="@string/profiles_timeriffictoggle_enabled"
+            android:layout_width="wrap_content"
+            android:layout_height="62dip"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
+            />
 
-<Button
-	android:id="@+id/check_now"
-	android:text="@string/check_now"
-    android:layout_width="wrap_content"
-    android:layout_height="64dip"
-	android:drawableLeft="@drawable/ic_menu_rotate"
-    android:layout_toRightOf="@+id/icon"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentRight="true"
-    android:layout_marginTop="1dip"
-	/>
+        <ImageView
+            android:id="@+id/icon"
+            android:src="@drawable/timeriffic_icon"
+            android:layout_width="40dip"
+            android:layout_height="60dip"
+            android:scaleType="fitCenter"
+            />
+
+        <Button
+        	android:id="@+id/check_now"
+        	android:text="@string/check_now"
+            android:layout_width="wrap_content"
+            android:layout_height="64dip"
+        	android:drawableLeft="@drawable/ic_menu_rotate"
+        	/>
+
+    </LinearLayout>
+
+<com.alfray.timeriffic.profiles.GlobalStatusView
+    android:id="@+id/global_status"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/globalstatus_bg_gradient"
+    android:layout_weight="0"
+    />
 
 <FrameLayout
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/icon"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentBottom="true"
+    android:layout_height="fill_parent"
+    android:layout_weight="1"
     >
 
     <ListView
@@ -66,4 +71,4 @@
         />
 
 </FrameLayout>
-</RelativeLayout>
+</LinearLayout>
