@@ -13,7 +13,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingLeft="20sp"
-		android:drawableLeft="@drawable/green_dot"
+		android:drawableLeft="@drawable/dot_green"
 		android:paddingTop="5dip"
 		android:paddingBottom="5dip"
 		android:textAppearance="?android:textAppearance"

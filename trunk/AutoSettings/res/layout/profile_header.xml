@@ -10,5 +10,4 @@
     android:textStyle="bold"
     android:gravity="center_vertical"
     android:drawableLeft="@drawable/btn_check_on"
-    android:drawableTop="@drawable/accent_lines"
     />
