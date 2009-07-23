@@ -90,7 +90,7 @@ public class ChangeBrightnessActivity extends Activity {
         if (result >= 0) {
             Toast
                 .makeText(this,
-                    getResources().getString(R.string.brightness_changed_toast, (int)(100*result)),
+                    getString(R.string.brightness_changed_toast, (int)(100*result)),
                     Toast.LENGTH_SHORT)
                 .show();
         }
