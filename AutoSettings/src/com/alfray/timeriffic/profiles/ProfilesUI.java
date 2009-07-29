@@ -33,12 +33,9 @@ import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 import android.widget.AbsListView.RecyclerListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
@@ -79,7 +76,8 @@ public class ProfilesUI extends Activity {
     private Drawable mCheckOn;
     private Drawable mCheckOff;
 
-    private ToggleButton mGlobalToggle;
+    private GlobalToggle mGlobalToggle;
+    private GlobalStatus mGlobalStatus;
 
     private long mTempDialogRowId;
     private String mTempDialogTitle;
@@ -411,7 +409,7 @@ public class ProfilesUI extends Activity {
             requestSettingsCheck(AutoReceiver.TOAST_IF_CHANGED);
             break;
         case SETTINGS_UPDATED:
-            updateGlobalToggleFromPrefs();
+            updateGlobalState();
             requestSettingsCheck(AutoReceiver.TOAST_IF_CHANGED);
             break;
         }
@@ -467,43 +465,23 @@ public class ProfilesUI extends Activity {
      * Initializes the list-independent buttons: global toggle, check now.
      */
     private void initButtons() {
-        mGlobalToggle = (ToggleButton) findViewById(R.id.global_toggle);
+        mGlobalToggle = (GlobalToggle) findViewById(R.id.global_toggle);
+        mGlobalStatus = (GlobalStatus) findViewById(R.id.global_status);
 
-        mGlobalToggle.setChecked(mPrefsValues.isServiceEnabled());
+        updateGlobalState();
 
         mGlobalToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPrefsValues.setServiceEnabled(mGlobalToggle.isChecked());
+                mPrefsValues.setServiceEnabled(!mPrefsValues.isServiceEnabled());
+                updateGlobalState();
                 requestSettingsCheck(AutoReceiver.TOAST_ALWAYS);
-            }
-        });
-
-        Button b = (Button) findViewById(R.id.check_now);
-
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requestSettingsCheck(AutoReceiver.TOAST_ALWAYS);
-            }
-        });
-
-        b.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                // Display a toast with the last status msg
-                Toast t = Toast.makeText(ProfilesUI.this,
-                        mPrefsValues.getStatusMsg(),
-                        Toast.LENGTH_LONG);
-                t.show();
-
-                return true; // we consumed the long view
             }
         });
     }
 
-    private void updateGlobalToggleFromPrefs() {
-        mGlobalToggle.setChecked(mPrefsValues.isServiceEnabled());
+    private void updateGlobalState() {
+        mGlobalToggle.setActive(mPrefsValues.isServiceEnabled());
     }
 
     @Override
