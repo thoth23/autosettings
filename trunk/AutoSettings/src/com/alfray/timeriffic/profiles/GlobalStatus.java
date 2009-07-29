@@ -23,13 +23,11 @@ import com.alfray.timeriffic.R;
 
 /**
  */
-public class GlobalStatusView extends View {
+public class GlobalStatus extends View {
 
     private Bitmap mAccentLeft;
     private Matrix mAccentRightMatrix;
 
-    private Bitmap mLogoGray;
-    private Bitmap mLogoAnim[] = new Bitmap[3];
     private Paint mPaintLast;
     private Paint mPaintNext;
     private Paint mPaintTimestamp;
@@ -44,17 +42,15 @@ public class GlobalStatusView extends View {
     private String mTextLastTs;
     private String mTextNextTs;
     private String mTextSummary;
+    private Paint mDummyPaint;
 
-    public GlobalStatusView(Context context, AttributeSet attrs) {
+    public GlobalStatus(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         mAccentLeft = getResBitmap(R.drawable.globalstatus_accent_lines_left);
 
-        mLogoGray = getResBitmap(R.drawable.globalstatus_disabled);
-
-        mLogoAnim[0] = getResBitmap(R.drawable.globalstatus_frame1);
-        mLogoAnim[1] = getResBitmap(R.drawable.globalstatus_frame2);
-        mLogoAnim[2] = getResBitmap(R.drawable.globalstatus_frame3);
+        // Fix to make GLE happy
+        mDummyPaint = new Paint();
 
         int textFlags = Paint.ANTI_ALIAS_FLAG + Paint.SUBPIXEL_TEXT_FLAG;
         mPaintLast = new Paint(textFlags);
@@ -82,7 +78,9 @@ public class GlobalStatusView extends View {
         mTextLast = "Last:";
         mTextNext = "Next:";
 
-        mXLastNext = mLogoAnim[2].getWidth();
+        // use witdh from globble toggle anim to align text
+        Bitmap logoAnim = getResBitmap(R.drawable.globaltoggle_frame1);
+        mXLastNext = logoAnim.getWidth();
         mXTsSummary = mXLastNext + 5 +
                         (int) (Math.max(mPaintLast.measureText(mTextLast),
                                         mPaintNext.measureText(mTextNext)));
@@ -129,16 +127,20 @@ public class GlobalStatusView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawBitmap(mAccentLeft, 0, 0, null);
-        canvas.drawBitmap(mAccentLeft, mAccentRightMatrix, null);
+        try {
+            canvas.drawBitmap(mAccentLeft, 0, 0, mDummyPaint);
+            canvas.drawBitmap(mAccentLeft, mAccentRightMatrix, mDummyPaint);
 
-        canvas.drawBitmap(mLogoAnim[2], 0, 0, null);
+            //--canvas.drawBitmap(mLogoAnim[2], 0, 0, null);
 
-        canvas.drawText(mTextLast, mXLastNext, mYLast, mPaintLast);
-        canvas.drawText(mTextNext, mXLastNext, mYNext, mPaintNext);
-        canvas.drawText(mTextLastTs, mXTsSummary, mYLast, mPaintTimestamp);
-        canvas.drawText(mTextNextTs, mXTsSummary, mYNext, mPaintTimestamp);
-        canvas.drawText(mTextSummary, mXTsSummary, mYSummary, mPaintSummary);
+            canvas.drawText(mTextLast, mXLastNext, mYLast, mPaintLast);
+            canvas.drawText(mTextNext, mXLastNext, mYNext, mPaintNext);
+            canvas.drawText(mTextLastTs, mXTsSummary, mYLast, mPaintTimestamp);
+            canvas.drawText(mTextNextTs, mXTsSummary, mYNext, mPaintTimestamp);
+            canvas.drawText(mTextSummary, mXTsSummary, mYSummary, mPaintSummary);
+        } catch (UnsupportedOperationException e) {
+            // Ignore, for GLE
+        }
     }
 
 
