@@ -39,17 +39,6 @@ public class FlashlightActivity extends Activity {
 
     private WakeLock mWakeLock;
 
-    private static final String sColorNames[] = {
-        "White",
-        "Red",
-        "Orange",
-        "Yellow",
-        "Green",
-        "Cyan",
-        "Blue",
-        "Purple"
-    };
-
     private static final int sColorHex[] = {
         0xFFFFFFFF,       // white
         0xFFFF0000,       // red
@@ -58,14 +47,28 @@ public class FlashlightActivity extends Activity {
         0xFF00FF00,       // green
         0xFF00FFFF,       // cyan
         0xFF0000FF,       // blue
-        0xFFFF00FF        // purple
+        0xFF9900FF,       // purple
+        0xFFFF99FF        // pink
     };
+
+    private final String sColorNames[] = new String[sColorHex.length];
+
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        sColorNames[0] = getString(R.string.color_white);
+        sColorNames[1] = getString(R.string.color_red);
+        sColorNames[2] = getString(R.string.color_orange);
+        sColorNames[3] = getString(R.string.color_yellow);
+        sColorNames[4] = getString(R.string.color_green);
+        sColorNames[5] = getString(R.string.color_cyan);
+        sColorNames[6] = getString(R.string.color_blue);
+        sColorNames[7] = getString(R.string.color_purple);
+        sColorNames[8] = getString(R.string.color_pink);
 
         mPrefs = new PrefsValues(this);
         applyColor(mPrefs.getColorIndex());
@@ -156,7 +159,7 @@ public class FlashlightActivity extends Activity {
         if (id == R.string.menu_color) {
             Builder b = new AlertDialog.Builder(this);
 
-            b.setTitle("Choose color");
+            b.setTitle(R.string.dlg_title_choose_color);
 
             b.setSingleChoiceItems(sColorNames,
                     mPrefs.getColorIndex(),
@@ -189,7 +192,9 @@ public class FlashlightActivity extends Activity {
     private void applyCurrentSetting() {
         float f = mPrefs.getBrightness();
         setBrightness(f);
-        mCurrentLabel.setText(f < 0.5 ? "Dark" : "Bright");
+        mCurrentLabel.setText(f < 0.5 ?
+                        R.string.label_dark :
+                        R.string.label_bright);
         mCurrentIcon.setImageResource(f < 0.5 ? R.drawable.dark_icon : R.drawable.bright_icon);
     }
 

@@ -28,7 +28,7 @@ public class AboutActivity extends Activity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://code.google.com/p/autosettings/wiki/Flashlight"));
+                        Uri.parse(getString(R.string.url_wiki_flashlight)));
                 startActivity(intent);
             }
         });

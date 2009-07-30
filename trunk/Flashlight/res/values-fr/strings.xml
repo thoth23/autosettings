@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+ (c) ralfoide gmail com, 2009
+ Project: Flashlight
+ License: GPLv3
+-->
+
+<resources>
+
+    <string name="app_name">Lampe de poche</string>
+
+    <string name="description">Application \'Lampe de poche\' qui utilise l\'API officielle de Cupcake pour changer la luminosité de l\'écran.</string>
+    <string name="url_wiki_flashlight">http://code.google.com/p/autosettings/wiki/Flashlight</string>
+
+    <string name="menu_color">Couleur</string>
+    <string name="menu_bright">Clair</string>
+    <string name="menu_dark">Sombre</string>
+    <string name="menu_about">A propos....</string>
+
+    <string name="label_bright">Clair</string>
+    <string name="label_dark">Sombre</string>
+
+    <string name="dlg_title_choose_color">Choisissez une couleur</string>
+
+    <string name="color_white">Blanc</string>
+    <string name="color_red">Rouge</string>
+    <string name="color_orange">Orange</string>
+    <string name="color_yellow">Jaune</string>
+    <string name="color_green">Vert</string>
+    <string name="color_cyan">Cyan</string>
+    <string name="color_blue">Bleu</string>
+    <string name="color_purple">Violet</string>
+    <string name="color_pink">Rose</string>
+
+</resources>
