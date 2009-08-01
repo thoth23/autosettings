@@ -16,20 +16,20 @@ public class PrefsValues {
     public static final int VERSION = 2;
 
     private SharedPreferences mPrefs;
-	
+
 	public PrefsValues(Context context) {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 	}
-	
+
 	public SharedPreferences getPrefs() {
         return mPrefs;
     }
-	
+
 	/** Returns pref version or 0 if not present. */
 	public int getVersion() {
 	    return mPrefs.getInt("version", 0);
 	}
-	
+
 	public void setVersion() {
 	    mPrefs.edit().putInt("version", VERSION).commit();
 	}
@@ -37,7 +37,7 @@ public class PrefsValues {
 	public boolean isServiceEnabled() {
 	    return mPrefs.getBoolean("enable_serv", true);
 	}
-    
+
     /**
      * Sets the dismiss_intro boolean value.
      * @return true if value was successfully changed if the prefs
@@ -49,7 +49,7 @@ public class PrefsValues {
     public boolean isIntroDismissed() {
         return mPrefs.getBoolean("dismiss_intro", false);
     }
-    
+
     /**
      * Sets the dismiss_intro boolean value.
      * @return true if value was successfully changed if the prefs
@@ -57,19 +57,41 @@ public class PrefsValues {
     public boolean setIntroDismissed(boolean dismiss) {
         return mPrefs.edit().putBoolean("dismiss_intro", dismiss).commit();
     }
-    
-    public String getStatusMsg() {
-        return mPrefs.getString("status_msg", "N/A");
+
+    public String getStatusLastTS() {
+        return mPrefs.getString("last_ts", null);
     }
-    
-    public void setStatusMsg(String status) {
-        mPrefs.edit().putString("status_msg", status).commit();
+
+    public void setStatusLastTS(String lastTS) {
+        mPrefs.edit().putString("last_ts", lastTS).commit();
     }
-    
+
+    public String getStatusLastAction() {
+        return mPrefs.getString("last_msg", null);
+    }
+    public void setStatusLastAction(String summary) {
+        mPrefs.edit().putString("last_msg", summary).commit();
+    }
+
+    public String getStatusNextTS() {
+        return mPrefs.getString("next_ts", null);
+    }
+
+    public void setStatusNextTS(String nextTS) {
+        mPrefs.edit().putString("next_ts", nextTS).commit();
+    }
+
+    public String getStatusNextAction() {
+        return mPrefs.getString("next_msg", null);
+    }
+    public void setStatusNextAction(String summary) {
+        mPrefs.edit().putString("next_msg", summary).commit();
+    }
+
     public long getLastScheduledAlarm() {
         return mPrefs.getLong("last_alarm", 0);
     }
-    
+
     public void setLastScheduledAlarm(long timeMs) {
         mPrefs.edit().putLong("last_alarm", timeMs).commit();
     }

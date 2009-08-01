@@ -31,18 +31,21 @@ public class GlobalStatus extends View {
     private Paint mPaintLast;
     private Paint mPaintNext;
     private Paint mPaintTimestamp;
-    private Paint mPaintSummary;
+    private Paint mPaintDesc;
     private float mYLast;
     private float mYNext;
-    private float mYSummary;
+    private float mYNextDesc;
+    private float mYLastDesc;
     private int mXLastNext;
-    private int mXTsSummary;
+    private int mXTsDesc;
     private String mTextLast;
     private String mTextNext;
     private String mTextLastTs;
+    private String mTextLastDesc;
     private String mTextNextTs;
-    private String mTextSummary;
+    private String mTextNextDesc;
     private Paint mDummyPaint;
+    private Runnable mVisibilityChangedCallback;
 
     public GlobalStatus(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -65,30 +68,42 @@ public class GlobalStatus extends View {
         mPaintTimestamp.setColor(0xFFCCCCCC);
         mPaintTimestamp.setTextSize(12);
 
-        mPaintSummary = new Paint(textFlags);
-        mPaintSummary.setColor(0xFF181818);
-        mPaintSummary.setTextSize(12);
+        mPaintDesc = new Paint(textFlags);
+        mPaintDesc.setColor(0xFF181818);
+        mPaintDesc.setTextSize(12);
 
         FontMetrics fmLast = mPaintLast.getFontMetrics();
         FontMetrics fmTs = mPaintTimestamp.getFontMetrics();
         mYLast = -1 * fmLast.top;
+        mYLastDesc = mYLast + fmTs.bottom - fmTs.top;
         mYNext = mYLast - fmLast.ascent + fmTs.descent;
-        mYSummary = mYNext + fmTs.bottom - fmTs.top;
+        mYNextDesc = mYNext + fmTs.bottom - fmTs.top;
 
-        mTextLast = "Last:";
-        mTextNext = "Next:";
+        mTextLast = context.getString(R.string.globalstatus_last);
+        mTextNext = context.getString(R.string.globalstatus_next);
 
         // use witdh from globble toggle anim to align text
         Bitmap logoAnim = getResBitmap(R.drawable.globaltoggle_frame1);
         mXLastNext = logoAnim.getWidth();
-        mXTsSummary = mXLastNext + 5 +
+        mXTsDesc = mXLastNext + 5 +
                         (int) (Math.max(mPaintLast.measureText(mTextLast),
                                         mPaintNext.measureText(mTextNext)));
+    }
 
-        // DEBUG
-        mTextLastTs = "Timestamp Last";
-        mTextNextTs = "Timestamp Next";
-        mTextSummary = "Summary blah blah blah blah blah blah";
+    public void setTextLastTs(String textLastTs) {
+        mTextLastTs = textLastTs;
+    }
+
+    public void setTextLastDesc(String lastDesc) {
+        mTextLastDesc = lastDesc;
+    }
+
+    public void setTextNextTs(String textNextTs) {
+        mTextNextTs = textNextTs;
+    }
+
+    public void setTextNextDesc(String nextDesc) {
+        mTextNextDesc = nextDesc;
     }
 
     private Bitmap getResBitmap(int bmpResId) {
@@ -131,19 +146,40 @@ public class GlobalStatus extends View {
             canvas.drawBitmap(mAccentLeft, 0, 0, mDummyPaint);
             canvas.drawBitmap(mAccentLeft, mAccentRightMatrix, mDummyPaint);
 
-            //--canvas.drawBitmap(mLogoAnim[2], 0, 0, null);
-
             canvas.drawText(mTextLast, mXLastNext, mYLast, mPaintLast);
             canvas.drawText(mTextNext, mXLastNext, mYNext, mPaintNext);
-            canvas.drawText(mTextLastTs, mXTsSummary, mYLast, mPaintTimestamp);
-            canvas.drawText(mTextNextTs, mXTsSummary, mYNext, mPaintTimestamp);
-            canvas.drawText(mTextSummary, mXTsSummary, mYSummary, mPaintSummary);
+
+            if (mTextLastTs != null && mTextLastTs.length() > 0) {
+                canvas.drawText(mTextLastTs, mXTsDesc, mYLast, mPaintTimestamp);
+            }
+
+            if (mTextLastDesc != null && mTextLastDesc.length() > 0) {
+                canvas.drawText(mTextLastDesc, mXTsDesc, mYLastDesc, mPaintDesc);
+            }
+
+            if (mTextNextTs != null && mTextNextTs.length() > 0) {
+                canvas.drawText(mTextNextTs, mXTsDesc, mYNext, mPaintTimestamp);
+            }
+
+            if (mTextNextDesc != null && mTextNextDesc.length() > 0) {
+                canvas.drawText(mTextNextDesc, mXTsDesc, mYNextDesc, mPaintDesc);
+            }
         } catch (UnsupportedOperationException e) {
             // Ignore, for GLE
         }
     }
 
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        if (mVisibilityChangedCallback != null && visibility == View.VISIBLE) {
+            mVisibilityChangedCallback.run();
+        }
+        super.onWindowVisibilityChanged(visibility);
+    }
 
+    public void setWindowVisibilityChangedCallback(Runnable visibilityChangedCallback) {
+        mVisibilityChangedCallback = visibilityChangedCallback;
+    }
 }
 
 

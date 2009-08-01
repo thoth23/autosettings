@@ -41,9 +41,6 @@
 
     <string name="profiles_empty_help">Use the MENU key to add a new profile.</string>
 
-    <string name="profiles_timeriffictoggle_disabled">Timeriffic Disabled</string>
-    <string name="profiles_timeriffictoggle_enabled">Timeriffic Enabled</string>
-
     <string name="timedactioncontextmenu_title">Timed Action</string>
 
     <string name="profilecontextmenu_title">Profile</string>
@@ -134,6 +131,14 @@
          http://java.sun.com/j2se/1.5.0/docs/api/java/text/SimpleDateFormat.html
     -->
     <string name="toast_next_alarm_date_time">yyyy/MM/dd HH:mm:ss</string>
+
+
+    <!-- global status (information view at the top) -->
+
+    <string name="globalstatus_nextlast_date_time">yyyy/MM/dd HH:mm:ss</string>
+    <string name="globalstatus_next">Next:</string>
+    <string name="globalstatus_last">Last:</string>
+    <string name="globalstatus_disabled">Timeriffic is disabled</string>
 
     <!-- settings -->
 

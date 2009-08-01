@@ -46,8 +46,15 @@ public class TimedActionUtils {
 
     static public String computeDescription(Context context, int hourMin, int days, String actions) {
 
-        SettingsHelper sh = new SettingsHelper(context);
+        String desc_time = computeTime(context, hourMin);
+        String desc_days = computeDays(context, days);
+        String desc_actions = computeActions(context, actions);
 
+        String description = String.format("%s %s, %s", desc_time, desc_days, desc_actions);
+        return description;
+    }
+
+    private static String computeTime(Context context, int hourMin) {
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(System.currentTimeMillis());
         c.set(Calendar.HOUR_OF_DAY, hourMin / 60);
@@ -59,7 +66,10 @@ public class TimedActionUtils {
         } else {
             desc_time = context.getString(R.string.timedaction_time_0_minute, c);
         }
+        return desc_time;
+    }
 
+    private static String computeDays(Context context, int days) {
         int start = -2;
         int count = 0;
         StringBuilder desc_days = new StringBuilder();
@@ -97,7 +107,12 @@ public class TimedActionUtils {
             desc_days.append(context.getString(R.string.timedaction_nodays_never));
         }
 
+        return desc_days.toString();
+    }
 
+    public static String computeActions(Context context, String actions) {
+
+        SettingsHelper sh = new SettingsHelper(context);
         ArrayList<String> actions_names = new ArrayList<String>();
 
         if (actions != null) {
@@ -180,8 +195,6 @@ public class TimedActionUtils {
             }
         }
 
-        String description = String.format("%s %s, %s", desc_time, desc_days, desc_actions);
-        return description;
+        return desc_actions.toString();
     }
-
 }
