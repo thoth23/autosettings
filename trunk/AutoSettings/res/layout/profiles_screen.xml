@@ -27,7 +27,6 @@
         android:src="@drawable/globaltoggle_selector"
         android:background="@drawable/globaltoggle_bg_selector"
         android:focusable="true"
-        android:focusableInTouchMode="true"
         android:nextFocusDown="@+id/profilesList"
         android:scaleType="fitCenter"
         android:cropToPadding="false"

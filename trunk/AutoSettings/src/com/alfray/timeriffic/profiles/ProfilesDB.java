@@ -36,7 +36,7 @@ import android.util.Log;
  * easy to use only later.
  */
 public class ProfilesDB {
-    
+
     private static final String TAG = "Tmrfc-ProfilesDB";
     private static final boolean DEBUG = true;
 
@@ -48,6 +48,7 @@ public class ProfilesDB {
     private DatabaseHelper mDbHelper;
 
     private Context mContext;
+
 
     // ----------------------------------
 
@@ -93,7 +94,7 @@ public class ProfilesDB {
     }
 
     // ----------------------------------
-    
+
     public long getProfileIdForRowId(long row_id) {
         try {
             SQLiteStatement sql = mDb.compileStatement(
@@ -107,10 +108,10 @@ public class ProfilesDB {
             return 0;
         }
     }
-    
+
     /**
      * Returns the max profile index (not id!).
-     * 
+     *
      * If maxProfileIndex == 0, returns the absolute max profile index,
      * i.e. the very last one.
      * If maxProfileIndex > 0, returns the max profile index that is smaller
@@ -159,7 +160,7 @@ public class ProfilesDB {
                             Columns.PROFILE_ID,
                             PROFILES_TABLE,
                             Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
-                            Columns.PROFILE_ID, pid, 
+                            Columns.PROFILE_ID, pid,
                             Columns.PROFILE_ID, maxPid));
 
             long result = sql.simpleQueryForLong();
@@ -175,7 +176,7 @@ public class ProfilesDB {
     /**
      * Inserts a new profile before the given profile index.
      * If beforeProfileIndex is <= 0, insert at the end.
-     * 
+     *
      * @return the profile index (not the row id)
      */
     public long insertProfile(long beforeProfileIndex,
@@ -202,15 +203,15 @@ public class ProfilesDB {
                     index = (index + beforeProfileIndex) / 2; // get middle offset
                 }
             }
-            
+
             long id = index << Columns.PROFILE_SHIFT;
-            
+
             ContentValues values = new ContentValues(2);
             values.put(Columns.PROFILE_ID, id);
             values.put(Columns.TYPE, Columns.TYPE_IS_PROFILE);
             values.put(Columns.DESCRIPTION, title);
             values.put(Columns.IS_ENABLED, isEnabled);
-            
+
             id = mDb.insert(PROFILES_TABLE, Columns.TYPE, values);
 
             if (DEBUG) Log.d(TAG, String.format("Insert profile: %d => row %d", index, id));
@@ -226,7 +227,7 @@ public class ProfilesDB {
     /**
      * Inserts a new action for the given profile index.
      * If afterActionIndex is == 0, inserts at the beginning of these actions.
-     * 
+     *
      * @return the action index (not the row id)
      */
     public long insertTimedAction(long profileIndex,
@@ -244,19 +245,19 @@ public class ProfilesDB {
             long index = getMinActionIndex(profileIndex, afterActionIndex);
 
             if (index < 0) index = Columns.ACTION_MASK - 1;
-            
+
             if (index - afterActionIndex < 2) {
                 // TODO repack
                 throw new UnsupportedOperationException("No space left to insert action.");
             }
 
             index = (index + afterActionIndex) / 2; // get middle offset
-            
+
             pid += index;
 
             String description = TimedActionUtils.computeDescription(
                     mContext, hourMin, days, actions);
-            
+
             ContentValues values = new ContentValues(2);
 
             values.put(Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION);
@@ -267,7 +268,7 @@ public class ProfilesDB {
             values.put(Columns.DAYS, days);
             values.put(Columns.ACTIONS, actions);
             values.put(Columns.NEXT_MS, nextMs);
-            
+
             long id = mDb.insert(PROFILES_TABLE, Columns.TYPE, values);
 
             if (DEBUG) Log.d(TAG, String.format("Insert profile %d, action: %d => row %d", profileIndex, index, id));
@@ -285,19 +286,19 @@ public class ProfilesDB {
     /** id is used if >= 0 */
     public Cursor query(long id,
             String[] projection,
-            String selection, 
-            String[] selectionArgs, 
+            String selection,
+            String[] selectionArgs,
             String sortOrder) {
-    	
+
     	SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
     	qb.setTables(PROFILES_TABLE);
 
     	if (id >= 0) {
         	qb.appendWhere(String.format("%s=%d", Columns._ID, id));
         }
-        
+
         if (sortOrder == null || sortOrder.length() == 0) sortOrder = Columns.DEFAULT_SORT_ORDER;
-        
+
         Cursor c = qb.query(mDb, projection, selection, selectionArgs,
         		null, // groupBy
         		null, // having,
@@ -321,7 +322,7 @@ public class ProfilesDB {
         ContentValues cv = new ContentValues();
         if (name != null) cv.put(Columns.DESCRIPTION, name);
         cv.put(Columns.IS_ENABLED, isEnabled);
-        
+
         beginTransaction();
         try {
             int count = mDb.update(PROFILES_TABLE, cv, where, null);
@@ -344,7 +345,7 @@ public class ProfilesDB {
 
         ContentValues cv = new ContentValues();
         cv.put(Columns.IS_ENABLED, isEnabled);
-        
+
         beginTransaction();
         try {
             int count = mDb.update(PROFILES_TABLE, cv, where, null);
@@ -371,7 +372,7 @@ public class ProfilesDB {
         cv.put(Columns.DAYS, days);
         cv.put(Columns.ACTIONS, actions);
         if (description != null) cv.put(Columns.DESCRIPTION, description);
-        
+
         beginTransaction();
         try {
             int count = mDb.update(PROFILES_TABLE, cv, where, null);
@@ -384,24 +385,24 @@ public class ProfilesDB {
 
     // ----------------------------------
 
-    /** 
+    /**
      * @param row_id The SQL row id, NOT the prof_id
      * @return The number of deleted rows, >= 1 on success, 0 on failure.
      */
     public int deleteProfile(long row_id) {
-        
+
         beginTransaction();
         try {
             long pid = getProfileIdForRowId(row_id);
             if (pid == 0) throw new InvalidParameterException("No profile id for this row id.");
 
             pid = pid & (~Columns.ACTION_MASK);
-            
+
             // DELETE FROM profiles WHERE prof_id >= 65536 AND prof_id < 65536+65535
             String where = String.format("%s>=%d AND %s<%d",
                     Columns.PROFILE_ID, pid,
                     Columns.PROFILE_ID, pid + Columns.ACTION_MASK);
-            
+
             int count = mDb.delete(PROFILES_TABLE, where, null);
             setTransactionSuccessful();
             return count;
@@ -410,19 +411,19 @@ public class ProfilesDB {
         }
     }
 
-    /** 
+    /**
      * @param row_id The SQL row id, NOT the prof_id
      * @return The number of deleted rows, 1 on success, 0 on failure.
      */
     public int deleteAction(long row_id) {
-        
+
         beginTransaction();
         try {
             // DELETE FROM profiles WHERE TYPE=2 AND _id=65537
             String where = String.format("%s=%d AND %s=%d",
                     Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
                     Columns._ID, row_id);
-            
+
             int count = mDb.delete(PROFILES_TABLE, where, null);
             setTransactionSuccessful();
             return count;
@@ -431,8 +432,8 @@ public class ProfilesDB {
         }
     }
 
-    
-    // ----------------------------------    
+
+    // ----------------------------------
 
     /** Convenience helper to open/create/update the database */
     private class DatabaseHelper extends SQLiteOpenHelper {
@@ -459,12 +460,12 @@ public class ProfilesDB {
             db.execSQL("DROP TABLE IF EXISTS " + PROFILES_TABLE);
             onCreate(db);
         }
-        
+
         @Override
         public void onOpen(SQLiteDatabase db) {
             super.onOpen(db);
             // pass
-        }        
+        }
     }
 
     /**
@@ -473,7 +474,7 @@ public class ProfilesDB {
     private void onResetTables() {
         // hand over that chocolate and nobody gets hurt!
         mDb.execSQL(String.format("DROP TABLE IF EXISTS %s;", PROFILES_TABLE));
-        
+
         mDb.execSQL(String.format("CREATE TABLE %s "
                 + "(%s INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "%s INTEGER, "
@@ -614,18 +615,18 @@ public class ProfilesDB {
 
     /**
      * Reset profiles according to choices.
-     * 
+     *
      * @param labelIndex An index from the {@link #getResetLabels()} array.
      */
     public void resetProfiles(int labelIndex) {
 
         if (DEBUG) Log.d(TAG, "Reset profiles: " + Integer.toString(labelIndex));
-        
+
         beginTransaction();
         try {
             // empty tables
             onResetTables();
-        
+
             switch(labelIndex) {
             case 0:
                 initDefaultProfiles();
@@ -694,18 +695,18 @@ public class ProfilesDB {
                     null,                                   // having
                     null                                    // orderBy
                     );
-            
+
             int profIdColIndex = c.getColumnIndexOrThrow(Columns.PROFILE_ID);
-            
+
             long[] indexes = new long[c.getCount()];
-            
+
             if (c.moveToFirst()) {
                 int i = 0;
                 do {
                     indexes[i++] = c.getLong(profIdColIndex) >> Columns.PROFILE_SHIFT;
                 } while (c.moveToNext());
             }
-            
+
             return indexes;
         } finally {
             if (c != null) c.close();
@@ -737,8 +738,8 @@ public class ProfilesDB {
             if (profList.length() > 0) profList.append(",");
             profList.append(Long.toString(prof_index));
         }
-        
-        // generates WHERE type=2 (aka action) 
+
+        // generates WHERE type=2 (aka action)
         //           AND hourMin <= targetHourMin
         //           AND days & MASK != 0
         //           AND prof_id >> SHIFT IN (profList)
@@ -753,7 +754,7 @@ public class ProfilesDB {
 
         if (DEBUG) Log.d(TAG, "Get actions: WHERE " + where + " ORDER BY " + orderBy);
 
-        
+
         Cursor c = null;
         try {
             c = mDb.query(
@@ -776,7 +777,7 @@ public class ProfilesDB {
             //
             // We want to return the first action found. There might be more
             // than one action with the same time, so return them all.
-            
+
             ArrayList<ActionInfo> infos = new ArrayList<ActionInfo>();
             if (c.moveToFirst()) {
                 int currHourMin = c.getInt(hourMinColIndex);
@@ -785,7 +786,7 @@ public class ProfilesDB {
                             c.getString(actionsColInfo)));
 
                     if (DEBUG) Log.d(TAG, String.format("ActivableAction: day %d, hourMin %04d", day, currHourMin));
-                        
+
                 } while (c.moveToNext() && c.getInt(hourMinColIndex) == currHourMin);
             }
 
@@ -816,13 +817,13 @@ public class ProfilesDB {
             // Switch to previous day and loop from monday to sunday as needed.
             day = day >> 1;
             if (day == 0) day = Columns.SUNDAY;
-            
+
             // Look for anything "before the end of the day". Since we
             // want to match 23:59 we need to add one minute thus 24h00
             // is our target.
             hourMin = 24*60 + 0;
         }
-        
+
         return actions;
     }
 
@@ -830,48 +831,48 @@ public class ProfilesDB {
      * Given a day and an hourMin time, try to find the first even that happens
      * after that timestamp. If nothing if found on the day, look up to 6 days
      * ahead.
-     * 
+     *
      * prof_indexes is a list of profile indexes (not ids) that are currently
      * enabled.
-     * 
+     *
      * @return The number of minutes from the given timestamp to the next event
      *  or 0 if there's no such event ("now" is not a valid next event)
      */
-    public int getWeekNextEvent(int hourMin, int day, long[] prof_indexes) {
+    public int getWeekNextEvent(int hourMin, int day, long[] prof_indexes, StringBuilder out_actions) {
         // First try to find something today
-        int found = getDayNextEvent(hourMin, day, prof_indexes);
+        int found = getDayNextEvent(hourMin, day, prof_indexes, out_actions);
         if (found > hourMin) {
             return found - hourMin;
         }
-        
+
         // Otherwise look for the 6 days of events
         int minutes = 24*60 - hourMin;
         for(int k = 1; k < 7; k++, minutes += 24*60) {
             // Switch to next day. Loop from sunday back to monday.
             day = day << 1;
             if (day > Columns.SUNDAY) day = Columns.MONDAY;
-            
-            found = getDayNextEvent(-1 /*One minute before 00:00*/, day, prof_indexes);
+
+            found = getDayNextEvent(-1 /*One minute before 00:00*/, day, prof_indexes, out_actions);
             if (found >= 0) {
                 return minutes + found;
             }
         }
-        
+
         return 0;
     }
 
     /**
      * Given a day and an hourMin time, try to find the first even that happens
      * after that timestamp on the singular day.
-     * 
+     *
      * prof_indexes is a list of profile indexes (not ids) that are currently
      * enabled.
-     * 
+     *
      * @return The hourMin of the event found (hourMin..23:59) or -1 if nothing found.
      *  If the return value is not -1, it is guaranteed to be greater than the
-     *  given hourMin since we look for event *past* this time.
+     *  given hourMin since we look for an event *past* this time.
      */
-    private int getDayNextEvent(int hourMin, int day, long[] prof_indexes) {
+    private int getDayNextEvent(int hourMin, int day, long[] prof_indexes, StringBuilder out_actions) {
         if (prof_indexes.length < 1) return -1;
 
         StringBuilder profList = new StringBuilder();
@@ -879,8 +880,8 @@ public class ProfilesDB {
             if (profList.length() > 0) profList.append(",");
             profList.append(Long.toString(prof_index));
         }
-        
-        // generates WHERE type=2 (aka action) 
+
+        // generates WHERE type=2 (aka action)
         //           AND hourMin > targetHourMin
         //           AND days & MASK != 0
         //           AND prof_id >> SHIFT IN (profList)
@@ -895,10 +896,10 @@ public class ProfilesDB {
 
         // LIMIT 1 (we only want the first result)
         String limit = "1";
-        
+
         if (DEBUG) Log.d(TAG, "Get actions: WHERE " + where + " ORDER BY " + orderBy + " LIMIT " + limit);
 
-        
+
         Cursor c = null;
         try {
             c = mDb.query(
@@ -913,12 +914,14 @@ public class ProfilesDB {
                     );
 
             int hourMinColIndex = c.getColumnIndexOrThrow(Columns.HOUR_MIN);
+            int actionColIndex = c.getColumnIndexOrThrow(Columns.ACTIONS);
 
             if (c.moveToFirst()) {
                 hourMin = c.getInt(hourMinColIndex);
+                if (out_actions != null) out_actions.append(c.getString(actionColIndex));
 
                 if (DEBUG) Log.d(TAG, String.format("NextEvent: day %d, hourMin %04d", day, hourMin));
-                
+
                 return hourMin;
             }
         } finally {
@@ -942,7 +945,7 @@ public class ProfilesDB {
             mRowId = rowId;
             mActions = actions;
         }
-        
+
         @Override
         public String toString() {
             return String.format("Action<#.%d @%04d: %s>", mRowId, mActions);
@@ -966,7 +969,7 @@ public class ProfilesDB {
                 Columns._ID, rowList);
 
         if (DEBUG) Log.d(TAG, "Mark actions: WHERE " + where);
-        
+
         ContentValues values = new ContentValues(1);
         values.put(Columns.IS_ENABLED, true);
 

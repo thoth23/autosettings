@@ -180,12 +180,19 @@ public class ProfilesUI extends Activity {
         if (mProfilesDb == null) {
             mProfilesDb = new ProfilesDB();
             mProfilesDb.onCreate(this);
+
             if (updateOldPrefs()) {
                 if (mCursor != null) {
                     mCursor.close();
                     mCursor = null;
                 }
                 mAdapter = null;
+            }
+
+            String next = mPrefsValues.getStatusNextTS();
+            if (next == null) {
+                // schedule a profile check to initialize the last/next status
+                requestSettingsCheck(AutoReceiver.TOAST_NONE);
             }
         }
 
@@ -419,6 +426,7 @@ public class ProfilesUI extends Activity {
         if (mCursor != null) mCursor.requery();
         mAdapter = null;
         initProfileList();
+        updateGlobalState();
     }
 
     @Override
@@ -478,10 +486,28 @@ public class ProfilesUI extends Activity {
                 requestSettingsCheck(AutoReceiver.TOAST_ALWAYS);
             }
         });
+
+        mGlobalStatus.setWindowVisibilityChangedCallback(new Runnable() {
+            @Override
+            public void run() {
+                updateGlobalState();
+            }
+        });
     }
 
     private void updateGlobalState() {
-        mGlobalToggle.setActive(mPrefsValues.isServiceEnabled());
+        boolean isEnabled = mPrefsValues.isServiceEnabled();
+        mGlobalToggle.setActive(isEnabled);
+
+        mGlobalStatus.setTextLastTs(mPrefsValues.getStatusLastTS());
+        if (isEnabled) {
+            mGlobalStatus.setTextNextTs(mPrefsValues.getStatusNextTS());
+            mGlobalStatus.setTextNextDesc(mPrefsValues.getStatusNextAction());
+        } else {
+            mGlobalStatus.setTextNextTs(getString(R.string.globalstatus_disabled));
+            mGlobalStatus.setTextNextDesc("");
+        }
+        mGlobalStatus.invalidate();
     }
 
     @Override
@@ -521,6 +547,12 @@ public class ProfilesUI extends Activity {
         startActivityForResult(new Intent(this, PrefsActivity.class), SETTINGS_UPDATED);
     }
 
+    /**
+     * Requests a setting check.
+     *
+     * @param displayToast Must be one of {@link AutoReceiver#TOAST_ALWAYS},
+     *                     {@link AutoReceiver#TOAST_IF_CHANGED} or {@link AutoReceiver#TOAST_NONE}
+     */
     private void requestSettingsCheck(int displayToast) {
         if (DEBUG) Log.d(TAG, "Request settings check");
         Intent i = new Intent(AutoReceiver.ACTION_AUTO_CHECK_STATE);

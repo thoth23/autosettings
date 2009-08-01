@@ -16,6 +16,10 @@
     <!-- toast_next_alarm_date_time uses Java SimpleDateFormat, see
          http://java.sun.com/j2se/1.5.0/docs/api/java/text/SimpleDateFormat.html
     -->
-    <string name="toast_next_alarm_date_time">MM/dd/yyyy HH:mm:ss</string>
+    <string name="toast_next_alarm_date_time">MMMM d, yyyy h:mm a</string>
+
+    <!-- global status (information view at the top) -->
+
+    <string name="globalstatus_nextlast_date_time">MMMM d, yyyy h:mm a</string>
 
 </resources>

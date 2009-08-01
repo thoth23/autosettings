@@ -39,9 +39,6 @@
 
     <string name="profiles_empty_help">Appuyez la touche MENU pour ajouter un profil.</string>
 
-    <string name="profiles_timeriffictoggle_disabled">Timeriffic désactivé</string>
-    <string name="profiles_timeriffictoggle_enabled">Timeriffic activé</string>
-
     <string name="timedactioncontextmenu_title">Action</string>
 
     <string name="profilecontextmenu_title">Profil</string>
@@ -138,5 +135,12 @@
          http://java.sun.com/j2se/1.5.0/docs/api/java/text/SimpleDateFormat.html
     -->
     <string name="toast_next_alarm_date_time">HH\'h\'mm, \'le\' dd-MM-yyyy</string>
+
+    <!-- global status (information view at the top) -->
+
+    <string name="globalstatus_nextlast_date_time">HH\'h\'mm, \'le\' dd-MM-yyyy</string>
+    <string name="globalstatus_next">Suivant:</string>
+    <string name="globalstatus_last">Dernier:</string>
+    <string name="globalstatus_disabled">Timeriffic est désactivé</string>
 
 </resources>

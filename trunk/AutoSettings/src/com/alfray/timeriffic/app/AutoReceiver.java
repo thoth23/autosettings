@@ -6,7 +6,6 @@
 
 package com.alfray.timeriffic.app;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,11 +16,9 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -70,7 +67,7 @@ public class AutoReceiver extends BroadcastReceiver {
                 Log.d(TAG, "Checking disabled");
                 if (displayToast == TOAST_ALWAYS) {
                     Toast.makeText(context,
-                                    R.string.profiles_timeriffictoggle_disabled,
+                                    R.string.globalstatus_disabled,
                                     Toast.LENGTH_LONG)
                          .show();
                 }
@@ -88,8 +85,7 @@ public class AutoReceiver extends BroadcastReceiver {
         }
     }
 
-    private void checkProfiles(Context context, int displayToast,
-                    PrefsValues prefs) {
+    private void checkProfiles(Context context, int displayToast, PrefsValues prefs) {
         ProfilesDB profilesDb = new ProfilesDB();
         try {
             profilesDb.onCreate(context);
@@ -105,18 +101,19 @@ public class AutoReceiver extends BroadcastReceiver {
                 int hourMin = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
                 int day = TimedActionUtils.calendarDayToActionDay(c);
 
-                ArrayList<ActionInfo> actions = profilesDb.getWeekActivableActions(hourMin, day, prof_indexes);
+                ArrayList<ActionInfo> actions =
+                    profilesDb.getWeekActivableActions(hourMin, day, prof_indexes);
 
                 if (actions != null && actions.size() > 0) {
-                    SettingsHelper settings = new SettingsHelper(context);
-                    performActions(settings, actions);
+                    performActions(context, actions, prefs);
                     profilesDb.markActionsEnabled(actions);
                 }
 
                 // Compute next event and set an alarm for it
-                int nextEventMin = profilesDb.getWeekNextEvent(hourMin, day, prof_indexes);
+                StringBuilder nextActions = new StringBuilder();
+                int nextEventMin = profilesDb.getWeekNextEvent(hourMin, day, prof_indexes, nextActions);
                 if (nextEventMin > 0) {
-                    scheduleAlarm(context, prefs, c, nextEventMin, displayToast);
+                    scheduleAlarm(context, prefs, c, nextEventMin, nextActions, displayToast);
                 }
             }
 
@@ -125,14 +122,38 @@ public class AutoReceiver extends BroadcastReceiver {
         }
     }
 
-    private void performActions(SettingsHelper settings, ArrayList<ActionInfo> actions) {
+    private void performActions(Context context, ArrayList<ActionInfo> actions, PrefsValues prefs) {
+
+        String lastAction = null;
+        SettingsHelper settings = null;
+
         for (ActionInfo info : actions) {
-            performAction(settings, info.mActions);
+
+            if (settings == null) settings = new SettingsHelper(context);
+
+            if (performAction(settings, info.mActions)) {
+                lastAction = info.mActions;
+            }
+        }
+
+        if (lastAction != null) {
+            // Format the timestamp of the last action to be "now"
+            SimpleDateFormat sdf = new SimpleDateFormat(context.getString(R.string.globalstatus_nextlast_date_time));
+            Calendar c = new GregorianCalendar();
+            c.setTimeInMillis(System.currentTimeMillis());
+            sdf.setCalendar(c);
+            String s = sdf.format(c.getTime());
+            prefs.setStatusLastTS(s);
+
+            // Format the action description
+            s = TimedActionUtils.computeActions(context, lastAction);
+            prefs.setStatusNextAction(s);
         }
     }
 
-    private void performAction(SettingsHelper settings, String actions) {
-        if (actions == null) return;
+    private boolean performAction(SettingsHelper settings, String actions) {
+        if (actions == null) return false;
+        boolean didSomething = false;
 
         RingerMode ringerMode = null;
         VibrateRingerMode vibRingerMode = null;
@@ -167,15 +188,19 @@ public class AutoReceiver extends BroadcastReceiver {
                         switch(code) {
                         case Columns.ACTION_BRIGHTNESS:
                             settings.changeBrightness(value, true /*persist*/);
+                            didSomething = true;
                             break;
                         case Columns.ACTION_RING_VOLUME:
                             settings.changeRingerVolume(value);
+                            didSomething = true;
                             break;
                         case Columns.ACTION_WIFI:
                             settings.changeWifi(value > 0);
+                            didSomething = true;
                             break;
                         case Columns.ACTION_AIRPLANE:
                             settings.changeAirplaneMode(value > 0);
+                            didSomething = true;
                             break;
                         }
 
@@ -187,9 +212,11 @@ public class AutoReceiver extends BroadcastReceiver {
         }
 
         if (ringerMode != null || vibRingerMode != null) {
+            didSomething = true;
             settings.changeRingerVibrate(ringerMode, vibRingerMode);
         }
 
+        return didSomething;
     }
 
     /** Notify UI to update */
@@ -207,17 +234,23 @@ public class AutoReceiver extends BroadcastReceiver {
      * @param prefs Access to prefs (for status update)
      * @param now The time that was used at the beginning of the update.
      * @param nextEventMin The number of minutes ( > 0) after "now" where to set the alarm.
+     * @param nextActions
      * @param displayToast One of {@link #TOAST_NONE}, {@link #TOAST_IF_CHANGED} or {@link #TOAST_ALWAYS}
      */
     private void scheduleAlarm(Context context,
             PrefsValues prefs,
             Calendar now,
             int nextEventMin,
+            StringBuilder nextActions,
             int displayToast) {
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(ACTION_AUTO_CHECK_STATE);
-        PendingIntent op = PendingIntent.getBroadcast(context, 0 /*requestCode*/, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent op = PendingIntent.getBroadcast(
+                        context,
+                        0 /*requestCode*/,
+                        intent,
+                        PendingIntent.FLAG_ONE_SHOT);
 
         now.set(Calendar.SECOND, 0);
         now.set(Calendar.MILLISECOND, 0);
@@ -234,11 +267,10 @@ public class AutoReceiver extends BroadcastReceiver {
 
         prefs.setLastScheduledAlarm(timeMs);
 
-        if (shouldDisplayToast || DEBUG) {
-            // The DateFormat usage is commented out for 2 reasons:
-            // 1- It gives weird results in French. Isolate code and file a bug report.
-            // 2- We have a translatable time format that is used in the catch section only.
-            //    It gives a false sense that the resource string might be used when it's not.
+        // The DateFormat usage is commented out for 2 reasons:
+        // 1- It gives weird results in French. Isolate code and file a bug report.
+        // 2- We have a translatable time format that is used in the catch section only.
+        //    It gives a false sense that the resource string might be used when it's not.
 //            try {
 //                Configuration config = new Configuration();
 //                Settings.System.getConfiguration(context.getContentResolver(), config);
@@ -253,16 +285,19 @@ public class AutoReceiver extends BroadcastReceiver {
 //
 //            } catch (Throwable t) {
 //                Log.w(TAG, t);
+//          }
 
-                SimpleDateFormat sdf = new SimpleDateFormat(context.getString(R.string.toast_next_alarm_date_time));
-                sdf.setCalendar(now);
-                String s2 = sdf.format(now.getTime());
-                s2 = context.getString(R.string.toast_next_change_at_datetime, s2);
+        SimpleDateFormat sdf = new SimpleDateFormat(context.getString(R.string.toast_next_alarm_date_time));
+        sdf.setCalendar(now);
+        String s2 = sdf.format(now.getTime());
 
-                prefs.setStatusMsg(s2);
-                if (shouldDisplayToast) Toast.makeText(context, s2, Toast.LENGTH_LONG).show();
-                if (DEBUG) Log.d(TAG, s2);
-//            }
-        }
+        prefs.setStatusNextTS(s2);
+        prefs.setStatusNextAction(TimedActionUtils.computeActions(context, nextActions.toString()));
+
+        s2 = context.getString(R.string.toast_next_change_at_datetime, s2);
+
+
+        if (shouldDisplayToast) Toast.makeText(context, s2, Toast.LENGTH_LONG).show();
+        if (DEBUG) Log.d(TAG, s2);
     }
 }
