@@ -8,6 +8,9 @@ package com.alfray.timeriffic.profiles;
 
 import java.util.Arrays;
 
+import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.prefs.PrefsValues;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
@@ -20,12 +23,17 @@ import android.widget.ImageButton;
  */
 public class GlobalToggle extends ImageButton {
 
-    private static final int[] ACTIVE_STATE = { android.R.attr.state_active };
+    private final int[] ACTIVE_STATE = {
+        android.R.attr.state_active,
+        R.attr.state_gt_fast_anim
+    };
 
     private boolean mActive;
+    private PrefsValues mPrefsValues;
 
     public GlobalToggle(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mPrefsValues = new PrefsValues(context);
     }
 
     public void setActive(boolean active) {
@@ -39,9 +47,21 @@ public class GlobalToggle extends ImageButton {
 
     @Override
     public int[] onCreateDrawableState(int extraSpace) {
-        if (mActive) extraSpace += 1;
+        if (mActive) extraSpace += 2;
         int[] result = super.onCreateDrawableState(extraSpace);
-        if (mActive) result = mergeDrawableStates(result, ACTIVE_STATE);
+        if (mActive) {
+            switch(mPrefsValues.getGlobalToggleAnim()) {
+                case NO_ANIM:
+                    ACTIVE_STATE[1] = R.attr.state_gt_no_anim;
+                    break;
+                case SLOW:
+                    ACTIVE_STATE[1] = R.attr.state_gt_slow_anim;
+                    break;
+                case FAST:
+                    ACTIVE_STATE[1] = R.attr.state_gt_fast_anim;
+            }
+            result = mergeDrawableStates(result, ACTIVE_STATE);
+        }
 
         return result;
     }

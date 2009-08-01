@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+>
 
-	<CheckBoxPreference android:defaultValue="true"
-		android:key="enable_serv"
-		android:title="@string/prefs_enable_label" android:summaryOff="@string/prefs_enable_off" android:summaryOn="@string/prefs_enable_on"/><CheckBoxPreference android:key="dismiss_intro" android:defaultValue="false" android:title="@string/prefs_dismiss_intro_label" android:summaryOff="@string/prefs_dismiss_intro_off" android:summaryOn="@string/prefs_dismiss_intro_on"/>
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="enable_serv"
+        android:title="@string/prefs_enable_label"
+        android:summaryOff="@string/prefs_enable_off"
+        android:summaryOn="@string/prefs_enable_on" />
+    <CheckBoxPreference
+        android:key="dismiss_intro"
+        android:defaultValue="false"
+        android:title="@string/prefs_dismiss_intro_label"
+        android:summaryOff="@string/prefs_dismiss_intro_off"
+        android:summaryOn="@string/prefs_dismiss_intro_on" />
 
-	
 
-	
 
-	
 
-	
+
+
+
+
+<ListPreference android:entryValues="@array/prefs_globaltoggle_anim_values" android:title="Toggle Animation" android:summary="Select the animation of the toggle icon in the profile list screen." android:entries="@array/prefs_globaltoggle_anim_names" android:key="globaltoggle_anim" android:defaultValue="fast"></ListPreference>
 </PreferenceScreen>
  
