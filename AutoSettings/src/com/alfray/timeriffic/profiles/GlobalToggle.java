@@ -6,14 +6,12 @@
 
 package com.alfray.timeriffic.profiles;
 
-import java.util.Arrays;
-
-import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.prefs.PrefsValues;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
+
+import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.prefs.PrefsValues;
 
 //-----------------------------------------------
 
@@ -50,6 +48,8 @@ public class GlobalToggle extends ImageButton {
         if (mActive) extraSpace += 2;
         int[] result = super.onCreateDrawableState(extraSpace);
         if (mActive) {
+            // Replace second item of our state array by the desired
+            // animation state based on the prefs.
             switch(mPrefsValues.getGlobalToggleAnim()) {
                 case NO_ANIM:
                     ACTIVE_STATE[1] = R.attr.state_gt_no_anim;
@@ -59,6 +59,7 @@ public class GlobalToggle extends ImageButton {
                     break;
                 case FAST:
                     ACTIVE_STATE[1] = R.attr.state_gt_fast_anim;
+                    break;
             }
             result = mergeDrawableStates(result, ACTIVE_STATE);
         }
