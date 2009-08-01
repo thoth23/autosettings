@@ -1,8 +1,6 @@
 TODO v2.0
 
 20090406 Fix old settings import db, gets wrong profile/action type
-20090404 Bug in pref names: code depends on actual UI first letter of SettingHelper enums
-20090305 No action: use alternate view to have button "Create Profile"
 20090305 Set/Change button in Edit Action. Back for cancel (dismiss).
 20090305 Reorder actions/profiles
 20090305 Collapse profiles in profile list
@@ -12,6 +10,26 @@ TODO v2.0
 
 
 DONE
+
+20090801 Revamp profile screen with global status view + global toggle (mock from DK)
+
+20090716 Bug in pref names: code depends on actual UI first letter of SettingHelper enums
+20090716 No action: use alternate view to have button "Create Profile"
+20090716 Externalize all strings
+
+
+DONE for 1.5
+
+20090706 Added Wifi and Airplane mode setting.
+
+
+DONE for 1.4
+
+20090629 Added global brightness setting (for pre- and Cupcake)
+
+
+
+DONE for 1.3
 
 20090411 Fix profile list item selection (adapter index vs list child index) [v1.3.5]
 20090411 Profile header: change color for pressed / list-selected
