@@ -95,4 +95,21 @@ public class PrefsValues {
     public void setLastScheduledAlarm(long timeMs) {
         mPrefs.edit().putLong("last_alarm", timeMs).commit();
     }
+
+    public enum GlobalToggleAnimMode {
+        NO_ANIM,
+        SLOW,
+        FAST
+    }
+
+    public GlobalToggleAnimMode getGlobalToggleAnim() {
+        // "fast" is the default
+        String s = mPrefs.getString("globaltoggle_anim", "fast");
+        if ("no_anim".equals(s)) {
+            return GlobalToggleAnimMode.NO_ANIM;
+        } else if ("slow".equals(s)) {
+            return GlobalToggleAnimMode.SLOW;
+        }
+        return GlobalToggleAnimMode.FAST;
+    }
 }
