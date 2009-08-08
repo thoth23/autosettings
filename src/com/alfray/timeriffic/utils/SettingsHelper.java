@@ -34,8 +34,13 @@ public class SettingsHelper {
 
     private final Context mContext;
 
+    public SettingsHelper(Context context) {
+        mContext = context;
+    }
+
     public boolean canControlWifi() {
-        return true;
+        WifiManager manager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+        return manager != null;
     }
 
     public boolean canControlBrigthness() {
@@ -44,6 +49,11 @@ public class SettingsHelper {
 
     public boolean canControlAirplaneMode() {
         return true;
+    }
+
+    public boolean canControlAudio() {
+        AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        return manager != null;
     }
 
     public enum RingerMode {
@@ -82,10 +92,6 @@ public class SettingsHelper {
         }
     }
 
-    public SettingsHelper(Context context) {
-        mContext = context;
-    }
-
     // --- ringer: vibrate & volume ---
 
     public void changeRingerVibrate(RingerMode ringer, VibrateRingerMode vib) {
@@ -96,7 +102,6 @@ public class SettingsHelper {
             return;
         }
 
-        if (DEBUG) Log.d(TAG, "changeRingerMode: " + ringer.toString());
         if (DEBUG) Log.d(TAG, String.format("changeRingerVibrate: %s + %s",
                         ringer != null ? ringer.toString() : "ringer-null",
                         vib != null ? vib.toString() : "vib-null"));
