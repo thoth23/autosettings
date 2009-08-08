@@ -49,19 +49,21 @@ import com.alfray.timeriffic.app.IntroDialogActivity;
 import com.alfray.timeriffic.app.TimerifficApp;
 import com.alfray.timeriffic.prefs.PrefsActivity;
 import com.alfray.timeriffic.prefs.PrefsValues;
+import com.alfray.timeriffic.utils.SettingsHelper;
 
 public class ProfilesUI extends Activity {
 
     private static final String TAG = "Tmrfc-ListProfilesUI";
     private static final boolean DEBUG = true;
 
-    private static final int DATA_CHANGED = 42;
+    private static final int DATA_CHANGED     = 42;
     private static final int SETTINGS_UPDATED = 43;
+    private static final int CHECK_SERVICES   = 44;
 
-    private static final int DIALOG_RESET_CHOICES = 0;
-    public static final int DIALOG_DELETE_ACTION = 1;
-    public static final int DIALOG_DELETE_PROFILE = 2;
-
+    private static final int DIALOG_RESET_CHOICES  = 0;
+    private static final int DIALOG_DELETE_ACTION  = 1;
+    private static final int DIALOG_DELETE_PROFILE = 2;
+    private static final int DIALOG_CHECK_SERVICES = 3;
 
     private ListView mProfilesList;
     private ProfileCursorAdapter mAdapter;
@@ -117,25 +119,23 @@ public class ProfilesUI extends Activity {
         mCheckOff = getResources().getDrawable(R.drawable.btn_check_off);
 
         initButtons();
-        showIntro(false);
-    }
 
-    private void showIntro(boolean force) {
-        boolean hideControls = force;
-        if (!force) {
-            TimerifficApp tapp = getApp();
-            if (tapp != null &&
-                    !tapp.isIntroDisplayed() &&
-                    !mPrefsValues.isIntroDismissed()) {
-                tapp.setIntroDisplayed(true);
-                force = true;
-            }
+        TimerifficApp tapp = getApp();
+        if (tapp.isFirstStart()) {
+            showIntro(false, true);
+
+            tapp.setFirstStart(false);
         }
 
-        if (force) {
+    }
+
+    private void showIntro(boolean force, boolean checkServices) {
+        if (force || !mPrefsValues.isIntroDismissed()) {
             Intent i = new Intent(this, IntroDialogActivity.class);
-            if (hideControls) i.putExtra(IntroDialogActivity.EXTRA_NO_CONTROLS, true);
-            startActivity(i);
+            if (force) i.putExtra(IntroDialogActivity.EXTRA_NO_CONTROLS, true);
+            startActivityForResult(i, CHECK_SERVICES);
+        } else if (checkServices) {
+            onCheckServices();
         }
     }
 
@@ -414,6 +414,8 @@ public class ProfilesUI extends Activity {
             updateGlobalToggleFromPrefs();
             requestSettingsCheck(AutoReceiver.TOAST_IF_CHANGED);
             break;
+        case CHECK_SERVICES:
+            onCheckServices();
         }
     }
 
@@ -432,9 +434,66 @@ public class ProfilesUI extends Activity {
             return createDeleteProfileDialog();
         case DIALOG_DELETE_ACTION:
             return createDialogDeleteTimedAction();
+        case DIALOG_CHECK_SERVICES:
+            return createDialogCheckServices();
         default:
             return null;
         }
+    }
+
+
+    private void onCheckServices() {
+        String msg = getCheckServicesMessage();
+        if (DEBUG) Log.d(TAG, "Check Services: " + msg == null ? "null" : msg);
+        if (msg.length() > 0 && mPrefsValues.getCheckService()) {
+            showDialog(DIALOG_CHECK_SERVICES);
+        }
+    }
+
+    private String getCheckServicesMessage() {
+        SettingsHelper sh = new SettingsHelper(this);
+        StringBuilder sb = new StringBuilder();
+
+        if (!sh.canControlAudio()) sb.append("- audio volume and ringer\n");
+        if (!sh.canControlWifi()) sb.append("- wifi toggle\n");
+        if (!sh.canControlAirplaneMode()) sb.append("- airplane mode\n");
+        if (!sh.canControlBrigthness()) sb.append("- brightness\n");
+
+        if (sb.length() > 0) {
+            sb.insert(0, "Warning! The following function are not available on this particular phone:\n");
+        }
+
+        return sb.toString();
+    }
+
+    private Dialog createDialogCheckServices() {
+        Builder b = new AlertDialog.Builder(this);
+
+        b.setTitle("Missing Services");
+        b.setMessage(getCheckServicesMessage());
+        b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                removeDialog(DIALOG_CHECK_SERVICES);
+            }
+        });
+        b.setNegativeButton("Do not show again", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mPrefsValues.setCheckService(false);
+                removeDialog(DIALOG_CHECK_SERVICES);
+            }
+        });
+
+
+        b.setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                removeDialog(DIALOG_CHECK_SERVICES);
+            }
+        });
+
+        return b.create();
     }
 
     @Override
@@ -527,7 +586,7 @@ public class ProfilesUI extends Activity {
             requestSettingsCheck(AutoReceiver.TOAST_ALWAYS);
             break;
         case R.string.about:
-            showIntro(true /*force*/);
+            showIntro(true /*force*/, false /* checkService */);
             break;
         case R.string.reset:
             showResetChoices();
