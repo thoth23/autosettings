@@ -1,0 +1,21 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item>
+    <shape>
+        <!-- gradient white => orange -->
+        <gradient
+            android:startColor="@color/profile_start"
+            android:endColor="@color/profile_selected"
+            android:angle="270"
+            />
+    </shape>
+</item>
+
+<item>
+    <bitmap
+        android:src="@drawable/profile_trans"
+        android:tileMode="disabled"
+        android:gravity="right"
+        />
+</item>
+
+</layer-list>
