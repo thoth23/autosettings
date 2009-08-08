@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.alfray.timeriffic" android:versionCode="1501" android:versionName="1.5.01">
+	<application android:label="@string/app_name" android:icon="@drawable/timeriffic_icon"
+		android:name=".app.TimerifficApp">
+
+
+		<receiver android:name=".app.AutoReceiver">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED"></action>
+			</intent-filter>
+			<intent-filter>
+				<action android:name="com.alfray.intent.action.AUTO_CHECK_STATE"></action>
+			</intent-filter>
+		</receiver>
+
+		<activity android:label="@string/prefs_title" android:name=".prefs.PrefsActivity"></activity>
+
+		<activity android:label="@string/intro_title" android:name=".app.IntroDialogActivity"></activity>
+
+		<activity android:name=".profiles.ProfilesUI" android:label="@string/app_name">
+			<intent-filter>
+				<category android:name="android.intent.category.LAUNCHER" /><action android:name="android.intent.action.MAIN" />
+
+			</intent-filter>
+		</activity>
+		<activity android:theme="@android:style/Theme.Dialog" android:name=".profiles.EditProfileUI" android:label="@string/editprofile_title"></activity>
+        <activity android:name=".profiles.EditActionUI" android:label="@string/editaction_title"></activity>
+
+    <activity android:name=".utils.ChangeBrightnessActivity" android:theme="@style/NoBackground" android:taskAffinity="com.alfray.timeriffic.Change"></activity>
+
+	</application>
+
+	<uses-sdk android:minSdkVersion="2"></uses-sdk>
+
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"></uses-permission>
+
+    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
+    <uses-permission android:name="android.permission.HARDWARE_TEST"></uses-permission>
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+</manifest>
