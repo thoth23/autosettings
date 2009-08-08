@@ -6,12 +6,18 @@
 
 package com.alfray.timeriffic.app;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
@@ -27,6 +33,7 @@ import com.alfray.timeriffic.prefs.PrefsValues;
  */
 public class IntroDialogActivity extends Activity {
 
+    private static final String TAG = "IntroDialog";
     public static final String EXTRA_NO_CONTROLS = "no-controls";
 
     private class JSTimerifficVersion {
@@ -72,7 +79,34 @@ public class IntroDialogActivity extends Activity {
             wv.getSettings().setJavaScriptEnabled(true);
             wv.addJavascriptInterface(jsVersion, "JSTimerifficVersion");
 
-            wv.loadUrl("file:///android_asset/intro.html");
+            String file = "intro.html";
+            Locale lo = Locale.getDefault();
+            String lang = lo.getLanguage();
+            if (lang != null && lang.length() == 2) {
+                InputStream is = null;
+                String file2 = "intro-" + lang + ".html";
+                try {
+                    AssetManager am = getResources().getAssets();
+
+                    is = am.open(file2);
+                    if (is != null) {
+                        file = file2;
+                    }
+
+                } catch (IOException e) {
+                    Log.d(TAG, "Asset not found: " + lang);
+                } finally {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException e) {
+                            // pass
+                        }
+                    }
+                }
+            }
+
+            wv.loadUrl("file:///android_asset/" + file);
             wv.setFocusable(true);
             wv.setFocusableInTouchMode(true);
             wv.requestFocus();
