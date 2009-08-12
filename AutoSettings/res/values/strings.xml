@@ -155,4 +155,16 @@
     <string name="vibrateringermode_vibrate">Vibrate</string>
     <string name="vibrateringermode_no_vibrate">No vibrate</string>
 
+    <!-- check services dialog -->
+
+    <string name="checkservices_dlg_title">Missing Services</string>
+    <string name="checkservices_ok_button">OK</string>
+    <string name="checkservices_skip_button">Do not show again</string>
+    <string name="checkservices_warning">Warning! The following function are not available on this particular phone:</string>
+    <string name="checkservices_miss_audio_service">Audio volume and ringer</string>
+    <string name="checkservices_miss_wifi_service">Wifi toggle</string>
+    <string name="checkservices_miss_airplane">Airplane mode</string>
+    <string name="checkservices_miss_brightness">Brightness</string>
+
+
 </resources>
