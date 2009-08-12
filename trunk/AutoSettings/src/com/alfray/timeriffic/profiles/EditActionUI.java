@@ -124,6 +124,7 @@ public class EditActionUI extends Activity {
                     actions,
                     Columns.ACTION_RINGER,
                     getResources().getString(R.string.editaction_ringer));
+            mPrefRingerMode.setEnabled(mSettingsHelper.canControlAudio());
 
             mPrefRingerVibrate = new PrefEnum(this,
                     R.id.ringerVibButton,
@@ -131,6 +132,7 @@ public class EditActionUI extends Activity {
                     actions,
                     Columns.ACTION_VIBRATE,
                     getResources().getString(R.string.editaction_vibrate));
+            mPrefRingerVibrate.setEnabled(mSettingsHelper.canControlAudio());
 
             mPrefRingerVolume = new PrefPercent(this,
                     mPrefPercentOutWrapper,
@@ -150,6 +152,7 @@ public class EditActionUI extends Activity {
                             return mSettingsHelper.getRingerVolume();
                         }
                     });
+            mPrefRingerVolume.setEnabled(mSettingsHelper.canControlAudio());
 
             mPrefBrightness = new PrefPercent(this,
                     mPrefPercentOutWrapper,

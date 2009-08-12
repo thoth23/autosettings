@@ -58,6 +58,14 @@ public class PrefsValues {
         return mPrefs.edit().putBoolean("dismiss_intro", dismiss).commit();
     }
 
+    public boolean getCheckService() {
+        return mPrefs.getBoolean("check_service", false);
+    }
+
+    public boolean setCheckService(boolean check) {
+        return mPrefs.edit().putBoolean("check_service", check).commit();
+    }
+
     public String getStatusLastTS() {
         return mPrefs.getString("last_ts", null);
     }

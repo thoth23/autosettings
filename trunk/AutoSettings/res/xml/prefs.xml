@@ -9,6 +9,7 @@
         android:title="@string/prefs_enable_label"
         android:summaryOff="@string/prefs_enable_off"
         android:summaryOn="@string/prefs_enable_on" />
+
     <CheckBoxPreference
         android:key="dismiss_intro"
         android:defaultValue="false"
@@ -16,13 +17,20 @@
         android:summaryOff="@string/prefs_dismiss_intro_off"
         android:summaryOn="@string/prefs_dismiss_intro_on" />
 
+    <CheckBoxPreference
+        android:key="check_service"
+        android:defaultValue="true"
+        android:title="@string/prefs_check_service_label"
+        android:summaryOff="@string/prefs_check_service_off"
+        android:summaryOn="@string/prefs_check_service_on" />
 
+    <ListPreference
+        android:entryValues="@array/prefs_globaltoggle_anim_values"
+        android:title="@string/prefs_toggle_anim_label"
+        android:summary="@string/prefs_toggle_anim_tooltip"
+        android:entries="@array/prefs_globaltoggle_anim_names"
+        android:key="globaltoggle_anim"
+        android:defaultValue="fast"
+    />
 
-
-
-
-
-
-<ListPreference android:entryValues="@array/prefs_globaltoggle_anim_values" android:title="Toggle Animation" android:summary="Select the animation of the toggle icon in the profile list screen." android:entries="@array/prefs_globaltoggle_anim_names" android:key="globaltoggle_anim" android:defaultValue="fast"></ListPreference>
 </PreferenceScreen>
- 
