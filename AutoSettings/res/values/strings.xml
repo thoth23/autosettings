@@ -31,6 +31,13 @@
     <string name="prefs_dismiss_intro_on">Introduction is skipped.</string>
     <string name="prefs_dismiss_intro_off">Introduction is visible.</string>
 
+    <string name="prefs_check_service_label">Validate Audio Service</string>
+    <string name="prefs_check_service_off">Do not validate audio service is present.</string>
+    <string name="prefs_check_service_on">Validate audio service is present.</string>
+
+    <string name="prefs_toggle_anim_label">Toggle Animation</string>
+    <string name="prefs_toggle_anim_tooltip">Select the animation of the toggle icon in the profile list screen.</string>
+
     <!-- intro -->
 
     <string name="intro_title">Timeriffic %s - Introduction</string>

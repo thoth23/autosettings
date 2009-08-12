@@ -29,6 +29,13 @@
     <string name="prefs_dismiss_intro_on">L\'introduction ne sera pas affichée.</string>
     <string name="prefs_dismiss_intro_off">L\'introduction sera affichée.</string>
 
+    <string name="prefs_check_service_label">Valider le service audio</string>
+    <string name="prefs_check_service_off">Ne valide pas la présence du service audio.</string>
+    <string name="prefs_check_service_on">Valide la présence du service audio.</string>
+
+    <string name="prefs_toggle_anim_label">Animation du logo</string>
+    <string name="prefs_toggle_anim_tooltip">Sélectionner l\'animation du logo clickable en haut de la liste des profils.</string>
+
     <!-- intro -->
 
     <string name="intro_title">Timeriffic %s - Introduction</string>

@@ -13,7 +13,7 @@ import android.app.Application;
 
 
 public class TimerifficApp extends Application {
-    private boolean mIntroDisplayed;
+    private boolean mFirstStart = true;
     private Runnable mDataListener;
 
     @Override
@@ -21,12 +21,12 @@ public class TimerifficApp extends Application {
         super.onCreate();
     }
 
-    public boolean isIntroDisplayed() {
-        return mIntroDisplayed;
+    public boolean isFirstStart() {
+        return mFirstStart;
     }
 
-    public void setIntroDisplayed(boolean introDisplayed) {
-        mIntroDisplayed = introDisplayed;
+    public void setFirstStart(boolean firstStart) {
+        mFirstStart = firstStart;
     }
 
     //---------------------
