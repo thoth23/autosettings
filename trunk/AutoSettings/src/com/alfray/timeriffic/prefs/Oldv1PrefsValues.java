@@ -1,7 +1,19 @@
 /*
- * Copyright 2008 (c) ralfoide gmail com, 2008
- * Project: auto settings
- * License: GPL version 3 or any later version
+ * Project: Timeriffic
+ * Copyright (C) 2008 ralfoide gmail com,
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.alfray.timeriffic.prefs;
@@ -17,13 +29,13 @@ public class Oldv1PrefsValues {
     public static final String KEY_END_HOUR = "end_hour";
 
     public static final int VERSION = 0;
-    
+
     private SharedPreferences mPrefs;
-    
+
     public Oldv1PrefsValues(Context context) {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
-    
+
     public SharedPreferences getPrefs() {
         return mPrefs;
     }
@@ -31,7 +43,7 @@ public class Oldv1PrefsValues {
     public boolean isServiceEnabled() {
         return mPrefs.getBoolean("enable_serv", true);
     }
-    
+
     /**
      * Sets the dismiss_intro boolean value.
      * @return true if value was successfully changed if the prefs
@@ -65,7 +77,7 @@ public class Oldv1PrefsValues {
     private int parseHoursMin(String text) {
         int hours = 0;
         int minutes = 0;
-        
+
         String[] numbers = text.trim().split(":");
         if (numbers.length >= 1) hours = parseNumber(numbers[0], 23);
         if (numbers.length >= 2) minutes = parseNumber(numbers[1], 59);
@@ -84,7 +96,7 @@ public class Oldv1PrefsValues {
         }
         return 0;
     }
-    
+
     public boolean startMute() {
         return mPrefs.getBoolean("start_mute", true);
     }
