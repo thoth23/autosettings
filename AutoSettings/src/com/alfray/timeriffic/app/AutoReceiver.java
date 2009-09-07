@@ -35,10 +35,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.actions.TimedActionUtils;
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.Columns;
 import com.alfray.timeriffic.profiles.ProfilesDB;
-import com.alfray.timeriffic.profiles.TimedActionUtils;
 import com.alfray.timeriffic.profiles.ProfilesDB.ActionInfo;
 import com.alfray.timeriffic.utils.SettingsHelper;
 import com.alfray.timeriffic.utils.SettingsHelper.RingerMode;

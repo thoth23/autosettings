@@ -17,7 +17,7 @@
  */
 
 
-package com.alfray.timeriffic.profiles;
+package com.alfray.timeriffic.actions;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,6 +26,7 @@ import java.util.GregorianCalendar;
 import android.content.Context;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.profiles.Columns;
 import com.alfray.timeriffic.utils.SettingsHelper;
 import com.alfray.timeriffic.utils.SettingsHelper.RingerMode;
 import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;

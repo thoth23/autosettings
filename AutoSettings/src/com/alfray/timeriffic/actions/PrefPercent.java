@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.alfray.timeriffic.profiles;
+package com.alfray.timeriffic.actions;
 
 import android.app.Activity;
 import android.view.ContextMenu;
@@ -25,7 +25,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.profiles.PrefPercentDialog.Accessor;
+import com.alfray.timeriffic.actions.PrefPercentDialog.Accessor;
 
 //-----------------------------------------------
 

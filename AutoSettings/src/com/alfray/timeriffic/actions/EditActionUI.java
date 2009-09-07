@@ -16,10 +16,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.alfray.timeriffic.profiles;
+package com.alfray.timeriffic.actions;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.profiles.PrefPercentDialog.Accessor;
+import com.alfray.timeriffic.actions.PrefPercentDialog.Accessor;
+import com.alfray.timeriffic.profiles.Columns;
+import com.alfray.timeriffic.profiles.ProfilesDB;
 import com.alfray.timeriffic.utils.SettingsHelper;
 
 import android.app.Activity;
