@@ -29,6 +29,145 @@
 	android:orientation="vertical"
 	>
 
+    <!-- Time Section -->
+	<TextView
+		android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+		android:text="@string/editaction_section_time_and_day"
+        style="@style/SectionHeader"
+		/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/action_buttons_bg_gradient"
+        >
+
+    	<TimePicker
+    	    android:id="@+id/timePicker"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:layout_gravity="center_horizontal"
+    		/>
+
+    	<TableLayout
+    		android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+    		android:layout_gravity="center_horizontal"
+    		>
+    	<TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+    	    >
+            <TextView
+                android:id="@+id/testDayMon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Mon"
+                />
+            <TextView
+                android:id="@+id/testDayTue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Tue"
+                />
+            <TextView
+                android:id="@+id/testDayWed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Wed"
+                />
+            <TextView
+                android:id="@+id/testDayThu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Thu"
+                />
+            <TextView
+                android:id="@+id/testDayFri"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Fri"
+                />
+            <TextView
+                android:id="@+id/testDaySat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Sat"
+                />
+            <TextView
+                android:id="@+id/testDaySun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Sun"
+                />
+        </TableRow>
+        <TableRow
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		>
+            <CheckBox
+                android:id="@+id/dayMon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text=""
+                />
+            <CheckBox
+                android:id="@+id/dayTue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text=""
+                />
+            <CheckBox
+                android:id="@+id/dayWed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text=""
+                />
+            <CheckBox
+                android:id="@+id/dayThu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text=""
+                />
+            <CheckBox
+                android:id="@+id/dayFri"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text=""
+                />
+            <CheckBox
+                android:id="@+id/daySat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text=""
+                />
+            <CheckBox
+                android:id="@+id/daySun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text=""
+                />
+        </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
+
     <!-- Action Section -->
     <TextView
         android:layout_height="wrap_content"
@@ -40,6 +179,7 @@
     <TableLayout
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
+        android:background="@drawable/action_buttons_bg_gradient"
         >
     <TableRow
         android:layout_height="wrap_content"
@@ -149,88 +289,6 @@
             android:layout_weight="1"
             android:text="- -"
             style="@style/ActionButton"
-            />
-    </TableRow>
-    </TableLayout>
-
-    <!-- Time Section -->
-	<TextView
-        android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:text="@string/editaction_section_trigger_time"
-        style="@style/SectionHeader"
-		/>
-
-	<TimePicker
-	    android:id="@+id/timePicker"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal"
-		/>
-
-    <!-- Days Section -->
-	<TextView
-		android:text="@string/editaction_section_days"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-        style="@style/SectionHeader"
-        />
-
-	<TableLayout
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:layout_gravity="center_horizontal"
-		>
-	<TableRow
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-	   >
-		<CheckBox
-		    android:id="@+id/dayMon"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="Mon"
-			/>
-        <CheckBox
-            android:id="@+id/dayTue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tues"
-            />
-        <CheckBox
-            android:id="@+id/dayWed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wed"
-            />
-        <CheckBox
-            android:id="@+id/dayThu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Thurs"
-            />
-    </TableRow>
-    <TableRow
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		>
-        <CheckBox
-            android:id="@+id/dayFri"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fri"
-            />
-        <CheckBox
-            android:id="@+id/daySat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sat"
-            />
-        <CheckBox
-            android:id="@+id/daySun"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sun"
             />
     </TableRow>
     </TableLayout>

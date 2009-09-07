@@ -31,8 +31,7 @@
 <style name="SectionHeader">
     <item name="android:textAppearance">@android:style/TextAppearance.Large.Inverse</item>
     <item name="android:gravity">center_horizontal</item>
-    <item name="android:layout_margin">1sp</item>
-    <item name="android:background">@drawable/action_bg_gradient</item>
+    <item name="android:background">@drawable/action_header_bg_gradient</item>
 
 </style>
 
