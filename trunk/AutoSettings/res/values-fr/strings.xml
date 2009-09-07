@@ -116,7 +116,7 @@
 
     <!-- edit profile screen -->
 
-    <string name="editprofile_title">Editer le profil</string>
+    <string name="editprofile_title">Timeriffic - Editer le profil</string>
     <string name="editprofile_profile_name">Nom du profil:</string>
     <string name="editprofile_profile_hint">Nom du profil</string>
     <string name="editprofile_checkbox_enabled">Activer</string>
@@ -124,10 +124,10 @@
 
     <!-- edit action screen -->
 
-    <string name="editaction_title">Editer l\'action</string>
+    <string name="editaction_title">Timeriffic - Editer l\'action</string>
 
     <string name="editaction_section_action">Action</string>
-    <string name="editaction_section_trigger_time">Heure</string>
+    <string name="editaction_section_time_and_day">Jour et heure</string>
     <string name="editaction_section_days">Jours</string>
 
     <string name="editaction_ringer">Sonnerie</string>
