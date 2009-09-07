@@ -112,7 +112,7 @@
 
     <!-- edit profile screen -->
 
-    <string name="editprofile_title">Edit Profile</string>
+    <string name="editprofile_title">Timeriffic - Edit Profile</string> <!-- TBT -->
     <string name="editprofile_profile_name">Profile Name:</string>
     <string name="editprofile_profile_hint">Profile Name</string>
     <string name="editprofile_checkbox_enabled">Enabled</string>
@@ -120,10 +120,10 @@
 
     <!-- edit action screen -->
 
-    <string name="editaction_title">Edit Timed Action</string>
+    <string name="editaction_title">Timeriffic - Edit Timed Action</string> <!-- TBT -->
 
-    <string name="editaction_section_action">Action</string>
-    <string name="editaction_section_trigger_time">Trigger Time</string>
+    <string name="editaction_section_action">Action</string>  <!-- TBT REMOVE OBSOLETE -->
+    <string name="editaction_section_time_and_day">Time and Day</string> <!-- TBT -->
     <string name="editaction_section_days">Days</string>
 
     <string name="editaction_ringer">Ringer</string>

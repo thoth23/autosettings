@@ -24,6 +24,4 @@
         android:startColor="#35228A"
         android:endColor="#CCF"
         android:angle="90" />
-    <corners
-        android:radius="2dp" />
 </shape>
