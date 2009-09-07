@@ -53,6 +53,8 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.actions.EditActionUI;
+import com.alfray.timeriffic.actions.TimedActionUtils;
 import com.alfray.timeriffic.app.AutoReceiver;
 import com.alfray.timeriffic.app.IntroDialogActivity;
 import com.alfray.timeriffic.app.TimerifficApp;
@@ -807,7 +809,7 @@ public class ProfilesUI extends Activity {
      * call {@link BaseHolder#clearCursor()} of the tags of the reclaimed
      * views. This should ensure that not dangling cursor reference exists.
      */
-    private class ProfileRecyclerListener implements RecyclerListener {
+    private static class ProfileRecyclerListener implements RecyclerListener {
         @Override
         public void onMovedToScrapHeap(View view) {
             Object tag = view.getTag();

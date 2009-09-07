@@ -21,6 +21,8 @@ package com.alfray.timeriffic.profiles;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
+import com.alfray.timeriffic.actions.TimedActionUtils;
+
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;

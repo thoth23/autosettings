@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.alfray.timeriffic.profiles;
+package com.alfray.timeriffic.actions;
 
 import android.app.Activity;
 import android.view.ContextMenu;
