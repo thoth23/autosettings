@@ -137,7 +137,7 @@ public class EditActionUI extends Activity {
                     SettingsHelper.RingerMode.values(),
                     actions,
                     Columns.ACTION_RINGER,
-                    getResources().getString(R.string.editaction_ringer));
+                    getString(R.string.editaction_ringer));
             mPrefRingerMode.setEnabled(mSettingsHelper.canControlAudio());
 
             mPrefRingerVibrate = new PrefEnum(this,
@@ -145,7 +145,7 @@ public class EditActionUI extends Activity {
                     SettingsHelper.VibrateRingerMode.values(),
                     actions,
                     Columns.ACTION_VIBRATE,
-                    getResources().getString(R.string.editaction_vibrate));
+                    getString(R.string.editaction_vibrate));
             mPrefRingerVibrate.setEnabled(mSettingsHelper.canControlAudio());
 
             mPrefRingerVolume = new PrefPercent(this,
@@ -153,7 +153,7 @@ public class EditActionUI extends Activity {
                     R.id.ringerVolButton,
                     actions,
                     Columns.ACTION_RING_VOLUME,
-                    getResources().getString(R.string.editaction_volume),
+                    getString(R.string.editaction_volume),
                     0,
                     new Accessor() {
                         @Override
@@ -173,7 +173,7 @@ public class EditActionUI extends Activity {
                     R.id.brightnessButton,
                     actions,
                     Columns.ACTION_BRIGHTNESS,
-                    getResources().getString(R.string.editaction_brightness),
+                    getString(R.string.editaction_brightness),
                     R.drawable.ic_menu_view_brightness,
                     new Accessor() {
                         @Override
@@ -193,14 +193,14 @@ public class EditActionUI extends Activity {
                             R.id.wifiButton,
                             actions,
                             Columns.ACTION_WIFI,
-                            getResources().getString(R.string.editaction_wifi));
+                            getString(R.string.editaction_wifi));
             mPrefWifi.setEnabled(mSettingsHelper.canControlWifi());
 
             mPrefAirplane = new PrefToggle(this,
                             R.id.airplaneButton,
                             actions,
                             Columns.ACTION_AIRPLANE,
-                            getResources().getString(R.string.editaction_airplane));
+                            getString(R.string.editaction_airplane));
             mPrefAirplane.setEnabled(mSettingsHelper.canControlAirplaneMode());
 
             mCheckDays = new CheckBox[] {

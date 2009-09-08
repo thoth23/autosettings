@@ -126,6 +126,8 @@
     <string name="editaction_section_time_and_day">Time and Day</string>
     <string name="editaction_section_days">Days</string>
 
+    <string name="editaction_button_label">  <b>@</b>\n  $</string>
+
     <string name="editaction_ringer">Ringer</string>
     <string name="editaction_vibrate">Vibrate</string>
     <string name="editaction_volume">Volume</string>

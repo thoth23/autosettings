@@ -55,7 +55,7 @@ import com.alfray.timeriffic.utils.SettingsHelper;
 
 public class ProfilesUI extends Activity {
 
-    private static final String TAG = "Tmrfc-ListProfilesUI";
+    private static final String TAG = "ListProfilesUI";
     private static final boolean DEBUG = true;
 
     static final int DATA_CHANGED = 42;
@@ -160,19 +160,19 @@ public class ProfilesUI extends Activity {
         return mProfilesDb;
     }
 
-    public Drawable getGreenDot() {
+    Drawable getGreenDot() {
         return mGreenDot;
     }
 
-    public Drawable getGrayDot() {
+    Drawable getGrayDot() {
         return mGrayDot;
     }
 
-    public Drawable getCheckOff() {
+    Drawable getCheckOff() {
         return mCheckOff;
     }
 
-    public Drawable getCheckOn() {
+    Drawable getCheckOn() {
         return mCheckOn;
     }
 

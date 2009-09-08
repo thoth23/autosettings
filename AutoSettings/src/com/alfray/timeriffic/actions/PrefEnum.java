@@ -21,10 +21,14 @@ package com.alfray.timeriffic.actions;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.text.SpannableStringBuilder;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
 import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.utils.SettingsHelper.RingerMode;
 import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;
@@ -40,9 +44,11 @@ class PrefEnum extends PrefBase
     protected static class Choice {
         public final char mKey;
         public final String mUiName;
-        public Choice(char key, String uiName) {
+        public final int mDotColor;
+        public Choice(char key, String uiName, int dot_color) {
             mKey = key;
             mUiName = uiName;
+            mDotColor = dot_color;
         }
     }
 
@@ -61,19 +67,20 @@ class PrefEnum extends PrefBase
         mActionPrefix = actionPrefix;
         mMenuTitle = menuTitle;
 
-        mButton = (Button) mActivity.findViewById(buttonResId);
-        mActivity.registerForContextMenu(mButton);
+        mButton = (Button) getActivity().findViewById(buttonResId);
+        getActivity().registerForContextMenu(mButton);
         mButton.setOnClickListener(this);
         mButton.setTag(this);
 
         Choice c = new Choice(UNCHANGED_KEY,
-                              activity.getResources().getString(R.string.enum_unchanged));
+                              activity.getResources().getString(R.string.enum_unchanged),
+                              ID_DOT_UNCHANGED);
         mChoices.add(c);
         mCurrentChoice = c;
 
         initChoices(values, actions, actionPrefix);
 
-        mButton.setText(mCurrentChoice.mUiName);
+        updateButtonState(mCurrentChoice);
     }
 
     public void setEnabled(boolean enable) {
@@ -92,6 +99,8 @@ class PrefEnum extends PrefBase
 
         String currentValue = getActionValue(actions, prefix);
 
+        int counter = 0;
+
         for (Object value : values) {
             String s = "#PrefEnum: Error Unknown Setting#";
             char p = 0;
@@ -103,7 +112,12 @@ class PrefEnum extends PrefBase
                 s = ((VibrateRingerMode) value).toUiString(getActivity());
             }
 
-            Choice c = new Choice(p, s);
+            int dot = counter == 0 ? ID_DOT_STATE_ON :
+                        counter == 1 ? ID_DOT_STATE_OFF :
+                            ID_DOT_UNCHANGED;
+            counter++;
+
+            Choice c = new Choice(p, s, dot);
             mChoices.add(c);
 
             if (currentValue != null &&
@@ -116,7 +130,7 @@ class PrefEnum extends PrefBase
 
     @Override
     public void onClick(View view) {
-        mActivity.openContextMenu(mButton);
+        getActivity().openContextMenu(mButton);
     }
 
     @Override
@@ -137,7 +151,7 @@ class PrefEnum extends PrefBase
         for (Choice choice : mChoices) {
             if (choice.mUiName.equals(title)) {
                 mCurrentChoice = choice;
-                mButton.setText(title);
+                updateButtonState(mCurrentChoice);
                 break;
             }
         }
@@ -147,6 +161,34 @@ class PrefEnum extends PrefBase
         if (mCurrentChoice != null && mCurrentChoice.mKey != UNCHANGED_KEY) {
             appendAction(actions, mActionPrefix, Character.toString(mCurrentChoice.mKey));
         }
+    }
+
+    private void updateButtonState(Choice choice) {
+
+        Resources r = getActivity().getResources();
+
+        CharSequence t = r.getText(R.string.editaction_button_label);
+
+        SpannableStringBuilder sb = new SpannableStringBuilder(t);
+
+        for (int i = 0; i < sb.length(); i++) {
+            char c = sb.charAt(i);
+            if (c == '@') {
+                sb.replace(i, i + 1, mMenuTitle);
+            } else if (c == '$') {
+                sb.replace(i, i + 1, choice.mUiName);
+            }
+        }
+
+        mButton.setText(sb);
+
+        Drawable d = r.getDrawable(choice.mDotColor);
+        mButton.setCompoundDrawablesWithIntrinsicBounds(
+                d,    // left
+                null, // top
+                null, // right
+                null  // bottom
+                );
     }
 }
 
