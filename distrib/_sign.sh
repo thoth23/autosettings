@@ -37,7 +37,17 @@ function process() {
 	echo "Signing $SRC => $DEST with alias $ALIAS"
 	
 	jarsigner -verbose -keystore `cygpath -w ~/*-release-*.keystore` "$SRC" $ALIAS
-	mv -v "$SRC" "$DEST"
+	
+	for z in ~/{usdk,sdk}/tools/zipalign.exe; do
+		if [[ -x "$z" && -e "$SRC" ]]; then
+			echo "Using $z"
+			"$z" -f -v 4 "$SRC" "$DEST" && rm -v "$SRC"
+		fi
+	done
+	
+	[[ -e "$SRC" ]] && mv -v "$SRC" "$DEST"
+	
+	echo "$DEST has been signed and zipaligned"
 }
 
 for i in [tTfFB]+([^_]).apk ; do
