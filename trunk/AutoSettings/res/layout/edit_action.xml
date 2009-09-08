@@ -49,6 +49,7 @@
     		android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
     		android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dip"
     		/>
 
     	<TableLayout
@@ -176,122 +177,86 @@
         style="@style/SectionHeader"
         />
 
-    <TableLayout
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:background="@drawable/action_buttons_bg_gradient"
         >
-    <TableRow
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        >
-        <TextView
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/editaction_ringer"
-            />
-        <TextView
-            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_marginTop="2dip"
+            >
+            <Button
+                android:id="@+id/ringerModeButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="- -"
+                style="@style/ActionButton"
+                />
+            <Button
+                android:id="@+id/ringerVibButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="- -"
+                style="@style/ActionButton"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/editaction_vibrate"
-            />
-        <TextView
-            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            >
+            <Button
+                android:id="@+id/ringerVolButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="- -"
+                style="@style/ActionButton"
+                />
+            <Button
+                android:id="@+id/brightnessButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="- -"
+                style="@style/ActionButton"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/editaction_volume"
-            />
-    </TableRow>
-    <TableRow
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        >
-        <Button
-            android:id="@+id/ringerModeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="- -"
-            style="@style/ActionButton"
-            />
-        <Button
-            android:id="@+id/ringerVibButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="- -"
-            style="@style/ActionButton"
-            />
-        <Button
-            android:id="@+id/ringerVolButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="- -"
-            style="@style/ActionButton"
-            />
-    </TableRow>
-    <TableRow
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/editaction_brightness"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/editaction_wifi"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/editaction_airplane"
-            />
-    </TableRow>
-    <TableRow
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        >
-        <Button
-            android:id="@+id/brightnessButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="- -"
-            style="@style/ActionButton"
-            />
-        <Button
-            android:id="@+id/wifiButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="- -"
-            style="@style/ActionButton"
-            />
-        <Button
-            android:id="@+id/airplaneButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="- -"
-            style="@style/ActionButton"
-            />
-    </TableRow>
-    </TableLayout>
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            >
+            <Button
+                android:id="@+id/wifiButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="- -"
+                style="@style/ActionButton"
+                />
+            <Button
+                android:id="@+id/airplaneButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="- -"
+                style="@style/ActionButton"
+                />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
 </ScrollView>

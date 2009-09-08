@@ -19,12 +19,16 @@
 package com.alfray.timeriffic.actions;
 
 import android.app.Activity;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.text.SpannableStringBuilder;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.actions.PrefEnum.Choice;
 import com.alfray.timeriffic.actions.PrefPercentDialog.Accessor;
 
 //-----------------------------------------------
@@ -57,7 +61,7 @@ class PrefPercent extends PrefBase implements View.OnClickListener {
         mIconResId = iconResId;
         mAccessor = accessor;
 
-        mButton = (Button) mActivity.findViewById(buttonResId);
+        mButton = (Button) getActivity().findViewById(buttonResId);
         mButton.setOnClickListener(this);
         mButton.setTag(this);
 
@@ -112,11 +116,35 @@ class PrefPercent extends PrefBase implements View.OnClickListener {
     }
 
     private void updateButtonText() {
-        if (mCurrentValue < 0) {
-            mButton.setText(R.string.percent_button_unchanged);
-        } else {
-            mButton.setText(String.format("%d%%", mCurrentValue));
+        Resources r = getActivity().getResources();
+
+        String label = mCurrentValue < 0 ?
+                          r.getString(R.string.percent_button_unchanged) :
+                          String.format("%d%%", mCurrentValue);
+
+        CharSequence t = r.getText(R.string.editaction_button_label);
+
+        SpannableStringBuilder sb = new SpannableStringBuilder(t);
+
+        for (int i = 0; i < sb.length(); i++) {
+            char c = sb.charAt(i);
+            if (c == '@') {
+                sb.replace(i, i + 1, mDialogTitle);
+            } else if (c == '$') {
+                sb.replace(i, i + 1, label);
+            }
         }
+
+        mButton.setText(sb);
+
+        Drawable d = r.getDrawable(
+                mCurrentValue < 0 ? ID_DOT_UNCHANGED : ID_DOT_PERCENT);
+        mButton.setCompoundDrawablesWithIntrinsicBounds(
+                d,    // left
+                null, // top
+                null, // right
+                null  // bottom
+                );
     }
 
     public void collectResult(StringBuilder actions) {
@@ -138,8 +166,6 @@ class PrefPercent extends PrefBase implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         mPrefPercentOutWrapper[0] = this;
-        mActivity.showDialog(EditActionUI.DIALOG_EDIT_PERCENT);
+        getActivity().showDialog(EditActionUI.DIALOG_EDIT_PERCENT);
     }
 }
-
-

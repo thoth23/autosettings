@@ -70,7 +70,7 @@
 
         <Button
             android:id="@+id/ringerModeButton"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="- -"
@@ -78,7 +78,7 @@
             />
         <Button
             android:id="@+id/ringerVibButton"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="- -"
@@ -86,7 +86,7 @@
             />
         <Button
             android:id="@+id/ringerVolButton"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="- -"
@@ -94,7 +94,7 @@
             />
         <Button
             android:id="@+id/brightnessButton"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="- -"
@@ -102,7 +102,7 @@
             />
         <Button
             android:id="@+id/wifiButton"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="- -"
@@ -110,7 +110,7 @@
             />
         <Button
             android:id="@+id/airplaneButton"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="- -"
