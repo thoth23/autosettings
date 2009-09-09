@@ -70,6 +70,7 @@ public class EditActionUI extends Activity {
 
     private View mCurrentContextMenuView;
     private PrefPercent[] mPrefPercentOutWrapper = new PrefPercent[1];
+    private int mRestoreHourMinValue;
 
     /** Called when the activity is first created. */
     @Override
@@ -214,8 +215,14 @@ public class EditActionUI extends Activity {
             };
 
             // fill in UI from cursor data
-            setTimePickerValue(mTimePicker, c.getInt(hourMinColIndex));
+            
+            // Update the time picker.
+            // BUG WORKAROUND: when updating the timePicker here in onCreate, the timePicker
+            // might override some values when it redisplays in onRestoreInstanceState so
+            // we'll update there instead.
+            mRestoreHourMinValue = c.getInt(hourMinColIndex);
 
+            // Update days checked
             int days = c.getInt(daysColIndex);
             for (int i = Columns.MONDAY_BIT_INDEX; i <= Columns.SUNDAY_BIT_INDEX; i++) {
                 mCheckDays[i].setChecked((days & (1<<i)) != 0);
@@ -230,6 +237,14 @@ public class EditActionUI extends Activity {
             c.close();
             profilesDb.onDestroy();
         }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Bug workaround. See mRestoreHourMinValue in onCreate.
+        setTimePickerValue(mTimePicker, mRestoreHourMinValue);
     }
 
     @Override
