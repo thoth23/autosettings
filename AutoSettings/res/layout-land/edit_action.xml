@@ -32,6 +32,17 @@
     android:layout_height="wrap_content"
     >
 
+    <!-- Time and day column -->
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginRight="1dip"
+        android:text="@string/editaction_section_time_and_day"
+        style="@style/SectionHeader"
+        />
+
     <!-- Action Column -->
 
     <TextView
@@ -42,84 +53,13 @@
         style="@style/SectionHeader"
         />
 
-    <!-- Time and day column -->
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/editaction_section_time_and_day"
-        style="@style/SectionHeader"
-        />
-
 </TableRow>
 
 <TableRow
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/action_buttons_bg_gradient"
     >
-
-    <!-- Action Column -->
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:background="@drawable/action_buttons_bg_gradient"
-        >
-
-        <Button
-            android:id="@+id/ringerModeButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="2dip"
-            android:text="- -"
-            style="@style/ActionButton"
-            />
-        <Button
-            android:id="@+id/ringerVibButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="- -"
-            style="@style/ActionButton"
-            />
-        <Button
-            android:id="@+id/ringerVolButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="- -"
-            style="@style/ActionButton"
-            />
-        <Button
-            android:id="@+id/brightnessButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="- -"
-            style="@style/ActionButton"
-            />
-        <Button
-            android:id="@+id/wifiButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="- -"
-            style="@style/ActionButton"
-            />
-        <Button
-            android:id="@+id/airplaneButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="- -"
-            style="@style/ActionButton"
-            />
-
-    </LinearLayout>
 
     <!-- Time and day column -->
 
@@ -128,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:background="@drawable/action_buttons_bg_gradient"
+        android:layout_marginTop="10dip"
         >
 
         <TimePicker
@@ -253,6 +193,71 @@
                 />
         </TableRow>
         </TableLayout>
+
+
+    </LinearLayout>
+
+
+    <!-- Action Column -->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="15dip"
+        >
+
+        <Button
+            android:id="@+id/ringerModeButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="2dip"
+            android:text="- -"
+            style="@style/ActionButton"
+            />
+        <Button
+            android:id="@+id/ringerVibButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="- -"
+            style="@style/ActionButton"
+            />
+        <Button
+            android:id="@+id/ringerVolButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="- -"
+            style="@style/ActionButton"
+            />
+        <Button
+            android:id="@+id/brightnessButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="- -"
+            style="@style/ActionButton"
+            />
+        <Button
+            android:id="@+id/wifiButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="- -"
+            style="@style/ActionButton"
+            />
+        <Button
+            android:id="@+id/airplaneButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="- -"
+            style="@style/ActionButton"
+            />
 
     </LinearLayout>
 

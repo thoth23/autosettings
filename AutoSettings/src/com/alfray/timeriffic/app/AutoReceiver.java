@@ -60,6 +60,22 @@ public class AutoReceiver extends BroadcastReceiver {
     public final static int TOAST_IF_CHANGED = 1;
     public final static int TOAST_ALWAYS = 2;
 
+    private void showToast(Context context, int id, int duration) {
+        try {
+            Toast.makeText(context, id, duration).show();
+        } catch (Throwable t) {
+            Log.w(TAG, "Toast.show crashed", t);
+        }
+    }
+
+    private void showToast(Context context, String s, int duration) {
+        try {
+            Toast.makeText(context, s, duration).show();
+        } catch (Throwable t) {
+            Log.w(TAG, "Toast.show crashed", t);
+        }
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -78,10 +94,9 @@ public class AutoReceiver extends BroadcastReceiver {
             if (!prefs.isServiceEnabled()) {
                 Log.d(TAG, "Checking disabled");
                 if (displayToast == TOAST_ALWAYS) {
-                    Toast.makeText(context,
-                                    R.string.globalstatus_disabled,
-                                    Toast.LENGTH_LONG)
-                         .show();
+                    showToast(context,
+                            R.string.globalstatus_disabled,
+                            Toast.LENGTH_LONG);
                 }
                 return;
             }
@@ -292,7 +307,7 @@ public class AutoReceiver extends BroadcastReceiver {
 //                s2 = context.getString(R.string.toast_next_change_at_datetime, s2);
 //
 //                prefs.setStatusMsg(s2);
-//                if (shouldDisplayToast) Toast.makeText(context, s2, Toast.LENGTH_LONG).show();
+//                if (shouldDisplayToast) showToast(context, s2, Toast.LENGTH_LONG);
 //                if (DEBUG) Log.d(TAG, s2);
 //
 //            } catch (Throwable t) {
@@ -309,7 +324,7 @@ public class AutoReceiver extends BroadcastReceiver {
         s2 = context.getString(R.string.toast_next_change_at_datetime, s2);
 
 
-        if (shouldDisplayToast) Toast.makeText(context, s2, Toast.LENGTH_LONG).show();
+        if (shouldDisplayToast) showToast(context, s2, Toast.LENGTH_LONG);
         if (DEBUG) Log.d(TAG, s2);
     }
 }

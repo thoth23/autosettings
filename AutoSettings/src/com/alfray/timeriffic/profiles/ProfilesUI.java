@@ -47,7 +47,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.app.AutoReceiver;
-import com.alfray.timeriffic.app.IntroDialogActivity;
+import com.alfray.timeriffic.app.IntroActivity;
 import com.alfray.timeriffic.app.TimerifficApp;
 import com.alfray.timeriffic.prefs.PrefsActivity;
 import com.alfray.timeriffic.prefs.PrefsValues;
@@ -138,8 +138,8 @@ public class ProfilesUI extends Activity {
 
     private void showIntro(boolean force, boolean checkServices) {
         if (force || !mPrefsValues.isIntroDismissed()) {
-            Intent i = new Intent(this, IntroDialogActivity.class);
-            if (force) i.putExtra(IntroDialogActivity.EXTRA_NO_CONTROLS, true);
+            Intent i = new Intent(this, IntroActivity.class);
+            if (force) i.putExtra(IntroActivity.EXTRA_NO_CONTROLS, true);
             startActivityForResult(i, CHECK_SERVICES);
         } else if (checkServices) {
             onCheckServices();
