@@ -43,7 +43,7 @@ import com.alfray.timeriffic.prefs.PrefsValues;
 
 /**
  */
-public class IntroDialogActivity extends Activity {
+public class IntroActivity extends Activity {
 
     private static final String TAG = "IntroDialog";
     public static final String EXTRA_NO_CONTROLS = "no-controls";
@@ -88,9 +88,16 @@ public class IntroDialogActivity extends Activity {
         WebView wv = (WebView) findViewById(R.id.web);
         if (wv != null) {
 
+            // Make the webview transparent (for background gradient)
+            wv.setBackgroundColor(0x00000000);
+
+            // Inject a JS method to set the version
             wv.getSettings().setJavaScriptEnabled(true);
             wv.addJavascriptInterface(jsVersion, "JSTimerifficVersion");
 
+            // Compute which file we want to display, i.e. try to select
+            // one that matches intro-LocaleCountryName.html or default
+            // to intro.html
             String file = "intro.html";
             Locale lo = Locale.getDefault();
             String lang = lo.getLanguage();

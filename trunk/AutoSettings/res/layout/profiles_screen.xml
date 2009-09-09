@@ -38,9 +38,9 @@
         android:focusableInTouchMode="false"
         />
     <com.alfray.timeriffic.profiles.GlobalToggle
+        android:id="@+id/global_toggle"
         android:layout_width="38dip"
         android:layout_height="64dip"
-        android:id="@+id/global_toggle"
         android:src="@drawable/globaltoggle_selector"
         android:background="@drawable/globaltoggle_bg_selector"
         android:focusable="true"
@@ -57,17 +57,17 @@
     >
 
     <ListView
+        android:id="@+id/profilesList"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/profilesList"
         android:orientation="vertical"
         android:nextFocusUp="@id/global_toggle"
         />
 
     <TextView
+        android:id="@+id/empty"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/empty"
         android:gravity="center_horizontal"
         android:text="@string/profiles_empty_help"
         />
