@@ -38,6 +38,8 @@ function process() {
 	
 	jarsigner -verbose -keystore `cygpath -w ~/*-release-*.keystore` "$SRC" $ALIAS
 	
+	SIZE1=`stat -c "%s" "$SRC"`
+	
 	for z in ~/{usdk,sdk}/tools/zipalign.exe; do
 		if [[ -x "$z" && -e "$SRC" ]]; then
 			echo "Using $z"
@@ -46,8 +48,10 @@ function process() {
 	done
 	
 	[[ -e "$SRC" ]] && mv -v "$SRC" "$DEST"
+
+	SIZE2=`stat -c "%s" "$DEST"`
 	
-	echo "$DEST has been signed and zipaligned"
+	echo "$DEST has been signed and zipaligned (added $((SIZE2-SIZE1)) bytes)" 
 }
 
 for i in [tTfFB]+([^_]).apk ; do
