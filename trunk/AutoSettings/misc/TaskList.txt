@@ -17,6 +17,9 @@ DONE
 20090716 No action: use alternate view to have button "Create Profile"
 20090716 Externalize all strings
 
+DONE for 1.6
+
+20090916 Donut SDK, added support-screens in manifest
 
 DONE for 1.5
 
