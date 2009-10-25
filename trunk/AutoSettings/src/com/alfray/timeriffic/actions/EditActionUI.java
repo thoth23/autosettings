@@ -44,7 +44,7 @@ import android.widget.TimePicker;
 public class EditActionUI extends Activity {
 
     private static boolean DEBUG = false;
-    private static String TAG = "Tmrfc-EditActionUI";
+    private static String TAG = "Timerfc-EditActionUI";
 
     /** Extra long with the action prof_id (not index) to edit. */
     public static final String EXTRA_ACTION_ID = "action_id";

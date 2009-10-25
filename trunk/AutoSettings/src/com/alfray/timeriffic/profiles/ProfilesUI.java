@@ -55,7 +55,7 @@ import com.alfray.timeriffic.utils.SettingsHelper;
 
 public class ProfilesUI extends Activity {
 
-    private static final String TAG = "ListProfilesUI";
+    private static final String TAG = "Timerfc-ProfilesUI";
     private static final boolean DEBUG = true;
 
     static final int DATA_CHANGED = 42;

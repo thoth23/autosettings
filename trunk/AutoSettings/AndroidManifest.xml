@@ -62,4 +62,5 @@
 
 <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
 <supports-screens android:largeScreens="true" android:anyDensity="true" android:smallScreens="true" android:resizeable="true" android:normalScreens="true"></supports-screens>
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
 </manifest>

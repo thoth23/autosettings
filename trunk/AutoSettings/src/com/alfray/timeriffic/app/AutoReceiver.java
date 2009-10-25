@@ -48,7 +48,7 @@ import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;
 public class AutoReceiver extends BroadcastReceiver {
 
     private final static boolean DEBUG = true;
-    private final static String TAG = "Tmrfc-Receiver";
+    private final static String TAG = "Timerfc-Receiver";
 
     /** Name of intent to broadcast to activate this receiver. */
     public final static String ACTION_AUTO_CHECK_STATE = "com.alfray.intent.action.AUTO_CHECK_STATE";
@@ -156,10 +156,14 @@ public class AutoReceiver extends BroadcastReceiver {
 
         for (ActionInfo info : actions) {
 
-            if (settings == null) settings = new SettingsHelper(context);
+            try {
+                if (settings == null) settings = new SettingsHelper(context);
 
-            if (performAction(settings, info.mActions)) {
-                lastAction = info.mActions;
+                if (performAction(settings, info.mActions)) {
+                    lastAction = info.mActions;
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to apply setting", e);
             }
         }
 
@@ -221,12 +225,20 @@ public class AutoReceiver extends BroadcastReceiver {
                             settings.changeRingerVolume(value);
                             didSomething = true;
                             break;
+                        case Columns.ACTION_NOTIF_VOLUME:
+                            settings.changeNotificationVolume(value);
+                            didSomething = true;
+                            break;
                         case Columns.ACTION_WIFI:
                             settings.changeWifi(value > 0);
                             didSomething = true;
                             break;
                         case Columns.ACTION_AIRPLANE:
                             settings.changeAirplaneMode(value > 0);
+                            didSomething = true;
+                            break;
+                        case Columns.ACTION_BLUETOOTH:
+                            settings.changeBluetooh(value > 0);
                             didSomething = true;
                             break;
                         }

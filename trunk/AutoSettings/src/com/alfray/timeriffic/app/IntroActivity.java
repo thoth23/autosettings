@@ -45,7 +45,7 @@ import com.alfray.timeriffic.prefs.PrefsValues;
  */
 public class IntroActivity extends Activity {
 
-    private static final String TAG = "IntroDialog";
+    private static final String TAG = "Timerfc-IntroDialog";
     public static final String EXTRA_NO_CONTROLS = "no-controls";
 
     private class JSTimerifficVersion {

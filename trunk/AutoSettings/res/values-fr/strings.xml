@@ -105,7 +105,10 @@
     <string name="timedaction_airplane_off">Mode avion désactivé</string>
     <string name="timedaction_wifi_on">Wi-Fi activé</string>
     <string name="timedaction_wifi_off">Wi-Fi désactivé</string>
+    <string name="timedaction_bluetooth_on">Bluetooth activé</string>
+    <string name="timedaction_bluetooth_off">Bluetooth désactivé</string>
     <string name="timedaction_ringer_int">Sonnerie %d%%</string>
+    <string name="timedaction_notif_int">Notification %d%%</string>
     <string name="timedaction_brightness_int">Luminosité %d%%</string>
 
     <string name="ringermode_ring">Sonner</string>
