@@ -224,6 +224,30 @@
                 style="@style/ActionButton"
                 />
             <Button
+                android:id="@+id/notifVolButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="- -"
+                style="@style/ActionButton"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            >
+            <Button
+                android:id="@+id/bluetoothButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="- -"
+                style="@style/ActionButton"
+                />
+            <Button
                 android:id="@+id/brightnessButton"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"

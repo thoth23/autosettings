@@ -43,7 +43,7 @@ A profile is composed of:
 - activated flag
 - exclusive flag: only one flag can be exclusive and thus only this one is
   activated. This is for manual activation.
-  
+
 Profile list:
 - profile can only be activated if it has 1 or more settings.
 - profile list: add, edit, delete, up, down
@@ -74,3 +74,21 @@ Implementation:
 - levels: media/ringer volumes, brightness
 - settings for weekends vs weekdays or weekly
 - home icons for profiles
+
+----
+20091024 User feedback
+
+A summary of user requested feedback, suggestions, improvements:
+
+- AM/PM versus 24h option
+- toggle 3g/2g
+- control APNdroid
+- toggle auto-sync
+- profile based on incoming call contact
+    - e.g. let it ring when contact X, Y or Z is calling you
+- control notification volume
+- toggle bluetooth
+- backup/restore settings from sdcard and/or email
+- icon bar for profile list (+/-)
+- control calendar notification
+- display notification of profile change

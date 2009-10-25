@@ -140,12 +140,16 @@ public class Columns implements BaseColumns {
     public static final char ACTION_VIBRATE     = 'V';
     /** Ringer volume. Integer: 0..100 */
     public static final char ACTION_RING_VOLUME = 'G';
+    /** Notification volume. Integer: 0..100 */
+    public static final char ACTION_NOTIF_VOLUME = 'N';
     /** Screen Brightness. Integer: 0..100 */
     public static final char ACTION_BRIGHTNESS  = 'B';
     /** Wifi. Boolean: 0..1 */
     public static final char ACTION_WIFI        = 'W';
     /** AirplaneMode. Boolean: 0..1 */
     public static final char ACTION_AIRPLANE    = 'A';
+    /** Bluetooth. Boolean: 0..1 */
+    public static final char ACTION_BLUETOOTH   = 'U';
 
 
     /**

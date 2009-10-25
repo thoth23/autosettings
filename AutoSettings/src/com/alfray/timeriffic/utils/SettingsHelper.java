@@ -18,10 +18,12 @@
 
 package com.alfray.timeriffic.utils;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 import com.alfray.timeriffic.R;
@@ -66,6 +68,36 @@ public class SettingsHelper {
     public boolean canControlAudio() {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         return manager != null;
+    }
+
+    public boolean canControlNotificationVolume() {
+        AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        if (manager == null) return false;
+
+        // This feature is only available starting with API 3.
+        return checkMinApiLevel(3);
+    }
+
+    public boolean canControlBluetooth() {
+        AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        if (manager == null) return false;
+
+        // This feature is only available starting with API 5.
+        if (!checkMinApiLevel(5)) return false;
+
+        // Is a bluetooth adapter actually available?
+        return BluetoothAdapter.getDefaultAdapter() != null;
+    }
+
+    private boolean checkMinApiLevel(int minApiLevel) {
+        // Build.SDK_INT is only in API 4 and we're still compatible with API 3
+        try {
+            int n = Integer.parseInt(Build.VERSION.SDK);
+            return n >= 3;
+        } catch (Exception e) {
+            Log.d(TAG, "Failed to parse Build.VERSION.SDK=" + Build.VERSION.SDK, e);
+        }
+        return false;
     }
 
     public enum RingerMode {
@@ -183,6 +215,42 @@ public class SettingsHelper {
         return (vol * 100 / max);
     }
 
+    public void changeNotificationVolume(int percent) {
+        AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+
+        if (manager == null) {
+            Log.w(TAG, "changeNotificationVolume: AUDIO_SERVICE missing!");
+            return;
+        } else if (!canControlNotificationVolume()) {
+            if (DEBUG) Log.w(TAG, "changeNotificationVolume: API too low.");
+            changeRingerVolume(percent);
+            return;
+        }
+
+        if (DEBUG) Log.d(TAG, "changeNotificationVolume: " + Integer.toString(percent));
+
+        int max = manager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION);
+        int vol = (max * percent) / 100;
+        manager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, vol, 0 /*flags*/);
+    }
+
+    public int getNotificationVolume() {
+        AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+
+        if (manager == null) {
+            if (DEBUG) Log.d(TAG, "getNotificationVolume: AUDIO_SERVICE missing!");
+            return 50;
+        } else if (!canControlNotificationVolume()) {
+            if (DEBUG) Log.w(TAG, "changeNotificationVolume: API too low.");
+            return getRingerVolume();
+        }
+
+        int vol = manager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+        int max = manager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION);
+
+        return (vol * 100 / max);
+    }
+
     // --- global brightness --
 
     /**
@@ -263,6 +331,29 @@ public class SettingsHelper {
             mContext.sendBroadcast(intent);
 
             if (DEBUG) Log.d(TAG, "changeAirplaneMode: " + (turnOn ? "on" : "off"));
+        }
+    }
+
+    // --- bluetooh ---
+
+    public void changeBluetooh(boolean enabled) {
+        // This requires permission android.permission.BLUETOOTH_ADMIN
+
+        if (canControlBluetooth()) {
+            BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
+
+            if (bt == null) {
+                if (DEBUG) Log.d(TAG, "changeBluetooh: BluetoothAdapter null!");
+                return;
+            }
+
+            if (DEBUG) Log.d(TAG, "changeBluetooh: " + (enabled ? "on" : "off"));
+
+            if (enabled) {
+                bt.enable();
+            } else {
+                bt.disable();
+            }
         }
     }
 }
