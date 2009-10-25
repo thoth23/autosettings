@@ -70,19 +70,19 @@ public class GlobalStatus extends View {
         int textFlags = Paint.ANTI_ALIAS_FLAG + Paint.SUBPIXEL_TEXT_FLAG;
         mPaintLast = new Paint(textFlags);
         mPaintLast.setColor(0xFF70D000);
-        mPaintLast.setTextSize(16);
+        mPaintLast.setTextSize(convertDipToPixel(16));
 
         mPaintNext = new Paint(textFlags);
         mPaintNext.setColor(0xFF392394);
-        mPaintNext.setTextSize(16);
+        mPaintNext.setTextSize(convertDipToPixel(16));
 
         mPaintTimestamp = new Paint(textFlags);
         mPaintTimestamp.setColor(0xFFCCCCCC);
-        mPaintTimestamp.setTextSize(12);
+        mPaintTimestamp.setTextSize(convertDipToPixel(12));
 
         mPaintDesc = new Paint(textFlags);
         mPaintDesc.setColor(0xFF181818);
-        mPaintDesc.setTextSize(12);
+        mPaintDesc.setTextSize(convertDipToPixel(12));
 
         FontMetrics fmLast = mPaintLast.getFontMetrics();
         FontMetrics fmTs = mPaintTimestamp.getFontMetrics();
@@ -100,6 +100,12 @@ public class GlobalStatus extends View {
         mXTsDesc = mXLastNext + 5 +
                         (int) (Math.max(mPaintLast.measureText(mTextLast),
                                         mPaintNext.measureText(mTextNext)));
+    }
+
+    /** Convert the dips to pixels */
+    private float convertDipToPixel(float dip) {
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        return dip * scale;
     }
 
     public void setTextLastTs(String textLastTs) {

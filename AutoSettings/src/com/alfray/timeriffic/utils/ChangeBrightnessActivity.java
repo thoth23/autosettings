@@ -57,7 +57,7 @@ import android.view.WindowManager.LayoutParams;
  */
 public class ChangeBrightnessActivity extends Activity {
 
-    private static final String TAG = "ChangeBrightness";
+    private static final String TAG = "Timerfc-ChangeBrightness";
 
     public static final String INTENT_SET_BRIGHTNESS = "set";
 

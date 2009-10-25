@@ -18,7 +18,8 @@
 
 package com.alfray.timeriffic.utils;
 
-import android.bluetooth.BluetoothAdapter;
+import java.lang.reflect.Method;
+
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -43,7 +44,7 @@ import com.alfray.timeriffic.R;
  */
 public class SettingsHelper {
 
-    private static final String TAG = "Tmrfc-Settings";
+    private static final String TAG = "Timerfc-Settings";
     private static final boolean DEBUG = true;
 
     private final Context mContext;
@@ -74,7 +75,6 @@ public class SettingsHelper {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         if (manager == null) return false;
 
-        // This feature is only available starting with API 3.
         return checkMinApiLevel(3);
     }
 
@@ -82,11 +82,21 @@ public class SettingsHelper {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         if (manager == null) return false;
 
-        // This feature is only available starting with API 5.
         if (!checkMinApiLevel(5)) return false;
 
         // Is a bluetooth adapter actually available?
-        return BluetoothAdapter.getDefaultAdapter() != null;
+        try {
+            Class<?> btaClass = Class.forName("android.bluetooth.BluetoothAdapter");
+
+            Method getter = btaClass.getMethod("getDefaultAdapter");
+            Object result = getter.invoke(null);
+            return result != null;
+
+        } catch (Exception e) {
+            if (DEBUG) Log.d(TAG, "Missing BTA API", e);
+        }
+
+        return false;
     }
 
     private boolean checkMinApiLevel(int minApiLevel) {
@@ -340,20 +350,29 @@ public class SettingsHelper {
         // This requires permission android.permission.BLUETOOTH_ADMIN
 
         if (canControlBluetooth()) {
-            BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
+            try {
+                Class<?> btaClass = Class.forName("android.bluetooth.BluetoothAdapter");
 
-            if (bt == null) {
-                if (DEBUG) Log.d(TAG, "changeBluetooh: BluetoothAdapter null!");
-                return;
+                Method getter = btaClass.getMethod("getDefaultAdapter");
+                Object bt = getter.invoke(null);
+
+                if (bt == null) {
+                    if (DEBUG) Log.d(TAG, "changeBluetooh: BluetoothAdapter null!");
+                    return;
+                }
+
+                if (DEBUG) Log.d(TAG, "changeBluetooh: " + (enabled ? "on" : "off"));
+
+                if (enabled) {
+                    bt.getClass().getMethod("enable").invoke(bt);
+                } else {
+                    bt.getClass().getMethod("disable").invoke(bt);
+                }
+
+            } catch (Exception e) {
+                if (DEBUG) Log.d(TAG, "Missing BTA API", e);
             }
 
-            if (DEBUG) Log.d(TAG, "changeBluetooh: " + (enabled ? "on" : "off"));
-
-            if (enabled) {
-                bt.enable();
-            } else {
-                bt.disable();
-            }
         }
     }
 }

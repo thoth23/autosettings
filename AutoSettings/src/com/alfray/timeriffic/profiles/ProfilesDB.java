@@ -51,7 +51,7 @@ import android.util.Log;
  */
 public class ProfilesDB {
 
-    private static final String TAG = "Tmrfc-ProfilesDB";
+    private static final String TAG = "Timerfc-ProfilesDB";
     private static final boolean DEBUG = true;
 
     private static final String PROFILES_TABLE = "profiles";

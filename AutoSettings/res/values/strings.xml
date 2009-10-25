@@ -107,7 +107,10 @@
     <string name="timedaction_airplane_off">Airplane off</string>
     <string name="timedaction_wifi_on">Wifi on</string>
     <string name="timedaction_wifi_off">Wifi off</string>
+    <string name="timedaction_bluetooth_on">Bluetooth on</string>
+    <string name="timedaction_bluetooth_off">Bluetooth off</string>
     <string name="timedaction_ringer_int">Ringer %d%%</string>
+    <string name="timedaction_notif_int">Notification %d%%</string>
     <string name="timedaction_brightness_int">Brightness %d%%</string>
 
     <!-- edit profile screen -->

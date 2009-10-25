@@ -171,6 +171,20 @@ public class TimedActionUtils {
                                                 R.string.timedaction_ringer_int,
                                                 value));
                                 break;
+                            case Columns.ACTION_NOTIF_VOLUME:
+                                actions_names.add(
+                                        context.getString(
+                                                R.string.timedaction_notif_int,
+                                                value));
+                                break;
+                            case Columns.ACTION_BLUETOOTH:
+                                if (sh.canControlWifi()) {
+                                    actions_names.add(
+                                            context.getString(
+                                                    value > 0 ? R.string.timedaction_bluetooth_on :
+                                                                R.string.timedaction_bluetooth_off));
+                                }
+                                break;
                             case Columns.ACTION_WIFI:
                                 if (sh.canControlWifi()) {
                                     actions_names.add(

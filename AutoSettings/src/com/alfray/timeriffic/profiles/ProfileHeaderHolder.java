@@ -33,7 +33,7 @@ import com.alfray.timeriffic.profiles.ProfilesUI.ColIndexes;
 class ProfileHeaderHolder extends BaseHolder {
 
     private static boolean DEBUG = true;
-    private static String TAG = "ProfileHeaderHolder";
+    private static String TAG = "Timerfc-ProfileHeaderHolder";
 
     public ProfileHeaderHolder(ProfilesUI activity, View view) {
         super(activity, view);
