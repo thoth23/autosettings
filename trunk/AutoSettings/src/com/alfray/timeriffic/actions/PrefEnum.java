@@ -158,11 +158,17 @@ class PrefEnum extends PrefBase
     }
 
     public void collectResult(StringBuilder actions) {
-        if (mCurrentChoice != null && mCurrentChoice.mKey != UNCHANGED_KEY) {
+        if (isEnabled() &&
+                mCurrentChoice != null &&
+                mCurrentChoice.mKey != UNCHANGED_KEY) {
             appendAction(actions, mActionPrefix, Character.toString(mCurrentChoice.mKey));
         }
     }
 
+    /**
+     * Buttons labels (from resources) can contain @ (for menu title) or
+     * $ for ui name.
+     */
     private void updateButtonState(Choice choice) {
 
         Resources r = getActivity().getResources();

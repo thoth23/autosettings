@@ -28,7 +28,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.actions.PrefEnum.Choice;
 import com.alfray.timeriffic.actions.PrefPercentDialog.Accessor;
 
 //-----------------------------------------------
@@ -148,7 +147,8 @@ class PrefPercent extends PrefBase implements View.OnClickListener {
     }
 
     public void collectResult(StringBuilder actions) {
-        if (mCurrentValue >= 0) {
+        if (isEnabled() &&
+                mCurrentValue >= 0) {
             appendAction(actions, mActionPrefix, Integer.toString(mCurrentValue));
         }
     }

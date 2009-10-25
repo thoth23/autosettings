@@ -130,10 +130,12 @@
 
     <string name="editaction_ringer">Ringer</string>
     <string name="editaction_vibrate">Vibrate</string>
-    <string name="editaction_volume">Volume</string>
+    <string name="editaction_volume">Main Volume</string>
     <string name="editaction_brightness">Brightness</string>
     <string name="editaction_wifi">Wifi</string>
     <string name="editaction_airplane">Airplane Mode</string>
+    <string name="editaction_notif_volume">Notification Vol.</string>
+    <string name="editaction_bluetooth">Bluetooth</string>
 
     <!-- percent dialog -->
 

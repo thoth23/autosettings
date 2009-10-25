@@ -136,6 +136,8 @@
     <string name="editaction_brightness">Luminosité</string>
     <string name="editaction_wifi">Wi-Fi</string>
     <string name="editaction_airplane">Mode avion</string>
+    <string name="editaction_notif_volume">Vol. Notification</string>
+    <string name="editaction_bluetooth">Bluetooth</string>
 
     <!-- percent dialog -->
 

@@ -58,9 +58,11 @@ public class EditActionUI extends Activity {
     private PrefEnum mPrefRingerMode;
     private PrefEnum mPrefRingerVibrate;
     private PrefPercent mPrefRingerVolume;
+    private PrefPercent mPrefNotifVolume;
     private PrefPercent mPrefBrightness;
     private PrefToggle mPrefAirplane;
     private PrefToggle mPrefWifi;
+    private PrefToggle mPrefBluetooh;
 
     /**
      * Day checkboxes, in the same index order than {@link Columns#MONDAY_BIT_INDEX}
@@ -169,6 +171,26 @@ public class EditActionUI extends Activity {
                     });
             mPrefRingerVolume.setEnabled(mSettingsHelper.canControlAudio());
 
+            mPrefNotifVolume = new PrefPercent(this,
+                    mPrefPercentOutWrapper,
+                    R.id.notifVolButton,
+                    actions,
+                    Columns.ACTION_NOTIF_VOLUME,
+                    getString(R.string.editaction_notif_volume),
+                    0,
+                    new Accessor() {
+                        @Override
+                        public void changePercent(int percent) {
+                            mSettingsHelper.changeNotificationVolume(percent);
+                        }
+
+                        @Override
+                        public int getPercent() {
+                            return mSettingsHelper.getNotificationVolume();
+                        }
+                    });
+            mPrefNotifVolume.setEnabled(mSettingsHelper.canControlNotificationVolume());
+
             mPrefBrightness = new PrefPercent(this,
                     mPrefPercentOutWrapper,
                     R.id.brightnessButton,
@@ -189,6 +211,13 @@ public class EditActionUI extends Activity {
                         }
                     });
             mPrefBrightness.setEnabled(mSettingsHelper.canControlBrigthness());
+
+            mPrefBluetooh = new PrefToggle(this,
+                            R.id.bluetoothButton,
+                            actions,
+                            Columns.ACTION_BLUETOOTH,
+                            getString(R.string.editaction_bluetooth));
+            mPrefBluetooh.setEnabled(mSettingsHelper.canControlBluetooth());
 
             mPrefWifi = new PrefToggle(this,
                             R.id.wifiButton,
@@ -329,15 +358,11 @@ public class EditActionUI extends Activity {
             mPrefRingerMode.collectResult(actions);
             mPrefRingerVibrate.collectResult(actions);
             mPrefRingerVolume.collectResult(actions);
-            if (mPrefWifi != null && mPrefWifi.isEnabled()) {
-                mPrefWifi.collectResult(actions);
-            }
-            if (mPrefAirplane != null && mPrefAirplane.isEnabled()) {
-                mPrefAirplane.collectResult(actions);
-            }
-            if (mPrefBrightness != null && mPrefBrightness.isEnabled()) {
-                mPrefBrightness.collectResult(actions);
-            }
+            mPrefNotifVolume.collectResult(actions);
+            mPrefBluetooh.collectResult(actions);
+            mPrefWifi.collectResult(actions);
+            mPrefAirplane.collectResult(actions);
+            mPrefBrightness.collectResult(actions);
 
             if (DEBUG) Log.d(TAG, "new actions: " + actions.toString());
 
