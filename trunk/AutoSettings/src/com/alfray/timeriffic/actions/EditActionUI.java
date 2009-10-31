@@ -141,7 +141,8 @@ public class EditActionUI extends Activity {
                     actions,
                     Columns.ACTION_RINGER,
                     getString(R.string.editaction_ringer));
-            mPrefRingerMode.setEnabled(mSettingsHelper.canControlAudio());
+            mPrefRingerMode.setEnabled(mSettingsHelper.canControlAudio(),
+                    getString(R.string.setting_not_supported));
 
             mPrefRingerVibrate = new PrefEnum(this,
                     R.id.ringerVibButton,
@@ -149,7 +150,8 @@ public class EditActionUI extends Activity {
                     actions,
                     Columns.ACTION_VIBRATE,
                     getString(R.string.editaction_vibrate));
-            mPrefRingerVibrate.setEnabled(mSettingsHelper.canControlAudio());
+            mPrefRingerVibrate.setEnabled(mSettingsHelper.canControlAudio(),
+                    getString(R.string.setting_not_supported));
 
             mPrefRingerVolume = new PrefPercent(this,
                     mPrefPercentOutWrapper,
@@ -169,7 +171,8 @@ public class EditActionUI extends Activity {
                             return mSettingsHelper.getRingerVolume();
                         }
                     });
-            mPrefRingerVolume.setEnabled(mSettingsHelper.canControlAudio());
+            mPrefRingerVolume.setEnabled(mSettingsHelper.canControlAudio(),
+                    getString(R.string.setting_not_supported));
 
             mPrefNotifVolume = new PrefPercent(this,
                     mPrefPercentOutWrapper,
@@ -189,7 +192,8 @@ public class EditActionUI extends Activity {
                             return mSettingsHelper.getNotificationVolume();
                         }
                     });
-            mPrefNotifVolume.setEnabled(mSettingsHelper.canControlNotificationVolume());
+            mPrefNotifVolume.setEnabled(mSettingsHelper.canControlNotificationVolume(),
+                    getString(R.string.setting_not_supported));
 
             mPrefBrightness = new PrefPercent(this,
                     mPrefPercentOutWrapper,
@@ -210,28 +214,32 @@ public class EditActionUI extends Activity {
                             return mSettingsHelper.getCurrentBrightness();
                         }
                     });
-            mPrefBrightness.setEnabled(mSettingsHelper.canControlBrigthness());
+            mPrefBrightness.setEnabled(mSettingsHelper.canControlBrigthness(),
+                    getString(R.string.setting_not_supported));
 
             mPrefBluetooh = new PrefToggle(this,
                             R.id.bluetoothButton,
                             actions,
                             Columns.ACTION_BLUETOOTH,
                             getString(R.string.editaction_bluetooth));
-            mPrefBluetooh.setEnabled(mSettingsHelper.canControlBluetooth());
+            mPrefBluetooh.setEnabled(mSettingsHelper.canControlBluetooth(),
+                    getString(R.string.setting_not_supported));
 
             mPrefWifi = new PrefToggle(this,
                             R.id.wifiButton,
                             actions,
                             Columns.ACTION_WIFI,
                             getString(R.string.editaction_wifi));
-            mPrefWifi.setEnabled(mSettingsHelper.canControlWifi());
+            mPrefWifi.setEnabled(mSettingsHelper.canControlWifi(),
+                    getString(R.string.setting_not_supported));
 
             mPrefAirplane = new PrefToggle(this,
                             R.id.airplaneButton,
                             actions,
                             Columns.ACTION_AIRPLANE,
                             getString(R.string.editaction_airplane));
-            mPrefAirplane.setEnabled(mSettingsHelper.canControlAirplaneMode());
+            mPrefAirplane.setEnabled(mSettingsHelper.canControlAirplaneMode(),
+                    getString(R.string.setting_not_supported));
 
             mCheckDays = new CheckBox[] {
                     (CheckBox) findViewById(R.id.dayMon),

@@ -56,6 +56,7 @@ class PrefEnum extends PrefBase
     protected Choice mCurrentChoice;
     private Button mButton;
     private final String mMenuTitle;
+    private String mDisabledMessage;
 
     public PrefEnum(Activity activity,
                     int buttonResId,
@@ -83,14 +84,19 @@ class PrefEnum extends PrefBase
         updateButtonState(mCurrentChoice);
     }
 
-    public void setEnabled(boolean enable) {
+    @Override
+    public void setEnabled(boolean enable, String disabledMessage) {
+        mDisabledMessage = disabledMessage;
         mButton.setEnabled(enable);
+        updateButtonState(mCurrentChoice);
     }
 
+    @Override
     public boolean isEnabled() {
         return mButton.isEnabled();
     }
 
+    @Override
     public void requestFocus() {
         mButton.requestFocus();
     }
@@ -182,7 +188,11 @@ class PrefEnum extends PrefBase
             if (c == '@') {
                 sb.replace(i, i + 1, mMenuTitle);
             } else if (c == '$') {
-                sb.replace(i, i + 1, choice.mUiName);
+                if (!isEnabled() && mDisabledMessage != null) {
+                    sb.replace(i, i + 1, mDisabledMessage);
+                } else {
+                    sb.replace(i, i + 1, choice.mUiName);
+                }
             }
         }
 

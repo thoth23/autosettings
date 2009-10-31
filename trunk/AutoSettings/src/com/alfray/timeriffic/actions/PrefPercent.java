@@ -44,6 +44,7 @@ class PrefPercent extends PrefBase implements View.OnClickListener {
     private final int mIconResId;
 
     private final Accessor mAccessor;
+    private String mDisabledMessage;
 
     public PrefPercent(Activity activity,
                     PrefPercent[] prefPercentOutWrapper,
@@ -69,14 +70,19 @@ class PrefPercent extends PrefBase implements View.OnClickListener {
         updateButtonText();
     }
 
-    public void setEnabled(boolean enabled) {
-        mButton.setEnabled(enabled);
+    @Override
+    public void setEnabled(boolean enable, String disabledMessage) {
+        mDisabledMessage = disabledMessage;
+        mButton.setEnabled(enable);
+        updateButtonText();
     }
 
+    @Override
     public boolean isEnabled() {
         return mButton.isEnabled();
     }
 
+    @Override
     public void requestFocus() {
         mButton.requestFocus();
     }
@@ -130,7 +136,11 @@ class PrefPercent extends PrefBase implements View.OnClickListener {
             if (c == '@') {
                 sb.replace(i, i + 1, mDialogTitle);
             } else if (c == '$') {
-                sb.replace(i, i + 1, label);
+                if (!isEnabled() && mDisabledMessage != null) {
+                    sb.replace(i, i + 1, mDisabledMessage);
+                } else {
+                    sb.replace(i, i + 1, label);
+                }
             }
         }
 
