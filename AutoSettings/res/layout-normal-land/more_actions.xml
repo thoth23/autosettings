@@ -29,7 +29,7 @@
     >
 
     <Button
-        android:id="@+id/brightnessButton"
+        android:id="@+id/wifiButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -37,7 +37,7 @@
         style="@style/ActionButton"
         />
     <Button
-        android:id="@+id/bluetoothButton"
+        android:id="@+id/brightnessButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -54,7 +54,7 @@
     >
 
     <Button
-        android:id="@+id/wifiButton"
+        android:id="@+id/airplaneButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -62,7 +62,7 @@
         style="@style/ActionButton"
         />
     <Button
-        android:id="@+id/airplaneButton"
+        android:id="@+id/bluetoothButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"

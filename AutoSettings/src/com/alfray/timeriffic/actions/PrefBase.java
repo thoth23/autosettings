@@ -61,6 +61,12 @@ public abstract class PrefBase {
         actions.append(value);
     }
 
+    public abstract void setEnabled(boolean enable, String disabledMessage);
+
+    public abstract boolean isEnabled();
+
+    public abstract void requestFocus();
+
     public abstract void onCreateContextMenu(ContextMenu menu);
 
     public abstract void onContextItemSelected(MenuItem item);

@@ -133,6 +133,8 @@
     <string name="editaction_section_time_and_day">Jour et heure</string>
     <string name="editaction_section_days">Jours</string>
 
+    <string name="setting_not_supported">Pas supporté</string>
+
     <string name="editaction_ringer">Sonnerie</string>
     <string name="editaction_vibrate">Vibreur</string>
     <string name="editaction_volume">Volume</string>
