@@ -32,10 +32,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.alfray.timeriffic.R;
@@ -129,6 +131,17 @@ public class IntroActivity extends Activity {
             wv.setFocusable(true);
             wv.setFocusableInTouchMode(true);
             wv.requestFocus();
+        }
+
+        final ProgressBar progress = (ProgressBar) findViewById(R.id.progress);
+        if (progress != null && wv != null) {
+            wv.setWebChromeClient(new WebChromeClient() {
+                @Override
+                public void onProgressChanged(WebView view, int newProgress) {
+                    progress.setProgress(newProgress);
+                    progress.setVisibility(newProgress == 100 ? View.GONE : View.VISIBLE);
+                }
+            });
         }
 
         boolean hideControls = false;

@@ -38,8 +38,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnCreateContextMenuListener;
+import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -126,14 +128,31 @@ public class ProfilesUI extends Activity {
         mCheckOff = getResources().getDrawable(R.drawable.btn_check_off);
 
         initButtons();
+        showIntroAtStartup();
+    }
 
-        TimerifficApp tapp = getApp();
-        if (tapp.isFirstStart()) {
-            showIntro(false, true);
+    private void showIntroAtStartup() {
+        final TimerifficApp tapp = getApp();
+        if (tapp.isFirstStart() && mGlobalToggle != null) {
+            final Runnable action = new Runnable() {
+                @Override
+                public void run() {
+                    showIntro(false, true);
+                    tapp.setFirstStart(false);
+                }
+            };
 
-            tapp.setFirstStart(false);
+            final ViewTreeObserver obs = mGlobalToggle.getViewTreeObserver();
+            obs.addOnPreDrawListener(new OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    mGlobalToggle.postDelayed(action, 500 /*delayMillis*/);
+                    ViewTreeObserver obs2 = mGlobalToggle.getViewTreeObserver();
+                    obs2.removeOnPreDrawListener(this);
+                    return true;
+                }
+            });
         }
-
     }
 
     private void showIntro(boolean force, boolean checkServices) {
