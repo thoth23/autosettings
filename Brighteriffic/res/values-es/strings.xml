@@ -21,7 +21,7 @@
     <!-- not translated -->
     <string name="app_name">Brighteriffic (Brillo)</string>
 
-    <!-- translated -->
+    <!-- main screen -->
     <string name="intro_text">Brighteriffic %s le permite invertir el brillo de la página principal usando un acceso directo.</string>
     <string name="part_toggle_title">Acceso directo</string>
     <string name="part_toggle_desc">Instalar el acceso directo en la página principal</string>
@@ -31,4 +31,13 @@
     <string name="min_button_percent">Ajustar el mínimo en %d%%</string>
     <string name="max_button_percent">Ajustar el máximo en %d%%</string>
     <string name="brightness_changed_toast">Brillo cambiado al %d%%</string>
+
+    <!-- menu -->
+    <string name="about">Ayuda</string>
+
+    <!-- intro -->
+    <string name="intro_title">Brighteriffic %s - Introducción</string>
+    <string name="intro_button_continue">Continuar</string>
+    <string name="intro_checkbox_dont_display_again">No volver a mostrar</string>
+
 </resources>
