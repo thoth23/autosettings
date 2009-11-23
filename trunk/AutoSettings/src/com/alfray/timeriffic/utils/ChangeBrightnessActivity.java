@@ -59,6 +59,12 @@ public class ChangeBrightnessActivity extends Activity {
 
     private static final String TAG = "Timerfc-ChangeBrightness";
 
+    /** Using 0 will actually turn the screen off! */
+    private static final int BR_MIN = 1;
+    /** Max brightness from the API (c.f. PowerManager source, constant
+     *  is not public.) */
+    private static final int BR_MAX = 255;
+
     public static final String INTENT_SET_BRIGHTNESS = "set";
 
     private Handler mHandler;
@@ -95,11 +101,11 @@ public class ChangeBrightnessActivity extends Activity {
 
     private void setCurrentBrightness(float f) {
 
-        int v = (int) (255 * f);
-        if (v < 10) {
+        int v = (int) (BR_MAX * f);
+        if (v < BR_MIN) {
             // never set backlight too dark
-            v = 10;
-            f = v / 255.f;
+            v = BR_MIN;
+            f = (float)v / BR_MAX;
         }
 
         Settings.System.putInt(this.getContentResolver(),
@@ -149,7 +155,7 @@ public class ChangeBrightnessActivity extends Activity {
             int v = Settings.System.getInt(context.getContentResolver(),
                     Settings.System.SCREEN_BRIGHTNESS);
 
-            return v / 255.0f;
+            return (float)v / BR_MAX;
         } catch (SettingNotFoundException e) {
             // If not found, return some acceptable default
             return 0.75f;
