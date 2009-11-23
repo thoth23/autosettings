@@ -146,7 +146,7 @@ public class ProfilesUI extends Activity {
             obs.addOnPreDrawListener(new OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
-                    mGlobalToggle.postDelayed(action, 500 /*delayMillis*/);
+                    mGlobalToggle.postDelayed(action, 200 /*delayMillis*/);
                     ViewTreeObserver obs2 = mGlobalToggle.getViewTreeObserver();
                     obs2.removeOnPreDrawListener(this);
                     return true;
