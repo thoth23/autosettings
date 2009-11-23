@@ -46,7 +46,10 @@ public class ChangeBrightnessActivity extends Activity {
      *  is not public.) */
     private static final int BR_MAX = 255;
 
+
     public static final String INTENT_SET_BRIGHTNESS = "set";
+
+    public static final String ACTION_TOGGLE_BRIGHTNESS = "com.alfray.brighteriffic.TOGGLE_BRIGHTNESS";
     public static final String INTENT_TOGGLE_BRIGHTNESS = "toggle";
 
     private Handler mHandler;

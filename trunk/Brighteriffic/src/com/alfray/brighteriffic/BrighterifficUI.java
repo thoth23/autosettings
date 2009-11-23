@@ -43,6 +43,7 @@ public class BrighterifficUI extends Activity {
 
     //private static final String TAG = "BrighterifficUI";
 
+
     private interface IMinMaxActions {
         /** Returns the current pref. */
         public int getPrefValue();
@@ -210,7 +211,7 @@ public class BrighterifficUI extends Activity {
     private void installToggleShortcut() {
 
         // The intent we generate
-        Intent intent = new Intent("com.alfray.brighteriffic.TOGGLE_BRIGHTNESS");
+        Intent intent = new Intent(ChangeBrightnessActivity.ACTION_TOGGLE_BRIGHTNESS);
         intent.putExtra(ChangeBrightnessActivity.INTENT_TOGGLE_BRIGHTNESS, true);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
