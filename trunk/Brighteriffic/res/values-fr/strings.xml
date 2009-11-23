@@ -20,7 +20,7 @@
 <resources>
     <string name="app_name">Brighteriffic Luminosité</string>
 
-    <!-- translated -->
+    <!-- ecran principal -->
     <string name="intro_text">Brighteriffic %s vous permet de changer la luminosité globale de l&apos;écran avec un raccourci dans Accueil.</string>
     <string name="part_toggle_title">Installer un raccourci</string>
     <string name="part_toggle_desc">Installer un racourci dans Accueil</string>
@@ -30,4 +30,13 @@
     <string name="min_button_percent">Mettre le minimum à %d%%</string>
     <string name="max_button_percent">Mettre le maximum à %d%%</string>
     <string name="brightness_changed_toast">Luminosité changée à %d%%</string>
+
+    <!-- menu -->
+    <string name="about">Aide / A Propos</string>
+
+    <!-- intro -->
+    <string name="intro_title">Brighteriffic %s - Introduction</string>
+    <string name="intro_button_continue">Continuer</string>
+    <string name="intro_checkbox_dont_display_again">Ne plus afficher</string>
+
 </resources>

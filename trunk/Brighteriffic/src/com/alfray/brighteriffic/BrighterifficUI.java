@@ -19,6 +19,7 @@
 package com.alfray.brighteriffic;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -27,8 +28,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -47,6 +52,9 @@ public class BrighterifficUI extends Activity {
         public void applyValue();
     }
 
+    private View mToggleButton;
+    private PrefsValues mPrefsValues;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,13 +62,18 @@ public class BrighterifficUI extends Activity {
 
         setContentView(R.layout.main);
 
-        final PrefsValues prefValues = new PrefsValues(this);
+        mPrefsValues = new PrefsValues(this);
 
+        initUi();
+        showIntroAtStartup();
+    }
+
+    private void initUi() {
         TextView desc = ((TextView) findViewById(R.id.introText));
         desc.setText(getString(R.string.intro_text, longVersion()));
 
-        View v = findViewById(R.id.toggleButton);
-        v.setOnClickListener(new OnClickListener() {
+        mToggleButton = findViewById(R.id.toggleButton);
+        mToggleButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 installToggleShortcut();
             }
@@ -71,10 +84,10 @@ public class BrighterifficUI extends Activity {
                 getString(R.string.min_button_percent),
                 new IMinMaxActions() {
                     public int getPrefValue() {
-                        return prefValues.getMinBrightness();
+                        return mPrefsValues.getMinBrightness();
                     }
                     public boolean setPrefValue(int percent) {
-                        return prefValues.setMinBrightness(percent);
+                        return mPrefsValues.setMinBrightness(percent);
                     }
                     public void applyValue() {
                         Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
@@ -91,10 +104,10 @@ public class BrighterifficUI extends Activity {
                 getString(R.string.max_button_percent),
                 new IMinMaxActions() {
                     public int getPrefValue() {
-                        return prefValues.getMaxBrightness();
+                        return mPrefsValues.getMaxBrightness();
                     }
                     public boolean setPrefValue(int percent) {
-                        return prefValues.setMaxBrightness(percent);
+                        return mPrefsValues.setMaxBrightness(percent);
                     }
                     public void applyValue() {
                         Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
@@ -105,6 +118,44 @@ public class BrighterifficUI extends Activity {
                     }
                 }
         );
+    }
+
+    private BrighterifficApp getApp() {
+        Application app = getApplication();
+        if (app instanceof BrighterifficApp) return (BrighterifficApp) app;
+        return null;
+    }
+
+    private void showIntroAtStartup() {
+        final BrighterifficApp tapp = getApp();
+        if (tapp.isFirstStart() && mToggleButton != null) {
+            final Runnable action = new Runnable() {
+                @Override
+                public void run() {
+                    showIntro(false);
+                    tapp.setFirstStart(false);
+                }
+            };
+
+            final ViewTreeObserver obs = mToggleButton.getViewTreeObserver();
+            obs.addOnPreDrawListener(new OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    mToggleButton.postDelayed(action, 200 /*delayMillis*/);
+                    ViewTreeObserver obs2 = mToggleButton.getViewTreeObserver();
+                    obs2.removeOnPreDrawListener(this);
+                    return true;
+                }
+            });
+        }
+    }
+
+    private void showIntro(boolean force) {
+        if (force || !mPrefsValues.isIntroDismissed()) {
+            Intent i = new Intent(this, IntroActivity.class);
+            if (force) i.putExtra(IntroActivity.EXTRA_NO_CONTROLS, true);
+            startActivity(i);
+        }
     }
 
     private void initMinMaxPart(
@@ -179,5 +230,22 @@ public class BrighterifficUI extends Activity {
         }
 
         sendBroadcast(result);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, R.string.about,  0, R.string.about).setIcon(R.drawable.ic_menu_help);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+        case R.string.about:
+            showIntro(true /*force*/);
+            break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

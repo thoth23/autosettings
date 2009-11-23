@@ -21,7 +21,7 @@
     <!-- not translated -->
     <string name="app_name">Brighteriffic</string>
 
-    <!-- translated -->
+    <!-- main screen -->
     <string name="intro_text">Brighteriffic %s let's you toggle the global screen brightness using a Home shortcut.</string>
     <string name="part_toggle_title">Home Shortcut</string>
     <string name="part_toggle_desc">Install toggle shortcut on Home</string>
@@ -31,4 +31,13 @@
     <string name="min_button_percent">Set Min to %d%%</string>
     <string name="max_button_percent">Set Max to %d%%</string>
     <string name="brightness_changed_toast">Brightness changed to %d%%</string>
+
+    <!-- menu -->
+    <string name="about">Help / About</string>
+
+    <!-- intro -->
+    <string name="intro_title">Brighteriffic %s - Introduction</string>
+    <string name="intro_button_continue">Continue</string>
+    <string name="intro_checkbox_dont_display_again">Don\'t display again</string>
+
 </resources>

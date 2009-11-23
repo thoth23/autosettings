@@ -2,9 +2,9 @@
  * Project: Brighteriffic
  * Copyright (C) 2009 ralfoide gmail com,
  *
- *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
+ *  This program is free software: you can redistribute it and/or modify
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
@@ -40,6 +40,12 @@ public class ChangeBrightnessActivity extends Activity {
 
     private static final String TAG = "ChangeBrightness";
 
+    /** Using 0 will actually turn the screen off! */
+    private static final int BR_MIN = 1;
+    /** Max brightness from the API (c.f. PowerManager source, constant
+     *  is not public.) */
+    private static final int BR_MAX = 255;
+
     public static final String INTENT_SET_BRIGHTNESS = "set";
     public static final String INTENT_TOGGLE_BRIGHTNESS = "toggle";
 
@@ -62,9 +68,6 @@ public class ChangeBrightnessActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Have the system blur any windows behind this one.
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
-        //                     WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
         setContentView(R.layout.empty);
 
         Intent i = getIntent();
@@ -112,11 +115,11 @@ public class ChangeBrightnessActivity extends Activity {
      * Returns float > 0 if actually managed to change the brightness */
     private float setCurrentBrightness(float f) {
 
-        int v = (int) (255 * f);
-        if (v < 10) {
+        int v = (int) (BR_MAX * f);
+        if (v < BR_MIN) {
             // never set backlight too dark
-            v = 10;
-            f = v / 255.f;
+            v = BR_MIN;
+            f = (float)v / BR_MAX;
         }
 
         Settings.System.putInt(this.getContentResolver(),
@@ -171,7 +174,7 @@ public class ChangeBrightnessActivity extends Activity {
             int v = Settings.System.getInt(getContentResolver(),
                     Settings.System.SCREEN_BRIGHTNESS);
 
-            return v / 255.0f;
+            return (float)v / BR_MAX;
         } catch (SettingNotFoundException e) {
             // If not found, return some default
             return 0.75f;

@@ -55,4 +55,16 @@ public class PrefsValues {
         return mPrefs.edit().putInt("maxBrightness", maxBrightness).commit();
     }
 
+    public boolean isIntroDismissed() {
+        return mPrefs.getBoolean("dismiss_intro", false);
+    }
+
+    /**
+     * Sets the dismiss_intro boolean value.
+     * @return true if value was successfully changed if the prefs
+     */
+    public boolean setIntroDismissed(boolean dismiss) {
+        return mPrefs.edit().putBoolean("dismiss_intro", dismiss).commit();
+    }
+
 }
