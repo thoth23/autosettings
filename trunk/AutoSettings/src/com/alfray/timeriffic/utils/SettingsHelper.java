@@ -129,20 +129,30 @@ public class SettingsHelper {
     }
 
     public enum VibrateRingerMode {
-        /** Vibrate is on */
+        /** Vibrate is on (Ringer & Notification) */
         VIBRATE,
-        /** Vibrate is off */
-        NO_VIBRATE;
+        /** Vibrate is off, both ringer & notif */
+        NO_VIBRATE_ALL,
+        /** Ringer vibrate is off but notif is on */
+        NO_RINGER_VIBRATE;
 
         public char getActionLetter() {
-            return (this == VIBRATE) ? 'V' : 'N';
+            if (this == NO_VIBRATE_ALL) return 'N';
+            if (this == NO_RINGER_VIBRATE) return 'R';
+            assert this == VIBRATE;
+            return 'V';
         }
 
         /** Capitalizes the string */
         public String toUiString(Context context) {
-            return (this == VIBRATE) ?
-                context.getString(R.string.vibrateringermode_vibrate) :
-                context.getString(R.string.vibrateringermode_no_vibrate);
+            if (this == NO_VIBRATE_ALL) {
+                return context.getString(R.string.vibrateringermode_no_vibrate);
+            }
+            if (this == NO_RINGER_VIBRATE) {
+                return context.getString(R.string.vibrateringermode_no_ringer_vibrate);
+            }
+            assert this == VIBRATE;
+            return context.getString(R.string.vibrateringermode_vibrate);
         }
     }
 
@@ -163,14 +173,31 @@ public class SettingsHelper {
         if (vib != null) {
             switch(vib) {
                 case VIBRATE:
+                    // set both ringer & notification vibrate modes to on
                     manager.setVibrateSetting(
                             AudioManager.VIBRATE_TYPE_RINGER,
                             AudioManager.VIBRATE_SETTING_ON);
+                    manager.setVibrateSetting(
+                            AudioManager.VIBRATE_TYPE_NOTIFICATION,
+                            AudioManager.VIBRATE_SETTING_ON);
                     break;
-                case NO_VIBRATE:
+                case NO_VIBRATE_ALL:
+                    // set both ringer & notification vibrate modes to off
                     manager.setVibrateSetting(
                             AudioManager.VIBRATE_TYPE_RINGER,
                             AudioManager.VIBRATE_SETTING_OFF);
+                    manager.setVibrateSetting(
+                            AudioManager.VIBRATE_TYPE_NOTIFICATION,
+                            AudioManager.VIBRATE_SETTING_OFF);
+                    break;
+                case NO_RINGER_VIBRATE:
+                    // ringer vibrate off, notification vibrate on
+                    manager.setVibrateSetting(
+                            AudioManager.VIBRATE_TYPE_RINGER,
+                            AudioManager.VIBRATE_SETTING_OFF);
+                    manager.setVibrateSetting(
+                            AudioManager.VIBRATE_TYPE_NOTIFICATION,
+                            AudioManager.VIBRATE_SETTING_ON);
                     break;
             }
         }

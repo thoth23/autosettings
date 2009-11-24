@@ -181,6 +181,7 @@
 
     <string name="vibrateringermode_vibrate">Vibrate</string>
     <string name="vibrateringermode_no_vibrate">No vibrate</string>
+    <string name="vibrateringermode_no_ringer_vibrate">No ringer vibrate</string>
 
     <!-- check services dialog -->
 

@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.CheckBox;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class EditActionUI extends Activity {
@@ -251,6 +252,16 @@ public class EditActionUI extends Activity {
                     (CheckBox) findViewById(R.id.daySun)
             };
 
+            TextView[] labelDays = new TextView[] {
+                    (TextView) findViewById(R.id.labelDayMon),
+                    (TextView) findViewById(R.id.labelDayTue),
+                    (TextView) findViewById(R.id.labelDayWed),
+                    (TextView) findViewById(R.id.labelDayThu),
+                    (TextView) findViewById(R.id.labelDayFri),
+                    (TextView) findViewById(R.id.labelDaySat),
+                    (TextView) findViewById(R.id.labelDaySun)
+            };
+
             // fill in UI from cursor data
 
             // Update the time picker.
@@ -264,7 +275,11 @@ public class EditActionUI extends Activity {
             int days = c.getInt(daysColIndex);
             for (int i = Columns.MONDAY_BIT_INDEX; i <= Columns.SUNDAY_BIT_INDEX; i++) {
                 mCheckDays[i].setChecked((days & (1<<i)) != 0);
-                // TODO change label depending on Locale
+            }
+
+            String[] dayNames = TimedActionUtils.getDaysNames();
+            for (int i = 0; i < dayNames.length; i++) {
+                labelDays[i].setText(dayNames[i]);
             }
 
             mPrefRingerMode.requestFocus();

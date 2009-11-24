@@ -116,6 +116,7 @@
 
     <string name="vibrateringermode_vibrate">Vibrer</string>
     <string name="vibrateringermode_no_vibrate">Ne pas vibrer</string>
+    <string name="vibrateringermode_no_ringer_vibrate">Ne pas vibrer la sonnerie</string>
 
     <!-- edit profile screen -->
 
