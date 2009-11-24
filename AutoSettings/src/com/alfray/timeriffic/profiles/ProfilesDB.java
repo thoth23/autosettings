@@ -577,14 +577,14 @@ public class ProfilesDB {
                 true,               //isActive
                 9*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY + Columns.FRIDAY + Columns.SATURDAY + Columns.SUNDAY,
-                "RR,VV,B75",        //actions
+                "RR,VV,B75,U1",     //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
                 false,              //isActive
                 21*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY + Columns.FRIDAY + Columns.SATURDAY + Columns.SUNDAY,
-                "RM,VN,B5",         //actions
+                "RM,VN,B1,U0",      //actions
                 0                   //nextMs
                 );
 
