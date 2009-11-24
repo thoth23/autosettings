@@ -12,6 +12,10 @@ TODO v2.0
 
 DONE for 1.6
 
+20091124 Fixed day names to be auto translated using default locale
+20091124 Fixed vibrate to include ringer vs ringer+notification
+20091123 Fixed min brightness to 1
+
 20091025 Fixed DPI issue of the global status strings
 20091025 Notification volume work now. BT will need next release
 20091024 Experimented with BT toggle & notification volume
