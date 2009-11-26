@@ -87,8 +87,15 @@ A summary of user requested feedback, suggestions, improvements:
 - profile based on incoming call contact
     - e.g. let it ring when contact X, Y or Z is calling you
 - control notification volume
-- toggle bluetooth
++ toggle bluetooth => [done in 2.0, not 1.6]
 - backup/restore settings from sdcard and/or email
 - icon bar for profile list (+/-)
 - control calendar notification
 - display notification of profile change
+- calendar integration: change setting during a meeting
+- Hero: brightness not working if AutoBrightness on
+- Droid: brightness not working if AutoBrightness on
+- MyTouch/DRC92: brightness works up but not down (sometimes)
+- vibrate notification not turned off (e.g. email/gmail notif vibrate)
+- UI for volume: 10% increments via drop-down or radios
+- media volume
