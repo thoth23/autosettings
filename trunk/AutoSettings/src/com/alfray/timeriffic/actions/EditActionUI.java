@@ -63,7 +63,8 @@ public class EditActionUI extends Activity {
     private PrefPercent mPrefBrightness;
     private PrefToggle mPrefAirplane;
     private PrefToggle mPrefWifi;
-    private PrefToggle mPrefBluetooh;
+    private PrefToggle mPrefBluetooth;
+    private PrefToggle mPrefApnDroid;
 
     /**
      * Day checkboxes, in the same index order than {@link Columns#MONDAY_BIT_INDEX}
@@ -218,13 +219,21 @@ public class EditActionUI extends Activity {
             mPrefBrightness.setEnabled(mSettingsHelper.canControlBrigthness(),
                     getString(R.string.setting_not_supported));
 
-            mPrefBluetooh = new PrefToggle(this,
+            mPrefBluetooth = new PrefToggle(this,
                             R.id.bluetoothButton,
                             actions,
                             Columns.ACTION_BLUETOOTH,
                             getString(R.string.editaction_bluetooth));
-            mPrefBluetooh.setEnabled(mSettingsHelper.canControlBluetooth(),
+            mPrefBluetooth.setEnabled(mSettingsHelper.canControlBluetooth(),
                     getString(R.string.setting_not_supported));
+
+            mPrefApnDroid = new PrefToggle(this,
+                    R.id.apndroidButton,
+                    actions,
+                    Columns.ACTION_APN_DROID,
+                    getString(R.string.editaction_apndroid));
+            mPrefApnDroid.setEnabled(mSettingsHelper.canControlApnDroid(),
+                    getString(R.string.setting_not_installed));
 
             mPrefWifi = new PrefToggle(this,
                             R.id.wifiButton,
@@ -382,10 +391,11 @@ public class EditActionUI extends Activity {
             mPrefRingerVibrate.collectResult(actions);
             mPrefRingerVolume.collectResult(actions);
             mPrefNotifVolume.collectResult(actions);
-            mPrefBluetooh.collectResult(actions);
+            mPrefBluetooth.collectResult(actions);
             mPrefWifi.collectResult(actions);
             mPrefAirplane.collectResult(actions);
             mPrefBrightness.collectResult(actions);
+            mPrefApnDroid.collectResult(actions);
 
             if (DEBUG) Log.d(TAG, "new actions: " + actions.toString());
 
