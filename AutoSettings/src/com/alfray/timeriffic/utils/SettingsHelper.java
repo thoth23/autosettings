@@ -22,12 +22,15 @@ import java.lang.reflect.Method;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 import com.alfray.timeriffic.R;
+import com.google.code.apndroid.ApplicationConstants;
 
 /**
  * Helper class that changes settings.
@@ -97,6 +100,13 @@ public class SettingsHelper {
         }
 
         return false;
+    }
+
+    public boolean canControlApnDroid() {
+        PackageManager pm = mContext.getPackageManager();
+        Intent intent = new Intent(ApplicationConstants.CHANGE_STATUS_REQUEST);
+        ResolveInfo ri = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return ri != null;
     }
 
     private boolean checkMinApiLevel(int minApiLevel) {
@@ -288,7 +298,7 @@ public class SettingsHelper {
         return (vol * 100 / max);
     }
 
-    // --- global brightness --
+    // --- Global Brightness --
 
     /**
      * @param percent The new value in 0..100 range (will get mapped to adequate OS values)
@@ -326,7 +336,7 @@ public class SettingsHelper {
         return (int) (100 * ChangeBrightnessActivity.getCurrentBrightness(mContext));
     }
 
-    // --- wifi ---
+    // --- Wifi ---
 
     public void changeWifi(boolean enabled) {
         // This requires two permissions:
@@ -347,7 +357,7 @@ public class SettingsHelper {
         }
     }
 
-    // --- airplane mode ---
+    // --- Airplane mode ---
 
     /** Changes the airplane mode */
     public void changeAirplaneMode(boolean turnOn) {
@@ -371,7 +381,7 @@ public class SettingsHelper {
         }
     }
 
-    // --- bluetooh ---
+    // --- Bluetooh ---
 
     public void changeBluetooh(boolean enabled) {
         // This requires permission android.permission.BLUETOOTH_ADMIN
@@ -400,6 +410,20 @@ public class SettingsHelper {
                 if (DEBUG) Log.d(TAG, "Missing BTA API", e);
             }
 
+        }
+    }
+
+    // --- APN Droid ---
+
+    public void changeApnDroid(boolean enabled) {
+        if (canControlApnDroid()) {
+            if (DEBUG) Log.d(TAG, "changeApnDroid: " + (enabled ? "on" : "off"));
+            Intent intent = new Intent(ApplicationConstants.CHANGE_STATUS_REQUEST);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(ApplicationConstants.KEEP_MMS, enabled);
+            intent.putExtra(ApplicationConstants.TARGET_STATE, enabled);
+            intent.putExtra(ApplicationConstants.SHOW_NOTIFICATION, false);
+            mContext.startActivity(intent);
         }
     }
 }

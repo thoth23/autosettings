@@ -1,5 +1,11 @@
 TODO v2.0
 
+20091207 Store profiles as text in shared prefs
+20091207 Export profiles to SD card
+20091207 Import profiles from SD card
+20091207 Menu More > Report Issue: capture log, build, profile, create gmail text
+20091207 Whitelist of emergency numbers not to silence
+
 20090406 Fix old settings import db, gets wrong profile/action type
 20090305 Set/Change button in Edit Action. Back for cancel (dismiss).
 20090305 Reorder actions/profiles
@@ -8,6 +14,10 @@ TODO v2.0
 20090305 Gray text color depending on global toggle
 
 
+
+DONE for 1.7
+
+20091207 Toggle APNDroid if installed
 
 
 DONE for 1.6
@@ -29,9 +39,12 @@ DONE for 1.6
 
 20090916 Donut SDK, added support-screens in manifest
 
+
+
 DONE for 1.5
 
 20090706 Added Wifi and Airplane mode setting.
+
 
 
 DONE for 1.4

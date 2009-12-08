@@ -22,6 +22,7 @@ package com.alfray.timeriffic.actions;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import android.content.Context;
 
@@ -42,6 +43,16 @@ public class TimedActionUtils {
             Calendar.FRIDAY,
             Calendar.SATURDAY,
             Calendar.SUNDAY
+    };
+
+    static private final String[] DAYS_NAMES_EN = {
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun"
     };
 
     static protected String[] sDaysNames = null;
@@ -87,11 +98,19 @@ public class TimedActionUtils {
 
         sDaysNames = new String[CALENDAR_DAYS.length];
 
-        Calendar c = new GregorianCalendar();
-        c.setTimeInMillis(System.currentTimeMillis());
+        Calendar loc = new GregorianCalendar(Locale.getDefault());
+
+        loc.setTimeInMillis(System.currentTimeMillis());
         for (int i = 0; i < CALENDAR_DAYS.length; i++) {
-            c.set(Calendar.DAY_OF_WEEK, CALENDAR_DAYS[i]);
-            sDaysNames[i] = String.format("%ta", c);
+            loc.set(Calendar.DAY_OF_WEEK, CALENDAR_DAYS[i]);
+            String s = String.format("%ta", loc);
+
+            // In Android 1.5, "%ta" doesn't seem to work properly so
+            // we just hardcode them.
+            if (s == null || s.length() == 0 || s.matches("[0-9]")) {
+                s = DAYS_NAMES_EN[i];
+            }
+            sDaysNames[i] = s;
         }
 
         return sDaysNames;
@@ -216,6 +235,14 @@ public class TimedActionUtils {
                                             context.getString(
                                                     value > 0 ? R.string.timedaction_airplane_on :
                                                                 R.string.timedaction_airplane_off));
+                                }
+                                break;
+                            case Columns.ACTION_APN_DROID:
+                                if (sh.canControlApnDroid()) {
+                                    actions_names.add(
+                                            context.getString(
+                                                    value > 0 ? R.string.timedaction_apndroid_on :
+                                                                R.string.timedaction_apndroid_off));
                                 }
                                 break;
                             }

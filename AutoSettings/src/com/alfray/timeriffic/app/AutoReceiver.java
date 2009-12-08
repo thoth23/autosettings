@@ -241,6 +241,10 @@ public class AutoReceiver extends BroadcastReceiver {
                             settings.changeBluetooh(value > 0);
                             didSomething = true;
                             break;
+                        case Columns.ACTION_APN_DROID:
+                            settings.changeApnDroid(value > 0);
+                            didSomething = true;
+                            break;
                         }
 
                     } catch (NumberFormatException e) {

@@ -86,7 +86,7 @@ A summary of user requested feedback, suggestions, improvements:
 - toggle auto-sync
 - profile based on incoming call contact
     - e.g. let it ring when contact X, Y or Z is calling you
-- control notification volume
+- control notification volume [done]
 + toggle bluetooth => [done in 2.0, not 1.6]
 - backup/restore settings from sdcard and/or email
 - icon bar for profile list (+/-)
@@ -99,3 +99,15 @@ A summary of user requested feedback, suggestions, improvements:
 - vibrate notification not turned off (e.g. email/gmail notif vibrate)
 - UI for volume: 10% increments via drop-down or radios
 - media volume
+
+----
+20091207 Steps to add a new setting
+
+1- SettingsHelper: add a canControlXyz()
+2- SettingsHelper: add a changeXyz(boolean enabled)
+3- profiles.Columns: add ACTION_xyz
+4- actions.TimedActionUtils: add ACTION_xyz in computeActions()
+5- app.AutoReceiver: add ACTION_xyz in performAction()
+6- actions.EditActionUI: add private PrefToggle, using in onCreate, onPause.
+7- layout/edit_action & layout/land/more_actions: add R.id.xyzButton
+8- values-*/strings.xml: add R.string.timedaction_xyz_on/off, R.string.editaction_xyz

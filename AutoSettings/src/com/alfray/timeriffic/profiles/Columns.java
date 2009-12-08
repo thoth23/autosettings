@@ -150,6 +150,8 @@ public class Columns implements BaseColumns {
     public static final char ACTION_AIRPLANE    = 'A';
     /** Bluetooth. Boolean: 0..1 */
     public static final char ACTION_BLUETOOTH   = 'U';
+    /** APN Droid. Boolean: 0..1 */
+    public static final char ACTION_APN_DROID   = 'D';
 
 
     /**
