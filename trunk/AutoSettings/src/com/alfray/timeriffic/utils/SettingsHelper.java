@@ -420,9 +420,9 @@ public class SettingsHelper {
             if (DEBUG) Log.d(TAG, "changeApnDroid: " + (enabled ? "on" : "off"));
             Intent intent = new Intent(ApplicationConstants.CHANGE_STATUS_REQUEST);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra(ApplicationConstants.KEEP_MMS, enabled);
-            intent.putExtra(ApplicationConstants.TARGET_STATE, enabled);
-            intent.putExtra(ApplicationConstants.SHOW_NOTIFICATION, false);
+            intent.putExtra(ApplicationConstants.TARGET_APN_STATE,
+                    enabled ? ApplicationConstants.State.ON :
+                        ApplicationConstants.State.OFF);
             mContext.startActivity(intent);
         }
     }
