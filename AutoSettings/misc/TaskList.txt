@@ -17,7 +17,7 @@ TODO v2.0
 
 DONE for 1.7
 
-20091207 Toggle APNDroid if installed
+20091207 Toggle APNDroid 2.0 if installed
 
 
 DONE for 1.6
