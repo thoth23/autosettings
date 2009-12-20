@@ -28,12 +28,9 @@
         <receiver android:name=".app.AutoReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-            <intent-filter>
                 <action android:name="com.alfray.intent.action.AUTO_CHECK_STATE" />
-            </intent-filter>
-            <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
 
