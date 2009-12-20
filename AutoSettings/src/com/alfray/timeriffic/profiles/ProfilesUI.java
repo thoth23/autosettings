@@ -156,11 +156,41 @@ public class ProfilesUI extends Activity {
     }
 
     private void showIntro(boolean force, boolean checkServices) {
-        if (force || !mPrefsValues.isIntroDismissed()) {
+
+        // force is set when this comes from Menu > About
+        boolean showIntro = force;
+
+        // if not forcing, does the user wants to see the intro?
+        // true by default, unless disabled in the prefs
+        if (!showIntro) {
+            showIntro = !mPrefsValues.isIntroDismissed();
+        }
+
+        // user doesn't want to see it... but we force it anyway if this is
+        // a version upgrade
+        int currentVersion = -1;
+        try {
+            currentVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+        } catch (NameNotFoundException e) {
+            // ignore. should not happen.
+        }
+        if (!showIntro && currentVersion > 0) {
+            showIntro = currentVersion > mPrefsValues.getLastIntroVersion();
+        }
+
+        if (showIntro) {
+            // mark it as seen
+            if (currentVersion > 0) {
+                mPrefsValues.setLastIntroVersion(currentVersion);
+            }
+
             Intent i = new Intent(this, IntroActivity.class);
             if (force) i.putExtra(IntroActivity.EXTRA_NO_CONTROLS, true);
             startActivityForResult(i, CHECK_SERVICES);
-        } else if (checkServices) {
+            return;
+        }
+
+        if (checkServices) {
             onCheckServices();
         }
     }
