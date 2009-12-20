@@ -50,11 +50,11 @@
         android:max="100"
         />
 
-    <ScrollView
+    <!-- ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        >
+        > -->
 
         <WebView
             android:id="@+id/web"
@@ -63,7 +63,7 @@
             android:background="@drawable/intro_bg_gradient"
             />
 
-    </ScrollView>
+    <!-- /ScrollView>  -->
 
 </FrameLayout>
 

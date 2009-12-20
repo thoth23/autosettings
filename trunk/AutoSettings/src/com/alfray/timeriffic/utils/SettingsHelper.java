@@ -96,7 +96,7 @@ public class SettingsHelper {
             return result != null;
 
         } catch (Exception e) {
-            if (DEBUG) Log.d(TAG, "Missing BTA API", e);
+            if (DEBUG) Log.d(TAG, "Missing BTA API");
         }
 
         return false;
@@ -407,7 +407,7 @@ public class SettingsHelper {
                 }
 
             } catch (Exception e) {
-                if (DEBUG) Log.d(TAG, "Missing BTA API", e);
+                if (DEBUG) Log.d(TAG, "Missing BTA API");
             }
 
         }

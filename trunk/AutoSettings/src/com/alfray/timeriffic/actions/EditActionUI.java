@@ -231,7 +231,11 @@ public class EditActionUI extends Activity {
                     R.id.apndroidButton,
                     actions,
                     Columns.ACTION_APN_DROID,
-                    getString(R.string.editaction_apndroid));
+                    getString(R.string.editaction_apndroid),
+                    new String[] {
+                        getString(R.string.timedaction_apndroid_on),
+                        getString(R.string.timedaction_apndroid_off)
+                    } );
             mPrefApnDroid.setEnabled(mSettingsHelper.canControlApnDroid(),
                     getString(R.string.setting_not_installed));
 

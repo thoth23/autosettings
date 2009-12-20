@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -47,7 +48,9 @@ import com.alfray.timeriffic.prefs.PrefsValues;
  */
 public class IntroActivity extends Activity {
 
+    private static final boolean DEBUG = true;
     private static final String TAG = "Timerfc-IntroDialog";
+
     public static final String EXTRA_NO_CONTROLS = "no-controls";
 
     private class JSTimerifficVersion {
@@ -87,54 +90,56 @@ public class IntroActivity extends Activity {
         String title = getString(R.string.intro_title, jsVersion.shortVersion());
         setTitle(title);
 
-        WebView wv = (WebView) findViewById(R.id.web);
-        if (wv != null) {
+        final WebView wv = (WebView) findViewById(R.id.web);
+        if (wv == null) {
+            if (DEBUG) Log.d(TAG, "Missing web view");
+            finish();
+        }
 
-            // Make the webview transparent (for background gradient)
-            wv.setBackgroundColor(0x00000000);
+        // Make the webview transparent (for background gradient)
+        wv.setBackgroundColor(0x00000000);
 
-            // Inject a JS method to set the version
-            wv.getSettings().setJavaScriptEnabled(true);
-            wv.addJavascriptInterface(jsVersion, "JSTimerifficVersion");
+        // Inject a JS method to set the version
+        wv.getSettings().setJavaScriptEnabled(true);
+        wv.addJavascriptInterface(jsVersion, "JSTimerifficVersion");
 
-            // Compute which file we want to display, i.e. try to select
-            // one that matches intro-LocaleCountryName.html or default
-            // to intro.html
-            String file = "intro.html";
-            Locale lo = Locale.getDefault();
-            String lang = lo.getLanguage();
-            if (lang != null && lang.length() == 2) {
-                InputStream is = null;
-                String file2 = "intro-" + lang + ".html";
-                try {
-                    AssetManager am = getResources().getAssets();
+        // Compute which file we want to display, i.e. try to select
+        // one that matches intro-LocaleCountryName.html or default
+        // to intro.html
+        String file = "intro.html";
+        Locale lo = Locale.getDefault();
+        String lang = lo.getLanguage();
+        if (lang != null && lang.length() == 2) {
+            InputStream is = null;
+            String file2 = "intro-" + lang + ".html";
+            try {
+                AssetManager am = getResources().getAssets();
 
-                    is = am.open(file2);
-                    if (is != null) {
-                        file = file2;
-                    }
+                is = am.open(file2);
+                if (is != null) {
+                    file = file2;
+                }
 
-                } catch (IOException e) {
-                    Log.d(TAG, "Asset not found: " + lang);
-                } finally {
-                    if (is != null) {
-                        try {
-                            is.close();
-                        } catch (IOException e) {
-                            // pass
-                        }
+            } catch (IOException e) {
+                if (DEBUG) Log.d(TAG, "Asset not found: " + lang);
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        // pass
                     }
                 }
             }
-
-            wv.loadUrl("file:///android_asset/" + file);
-            wv.setFocusable(true);
-            wv.setFocusableInTouchMode(true);
-            wv.requestFocus();
         }
 
+        wv.loadUrl("file:///android_asset/" + file);
+        wv.setFocusable(true);
+        wv.setFocusableInTouchMode(true);
+        wv.requestFocus();
+
         final ProgressBar progress = (ProgressBar) findViewById(R.id.progress);
-        if (progress != null && wv != null) {
+        if (progress != null) {
             wv.setWebChromeClient(new WebChromeClient() {
                 @Override
                 public void onProgressChanged(WebView view, int newProgress) {
@@ -143,6 +148,20 @@ public class IntroActivity extends Activity {
                 }
             });
         }
+
+        wv.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.endsWith("/#new")) {
+                    wv.loadUrl("javascript:location.href=\"#new\"");
+                    return true;
+                } else if (url.endsWith("/#known")) {
+                    wv.loadUrl("javascript:location.href=\"#known\"");
+                    return true;
+                }
+                return false;
+            }
+        });
 
         boolean hideControls = false;
         Intent i = getIntent();
