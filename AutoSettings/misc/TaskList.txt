@@ -17,9 +17,11 @@ TODO v2.0
 
 DONE for 1.7
 
+20091219 UI fix: customize toggle on/off labels for APNDroid
 20091219 Bug fix: Recompute state on time zone changed broadcast
 20091219 Remove wifi on/off from default profile (turns wifi off for new installs)
 20091207 Toggle APNDroid 2.0 if installed
+
 
 DONE for 1.6
 

@@ -59,11 +59,27 @@ class PrefEnum extends PrefBase
     private String mDisabledMessage;
 
     public PrefEnum(Activity activity,
+            int buttonResId,
+            Object[] values,
+            String[] actions,
+            char actionPrefix,
+            String menuTitle) {
+        this(activity,
+            buttonResId,
+            values,
+            actions,
+            actionPrefix,
+            menuTitle,
+            null /*uiStrings*/ );
+    }
+
+    public PrefEnum(Activity activity,
                     int buttonResId,
                     Object[] values,
                     String[] actions,
                     char actionPrefix,
-                    String menuTitle) {
+                    String menuTitle,
+                    String[] uiStrings) {
         super(activity);
         mActionPrefix = actionPrefix;
         mMenuTitle = menuTitle;
@@ -79,7 +95,7 @@ class PrefEnum extends PrefBase
         mChoices.add(c);
         mCurrentChoice = c;
 
-        initChoices(values, actions, actionPrefix);
+        initChoices(values, actions, actionPrefix, uiStrings);
 
         updateButtonState(mCurrentChoice);
     }
@@ -101,7 +117,10 @@ class PrefEnum extends PrefBase
         mButton.requestFocus();
     }
 
-    protected void initChoices(Object[] values, String[] actions, char prefix) {
+    protected void initChoices(Object[] values,
+            String[] actions,
+            char prefix,
+            String[] uiStrings) {
 
         String currentValue = getActionValue(actions, prefix);
 

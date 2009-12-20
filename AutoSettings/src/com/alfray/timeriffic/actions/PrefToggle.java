@@ -35,19 +35,50 @@ class PrefToggle extends PrefEnum {
               null /*values*/,
               actions,
               actionPrefix,
-              menuTitle);
+              menuTitle,
+              null /*uiStrings*/);
+    }
+
+    /**
+     * Special constructor that lets the caller override the on/off strings.
+     * uiStrings[0]==on string, uiStrings[1]==off string.
+     */
+    public PrefToggle(Activity activity,
+            int buttonResId,
+            String[] actions,
+            char actionPrefix,
+            String menuTitle,
+            String[] uiStrings) {
+        super(activity,
+                buttonResId,
+                null /*values*/,
+                actions,
+                actionPrefix,
+                menuTitle,
+                uiStrings);
     }
 
     @Override
-    protected void initChoices(Object[] values, String[] actions, char prefix) {
+    protected void initChoices(Object[] values,
+            String[] actions,
+            char prefix,
+            String[] uiStrings) {
+
+        String on  = getActivity().getResources().getString(R.string.toggle_turn_on);
+        String off = getActivity().getResources().getString(R.string.toggle_turn_off);
+
+        if (uiStrings != null && uiStrings.length >= 2) {
+            on = uiStrings[0];
+            off = uiStrings[1];
+        }
 
         Choice c1 = new Choice(
                 '1',
-                getActivity().getResources().getString(R.string.toggle_turn_on),
+                on,
                 ID_DOT_STATE_ON);
         Choice c0 = new Choice(
                 '0',
-                getActivity().getResources().getString(R.string.toggle_turn_off),
+                off,
                 ID_DOT_STATE_OFF);
 
         mChoices.add(c1);
