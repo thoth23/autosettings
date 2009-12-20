@@ -23,11 +23,13 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -155,8 +157,20 @@ public class IntroActivity extends Activity {
                 if (url.endsWith("/#new")) {
                     wv.loadUrl("javascript:location.href=\"#new\"");
                     return true;
+
                 } else if (url.endsWith("/#known")) {
                     wv.loadUrl("javascript:location.href=\"#known\"");
+                    return true;
+
+                } else if (url.startsWith("market://")) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    try {
+                        startActivity(intent);
+                    } catch (ActivityNotFoundException e) {
+                        // ignore. just means this device has no Market app
+                        // so maybe it's an emulator.
+                    }
                     return true;
                 }
                 return false;

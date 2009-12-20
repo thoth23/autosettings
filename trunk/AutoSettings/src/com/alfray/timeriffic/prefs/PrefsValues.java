@@ -70,6 +70,14 @@ public class PrefsValues {
         return mPrefs.edit().putBoolean("dismiss_intro", dismiss).commit();
     }
 
+    public int getLastIntroVersion() {
+        return mPrefs.getInt("last_intro_vers", 0);
+    }
+
+    public boolean setLastIntroVersion(int lastIntroVers) {
+        return mPrefs.edit().putInt("last_intro_vers", lastIntroVers).commit();
+    }
+
     public boolean getCheckService() {
         return mPrefs.getBoolean("check_service", false);
     }
