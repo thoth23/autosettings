@@ -524,7 +524,7 @@ public class ProfilesDB {
                 true,               //isActive
                 7*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY,
-                "RR,VV,W0",            //actions
+                "RR,VV",            //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
@@ -556,7 +556,7 @@ public class ProfilesDB {
                 false,               //isActive
                 10*60+30,            //hourMin
                 Columns.SUNDAY,
-                "RR,W1",               //actions
+                "RR",               //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
