@@ -17,52 +17,84 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<resources>
-    <!-- not translated -->
+<!--
+    Language: default.
+    Regions:  any.
+-->
 
+<resources>
+    <!-- App title. Not translated -->
     <string name="app_name">Timeriffic</string>
 
-    <!-- menu -->
+    <!-- === Menu === -->
 
+    <!-- Menu - Settings: preferences. -->
     <string name="settings">Settings</string>
+    <!-- Menu - Check now: force app to recompute next alarm. -->
     <string name="check_now">Check Now</string>
+    <!-- Menu - About: display introduction/help screen. -->
     <string name="about">About</string>
-
-    <string name="edit">Edit</string>
-    <string name="rename">Rename</string>
-    <string name="delete">Delete</string>
-
-    <string name="insert_action">Insert New Action</string>
-    <string name="insert_profile">Insert New Profile</string>
-    <string name="append_profile">Add New Profile</string>
+    <!-- Menu - Reset: reset current profile. -->
     <string name="reset">Reset</string>
 
-    <!-- prefs -->
 
+    <!-- === Context Menu on Profile List === -->
+
+    <!-- Context Menu - Edit (profile or timed action) -->
+    <string name="edit">Edit</string>
+    <!-- Context Menu - Rename (profile or timed action) -->
+    <string name="rename">Rename</string>
+    <!-- Context Menu - Delete (profile or timed action) -->
+    <string name="delete">Delete</string>
+
+    <!-- Context Menu - Insert new timed action -->
+    <string name="insert_action">Insert New Action</string>
+    <!-- Context Menu - Insert new profile -->
+    <string name="insert_profile">Insert New Profile</string>
+    <!-- Menu & Context Menu - Add new profile -->
+    <string name="append_profile">Add New Profile</string>
+
+
+    <!-- === Settings / Preferences === -->
+
+    <!-- Settings screen title -->
     <string name="prefs_title">Timeriffic - Preferences</string>
 
+    <!-- Settings - Enable Timeriffic: toggle title -->
     <string name="prefs_enable_label">Enable Timeriffic</string>
+    <!-- Settings - Enable Timeriffic: help string when on -->
     <string name="prefs_enable_on">Timeriffic is enabled.</string>
+    <!-- Settings - Enable Timeriffic: help string when off -->
     <string name="prefs_enable_off">Timeriffic is disabled.</string>
 
+    <!-- Settings - Skip Intro: toggle title -->
     <string name="prefs_dismiss_intro_label">Don\'t display introduction</string>
+    <!-- Settings - Skip Intro: help string when on -->
     <string name="prefs_dismiss_intro_on">Introduction is skipped.</string>
+    <!-- Settings - Skip Intro: help string when off -->
     <string name="prefs_dismiss_intro_off">Introduction is visible.</string>
 
+    <!-- Settings - Check audio service: toggle title -->
     <string name="prefs_check_service_label">Validate Audio Service</string>
+    <!-- Settings - Check audio service: help string when on -->
     <string name="prefs_check_service_off">Do not validate audio service is present.</string>
+    <!-- Settings - Check audio service: help string when off -->
     <string name="prefs_check_service_on">Validate audio service is present.</string>
 
+    <!-- Settings - Animation of the toggle button logo: title -->
     <string name="prefs_toggle_anim_label">Toggle Animation</string>
+    <!-- Settings - Animation of the toggle button logo: help string -->
     <string name="prefs_toggle_anim_tooltip">Select the animation of the toggle icon in the profile list screen.</string>
 
-    <!-- intro -->
+
+    <!-- === Intro screen === -->
 
     <string name="intro_title">Timeriffic %s - Introduction</string>
     <string name="intro_button_continue">Continue</string>
     <string name="intro_checkbox_dont_display_again">Don\'t display again</string>
 
-    <!-- profile screen -->
+
+    <!-- === Profile screen === -->
 
     <string name="profiles_empty_help">Use the MENU key to add a new profile.</string>
 
