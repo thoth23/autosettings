@@ -81,12 +81,11 @@ Implementation:
 A summary of user requested feedback, suggestions, improvements:
 
 - AM/PM versus 24h option
-- toggle 3g/2g
-- control APNdroid
-- toggle auto-sync
++ toggle 3g/2g => control APNdroid [done]
+x toggle auto-sync => can't do in SDK
 - profile based on incoming call contact
-    - e.g. let it ring when contact X, Y or Z is calling you
-- control notification volume [done]
+    - e.g. let it ring when contact X, Y or Z is calling you. Needs whitelist.
++ control notification volume [done]
 + toggle bluetooth => [done in 2.0, not 1.6]
 - backup/restore settings from sdcard and/or email
 - icon bar for profile list (+/-)
@@ -95,10 +94,12 @@ A summary of user requested feedback, suggestions, improvements:
 - calendar integration: change setting during a meeting
 - Hero: brightness not working if AutoBrightness on
 - Droid: brightness not working if AutoBrightness on
-- MyTouch/DRC92: brightness works up but not down (sometimes)
+- MyTouch/DRC92: brightness works up but not down (sometimes / can't repro)
 - vibrate notification not turned off (e.g. email/gmail notif vibrate)
 - UI for volume: 10% increments via drop-down or radios
 - media volume
+- control based on given days
+- Don't switch Airplane during talk. Suggest: notif to let user to it later.
 
 ----
 20091207 Steps to add a new setting

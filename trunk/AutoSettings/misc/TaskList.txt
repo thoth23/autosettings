@@ -17,6 +17,8 @@ TODO v2.0
 
 DONE for 1.7
 
+20091222 Test Flurry Analytics.
+
 20091219 Link intro APNDroid to Market for easy installation
 20091219 Force display of intro on version upgrade
 20091219 Intro: fix to have webview scroll to follow HTML name anchor
