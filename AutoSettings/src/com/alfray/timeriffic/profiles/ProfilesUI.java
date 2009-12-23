@@ -53,6 +53,7 @@ import com.alfray.timeriffic.app.IntroActivity;
 import com.alfray.timeriffic.app.TimerifficApp;
 import com.alfray.timeriffic.prefs.PrefsActivity;
 import com.alfray.timeriffic.prefs.PrefsValues;
+import com.alfray.timeriffic.utils.AgentWrapper;
 import com.alfray.timeriffic.utils.SettingsHelper;
 
 public class ProfilesUI extends Activity {
@@ -74,6 +75,7 @@ public class ProfilesUI extends Activity {
     private LayoutInflater mLayoutInflater;
     private ProfilesDB mProfilesDb;
 
+    private AgentWrapper mAgentWrapper;
     private PrefsValues mPrefsValues;
     private Drawable mGreenDot;
     private Drawable mGrayDot;
@@ -129,6 +131,9 @@ public class ProfilesUI extends Activity {
 
         initButtons();
         showIntroAtStartup();
+
+        mAgentWrapper = new AgentWrapper();
+        mAgentWrapper.start(this);
     }
 
     private void showIntroAtStartup() {
@@ -427,6 +432,7 @@ public class ProfilesUI extends Activity {
     protected void onPause() {
         super.onPause();
         removeDataListener();
+        mAgentWrapper.stop(this);
     }
 
     private void setDataListener() {
