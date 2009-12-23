@@ -40,6 +40,7 @@ import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.Columns;
 import com.alfray.timeriffic.profiles.ProfilesDB;
 import com.alfray.timeriffic.profiles.ProfilesDB.ActionInfo;
+import com.alfray.timeriffic.utils.AgentWrapper;
 import com.alfray.timeriffic.utils.SettingsHelper;
 import com.alfray.timeriffic.utils.SettingsHelper.RingerMode;
 import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;
@@ -103,9 +104,15 @@ public class AutoReceiver extends BroadcastReceiver {
 
             Log.d(TAG, "Checking enabled");
 
+            AgentWrapper agentWrapper = new AgentWrapper();
+            agentWrapper.start(context);
+            agentWrapper.event(AgentWrapper.Event.CheckProfiles);
+
             checkProfiles(context, displayToast, prefs);
 
             notifyDataChanged(context);
+
+            agentWrapper.stop(context);
 
         } finally {
             wl.release();

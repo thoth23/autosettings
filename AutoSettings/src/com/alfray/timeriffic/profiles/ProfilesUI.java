@@ -134,6 +134,7 @@ public class ProfilesUI extends Activity {
 
         mAgentWrapper = new AgentWrapper();
         mAgentWrapper.start(this);
+        mAgentWrapper.event(AgentWrapper.Event.OpenProfileUI);
     }
 
     private void showIntroAtStartup() {
@@ -437,6 +438,11 @@ public class ProfilesUI extends Activity {
     protected void onPause() {
         super.onPause();
         removeDataListener();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         mAgentWrapper.stop(this);
     }
 
@@ -685,15 +691,18 @@ public class ProfilesUI extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
         case R.string.settings:
+            mAgentWrapper.event(AgentWrapper.Event.MenuSettings);
             showPrefs();
             break;
         case R.string.check_now:
             requestSettingsCheck(AutoReceiver.TOAST_ALWAYS);
             break;
         case R.string.about:
+            mAgentWrapper.event(AgentWrapper.Event.MenuAbout);
             showIntro(true /*force*/, false /* checkService */);
             break;
         case R.string.reset:
+            mAgentWrapper.event(AgentWrapper.Event.MenuReset);
             showResetChoices();
             break;
         case R.string.append_profile:

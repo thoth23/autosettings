@@ -22,6 +22,7 @@ import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.actions.PrefPercentDialog.Accessor;
 import com.alfray.timeriffic.profiles.Columns;
 import com.alfray.timeriffic.profiles.ProfilesDB;
+import com.alfray.timeriffic.utils.AgentWrapper;
 import com.alfray.timeriffic.utils.SettingsHelper;
 
 import android.app.Activity;
@@ -55,6 +56,7 @@ public class EditActionUI extends Activity {
 
     private TimePicker mTimePicker;
     private SettingsHelper mSettingsHelper;
+    private AgentWrapper mAgentWrapper;
 
     private PrefEnum mPrefRingerMode;
     private PrefEnum mPrefRingerVibrate;
@@ -372,6 +374,16 @@ public class EditActionUI extends Activity {
 
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        mAgentWrapper = new AgentWrapper();
+        mAgentWrapper.start(this);
+        mAgentWrapper.event(AgentWrapper.Event.OpenTimeActionUI);
+    }
+
+
+    @Override
     protected void onPause() {
         super.onPause();
 
@@ -417,6 +429,8 @@ public class EditActionUI extends Activity {
         } finally {
             profilesDb.onDestroy();
         }
+
+        mAgentWrapper.stop(this);
     }
 
     // -----------
