@@ -176,6 +176,11 @@ public class ProfilesUI extends Activity {
         int currentVersion = -1;
         try {
             currentVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+            // the version number is in format n.m.kk where n.m is the
+            // actual version number, incremented for features and kk is
+            // a sub-minor index of minor fixes. We clear these last digits
+            // out and don't force to see the intro for these minor fixes.
+            currentVersion = (currentVersion / 100) * 100;
         } catch (NameNotFoundException e) {
             // ignore. should not happen.
         }
