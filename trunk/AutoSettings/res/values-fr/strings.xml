@@ -31,7 +31,7 @@
     <!-- Menu - Check now: force app to recompute next alarm. -->
     <string name="check_now">Appliquer</string>
     <!-- Menu - About: display introduction/help screen. -->
-    <string name="about">A Propos</string>
+    <string name="about">Information</string>
     <!-- Menu - Reset: reset current profile. -->
     <string name="reset">Tout effacer</string>
 
@@ -105,7 +105,7 @@
     <string name="deleteprofile_title">Effacer le profil</string>
     <string name="deleteprofile_msgbody">Etes-vous sûr de vouloir effacer le profil \'%s\' et toutes ses actions ?</string>
     <string name="deleteprofile_button_delete">Effacer</string>
-    <string name="deleteprofile_button_cancel">Annule</string>
+    <string name="deleteprofile_button_cancel">Annuler</string>
 
     <string name="deleteaction_title">Effacer l\'action</string>
     <string name="deleteaction_msgbody">Etes-vous sûr de vouloir effacer l\'action \'%s\' ?</string>

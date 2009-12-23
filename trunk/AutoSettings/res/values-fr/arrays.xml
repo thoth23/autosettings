@@ -31,7 +31,7 @@
 -->
 <string-array name="prefs_globaltoggle_anim_names">
     <!-- Global toggle is not animated. -->
-    <item>Pas d'animation</item>
+    <item>Pas d\'animation</item>
 
     <!-- Global toggle is animated with a slow pulse animation. -->
     <item>Pulsation lente</item>
