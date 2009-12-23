@@ -33,49 +33,79 @@ public class AgentWrapper {
 
     private static final boolean DEBUG = true;
     private static final String TAG = "AgentWrapper";
-    private Class<?> mAgentClazz;
+    private static Class<?> mAgentClazz;
+    private static String mK;
+
+    public enum Event {
+        OpenProfileUI,
+        OpenTimeActionUI,
+        MenuSettings,
+        MenuAbout,
+        MenuReset,
+        CheckProfiles,
+    }
+
 
     public AgentWrapper() {
     }
 
     public void start(Context context) {
 
-        String ks[] = null;
+        if (mAgentClazz == null) {
+            String ks[] = null;
 
-        try {
-            InputStream is = null;
             try {
-                is = context.getResources().getAssets().open("Keyi.txt");
+                InputStream is = null;
+                try {
+                    is = context.getResources().getAssets().open("Keyi.txt");
+                } catch (Exception e) {
+                    is = context.getResources().getAssets().open("Keyu.txt");
+                }
+                try {
+                    byte[] buf = new byte[255];
+                    is.read(buf);
+                    String k = new String(buf);
+                    ks = k.trim().split(" ");
+                } finally {
+                    if (is != null) is.close();
+                }
+
+                if (ks == null || ks.length != 2) {
+                    if (DEBUG) Log.d(TAG, "startk failed");
+                    return;
+                }
+
+                ClassLoader cl = context.getClassLoader();
+                Class<?> clazz = cl.loadClass(ks[0]);
+
+                // start ok, keep the class
+                mAgentClazz = clazz;
+                mK = ks[1];
+
             } catch (Exception e) {
-                is = context.getResources().getAssets().open("Keyu.txt");
+                // ignore silently
             }
-            try {
-                byte[] buf = new byte[255];
-                is.read(buf);
-                String k = new String(buf);
-                ks = k.trim().split(" ");
-            } finally {
-                if (is != null) is.close();
-            }
-
-            if (ks == null || ks.length != 2) {
-                if (DEBUG) Log.d(TAG, "startk failed");
-                return;
-            }
-
-            ClassLoader cl = context.getClassLoader();
-            Class<?> clazz = cl.loadClass(ks[0]);
-
-            Method m = clazz.getMethod("onStartSession", new Class<?>[] { Context.class, String.class });
-            m.invoke(null, new Object[] { context, ks[1] });
-
-            // start ok, keep the class
-            mAgentClazz = clazz;
-
-        } catch (Exception e) {
-            // ignore silently
         }
 
+        if (mAgentClazz != null) {
+            try {
+                Method m = mAgentClazz.getMethod("onStartSession", new Class<?>[] { Context.class, String.class });
+                m.invoke(null, new Object[] { context, mK });
+            } catch (Exception e) {
+                // ignore silently
+            }
+        }
+    }
+
+    public void event(Event event) {
+        if (mAgentClazz != null) {
+            try {
+                Method m = mAgentClazz.getMethod("onEvent", new Class<?>[] { String.class });
+                m.invoke(null, new Object[] { event.toString() });
+            } catch (Exception e) {
+                // ignore silently
+            }
+        }
     }
 
     public void stop(Context context) {
