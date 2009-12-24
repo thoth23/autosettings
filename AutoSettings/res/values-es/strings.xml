@@ -112,13 +112,13 @@
     <string name="deleteaction_button_delete">Eliminar</string>
     <string name="deleteaction_button_cancel">Cancelar</string>
 
-    <string name="resetprofiles_msg_confirm_delete">Esto eliminará todos los perfiles y no puede ser cancelado!</string>
+    <string name="resetprofiles_msg_confirm_delete">¡Esto eliminará todos los perfiles y no puede ser cancelado!</string>
     <string name="resetprofiles_button_cancel">Cancelar</string>
 
     <!-- summary of timed actions on profile list screen -->
 
     <!-- special case when there's no action to execute (the action won't run) -->
-    <string name="timedaction_no_action">Ninguna acción</string>
+    <string name="timedaction_no_action">No hay acciones</string>
     <!-- special case when no days are selected (so the action won't run) -->
     <string name="timedaction_nodays_never">Nunca</string>
 
@@ -145,12 +145,12 @@
     <string name="timedaction_apndroid_on">Red 3G/2G activada</string>
     <string name="timedaction_apndroid_off">Red 3G/2G desactivada</string>
 
-    <string name="ringermode_ring">Timbrar</string>
+    <string name="ringermode_ring">Sonar</string>
     <string name="ringermode_mute">Silencio</string>
 
     <string name="vibrateringermode_vibrate">Vibrar</string>
     <string name="vibrateringermode_no_vibrate">No vibrar</string>
-    <string name="vibrateringermode_no_ringer_vibrate">No vibrar el timbre</string>
+    <string name="vibrateringermode_no_ringer_vibrate">No vibrar al sonar</string>
 
     <!-- edit profile screen -->
 
@@ -158,7 +158,7 @@
     <string name="editprofile_profile_name">Nombre del perfil:</string>
     <string name="editprofile_profile_hint">Nombre del perfil</string>
     <string name="editprofile_checkbox_enabled">Activar</string>
-    <string name="editprofile_button_accept">Acceptar</string>
+    <string name="editprofile_button_accept">Aceptar</string>
 
     <!-- edit action screen -->
 
@@ -183,9 +183,9 @@
     <!-- percent dialog -->
 
     <string name="percent_do_not_change">No cambiar.</string>
-    <string name="percent_change_to">Utilizar el valor siguiente:</string>
+    <string name="percent_change_to">Utilizar el siguiente valor:</string>
     <string name="percent_button_unchanged">Sin cambio</string>
-    <string name="percent_button_accept">Acceptar</string>
+    <string name="percent_button_accept">Aceptar</string>
 
     <!-- enum dialog -->
 

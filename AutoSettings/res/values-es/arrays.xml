@@ -31,10 +31,10 @@
 -->
 <string-array name="prefs_globaltoggle_anim_names">
     <!-- Global toggle is not animated. -->
-    <item>No pulsación</item>
+    <item>Sin pulsación</item>
 
     <!-- Global toggle is animated with a slow pulse animation. -->
-    <item>Pulsación lente</item>
+    <item>Pulsación lenta</item>
 
     <!-- Global toggle is animated with a slow pulse animation. -->
     <item>Pulsación rapida</item>
