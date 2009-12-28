@@ -24,21 +24,21 @@ import java.lang.reflect.Method;
 import android.content.Context;
 import android.util.Log;
 
-import com.flurry.android.FlurryAgent;
-
 /**
  * Wrapper so that we don't depend directly on the agent lib.
  */
 public class AgentWrapper {
 
     private static final boolean DEBUG = true;
-    private static final String TAG = "AgentWrapper";
+    private static final String TAG = "TFC-Agent";
     private static Class<?> mAgentClazz;
     private static String mK;
 
     public enum Event {
         OpenProfileUI,
         OpenTimeActionUI,
+        OpenIntroUI,
+        OpenErrorReporterUI,
         MenuSettings,
         MenuAbout,
         MenuReset,

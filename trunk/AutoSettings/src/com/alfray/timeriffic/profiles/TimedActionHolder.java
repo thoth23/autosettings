@@ -33,7 +33,7 @@ import com.alfray.timeriffic.profiles.ProfilesUI.ColIndexes;
 class TimedActionHolder extends BaseHolder {
 
     private static boolean DEBUG = true;
-    private static String TAG = "Timerfc-TimedActionHolder";
+    private static String TAG = "TFC-TAHolder";
 
     public TimedActionHolder(ProfilesUI activity, View view) {
         super(activity, view);

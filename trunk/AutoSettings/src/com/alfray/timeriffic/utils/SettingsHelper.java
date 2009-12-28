@@ -47,7 +47,7 @@ import com.google.code.apndroid.ApplicationConstants;
  */
 public class SettingsHelper {
 
-    private static final String TAG = "Timerfc-Settings";
+    private static final String TAG = "TFC-SettingsH";
     private static final boolean DEBUG = true;
 
     private final Context mContext;

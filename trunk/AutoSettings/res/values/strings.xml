@@ -231,5 +231,12 @@
     <string name="checkservices_miss_airplane">Airplane mode</string>
     <string name="checkservices_miss_brightness">Brightness</string>
 
+    <!-- === Error Reporting === -->
+
+    <!-- Error Report UI: dialog title. -->
+    <string name="errorreport_title">Timeriffic - Error Report</string>
+
+    <!-- Error Report UI: generate button. -->
+    <string name="errorreport_generate">Generate</string>
 
 </resources>

@@ -57,7 +57,7 @@ import android.view.WindowManager.LayoutParams;
  */
 public class ChangeBrightnessActivity extends Activity {
 
-    private static final String TAG = "Timerfc-ChangeBrightness";
+    private static final String TAG = "TFC-ChgBright";
 
     /** Using 0 will actually turn the screen off! */
     private static final int BR_MIN = 1;

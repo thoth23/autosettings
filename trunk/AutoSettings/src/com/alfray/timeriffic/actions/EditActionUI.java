@@ -23,6 +23,7 @@ import com.alfray.timeriffic.actions.PrefPercentDialog.Accessor;
 import com.alfray.timeriffic.profiles.Columns;
 import com.alfray.timeriffic.profiles.ProfilesDB;
 import com.alfray.timeriffic.utils.AgentWrapper;
+import com.alfray.timeriffic.utils.ExceptionHandler;
 import com.alfray.timeriffic.utils.SettingsHelper;
 
 import android.app.Activity;
@@ -46,7 +47,7 @@ import android.widget.TimePicker;
 public class EditActionUI extends Activity {
 
     private static boolean DEBUG = false;
-    private static String TAG = "Timerfc-EditActionUI";
+    private static String TAG = "TFC-EditActionUI";
 
     /** Extra long with the action prof_id (not index) to edit. */
     public static final String EXTRA_ACTION_ID = "action_id";
@@ -77,11 +78,13 @@ public class EditActionUI extends Activity {
     private View mCurrentContextMenuView;
     private PrefPercent[] mPrefPercentOutWrapper = new PrefPercent[1];
     private int mRestoreHourMinValue = -1;
+    private ExceptionHandler mExceptionHandler;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mExceptionHandler = new ExceptionHandler(this);
 
         setContentView(R.layout.edit_action);
         setTitle(R.string.editaction_title);
@@ -431,6 +434,13 @@ public class EditActionUI extends Activity {
         }
 
         mAgentWrapper.stop(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mExceptionHandler.detach();
+        mExceptionHandler = null;
     }
 
     // -----------
