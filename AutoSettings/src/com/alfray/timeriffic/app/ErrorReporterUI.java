@@ -21,9 +21,6 @@ package com.alfray.timeriffic.app;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import android.app.Activity;
@@ -48,10 +45,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.actions.TimedActionUtils;
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.ProfilesDB;
-import com.alfray.timeriffic.profiles.ProfilesDB.ActionInfo;
 import com.alfray.timeriffic.utils.AgentWrapper;
 import com.alfray.timeriffic.utils.ExceptionHandler;
 
