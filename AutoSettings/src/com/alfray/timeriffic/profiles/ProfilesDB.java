@@ -687,6 +687,92 @@ public class ProfilesDB {
     }
 
     /**
+     * Returns the list of all profiles, dumped in a structure that is
+     * mostly for debugging. It is not designed to be read back for restoring
+     * although we could change it to be later.
+     */
+    public String[] getProfilesDump() {
+        Cursor c = null;
+        try {
+            c = mDb.query(
+                    PROFILES_TABLE,                         // table
+                    null,                                   // *ALL* columns
+                    null,                                   // selection
+                    null,                                   // selectionArgs
+                    null,                                   // groupBy
+                    null,                                   // having
+                    null                                    // orderBy
+                    );
+
+            int colType      = c.getColumnIndexOrThrow(Columns.TYPE);
+            int colDesc      = c.getColumnIndexOrThrow(Columns.DESCRIPTION);
+            int colIsEnabled = c.getColumnIndexOrThrow(Columns.IS_ENABLED);
+            int colProfId    = c.getColumnIndexOrThrow(Columns.PROFILE_ID);
+            int colHourMin   = c.getColumnIndexOrThrow(Columns.HOUR_MIN);
+            int colDays      = c.getColumnIndexOrThrow(Columns.DAYS);
+            int colActions   = c.getColumnIndexOrThrow(Columns.ACTIONS);
+            int colNextMs    = c.getColumnIndexOrThrow(Columns.NEXT_MS);
+
+            String[] summaries = new String[c.getCount()];
+            StringBuilder sb = new StringBuilder();
+
+            if (c.moveToFirst()) {
+                int i = 0;
+                do {
+                    String desc = c.getString(colDesc);
+                    String actions = c.getString(colActions);
+                    boolean en  = c.getInt(colIsEnabled) != 0;
+                    int type    = c.getInt (colType);
+                    long profId = c.getLong(colProfId);
+                    int hourMin = c.getInt (colHourMin);
+                    int days    = c.getInt (colDays);
+                    long nextMs = c.getLong(colNextMs);
+
+                    sb.setLength(0);
+
+                    if (type == Columns.TYPE_IS_TIMED_ACTION) {
+                        sb.append("- ");
+                    }
+
+                    // Format: { profile/action prof-index:action-index enable/active }
+                    sb.append(String.format("{ %1$s 0x%2$04x:%3$04x %4$s } ",
+                            type == Columns.TYPE_IS_PROFILE ? "P" :
+                                type == Columns.TYPE_IS_TIMED_ACTION ? "A" :
+                                    Integer.toString(type),
+                            profId >> Columns.PROFILE_SHIFT,
+                            profId & Columns.ACTION_MASK,
+                            type == Columns.TYPE_IS_PROFILE ?
+                                    (en ? "E" : "D") : // profile: enable/disabled
+                                    (en ? "A" : "I")   // action: active/inactive
+                            ));
+
+                    // Description profile:user name, action: display summary
+                    sb.append(desc);
+
+                    if (type == Columns.TYPE_IS_TIMED_ACTION) {
+                        // Format: [ d:days-bitfield, hm:hour*60+min, a:actions/-, n:next MS ]
+                        sb.append(String.format(" [ d:%1$01x, hm:%2$04d, a:'%3$s', n:%d ]",
+                                days,
+                                hourMin,
+                                actions == null ? "-" : actions,
+                                nextMs
+                                ));
+                    }
+
+                    sb.append("\n");
+
+                    summaries[i++] = sb.toString();
+
+                } while (c.moveToNext());
+            }
+
+            return summaries;
+        } finally {
+            if (c != null) c.close();
+        }
+    }
+
+    /**
      * Returns the list of all enabled profiles.
      * This is a list of profiles indexes.
      * Can return an empty list, but not null.

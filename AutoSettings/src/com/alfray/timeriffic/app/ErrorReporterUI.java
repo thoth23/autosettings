@@ -20,6 +20,10 @@ package com.alfray.timeriffic.app;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import android.app.Activity;
@@ -28,7 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +48,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.actions.TimedActionUtils;
+import com.alfray.timeriffic.prefs.PrefsValues;
+import com.alfray.timeriffic.profiles.ProfilesDB;
+import com.alfray.timeriffic.profiles.ProfilesDB.ActionInfo;
 import com.alfray.timeriffic.utils.AgentWrapper;
 import com.alfray.timeriffic.utils.ExceptionHandler;
 
@@ -153,6 +160,11 @@ public class ErrorReporterUI extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+
+        // If the generator thread is still running, just set the abort
+        // flag and let the thread terminate itself.
+        mAbortReport = true;
+
         mAgentWrapper.stop(this);
     }
 
@@ -277,8 +289,18 @@ public class ErrorReporterUI extends Activity {
 
                     mAbortReport = false;
 
-                    Thread t = new Thread(new ReportGenerator(), "ReportGenerator");
-                    t.start();
+                    try {
+                        Thread t = new Thread(new ReportGenerator(), "ReportGenerator");
+                        t.start();
+                    } catch (Throwable t) {
+                        // We can possibly get a VerifyError from Dalvik here
+                        // if the thread can't link (e.g. because it's using
+                        // an unsupported API.). Normally we wouldn't care but
+                        // we don't want the error reporter to crash itself.
+                        Toast.makeText(ErrorReporterUI.this,
+                                "Failed to generate report: " + t.toString(),
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
             });
         }
@@ -324,16 +346,19 @@ public class ErrorReporterUI extends Activity {
                         i.putExtra(Intent.EXTRA_TEXT, report);
                         i.setType("message/rfc822");
 
-                        //-- i = Intent.createChooser(i, "Send Error Email");
-
                         try {
                             startActivity(i);
                         } catch (ActivityNotFoundException e) {
+                            // This is likely to happen if there's no mail app.
                             Toast.makeText(getApplicationContext(),
                                     R.string.errorreport_nomailapp,
                                     Toast.LENGTH_LONG).show();
                             Log.d(TAG, "No email/gmail app found", e);
                         } catch (Exception e) {
+                            // This is unlikely to happen.
+                            Toast.makeText(getApplicationContext(),
+                                    "Send email activity failed: " + e.toString(),
+                                    Toast.LENGTH_LONG).show();
                             Log.d(TAG, "Send email activity failed", e);
                         }
 
@@ -346,48 +371,113 @@ public class ErrorReporterUI extends Activity {
         });
     }
 
+    /**
+     * Generates the error report, with the following sections:
+     * - Request user to enter some information (translated, rest is not)
+     * - Device information (nothing user specific)
+     * - Profile list summary
+     * - Recent Exceptions
+     * - Recent actions
+     * - Recent logcat
+     */
     private class ReportGenerator implements Runnable {
         @Override
         public void run() {
 
-            // Context c = ErrorReporterUI.this.getApplicationContext();
+            Context c = ErrorReporterUI.this.getApplicationContext();
+            PrefsValues pv = new PrefsValues(c);
 
             StringBuilder sb = new StringBuilder();
 
-            // App info
-            sb.append(String.format("App: %s %s\n",
-                    mAppName,
-                    mAppVersion));
+            addAppInfo(sb);
+            addAndroidBuildInfo(sb);
+            addProfiles(sb, c);
+            addLastExceptions(sb, pv);
+            addLastActions(sb, pv);
 
-            // Android OS information
-            int sdk = 0;
-            try {
-                sdk = Integer.parseInt(Build.VERSION.SDK);
-            } catch (Exception ignore) {
-            }
-
-            String manufacturer = "--";
-            if (sdk >= 4) {
-                manufacturer = Build.MANUFACTURER;
-            }
-
-            sb.append(String.format("Device: %s (%s %s)\n Build: %s",
-                    Build.MODEL,
-                    manufacturer,
-                    Build.DEVICE));
-
-            sb.append(String.format("Android: %s (SDK %s)\n",
-                    Build.VERSION.RELEASE, Build.VERSION.SDK));
-
-
-            sb.append(String.format("Build: %s",
-                    Build.FINGERPRINT));
+            // -- Report complete
 
             // We're done with the report. Ping back the activity using
             // a message to get back to the UI thread.
             if (!mAbortReport) {
                 Message msg = mHandler.obtainMessage(MSG_REPORT_COMPLETE, sb.toString());
                 mHandler.sendMessage(msg);
+            }
+        }
+
+        private void addAppInfo(StringBuilder sb) {
+            sb.append(String.format("App: %s %s\n",
+                    mAppName,
+                    mAppVersion));
+        }
+
+        private void addAndroidBuildInfo(StringBuilder sb) {
+
+            sb.append("\n## Android Device ##\n\n");
+
+            try {
+                // Build.MANUFACTURER is only available starting at API 4
+                String manufacturer = "--";
+                try {
+                    Field f = Build.class.getField("MANUFACTURER");
+                    manufacturer = (String) f.get(null /*static*/);
+                } catch (Exception ignore) {
+                }
+
+                sb.append(String.format("Device : %s (%s %s)\n",
+                        Build.MODEL,
+                        manufacturer,
+                        Build.DEVICE));
+
+                sb.append(String.format("Android: %s (SDK %s)\n",
+                        Build.VERSION.RELEASE, Build.VERSION.SDK));
+
+                sb.append(String.format("Build  : %s\n",
+                        Build.FINGERPRINT));
+            } catch (Exception ignore) {
+            }
+        }
+
+        private void addLastExceptions(StringBuilder sb, PrefsValues prefs) {
+            sb.append("\n## Recent Exceptions ##\n\n");
+
+            String s = prefs.getLastExceptions();
+            if (s == null) {
+                sb.append("None\n");
+            } else {
+                sb.append(s);
+            }
+        }
+
+        private void addLastActions(StringBuilder sb, PrefsValues prefs) {
+            sb.append("\n## Recent Actions ##\n\n");
+
+            String s = prefs.getLastActions();
+            if (s == null) {
+                sb.append("None\n");
+            } else {
+                sb.append(s);
+            }
+        }
+
+        private void addProfiles(StringBuilder sb, Context c) {
+            sb.append("\n## Profiles Summary ##\n\n");
+
+            try {
+                ProfilesDB profilesDb = new ProfilesDB();
+                try {
+                    profilesDb.onCreate(c);
+
+                    String[] p = profilesDb.getProfilesDump();
+                    for (String s : p) {
+                        sb.append(s);
+                    }
+
+                } finally {
+                    profilesDb.onDestroy();
+                }
+            } catch (Exception ignore) {
+                // ignore
             }
         }
     }
