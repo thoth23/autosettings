@@ -239,4 +239,7 @@
     <!-- Error Report UI: generate button. -->
     <string name="errorreport_generate">Generate</string>
 
+    <!-- Error Report UI: sending fail because there's no mail app. -->
+    <string name="errorreport_nomailapp">No Email/Gmail app found to send the message. Please install one such as K9 from Market first.</string>
+
 </resources>
