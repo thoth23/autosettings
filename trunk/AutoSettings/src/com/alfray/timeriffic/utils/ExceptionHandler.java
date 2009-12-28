@@ -30,6 +30,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import com.alfray.timeriffic.R;
@@ -48,7 +49,7 @@ public class ExceptionHandler {
 
     private Context mAppContext;
     private DateFormat mDateFormat;
-    private UncaughtExceptionHandler mOldHanlder;
+    private Handler mHandler;
 
     // -----
 
@@ -90,27 +91,36 @@ public class ExceptionHandler {
         if (h == null || !(h instanceof Handler)) {
             mAppContext = context.getApplicationContext();
             mDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z");
-            mOldHanlder = h;
-            Thread.currentThread().setUncaughtExceptionHandler(new Handler());
+            mHandler = new Handler(h);
+            Thread.currentThread().setUncaughtExceptionHandler(mHandler);
 
         }
     }
 
     public void detach() {
         if (mAppContext != null) {
-            Thread.currentThread().setUncaughtExceptionHandler(mOldHanlder);
-            mOldHanlder = null;
+            Thread.currentThread().setUncaughtExceptionHandler(mHandler.getOldHanlder());
+            mHandler = null;
             mAppContext = null;
         }
     }
 
     private class Handler implements Thread.UncaughtExceptionHandler {
+
+        private final UncaughtExceptionHandler mOldHanlder;
+
+        public Handler(UncaughtExceptionHandler oldHanlder) {
+            mOldHanlder = oldHanlder;
+        }
+
+        public UncaughtExceptionHandler getOldHanlder() {
+            return mOldHanlder;
+        }
+
         @Override
         public void uncaughtException(Thread t, Throwable e) {
 
             try {
-                // No need to log it here, it's done by the default old handler.
-                // Log.e(TAG, "Exception caught in Timeriffic", e);
 
                 // get a trace of the exception
                 StringWriter sw = new StringWriter();
@@ -166,9 +176,19 @@ public class ExceptionHandler {
             }
 
             try {
-                // chain the calls if the old handler is not one of ours
-                if (mOldHanlder != null && !(mOldHanlder instanceof Handler)) {
+                // chain the calls to any previous handler that is not one of ours
+                UncaughtExceptionHandler h = mOldHanlder;
+                while (h != null && h instanceof Handler) {
+                    h = ((Handler) h).getOldHanlder();
+                }
+                if (h != null) {
                     mOldHanlder.uncaughtException(t, e);
+                } else {
+                    // If we couldn't find any old handler, log the error
+                    // to the console if this is an emulator
+                    if ("sdk".equals(Build.MODEL)) {
+                        Log.e(TAG, "Exception caught in Timeriffic", e);
+                    }
                 }
             } catch (Throwable t3) {
                 // ignore
