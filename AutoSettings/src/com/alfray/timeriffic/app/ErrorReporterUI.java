@@ -1,6 +1,6 @@
 /*
  * Project: Timeriffic
- * Copyright (C) 2008 ralfoide gmail com,
+ * Copyright (C) 2009 ralfoide gmail com,
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,64 +23,48 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ProgressBar;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.utils.AgentWrapper;
+import com.alfray.timeriffic.utils.ExceptionHandler;
 
 /**
- * Screen with the introduction text.
+ * Screen to generate an error report.
  */
-public class IntroActivity extends Activity {
+public class ErrorReporterUI extends Activity {
 
     private static final boolean DEBUG = true;
-    private static final String TAG = "TFC-IntroUI";
-
-    public static final String EXTRA_NO_CONTROLS = "no-controls";
+    private static final String TAG = "TFC-ErrorUI";
 
     private AgentWrapper mAgentWrapper;
 
-    private class JSTimerifficVersion {
+    private class JSErrorInfo {
 
-        private String mVersion;
+        private final int mNumExceptions;
+        private final int mNumActions;
 
-        public String longVersion() {
-            if (mVersion == null) {
-                PackageManager pm = getPackageManager();
-                PackageInfo pi;
-                try {
-                    pi = pm.getPackageInfo(getPackageName(), 0);
-                    mVersion = pi.versionName;
-                } catch (NameNotFoundException e) {
-                    mVersion = ""; // failed, ignored
-                }
-            }
-            return mVersion;
+        public JSErrorInfo(int numExceptions, int numActions) {
+            mNumExceptions = numExceptions;
+            mNumActions = numActions;
         }
 
-        public String shortVersion() {
-            String v = longVersion();
-            v = v.substring(0, v.lastIndexOf('.'));
-            return v;
+        @SuppressWarnings("unused")
+        public int getNumExceptions() {
+            return mNumExceptions;
+        }
+
+        @SuppressWarnings("unused")
+        public int getNumActions() {
+            return mNumActions;
         }
     }
 
@@ -89,11 +73,8 @@ public class IntroActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.intro);
-        JSTimerifficVersion jsVersion = new JSTimerifficVersion();
-
-        String title = getString(R.string.intro_title, jsVersion.shortVersion());
-        setTitle(title);
+        setContentView(R.layout.error_reporter);
+        setTitle(R.string.errorreport_title);
 
         final WebView wv = (WebView) findViewById(R.id.web);
         if (wv == null) {
@@ -104,12 +85,9 @@ public class IntroActivity extends Activity {
         // Make the webview transparent (for background gradient)
         wv.setBackgroundColor(0x00000000);
 
-        // Inject a JS method to set the version
-        wv.getSettings().setJavaScriptEnabled(true);
-        wv.addJavascriptInterface(jsVersion, "JSTimerifficVersion");
-
-        String file = selectFile("intro");
+        String file = selectFile("error_report");
         loadFile(wv, file);
+        setupJavaScript(wv);
         setupProgressBar(wv);
         setupWebViewClient(wv);
         setupButtons();
@@ -170,6 +148,18 @@ public class IntroActivity extends Activity {
         wv.requestFocus();
     }
 
+    private void setupJavaScript(final WebView wv) {
+
+        // TODO get numbers
+        int num_ex = ExceptionHandler.getNumExceptionsInLog(this);
+        int num_act = ApplySettings.getNumActionsInLog(this);
+
+        // Inject a JS method to set the version
+        JSErrorInfo js = new JSErrorInfo(num_ex, num_act);
+        wv.getSettings().setJavaScriptEnabled(true);
+        wv.addJavascriptInterface(js, "JSErrorInfo");
+    }
+
     private void setupProgressBar(final WebView wv) {
         final ProgressBar progress = (ProgressBar) findViewById(R.id.progress);
         if (progress != null) {
@@ -184,6 +174,7 @@ public class IntroActivity extends Activity {
     }
 
     private void setupWebViewClient(final WebView wv) {
+        /* -- not needed in this webview
         wv.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -209,47 +200,19 @@ public class IntroActivity extends Activity {
                 return false;
             }
         });
+        */
     }
 
     private void setupButtons() {
-        boolean hideControls = false;
-        Intent i = getIntent();
-        if (i != null) {
-            Bundle e = i.getExtras();
-            if (e != null) hideControls = e.getBoolean(EXTRA_NO_CONTROLS);
-        }
-
-        CheckBox dismiss = (CheckBox) findViewById(R.id.dismiss);
-        if (dismiss != null) {
-            if (hideControls) {
-                dismiss.setVisibility(View.GONE);
-            } else {
-                final PrefsValues pv = new PrefsValues(this);
-                dismiss.setChecked(pv.isIntroDismissed());
-
-                dismiss.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView,
-                            boolean isChecked) {
-                        pv.setIntroDismissed(isChecked);
-                    }
-                });
-            }
-        }
-
-        Button cont = (Button) findViewById(R.id.cont);
-        if (cont != null) {
-            if (hideControls) {
-                cont.setVisibility(View.GONE);
-            } else {
-                cont.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // close activity
-                        finish();
-                    }
-                });
-            }
+        Button gen = (Button) findViewById(R.id.generate);
+        if (gen != null) {
+            gen.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // close activity
+                    finish();
+                }
+            });
         }
     }
 }

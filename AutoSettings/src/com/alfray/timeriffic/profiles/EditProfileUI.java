@@ -19,6 +19,7 @@
 package com.alfray.timeriffic.profiles;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.utils.ExceptionHandler;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -33,18 +34,20 @@ import android.widget.EditText;
 
 public class EditProfileUI extends Activity {
 
-    private static String TAG = "Timerfc-EditProfileUI";
+    private static String TAG = "TFC-EditProfUI";
 
     /** Extra long with the profile id (not index) to edit. */
     public static final String EXTRA_PROFILE_ID = "prof_id";
     private EditText mNameField;
     private CheckBox mEnabledCheck;
     private long mProfId;
+    private ExceptionHandler mExceptionHandler;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mExceptionHandler = new ExceptionHandler(this);
 
         setContentView(R.layout.edit_profile);
         setTitle(R.string.editprofile_title);
@@ -129,5 +132,12 @@ public class EditProfileUI extends Activity {
     protected void onPause() {
         super.onPause();
         // do nothing, discard changes
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mExceptionHandler.detach();
+        mExceptionHandler = null;
     }
 }

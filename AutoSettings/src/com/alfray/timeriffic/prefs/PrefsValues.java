@@ -124,6 +124,22 @@ public class PrefsValues {
         mPrefs.edit().putLong("last_alarm", timeMs).commit();
     }
 
+    public String getLastExceptions() {
+        return mPrefs.getString("last_exceptions", null);
+    }
+
+    public void setLastExceptions(String s) {
+        mPrefs.edit().putString("last_exceptions", s).commit();
+    }
+
+    public String getLastActions() {
+        return mPrefs.getString("last_actions", null);
+    }
+
+    public void setLastActions(String s) {
+        mPrefs.edit().putString("last_actions", s).commit();
+    }
+
     public enum GlobalToggleAnimMode {
         NO_ANIM,
         SLOW,
