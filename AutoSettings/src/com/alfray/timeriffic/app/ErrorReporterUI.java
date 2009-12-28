@@ -23,8 +23,18 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Handler.Callback;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +42,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.utils.AgentWrapper;
@@ -45,7 +56,23 @@ public class ErrorReporterUI extends Activity {
     private static final boolean DEBUG = true;
     private static final String TAG = "TFC-ErrorUI";
 
+    /**
+     * Mailto address. %s is app name. Address is naively obfuscated
+     * since this code will end up open sourced, to prevent address harvesting.
+     */
+    private static final String MAILTO = "and_roid - mar_ket + %s";
+    /** domain part of mailto. */
+    private static final String DOMTO = "al_fr_ay / c_om";
+    /** Email subject. %s is app name. */
+    private static final String SUBJECT = "%s Error Report";
+
+    private static final int MSG_REPORT_COMPLETE = 1;
+
     private AgentWrapper mAgentWrapper;
+    private Handler mHandler;
+    private boolean mAbortReport;
+    private String mAppName;
+    private String mAppVersion;
 
     private class JSErrorInfo {
 
@@ -76,6 +103,26 @@ public class ErrorReporterUI extends Activity {
         setContentView(R.layout.error_reporter);
         setTitle(R.string.errorreport_title);
 
+        PackageManager pm = getPackageManager();
+        if (pm != null) {
+            PackageInfo pi;
+            try {
+                pi = pm.getPackageInfo(getPackageName(), 0);
+
+                mAppName = getPackageName();
+                if (pi.applicationInfo != null) {
+                    try {
+                        mAppName = getString(pi.applicationInfo.labelRes);
+                    } catch (Exception ignore) {
+                        // getString typically returns NotFoundException. Ignore it.
+                    }
+                }
+                mAppVersion = pi.versionName;
+            } catch (Exception ignore) {
+                // getPackageName typically throws NameNotFoundException
+            }
+        }
+
         final WebView wv = (WebView) findViewById(R.id.web);
         if (wv == null) {
             if (DEBUG) Log.d(TAG, "Missing web view");
@@ -91,6 +138,7 @@ public class ErrorReporterUI extends Activity {
         setupProgressBar(wv);
         setupWebViewClient(wv);
         setupButtons();
+        setupHandler();
     }
 
     @Override
@@ -166,8 +214,15 @@ public class ErrorReporterUI extends Activity {
             wv.setWebChromeClient(new WebChromeClient() {
                 @Override
                 public void onProgressChanged(WebView view, int newProgress) {
-                    progress.setProgress(newProgress);
-                    progress.setVisibility(newProgress == 100 ? View.GONE : View.VISIBLE);
+                    // Only change the progress bar when its in "determinate" mode.
+                    // It starts this way, and we use this to indicate loading
+                    // of the web view.
+                    // Later the generator thread will change it to indeterminate
+                    // mode, in which case we don't override it.
+                    if (!progress.isIndeterminate()) {
+                        progress.setProgress(newProgress);
+                        progress.setVisibility(newProgress == 100 ? View.GONE : View.VISIBLE);
+                    }
                 }
             });
         }
@@ -204,15 +259,136 @@ public class ErrorReporterUI extends Activity {
     }
 
     private void setupButtons() {
-        Button gen = (Button) findViewById(R.id.generate);
+        final Button gen = (Button) findViewById(R.id.generate);
         if (gen != null) {
             gen.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // close activity
-                    finish();
+
+                    // Start inderterminate progress bar
+                    ProgressBar progress = (ProgressBar) findViewById(R.id.progress);
+                    if (progress != null) {
+                        progress.setVisibility(View.VISIBLE);
+                        progress.setIndeterminate(true);
+                    }
+
+                    // Gray generate button (to avoid user repeasting it)
+                    gen.setEnabled(false);
+
+                    mAbortReport = false;
+
+                    Thread t = new Thread(new ReportGenerator(), "ReportGenerator");
+                    t.start();
                 }
             });
+        }
+    }
+
+    private void setupHandler() {
+        mHandler = new Handler(new Callback() {
+
+            @Override
+            public boolean handleMessage(Message msg) {
+                if (msg.what == MSG_REPORT_COMPLETE) {
+
+                    // Get the report associated with the message
+                    String report = (String) msg.obj;
+
+                    // Stop inderterminate progress bar
+                    ProgressBar progress = (ProgressBar) findViewById(R.id.progress);
+                    if (progress != null) {
+                        progress.setIndeterminate(false);
+                        progress.setVisibility(View.GONE);
+                    }
+
+                    // Gray generate button (to avoid user repeating it)
+                    Button gen = (Button) findViewById(R.id.generate);
+                    if (gen != null) {
+                        gen.setEnabled(true);
+                    }
+
+                    if (report != null) {
+
+                        // Prepare mailto and subject.
+                        String to = String.format(MAILTO, mAppName).trim();
+                        to += "@";
+                        to += DOMTO.replace("/", ".");
+                        to = to.replaceAll("[ _]", "").toLowerCase();
+
+                        String sub = String.format(SUBJECT, mAppName).trim();
+
+                        // Generate the intent to send an email
+                        Intent i = new Intent(Intent.ACTION_SEND);
+                        i.putExtra(Intent.EXTRA_EMAIL, new String[] { to });
+                        i.putExtra(Intent.EXTRA_SUBJECT, sub);
+                        i.putExtra(Intent.EXTRA_TEXT, report);
+                        i.setType("message/rfc822");
+
+                        //-- i = Intent.createChooser(i, "Send Error Email");
+
+                        try {
+                            startActivity(i);
+                        } catch (ActivityNotFoundException e) {
+                            Toast.makeText(getApplicationContext(),
+                                    R.string.errorreport_nomailapp,
+                                    Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "No email/gmail app found", e);
+                        } catch (Exception e) {
+                            Log.d(TAG, "Send email activity failed", e);
+                        }
+
+                        // Finish this activity.
+                        finish();
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    private class ReportGenerator implements Runnable {
+        @Override
+        public void run() {
+
+            // Context c = ErrorReporterUI.this.getApplicationContext();
+
+            StringBuilder sb = new StringBuilder();
+
+            // App info
+            sb.append(String.format("App: %s %s\n",
+                    mAppName,
+                    mAppVersion));
+
+            // Android OS information
+            int sdk = 0;
+            try {
+                sdk = Integer.parseInt(Build.VERSION.SDK);
+            } catch (Exception ignore) {
+            }
+
+            String manufacturer = "--";
+            if (sdk >= 4) {
+                manufacturer = Build.MANUFACTURER;
+            }
+
+            sb.append(String.format("Device: %s (%s %s)\n Build: %s",
+                    Build.MODEL,
+                    manufacturer,
+                    Build.DEVICE));
+
+            sb.append(String.format("Android: %s (SDK %s)\n",
+                    Build.VERSION.RELEASE, Build.VERSION.SDK));
+
+
+            sb.append(String.format("Build: %s",
+                    Build.FINGERPRINT));
+
+            // We're done with the report. Ping back the activity using
+            // a message to get back to the UI thread.
+            if (!mAbortReport) {
+                Message msg = mHandler.obtainMessage(MSG_REPORT_COMPLETE, sb.toString());
+                mHandler.sendMessage(msg);
+            }
         }
     }
 }
