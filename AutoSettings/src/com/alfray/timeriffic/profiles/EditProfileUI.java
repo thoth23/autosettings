@@ -18,10 +18,6 @@
 
 package com.alfray.timeriffic.profiles;
 
-import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.utils.ExceptionHandler;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -32,7 +28,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-public class EditProfileUI extends Activity {
+import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.utils.ExceptionHandlerActivity;
+
+public class EditProfileUI extends ExceptionHandlerActivity {
 
     private static String TAG = "TFC-EditProfUI";
 
@@ -41,13 +40,11 @@ public class EditProfileUI extends Activity {
     private EditText mNameField;
     private CheckBox mEnabledCheck;
     private long mProfId;
-    private ExceptionHandler mExceptionHandler;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mExceptionHandler = new ExceptionHandler(this);
 
         setContentView(R.layout.edit_profile);
         setTitle(R.string.editprofile_title);
@@ -137,7 +134,5 @@ public class EditProfileUI extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        mExceptionHandler.detach();
-        mExceptionHandler = null;
     }
 }

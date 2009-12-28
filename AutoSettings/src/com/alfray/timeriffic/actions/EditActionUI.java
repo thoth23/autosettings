@@ -18,15 +18,6 @@
 
 package com.alfray.timeriffic.actions;
 
-import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.actions.PrefPercentDialog.Accessor;
-import com.alfray.timeriffic.profiles.Columns;
-import com.alfray.timeriffic.profiles.ProfilesDB;
-import com.alfray.timeriffic.utils.AgentWrapper;
-import com.alfray.timeriffic.utils.ExceptionHandler;
-import com.alfray.timeriffic.utils.SettingsHelper;
-
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -44,7 +35,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-public class EditActionUI extends Activity {
+import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.actions.PrefPercentDialog.Accessor;
+import com.alfray.timeriffic.profiles.Columns;
+import com.alfray.timeriffic.profiles.ProfilesDB;
+import com.alfray.timeriffic.utils.AgentWrapper;
+import com.alfray.timeriffic.utils.ExceptionHandlerActivity;
+import com.alfray.timeriffic.utils.SettingsHelper;
+
+public class EditActionUI extends ExceptionHandlerActivity {
 
     private static boolean DEBUG = false;
     private static String TAG = "TFC-EditActionUI";
@@ -78,13 +77,11 @@ public class EditActionUI extends Activity {
     private View mCurrentContextMenuView;
     private PrefPercent[] mPrefPercentOutWrapper = new PrefPercent[1];
     private int mRestoreHourMinValue = -1;
-    private ExceptionHandler mExceptionHandler;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mExceptionHandler = new ExceptionHandler(this);
 
         setContentView(R.layout.edit_action);
         setTitle(R.string.editaction_title);
@@ -439,8 +436,6 @@ public class EditActionUI extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        mExceptionHandler.detach();
-        mExceptionHandler = null;
     }
 
     // -----------

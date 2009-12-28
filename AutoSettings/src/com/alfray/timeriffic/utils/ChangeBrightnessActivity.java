@@ -21,9 +21,6 @@ package com.alfray.timeriffic.utils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import com.alfray.timeriffic.R;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -37,6 +34,8 @@ import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
+
+import com.alfray.timeriffic.R;
 
 /**
  * Changes the global brightness, either setting an actual value.
@@ -55,7 +54,7 @@ import android.view.WindowManager.LayoutParams;
  * - android.permission.HARDWARE_TEST for the pre-Cupcake hack
  * - android.permission.WRITE_SETTINGS to set the global setting
  */
-public class ChangeBrightnessActivity extends Activity {
+public class ChangeBrightnessActivity extends ExceptionHandlerActivity {
 
     private static final String TAG = "TFC-ChgBright";
 

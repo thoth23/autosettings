@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -46,11 +45,12 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.utils.AgentWrapper;
+import com.alfray.timeriffic.utils.ExceptionHandlerActivity;
 
 /**
  * Screen with the introduction text.
  */
-public class IntroActivity extends Activity {
+public class IntroActivity extends ExceptionHandlerActivity {
 
     private static final boolean DEBUG = true;
     private static final String TAG = "TFC-IntroUI";

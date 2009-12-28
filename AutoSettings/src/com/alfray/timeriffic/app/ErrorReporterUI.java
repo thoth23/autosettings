@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Locale;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -49,11 +48,12 @@ import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.ProfilesDB;
 import com.alfray.timeriffic.utils.AgentWrapper;
 import com.alfray.timeriffic.utils.ExceptionHandler;
+import com.alfray.timeriffic.utils.ExceptionHandlerActivity;
 
 /**
  * Screen to generate an error report.
  */
-public class ErrorReporterUI extends Activity {
+public class ErrorReporterUI extends ExceptionHandlerActivity {
 
     private static final boolean DEBUG = true;
     private static final String TAG = "TFC-ErrorUI";
