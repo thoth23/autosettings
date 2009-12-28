@@ -57,7 +57,7 @@ public class AutoReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        ExceptionHandler hanlder = new ExceptionHandler(context);
+        ExceptionHandler handler = new ExceptionHandler(context);
         try {
             PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TimerifficReceiver");
@@ -87,7 +87,7 @@ public class AutoReceiver extends BroadcastReceiver {
                 wl.release();
             }
         } finally {
-            hanlder.detach();
+            handler.detach();
         }
     }
 }

@@ -20,7 +20,6 @@ package com.alfray.timeriffic.profiles;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Dialog;
@@ -54,10 +53,10 @@ import com.alfray.timeriffic.app.TimerifficApp;
 import com.alfray.timeriffic.prefs.PrefsActivity;
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.utils.AgentWrapper;
-import com.alfray.timeriffic.utils.ExceptionHandler;
+import com.alfray.timeriffic.utils.ExceptionHandlerActivity;
 import com.alfray.timeriffic.utils.SettingsHelper;
 
-public class ProfilesUI extends Activity {
+public class ProfilesUI extends ExceptionHandlerActivity {
 
     private static final String TAG = "TFC-ProfilesUI";
     private static final boolean DEBUG = true;
@@ -100,7 +99,6 @@ public class ProfilesUI extends Activity {
     };
 
     private ColIndexes mColIndexes = new ColIndexes();
-    private ExceptionHandler mExceptionHandler;
 
     /**
      * Called when the activity is created.
@@ -111,7 +109,6 @@ public class ProfilesUI extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mExceptionHandler = new ExceptionHandler(this);
 
         String version = "??";
         try {
@@ -447,8 +444,6 @@ public class ProfilesUI extends Activity {
     protected void onStop() {
         super.onStop();
         mAgentWrapper.stop(this);
-        mExceptionHandler.detach();
-        mExceptionHandler = null;
     }
 
     private void setDataListener() {
