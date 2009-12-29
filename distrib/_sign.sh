@@ -54,6 +54,29 @@ function process() {
 	echo "$DEST has been signed and zipaligned (added $((SIZE2-SIZE1)) bytes)" 
 }
 
+function update() {
+	F="$1"
+	K="Key"
+	I="i"
+	U="u"
+	if ! unzip -l $F | grep -qs $K$I ; then
+		echo "Missing file $K$I in $F"
+		exit 2
+	else
+		echo "Verified $K$I"
+	fi
+	if unzip -l $F | grep -qs $K$U ; then
+		N=`unzip -l $F | grep $K$U | awk '{ print $4 }'`
+		echo "Extra file $N found in $F"
+		zip -d $F $N
+	else
+		echo "Verified !$K$U"
+	fi
+}
+
 for i in [tTfFB]+([^_]).apk ; do
-	[ -f "$i" ] && process "$i"
+	if [ -f "$i" ]; then
+		[[ "${i:0:1}" == "T" ]] && update "$i"
+		process "$i"
+	fi
 done
