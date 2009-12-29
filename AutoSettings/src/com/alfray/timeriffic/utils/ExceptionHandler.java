@@ -136,8 +136,13 @@ public class ExceptionHandler {
                 // trim the string if it gets too big.
                 if (currEx.length() > 4096) {
                     int pos = currEx.indexOf(SEP_END);
+                    int p = pos + SEP_END.length();
                     if (pos > 0) {
-                        currEx = currEx.substring(pos + SEP_END.length());
+                        if (p < currEx.length()) {
+                            currEx = currEx.substring(p);
+                        } else {
+                            currEx = "";
+                        }
                     }
                 }
 

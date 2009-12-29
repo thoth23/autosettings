@@ -306,9 +306,12 @@ public class ApplySettings {
         if (DEBUG) Log.d(TAG, s2);
     }
 
-    private void addToDebugLog(PrefsValues prefs, String time, String logActions) {
+    protected static final String SEP_START = " [ ";
+    protected static final String SEP_END = " ]\n";
 
-        logActions = time + " [ " + logActions + " ]\n";
+    protected void addToDebugLog(PrefsValues prefs, String time, String logActions) {
+
+        logActions = time + SEP_START + logActions + SEP_END;
         int len = logActions.length();
 
         // We try to keep only 4k in the buffer
@@ -323,14 +326,16 @@ public class ApplySettings {
                 if (lena + len > max) {
                     int extra = lena + len - max;
                     int pos = -1;
+                    int p = -1;
                     do {
-                        pos = a.indexOf(" ]", pos + 1);
-                    } while (pos >= 0 && pos < extra);
+                        pos = a.indexOf(SEP_END, pos + 1);
+                        p = pos + SEP_END.length();
+                    } while (pos >= 0 && p < extra);
 
-                    if (pos < 0 || (pos + 2) > lena) {
+                    if (pos < 0 || p >= lena) {
                         a = null;
                     } else {
-                        a = a.substring(pos + 2);
+                        a = a.substring(p);
                     }
                 }
             }
