@@ -48,6 +48,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.app.AutoReceiver;
+import com.alfray.timeriffic.app.ErrorReporterUI;
 import com.alfray.timeriffic.app.IntroActivity;
 import com.alfray.timeriffic.app.TimerifficApp;
 import com.alfray.timeriffic.prefs.PrefsActivity;
@@ -679,8 +680,9 @@ public class ProfilesUI extends ExceptionHandlerActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, R.string.append_profile,  0, R.string.append_profile).setIcon(R.drawable.ic_menu_add);
-        menu.add(0, R.string.about,  0, R.string.about).setIcon(R.drawable.ic_menu_help);
         menu.add(0, R.string.settings,  0, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
+        menu.add(0, R.string.about,  0, R.string.about).setIcon(R.drawable.ic_menu_help);
+        menu.add(0, R.string.report_error,  0, R.string.report_error).setIcon(R.drawable.ic_menu_report);
         menu.add(0, R.string.check_now,  0, R.string.check_now).setIcon(R.drawable.ic_menu_rotate);
         menu.add(0, R.string.reset,  0, R.string.reset).setIcon(R.drawable.ic_menu_revert);
 
@@ -708,12 +710,19 @@ public class ProfilesUI extends ExceptionHandlerActivity {
         case R.string.append_profile:
             appendNewProfile();
             break;
+        case R.string.report_error:
+            showErrorReport();
+            break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void showPrefs() {
         startActivityForResult(new Intent(this, PrefsActivity.class), SETTINGS_UPDATED);
+    }
+
+    private void showErrorReport() {
+        startActivity(new Intent(this, ErrorReporterUI.class));
     }
 
     /**

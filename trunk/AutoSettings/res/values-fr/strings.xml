@@ -34,6 +34,8 @@
     <string name="about">Information</string>
     <!-- Menu - Reset: reset current profile. -->
     <string name="reset">Tout effacer</string>
+    <!-- Menu - Report Error: display the error reporting screen. -->
+    <string name="report_error">Reporter une erreur</string>
 
 
     <!-- === Context Menu on Profile List === -->
@@ -221,5 +223,16 @@
     <string name="checkservices_miss_wifi_service">Etat de la Wi-Fi</string>
     <string name="checkservices_miss_airplane">Mode avion</string>
     <string name="checkservices_miss_brightness">Luminosité</string>
+
+    <!-- === Error Reporting === -->
+
+    <!-- Error Report UI: dialog title. -->
+    <string name="errorreport_title">Timeriffic - Reporter des erreurs</string>
+
+    <!-- Error Report UI: generate button. -->
+    <string name="errorreport_generate">Générer</string>
+
+    <!-- Error Report UI: sending fail because there's no mail app. -->
+    <string name="errorreport_nomailapp">Pas d'application d'émail/gmail trouvée pour envoyer le message. Veuillez en installer une (comme K9 sur Market) d\'abord.</string>
 
 </resources>
