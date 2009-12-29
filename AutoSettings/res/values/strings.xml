@@ -36,6 +36,8 @@
     <string name="about">Information</string>
     <!-- Menu - Reset: reset current profile. -->
     <string name="reset">Reset</string>
+    <!-- Menu - Report Error: display the error reporting screen. -->
+    <string name="report_error">Report Error</string>
 
 
     <!-- === Context Menu on Profile List === -->
