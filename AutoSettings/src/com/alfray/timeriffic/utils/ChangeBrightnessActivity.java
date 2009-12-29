@@ -36,6 +36,7 @@ import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.error.ExceptionHandlerActivity;
 
 /**
  * Changes the global brightness, either setting an actual value.

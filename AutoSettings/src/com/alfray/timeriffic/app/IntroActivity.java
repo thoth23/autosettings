@@ -43,9 +43,9 @@ import android.widget.ProgressBar;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.error.ExceptionHandlerActivity;
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.utils.AgentWrapper;
-import com.alfray.timeriffic.utils.ExceptionHandlerActivity;
 
 /**
  * Screen with the introduction text.

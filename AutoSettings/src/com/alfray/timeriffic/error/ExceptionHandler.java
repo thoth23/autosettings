@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.alfray.timeriffic.utils;
+package com.alfray.timeriffic.error;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -34,7 +34,6 @@ import android.os.Build;
 import android.util.Log;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.app.ErrorReporterUI;
 import com.alfray.timeriffic.prefs.PrefsValues;
 
 public class ExceptionHandler {

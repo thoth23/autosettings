@@ -16,15 +16,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.alfray.timeriffic.utils;
+package com.alfray.timeriffic.error;
+
 
 import android.app.Activity;
 import android.os.Bundle;
 
 /**
- * An {@link Activity} that uses our {@link ExceptionHandler}.
+ * An {@link Activity} base class that uses our {@link ExceptionHandler}.
  */
-public class ExceptionHandlerActivity extends Activity {
+public abstract class ExceptionHandlerActivity extends Activity {
 
     private ExceptionHandler mExceptionHandler;
 
