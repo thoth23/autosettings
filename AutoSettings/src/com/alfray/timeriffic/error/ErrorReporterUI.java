@@ -390,7 +390,7 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
         }
 
         private void addAppInfo(StringBuilder sb) {
-            sb.append(String.format("App: %s %s\n",
+            sb.append(String.format("\n## App: %s %s\n",
                     mAppName,
                     mAppVersion));
         }
