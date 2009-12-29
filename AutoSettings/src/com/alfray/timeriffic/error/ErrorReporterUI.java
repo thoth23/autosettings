@@ -137,7 +137,6 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
         loadFile(wv, file);
         setupJavaScript(wv);
         setupProgressBar(wv);
-        setupWebViewClient(wv);
         setupButtons();
         setupHandler();
     }
@@ -232,36 +231,6 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                 }
             });
         }
-    }
-
-    private void setupWebViewClient(final WebView wv) {
-        /* -- not needed in this webview
-        wv.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.endsWith("/#new")) {
-                    wv.loadUrl("javascript:location.href=\"#new\"");
-                    return true;
-
-                } else if (url.endsWith("/#known")) {
-                    wv.loadUrl("javascript:location.href=\"#known\"");
-                    return true;
-
-                } else if (url.startsWith("market://")) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(url));
-                    try {
-                        startActivity(intent);
-                    } catch (ActivityNotFoundException e) {
-                        // ignore. just means this device has no Market app
-                        // so maybe it's an emulator.
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });
-        */
     }
 
     private void setupButtons() {
@@ -383,6 +352,7 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
 
             StringBuilder sb = new StringBuilder();
 
+            addHeader(sb, c);
             addAppInfo(sb);
             addAndroidBuildInfo(sb);
             addProfiles(sb, c);
@@ -396,6 +366,14 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
             if (!mAbortReport) {
                 Message msg = mHandler.obtainMessage(MSG_REPORT_COMPLETE, sb.toString());
                 mHandler.sendMessage(msg);
+            }
+        }
+
+        private void addHeader(StringBuilder sb, Context c) {
+            try {
+                String s = c.getString(R.string.errorreport_emailheader);
+                sb.append(s.trim().replace('/', '\n')).append("\n");
+            } catch (Exception ignore) {
             }
         }
 

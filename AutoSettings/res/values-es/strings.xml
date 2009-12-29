@@ -235,4 +235,17 @@
     <!-- Error Report UI: sending fail because there's no mail app. -->
     <string name="errorreport_nomailapp">No puedo encontrar una aplicación de correo electrónico para enviar el mensaje. Por favor instale una, como K9 de Market.</string>
 
+    <!-- Error Report UI: header of generated email (the rest of the log is in English).
+         Formatting: Spacing matters. Use "/" to insert a new line.
+    -->
+    <string name="errorreport_emailheader">Este es un informe de error para Timeriffic./
+Para ayudarle mejor, por favor describe:/
+- ¿Qué hacía con Timeriffic?/
+- ¿Qué esperaba?/
+- ¿Qué ocurrió realmente?/
+¡Muchas gracias!/
+/
+El resto del informe automatizado comienza aquí./
+    </string>
+
 </resources>

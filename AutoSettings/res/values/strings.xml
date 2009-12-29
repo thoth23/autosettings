@@ -244,4 +244,17 @@
     <!-- Error Report UI: sending fail because there's no mail app. -->
     <string name="errorreport_nomailapp">No Email/Gmail app found to send the message. Please install one such as K9 from Market first.</string>
 
+    <!-- Error Report UI: header of generated email (the rest of the log is in English).
+         Formatting: Spacing matters. Use "/" to insert a new line.
+    -->
+    <string name="errorreport_emailheader">This is a bug report for Timeriffic./
+In order to help you best, please describe:/
+- What were you doing with Timeriffic?/
+- What did you expect?/
+- What actually happened?/
+Thanks a lot!/
+/
+There rest of the automated report starts here.
+    </string>
+
 </resources>
