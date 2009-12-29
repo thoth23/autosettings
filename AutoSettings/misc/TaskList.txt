@@ -19,6 +19,10 @@ TODO v2.0
 
 DONE for 1.8
 
+20091229 1.8.01 in Market
+20091229 Fix: remove phone_state action in AutoReceiver, must not reset profiles on phone call
+20091229 Fix insert action in DB: always add at end, linear repack when at top
+20091229 1.8.00 on Market
 20091228 Fix Edit Timed Action in landscape (missing a button)
 20091227 Error Report UI
 20091225 Exception Handler
