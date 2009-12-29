@@ -34,6 +34,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
+import android.widget.Toast;
 
 //-----------------------------------------------
 
@@ -185,6 +186,32 @@ public class ProfilesDB {
         return -1;
     }
 
+    /**
+     * Returns the max action index (not id!) for this profile.
+     * Returns -1 if there are not actions.
+     */
+    public long getMaxActionIndex(long profileIndex) {
+        try {
+            long pid = (profileIndex << Columns.PROFILE_SHIFT);
+            long maxPid = (profileIndex + 1) << Columns.PROFILE_SHIFT;
+
+            // e.g. SELECT MAX(prof_id) FROM profiles WHERE type=2 AND prof_id > 32768 AND prof_id < 65536
+            SQLiteStatement sql = mDb.compileStatement(
+                    String.format("SELECT MAX(%s) FROM %s WHERE %s=%d AND %s>%d AND %s<%d;",
+                            Columns.PROFILE_ID,
+                            PROFILES_TABLE,
+                            Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
+                            Columns.PROFILE_ID, pid,
+                            Columns.PROFILE_ID, maxPid));
+
+            long result = sql.simpleQueryForLong();
+            if (result > pid && result < maxPid) return result & Columns.ACTION_MASK;
+        } catch (SQLiteDoneException e) {
+            // no actions
+        }
+        return -1;
+    }
+
     // ----------------------------------
 
     /**
@@ -242,6 +269,8 @@ public class ProfilesDB {
      * Inserts a new action for the given profile index.
      * If afterActionIndex is == 0, inserts at the beginning of these actions.
      *
+     * NOTE: currently ignore afterActionIndex and always add at the end.
+     *
      * @return the action index (not the row id)
      */
     public long insertTimedAction(long profileIndex,
@@ -256,17 +285,26 @@ public class ProfilesDB {
         try {
             long pid = profileIndex << Columns.PROFILE_SHIFT;
 
-            long index = getMinActionIndex(profileIndex, afterActionIndex);
+            long maxIndex = getMaxActionIndex(profileIndex);
 
-            if (index < 0) index = Columns.ACTION_MASK - 1;
+            if (maxIndex >= Columns.ACTION_MASK) {
+                // Last index is used. Try to repack the action list.
+                maxIndex = repackTimeActions(profileIndex);
 
-            if (index - afterActionIndex < 2) {
-                // TODO repack
-                throw new UnsupportedOperationException("No space left to insert action.");
+                if (maxIndex == Columns.ACTION_MASK) {
+                    // definitely full... too bad.
+                    Toast.makeText(mContext,
+                            "No space left to insert action. Please delete some first.",
+                            Toast.LENGTH_LONG).show();
+                    return -1;
+                }
             }
 
-            index = (index + afterActionIndex) / 2; // get middle offset
+            if (maxIndex < 0) {
+                maxIndex = 0;
+            }
 
+            long index = maxIndex + 1;
             pid += index;
 
             String description = TimedActionUtils.computeDescription(
@@ -295,7 +333,83 @@ public class ProfilesDB {
         }
     }
 
+    /**
+     * Called by insertTimedAction within an existing transaction.
+     *
+     * Returns the new highest action index (not id) used.
+     * Returns 0 if there were no actions.
+     * @return
+     */
+    private long repackTimeActions(long profileIndex) {
+
+        long pid = (profileIndex << Columns.PROFILE_SHIFT);
+        long maxPid = (profileIndex + 1) << Columns.PROFILE_SHIFT;
+
+        // Generates query with WHERE type=2 AND prof_id > 32768 AND prof_id < 65536
+        String where = String.format("%s=%d AND %s>%d AND %s<%d",
+                            Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
+                            Columns.PROFILE_ID, pid,
+                            Columns.PROFILE_ID, maxPid);
+
+        Cursor c = null;
+        try {
+            c = mDb.query(
+                    PROFILES_TABLE,                         // table
+                    new String[] { Columns.PROFILE_ID } ,   // columns
+                    where,                                  // selection
+                    null,                                   // selectionArgs
+                    null,                                   // groupBy
+                    null,                                   // having
+                    Columns.PROFILE_ID                      // orderBy
+                    );
+
+            int numActions = c.getCount();
+
+            if (DEBUG) Log.d(TAG, String.format("Repacking %d action", numActions));
+
+            if (numActions == 0 || numActions == Columns.ACTION_MASK) {
+                // we know the table is empty or full, no need to repack.
+                return numActions;
+            }
+
+            int colProfId = c.getColumnIndexOrThrow(Columns.PROFILE_ID);
+
+            if (c.moveToFirst()) {
+                int i = 1;
+                do {
+                    long profId = c.getLong(colProfId);
+
+                    long newId = pid + (i++);
+
+                    if (profId != newId) {
+                        // generates update with WHERE type=2 AND prof_id=id
+                        where = String.format("%s=%d AND %s=%d",
+                                Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
+                                Columns.PROFILE_ID, profId);
+
+                        ContentValues values = new ContentValues(1);
+                        values.put(Columns.PROFILE_ID, newId);
+
+                        mDb.update(
+                                PROFILES_TABLE, // table
+                                values,         // values
+                                where,          // whereClause
+                                null            // whereArgs
+                                );
+                    }
+
+                } while (c.moveToNext());
+            }
+
+            // new highest index is numActions
+            return numActions;
+        } finally {
+            if (c != null) c.close();
+        }
+    }
+
     // ----------------------------------
+
 
     /** id is used if >= 0 */
     public Cursor query(long id,

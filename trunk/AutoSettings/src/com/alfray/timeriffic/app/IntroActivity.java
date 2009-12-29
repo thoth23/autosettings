@@ -70,6 +70,7 @@ public class IntroActivity extends ExceptionHandlerActivity {
                 try {
                     pi = pm.getPackageInfo(getPackageName(), 0);
                     mVersion = pi.versionName;
+                    if (mVersion == null) mVersion = "";
                 } catch (NameNotFoundException e) {
                     mVersion = ""; // failed, ignored
                 }
@@ -79,7 +80,9 @@ public class IntroActivity extends ExceptionHandlerActivity {
 
         public String shortVersion() {
             String v = longVersion();
-            v = v.substring(0, v.lastIndexOf('.'));
+            if (v != null) {
+                v = v.substring(0, v.lastIndexOf('.'));
+            }
             return v;
         }
     }
