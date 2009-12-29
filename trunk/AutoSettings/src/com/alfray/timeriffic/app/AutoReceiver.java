@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -63,6 +64,15 @@ public class AutoReceiver extends BroadcastReceiver {
             WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TimerifficReceiver");
             try {
                 wl.acquire();
+
+                // If we get called because of android.permission.READ_PHONE_STATE
+                // we do NOT want to apply all the settings.
+                // TODO later what we want is to:
+                // - prevent starting airplane mode when in call mode
+                // - have a whitelist of phone entries that should never be muted
+                if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(intent.getAction())) {
+                    return;
+                }
 
                 int displayToast = TOAST_NONE;
                 Bundle extras = intent.getExtras();
