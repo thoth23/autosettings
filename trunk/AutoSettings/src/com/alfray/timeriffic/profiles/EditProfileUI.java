@@ -29,7 +29,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.utils.ExceptionHandlerActivity;
+import com.alfray.timeriffic.error.ExceptionHandlerActivity;
 
 public class EditProfileUI extends ExceptionHandlerActivity {
 

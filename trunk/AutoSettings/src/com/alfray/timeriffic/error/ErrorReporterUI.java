@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.alfray.timeriffic.app;
+package com.alfray.timeriffic.error;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,11 +44,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.app.ApplySettings;
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.ProfilesDB;
 import com.alfray.timeriffic.utils.AgentWrapper;
-import com.alfray.timeriffic.utils.ExceptionHandler;
-import com.alfray.timeriffic.utils.ExceptionHandlerActivity;
 
 /**
  * Screen to generate an error report.

@@ -68,7 +68,7 @@
 
         <service
             android:name=".app.AutoService" />
-    <activity android:name=".app.ErrorReporterUI" android:theme="@android:style/Theme.Dialog" android:label="@string/errorreport_title"></activity>
+    <activity android:theme="@android:style/Theme.Dialog" android:label="@string/errorreport_title" android:name=".error.ErrorReporterUI"></activity>
 </application>
 
     <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4"/>

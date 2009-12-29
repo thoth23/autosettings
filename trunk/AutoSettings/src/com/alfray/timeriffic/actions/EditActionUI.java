@@ -37,10 +37,10 @@ import android.widget.TimePicker;
 
 import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.actions.PrefPercentDialog.Accessor;
+import com.alfray.timeriffic.error.ExceptionHandlerActivity;
 import com.alfray.timeriffic.profiles.Columns;
 import com.alfray.timeriffic.profiles.ProfilesDB;
 import com.alfray.timeriffic.utils.AgentWrapper;
-import com.alfray.timeriffic.utils.ExceptionHandlerActivity;
 import com.alfray.timeriffic.utils.SettingsHelper;
 
 public class EditActionUI extends ExceptionHandlerActivity {
