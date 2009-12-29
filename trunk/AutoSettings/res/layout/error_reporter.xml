@@ -39,6 +39,13 @@
         android:background="@null"
         />
 
+    <WebView
+        android:id="@+id/web"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:background="@drawable/intro_bg_gradient"
+        />
+
     <ProgressBar
         android:id="@+id/progress"
         android:layout_width="wrap_content"
@@ -47,13 +54,6 @@
         style="?android:attr/progressBarStyleLarge"
         android:progress="0"
         android:max="100"
-        />
-
-    <WebView
-        android:id="@+id/web"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent"
-        android:background="@drawable/intro_bg_gradient"
         />
 
 </FrameLayout>

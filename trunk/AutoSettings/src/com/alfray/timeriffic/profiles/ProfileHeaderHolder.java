@@ -30,10 +30,10 @@ import com.alfray.timeriffic.profiles.ProfilesUI.ColIndexes;
 /**
  * The holder for a profile header row.
  */
-class ProfileHeaderHolder extends BaseHolder {
+public class ProfileHeaderHolder extends BaseHolder {
 
     private static boolean DEBUG = true;
-    private static String TAG = "TFC-PHHolder";
+    public static String TAG = "TFC-PHHolder";
 
     public ProfileHeaderHolder(ProfilesUI activity, View view) {
         super(activity, view);

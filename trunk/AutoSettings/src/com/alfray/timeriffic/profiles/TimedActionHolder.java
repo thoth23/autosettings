@@ -30,10 +30,10 @@ import com.alfray.timeriffic.profiles.ProfilesUI.ColIndexes;
 /**
  * The holder for a timed action row.
  */
-class TimedActionHolder extends BaseHolder {
+public class TimedActionHolder extends BaseHolder {
 
     private static boolean DEBUG = true;
-    private static String TAG = "TFC-TAHolder";
+    public static String TAG = "TFC-TAHolder";
 
     public TimedActionHolder(ProfilesUI activity, View view) {
         super(activity, view);

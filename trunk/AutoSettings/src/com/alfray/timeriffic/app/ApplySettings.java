@@ -46,7 +46,7 @@ import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;
 public class ApplySettings {
 
     private final static boolean DEBUG = true;
-    private final static String TAG = "TFC-ApplySettings";
+    public final static String TAG = "TFC-ApplySettings";
 
     private void showToast(Context context, String s, int duration) {
         try {

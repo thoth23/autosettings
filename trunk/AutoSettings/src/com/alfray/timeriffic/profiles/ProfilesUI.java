@@ -59,8 +59,8 @@ import com.alfray.timeriffic.utils.SettingsHelper;
 
 public class ProfilesUI extends ExceptionHandlerActivity {
 
-    private static final String TAG = "TFC-ProfilesUI";
     private static final boolean DEBUG = true;
+    public static final String TAG = "TFC-ProfilesUI";
 
     static final int DATA_CHANGED = 42;
     static final int SETTINGS_UPDATED = 43;

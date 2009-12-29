@@ -33,7 +33,7 @@ import com.alfray.timeriffic.error.ExceptionHandlerActivity;
 
 public class EditProfileUI extends ExceptionHandlerActivity {
 
-    private static String TAG = "TFC-EditProfUI";
+    public static String TAG = "TFC-EditProfUI";
 
     /** Extra long with the profile id (not index) to edit. */
     public static final String EXTRA_PROFILE_ID = "prof_id";

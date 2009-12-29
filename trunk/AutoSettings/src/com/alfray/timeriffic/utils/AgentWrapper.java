@@ -30,7 +30,8 @@ import android.util.Log;
 public class AgentWrapper {
 
     private static final boolean DEBUG = true;
-    private static final String TAG = "TFC-Agent";
+    public static final String TAG = "TFC-Agent";
+
     private static Class<?> mAgentClazz;
     private static String mK;
 

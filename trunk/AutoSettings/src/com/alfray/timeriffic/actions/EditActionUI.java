@@ -46,7 +46,7 @@ import com.alfray.timeriffic.utils.SettingsHelper;
 public class EditActionUI extends ExceptionHandlerActivity {
 
     private static boolean DEBUG = false;
-    private static String TAG = "TFC-EditActionUI";
+    public static String TAG = "TFC-EditActionUI";
 
     /** Extra long with the action prof_id (not index) to edit. */
     public static final String EXTRA_ACTION_ID = "action_id";
