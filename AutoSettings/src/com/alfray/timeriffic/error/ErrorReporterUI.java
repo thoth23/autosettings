@@ -18,8 +18,10 @@
 
 package com.alfray.timeriffic.error;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.Locale;
 
@@ -44,10 +46,19 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.actions.EditActionUI;
 import com.alfray.timeriffic.app.ApplySettings;
+import com.alfray.timeriffic.app.AutoReceiver;
+import com.alfray.timeriffic.app.IntroActivity;
 import com.alfray.timeriffic.prefs.PrefsValues;
+import com.alfray.timeriffic.profiles.EditProfileUI;
+import com.alfray.timeriffic.profiles.ProfileHeaderHolder;
 import com.alfray.timeriffic.profiles.ProfilesDB;
+import com.alfray.timeriffic.profiles.ProfilesUI;
+import com.alfray.timeriffic.profiles.TimedActionHolder;
 import com.alfray.timeriffic.utils.AgentWrapper;
+import com.alfray.timeriffic.utils.ChangeBrightnessActivity;
+import com.alfray.timeriffic.utils.SettingsHelper;
 
 /**
  * Screen to generate an error report.
@@ -55,7 +66,7 @@ import com.alfray.timeriffic.utils.AgentWrapper;
 public class ErrorReporterUI extends ExceptionHandlerActivity {
 
     private static final boolean DEBUG = true;
-    private static final String TAG = "TFC-ErrorUI";
+    public static final String TAG = "TFC-ErrorUI";
 
     /**
      * Mailto address. %s is app name. Address is naively obfuscated
@@ -219,15 +230,8 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
             wv.setWebChromeClient(new WebChromeClient() {
                 @Override
                 public void onProgressChanged(WebView view, int newProgress) {
-                    // Only change the progress bar when its in "determinate" mode.
-                    // It starts this way, and we use this to indicate loading
-                    // of the web view.
-                    // Later the generator thread will change it to indeterminate
-                    // mode, in which case we don't override it.
-                    if (!progress.isIndeterminate()) {
-                        progress.setProgress(newProgress);
-                        progress.setVisibility(newProgress == 100 ? View.GONE : View.VISIBLE);
-                    }
+                    progress.setProgress(newProgress);
+                    progress.setVisibility(newProgress >= 100 ? View.GONE : View.VISIBLE);
                 }
             });
         }
@@ -274,59 +278,65 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
 
             @Override
             public boolean handleMessage(Message msg) {
+
                 if (msg.what == MSG_REPORT_COMPLETE) {
 
-                    // Get the report associated with the message
-                    String report = (String) msg.obj;
+                    try {
+                        // Get the report associated with the message
+                        String report = (String) msg.obj;
 
-                    // Stop inderterminate progress bar
-                    ProgressBar progress = (ProgressBar) findViewById(R.id.progress);
-                    if (progress != null) {
-                        progress.setIndeterminate(false);
-                        progress.setVisibility(View.GONE);
-                    }
-
-                    // Gray generate button (to avoid user repeating it)
-                    Button gen = (Button) findViewById(R.id.generate);
-                    if (gen != null) {
-                        gen.setEnabled(true);
-                    }
-
-                    if (report != null) {
-
-                        // Prepare mailto and subject.
-                        String to = String.format(MAILTO, mAppName).trim();
-                        to += "@";
-                        to += DOMTO.replace("/", ".");
-                        to = to.replaceAll("[ _]", "").toLowerCase();
-
-                        String sub = String.format(SUBJECT, mAppName).trim();
-
-                        // Generate the intent to send an email
-                        Intent i = new Intent(Intent.ACTION_SEND);
-                        i.putExtra(Intent.EXTRA_EMAIL, new String[] { to });
-                        i.putExtra(Intent.EXTRA_SUBJECT, sub);
-                        i.putExtra(Intent.EXTRA_TEXT, report);
-                        i.setType("message/rfc822");
-
-                        try {
-                            startActivity(i);
-                        } catch (ActivityNotFoundException e) {
-                            // This is likely to happen if there's no mail app.
-                            Toast.makeText(getApplicationContext(),
-                                    R.string.errorreport_nomailapp,
-                                    Toast.LENGTH_LONG).show();
-                            Log.d(TAG, "No email/gmail app found", e);
-                        } catch (Exception e) {
-                            // This is unlikely to happen.
-                            Toast.makeText(getApplicationContext(),
-                                    "Send email activity failed: " + e.toString(),
-                                    Toast.LENGTH_LONG).show();
-                            Log.d(TAG, "Send email activity failed", e);
+                        // Stop inderterminate progress bar
+                        ProgressBar progress = (ProgressBar) findViewById(R.id.progress);
+                        if (progress != null) {
+                            progress.setIndeterminate(false);
+                            progress.setVisibility(View.GONE);
                         }
 
-                        // Finish this activity.
-                        finish();
+                        if (report != null) {
+
+                            // Prepare mailto and subject.
+                            String to = String.format(MAILTO, mAppName).trim();
+                            to += "@";
+                            to += DOMTO.replace("/", ".");
+                            to = to.replaceAll("[ _]", "").toLowerCase();
+
+                            String sub = String.format(SUBJECT, mAppName).trim();
+
+                            // Generate the intent to send an email
+                            Intent i = new Intent(Intent.ACTION_SEND);
+                            i.putExtra(Intent.EXTRA_EMAIL, new String[] { to });
+                            i.putExtra(Intent.EXTRA_SUBJECT, sub);
+                            i.putExtra(Intent.EXTRA_TEXT, report);
+                            i.setType("message/rfc822");
+
+                            try {
+                                startActivity(i);
+                            } catch (ActivityNotFoundException e) {
+                                // This is likely to happen if there's no mail app.
+                                Toast.makeText(getApplicationContext(),
+                                        R.string.errorreport_nomailapp,
+                                        Toast.LENGTH_LONG).show();
+                                Log.d(TAG, "No email/gmail app found", e);
+                            } catch (Exception e) {
+                                // This is unlikely to happen.
+                                Toast.makeText(getApplicationContext(),
+                                        "Send email activity failed: " + e.toString(),
+                                        Toast.LENGTH_LONG).show();
+                                Log.d(TAG, "Send email activity failed", e);
+                            }
+
+                            // Finish this activity.
+                            finish();
+                        }
+                    } finally {
+                        // We're not supposed to get there since there's a finish
+                        // above. So maybe something failed and we should let the
+                        // user retry, so in any case, ungray generate button.
+
+                        Button gen = (Button) findViewById(R.id.generate);
+                        if (gen != null) {
+                            gen.setEnabled(true);
+                        }
                     }
                 }
                 return false;
@@ -355,9 +365,11 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
             addHeader(sb, c);
             addAppInfo(sb);
             addAndroidBuildInfo(sb);
-            addProfiles(sb, c);
-            addLastExceptions(sb, pv);
-            addLastActions(sb, pv);
+
+            if (!mAbortReport) addProfiles(sb, c);
+            if (!mAbortReport) addLastExceptions(sb, pv);
+            if (!mAbortReport) addLastActions(sb, pv);
+            if (!mAbortReport) addLogcat(sb);
 
             // -- Report complete
 
@@ -452,5 +464,82 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                 // ignore
             }
         }
+
+        private void addLogcat(StringBuilder sb) {
+            sb.append(String.format("\n## %s Logcat ##\n\n", mAppName));
+
+            String[] cmd = new String[] {
+                    "logcat",
+                    "-d",       // dump log and exits
+
+                    ProfilesUI.TAG + ":D",
+                    EditProfileUI.TAG + ":D",
+                    EditActionUI.TAG + ":D",
+                    IntroActivity.TAG + ":D",
+                    ErrorReporterUI.TAG + ":D",
+                    ChangeBrightnessActivity.TAG + ":D",
+
+                    ProfilesDB.TAG + ":D",
+                    ProfileHeaderHolder.TAG + ":D",
+                    TimedActionHolder.TAG + ":D",
+
+                    ApplySettings.TAG + ":D",
+                    AutoReceiver.TAG + ":D",
+                    SettingsHelper.TAG + ":D",
+                    ExceptionHandler.TAG + ":D",
+                    AgentWrapper.TAG + ":D",
+
+                    "*:S",      // silence all tags we don't want
+            };
+
+            try {
+                Process p = Runtime.getRuntime().exec(cmd);
+
+                InputStreamReader isr = null;
+                BufferedReader br = null;
+
+                try {
+                    InputStream is = p.getInputStream();
+                    isr = new InputStreamReader(is);
+                    br = new BufferedReader(isr);
+
+                    String line = null;
+
+                    // Make sure this doesn't take forever.
+                    // We cut after 30 seconds which is already very long.
+                    long maxMs = System.currentTimeMillis() + 30*1000;
+                    int count = 0;
+
+                    while (!mAbortReport && (line = br.readLine()) != null) {
+                        sb.append(line).append("\n");
+
+                        // check time limit once in a while
+                        count++;
+                        if (count > 50) {
+                            if (System.currentTimeMillis() > maxMs) {
+                                // This may or may not work.
+                                // See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4485742
+                                p.destroy();
+                                break;
+                            }
+                            count = 0;
+                        }
+                    }
+
+                } finally {
+                    if (br != null) {
+                        br.close();
+                    }
+                    if (isr != null) {
+                        isr.close();
+                    }
+                }
+
+            } catch (IOException e) {
+                Log.d(TAG, "Logcat exec failed", e);
+            } catch (Throwable ignore) {
+            }
+        }
+
     }
 }

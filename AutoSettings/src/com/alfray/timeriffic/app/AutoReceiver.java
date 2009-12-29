@@ -35,7 +35,7 @@ import com.alfray.timeriffic.prefs.PrefsValues;
 public class AutoReceiver extends BroadcastReceiver {
 
     private final static boolean DEBUG = true;
-    private final static String TAG = "TFC-Receiver";
+    public final static String TAG = "TFC-Receiver";
 
     /** Name of intent to broadcast to activate this receiver. */
     public final static String ACTION_AUTO_CHECK_STATE = "com.alfray.intent.action.AUTO_CHECK_STATE";

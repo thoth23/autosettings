@@ -57,7 +57,7 @@ import com.alfray.timeriffic.error.ExceptionHandlerActivity;
  */
 public class ChangeBrightnessActivity extends ExceptionHandlerActivity {
 
-    private static final String TAG = "TFC-ChgBright";
+    public static final String TAG = "TFC-ChgBright";
 
     /** Using 0 will actually turn the screen off! */
     private static final int BR_MIN = 1;

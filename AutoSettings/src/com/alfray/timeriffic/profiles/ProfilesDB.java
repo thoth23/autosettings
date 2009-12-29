@@ -51,8 +51,8 @@ import android.util.Log;
  */
 public class ProfilesDB {
 
-    private static final String TAG = "TFC-ProfDB";
     private static final boolean DEBUG = true;
+    public static final String TAG = "TFC-ProfDB";
 
     private static final String PROFILES_TABLE = "profiles";
     private static final String DB_NAME = "profiles.db";
