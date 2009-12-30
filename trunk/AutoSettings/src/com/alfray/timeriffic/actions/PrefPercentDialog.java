@@ -33,7 +33,6 @@ public class PrefPercentDialog extends AlertDialog
                SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
     private final int mInitialValue;
-    private final PrefPercent[] mPrefPercentOutWrapper;
     private final PrefPercent mPrefPercent;
     private SeekBar mSeekBar;
     private TextView mPercentLabel;
@@ -46,10 +45,9 @@ public class PrefPercentDialog extends AlertDialog
         public void changePercent(int percent);
     }
 
-    protected PrefPercentDialog(Context context, PrefPercent[] prefPercentOutWrapper) {
+    protected PrefPercentDialog(Context context, PrefPercent prefPercent) {
         super(context);
-        mPrefPercentOutWrapper = prefPercentOutWrapper;
-        mPrefPercent = prefPercentOutWrapper[0];
+        mPrefPercent = prefPercent;
 
         if (mPrefPercent.getIconResId() != 0) setIcon(mPrefPercent.getIconResId());
         if (mPrefPercent.getDialogTitle() != null) setTitle(mPrefPercent.getDialogTitle());
@@ -101,7 +99,6 @@ public class PrefPercentDialog extends AlertDialog
     @Override
     public void onDismiss(DialogInterface dialog) {
         if (mAccessor != null) mAccessor.changePercent(mInitialValue);
-        mPrefPercentOutWrapper[0] = null;
     }
 
     @Override

@@ -33,7 +33,7 @@
     <!-- Menu - Check now: force app to recompute next alarm. -->
     <string name="check_now">Check Now</string>
     <!-- Menu - About: display introduction/help screen. -->
-    <string name="about">Information</string>
+    <string name="about">About</string>
     <!-- Menu - Reset: reset current profile. -->
     <string name="reset">Reset</string>
     <!-- Menu - Report Error: display the error reporting screen. -->

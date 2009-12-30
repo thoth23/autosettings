@@ -489,6 +489,9 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                     ExceptionHandler.TAG + ":D",
                     AgentWrapper.TAG + ":D",
 
+                    "WindowManager:D",
+                    "FlurryAgent:W",
+
                     "*:S",      // silence all tags we don't want
             };
 
