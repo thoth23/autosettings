@@ -18,6 +18,8 @@
 
 package com.alfray.timeriffic.actions;
 
+import java.util.HashMap;
+
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +27,7 @@ import android.content.DialogInterface.OnDismissListener;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,13 +48,15 @@ import com.alfray.timeriffic.utils.SettingsHelper;
 
 public class EditActionUI extends ExceptionHandlerActivity {
 
-    private static boolean DEBUG = false;
+    private static boolean DEBUG = true;
     public static String TAG = "TFC-EditActionUI";
 
     /** Extra long with the action prof_id (not index) to edit. */
     public static final String EXTRA_ACTION_ID = "action_id";
 
-    /*package*/ static final int DIALOG_EDIT_PERCENT = 42;
+    /*package*/ static final int DIALOG_EDIT_PERCENT = 100;
+    /** Maps dialog ids to their {@link PrefPercent} instance. */
+    private final SparseArray<PrefPercent> mPercentDialogMap = new SparseArray<PrefPercent>();
     private long mActionId;
 
     private TimePicker mTimePicker;
@@ -75,7 +80,6 @@ public class EditActionUI extends ExceptionHandlerActivity {
     private CheckBox[] mCheckDays;
 
     private View mCurrentContextMenuView;
-    private PrefPercent[] mPrefPercentOutWrapper = new PrefPercent[1];
     private int mRestoreHourMinValue = -1;
 
     /** Called when the activity is first created. */
@@ -158,7 +162,6 @@ public class EditActionUI extends ExceptionHandlerActivity {
                     getString(R.string.setting_not_supported));
 
             mPrefRingerVolume = new PrefPercent(this,
-                    mPrefPercentOutWrapper,
                     R.id.ringerVolButton,
                     actions,
                     Columns.ACTION_RING_VOLUME,
@@ -177,9 +180,12 @@ public class EditActionUI extends ExceptionHandlerActivity {
                     });
             mPrefRingerVolume.setEnabled(mSettingsHelper.canControlAudio(),
                     getString(R.string.setting_not_supported));
+            int dialogId = DIALOG_EDIT_PERCENT;
+            mPercentDialogMap.put(
+                    mPrefRingerVolume.setDialogId(++dialogId),
+                    mPrefRingerVolume);
 
             mPrefNotifVolume = new PrefPercent(this,
-                    mPrefPercentOutWrapper,
                     R.id.notifVolButton,
                     actions,
                     Columns.ACTION_NOTIF_VOLUME,
@@ -198,9 +204,11 @@ public class EditActionUI extends ExceptionHandlerActivity {
                     });
             mPrefNotifVolume.setEnabled(mSettingsHelper.canControlNotificationVolume(),
                     getString(R.string.setting_not_supported));
+            mPercentDialogMap.put(
+                    mPrefNotifVolume.setDialogId(++dialogId),
+                    mPrefNotifVolume);
 
             mPrefBrightness = new PrefPercent(this,
-                    mPrefPercentOutWrapper,
                     R.id.brightnessButton,
                     actions,
                     Columns.ACTION_BRIGHTNESS,
@@ -220,6 +228,9 @@ public class EditActionUI extends ExceptionHandlerActivity {
                     });
             mPrefBrightness.setEnabled(mSettingsHelper.canControlBrigthness(),
                     getString(R.string.setting_not_supported));
+            mPercentDialogMap.put(
+                    mPrefBrightness.setDialogId(++dialogId),
+                    mPrefBrightness);
 
             mPrefBluetooth = new PrefToggle(this,
                             R.id.bluetoothButton,
@@ -352,8 +363,13 @@ public class EditActionUI extends ExceptionHandlerActivity {
     @Override
     protected Dialog onCreateDialog(final int id) {
 
-        if (id == DIALOG_EDIT_PERCENT && mPrefPercentOutWrapper[0] != null) {
-            PrefPercentDialog d = new PrefPercentDialog(this, mPrefPercentOutWrapper);
+        PrefPercent pp = mPercentDialogMap.get(id);
+        if (DEBUG) Log.d(TAG,
+                String.format("Create dialog id=%d, pp=%s",
+                        id,
+                        pp == null ? "null" : pp.getDialogTitle()));
+        if (pp != null) {
+            PrefPercentDialog d = new PrefPercentDialog(this, pp);
 
             // We need to make sure to remove the dialog once it gets dismissed
             // otherwise the next use of the same dialog might reuse the previous

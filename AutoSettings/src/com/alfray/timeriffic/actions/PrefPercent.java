@@ -38,16 +38,15 @@ class PrefPercent extends PrefBase implements View.OnClickListener {
     private Button mButton;
     /** -1 if unchanged, or 0..100 */
     private int mCurrentValue;
-    private final PrefPercent[] mPrefPercentOutWrapper;
 
     private final String mDialogTitle;
     private final int mIconResId;
 
+    private int mDialogId;
     private final Accessor mAccessor;
     private String mDisabledMessage;
 
     public PrefPercent(Activity activity,
-                    PrefPercent[] prefPercentOutWrapper,
                     int buttonResId,
                     String[] actions,
                     char actionPrefix,
@@ -55,7 +54,6 @@ class PrefPercent extends PrefBase implements View.OnClickListener {
                     int iconResId,
                     PrefPercentDialog.Accessor accessor) {
         super(activity);
-        mPrefPercentOutWrapper = prefPercentOutWrapper;
         mActionPrefix = actionPrefix;
         mDialogTitle = dialogTitle;
         mIconResId = iconResId;
@@ -175,7 +173,11 @@ class PrefPercent extends PrefBase implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        mPrefPercentOutWrapper[0] = this;
-        getActivity().showDialog(EditActionUI.DIALOG_EDIT_PERCENT);
+        getActivity().showDialog(mDialogId);
+    }
+
+    public int setDialogId(int dialogId) {
+        mDialogId = dialogId;
+        return mDialogId;
     }
 }
