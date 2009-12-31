@@ -136,7 +136,7 @@ public class Columns implements BaseColumns {
 
     /** Ringer: R)ring, M)muted */
     public static final char ACTION_RINGER      = 'R';
-    /** Vibrate Ringer: V)ibrate, N)o vibrate all, R)no ringer vibrate */
+    /** Vibrate Ringer: V)ibrate, N)o vibrate all, R)no ringer vibrate, O)no notif vibrate */
     public static final char ACTION_VIBRATE     = 'V';
     /** Ringer volume. Integer: 0..100 */
     public static final char ACTION_RING_VOLUME = 'G';

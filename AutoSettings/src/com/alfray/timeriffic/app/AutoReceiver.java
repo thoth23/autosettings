@@ -48,11 +48,12 @@ public class AutoReceiver extends BroadcastReceiver {
     public final static int TOAST_IF_CHANGED = 1;
     public final static int TOAST_ALWAYS = 2;
 
-    private void showToast(Context context, int id, int duration) {
+    private void showToast(Context context, PrefsValues pv, int id, int duration) {
         try {
             Toast.makeText(context, id, duration).show();
         } catch (Throwable t) {
             Log.w(TAG, "Toast.show crashed", t);
+            ExceptionHandler.addToLog(pv, t);
         }
     }
 
@@ -83,15 +84,22 @@ public class AutoReceiver extends BroadcastReceiver {
                 if (!prefs.isServiceEnabled()) {
                     if (DEBUG) Log.d(TAG, "Checking disabled");
                     if (displayToast == TOAST_ALWAYS) {
-                        showToast(context,
+                        showToast(context, prefs,
                                 R.string.globalstatus_disabled,
                                 Toast.LENGTH_LONG);
                     }
                     return;
                 }
 
-                ApplySettings as = new ApplySettings();
-                as.apply(context, displayToast, prefs);
+                ApplySettings as = new ApplySettings(context, prefs);
+
+
+                if (displayToast == AutoReceiver.TOAST_NONE) {
+                    // Only add this if this is not a manual request
+                    as.addToDebugLog("Check profiles");
+                }
+
+                as.apply(displayToast);
 
             } finally {
                 wl.release();

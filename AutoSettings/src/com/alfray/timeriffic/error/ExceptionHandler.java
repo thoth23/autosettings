@@ -47,8 +47,13 @@ public class ExceptionHandler {
     public static final String SEP_END = "} /*end*/ \n";
 
     private Context mAppContext;
-    private DateFormat mDateFormat;
     private Handler mHandler;
+
+    private static DateFormat sDateFormat;
+
+    static {
+        sDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z");
+    }
 
     // -----
 
@@ -89,7 +94,6 @@ public class ExceptionHandler {
         UncaughtExceptionHandler h = Thread.currentThread().getUncaughtExceptionHandler();
         if (h == null || !(h instanceof Handler)) {
             mAppContext = context.getApplicationContext();
-            mDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z");
             mHandler = new Handler(h);
             Thread.currentThread().setUncaughtExceptionHandler(mHandler);
 
@@ -120,60 +124,10 @@ public class ExceptionHandler {
         public void uncaughtException(Thread t, Throwable e) {
 
             try {
-
-                // get a trace of the exception
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
-                e.printStackTrace(pw);
-                pw.flush();
-
-                // store the exception
                 PrefsValues pv = new PrefsValues(mAppContext);
-                String currEx = pv.getLastExceptions();
-                if (currEx == null) currEx = "";
+                addToLog(pv, e);
 
-                // trim the string if it gets too big.
-                if (currEx.length() > 4096) {
-                    int pos = currEx.indexOf(SEP_END);
-                    int p = pos + SEP_END.length();
-                    if (pos > 0) {
-                        if (p < currEx.length()) {
-                            currEx = currEx.substring(p);
-                        } else {
-                            currEx = "";
-                        }
-                    }
-                }
-
-                String d = mDateFormat.format(new Date(System.currentTimeMillis()));
-
-                currEx += SEP_START + d + " ]\n";
-                currEx += sw.toString() + "\n";
-                currEx += SEP_END;
-                pv.setLastExceptions(currEx);
-
-                // create a notification
-                NotificationManager ns =
-                    (NotificationManager) mAppContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                Notification notif = new Notification(
-                        R.drawable.timeriffic_icon, // icon
-                        "Timeriffic Crashed!",      // tickerText
-                        System.currentTimeMillis()  // when
-                        );
-                notif.flags |= Notification.FLAG_AUTO_CANCEL;
-                notif.defaults = Notification.DEFAULT_ALL;
-
-                Intent i = new Intent(mAppContext, ErrorReporterUI.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                PendingIntent pi = PendingIntent.getActivity(mAppContext, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                notif.setLatestEventInfo(mAppContext,
-                        "Oh no! Timeriffic Crashed!",               // contentTitle
-                        "Please click here to report this error.",  // contentText
-                        pi                                          // contentIntent
-                        );
-
-                ns.notify(EXCEPTION_NOTIF_ID, notif);
+                createNotification();
 
             } catch (Throwable t2) {
                 // ignore, or we'll get into an infinite loop
@@ -200,4 +154,59 @@ public class ExceptionHandler {
         }
     };
 
+    public synchronized static void addToLog(PrefsValues pv, Throwable e) {
+        // get a trace of the exception
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        pw.flush();
+
+        // store the exception
+        String currEx = pv.getLastExceptions();
+        if (currEx == null) currEx = "";
+
+        // trim the string if it gets too big.
+        if (currEx.length() > 4096) {
+            int pos = currEx.indexOf(SEP_END);
+            int p = pos + SEP_END.length();
+            if (pos > 0) {
+                if (p < currEx.length()) {
+                    currEx = currEx.substring(p);
+                } else {
+                    currEx = "";
+                }
+            }
+        }
+
+        String d = sDateFormat.format(new Date(System.currentTimeMillis()));
+
+        currEx += SEP_START + d + " ]\n";
+        currEx += sw.toString() + "\n";
+        currEx += SEP_END;
+        pv.setLastExceptions(currEx);
+    }
+
+    private void createNotification() {
+        NotificationManager ns =
+            (NotificationManager) mAppContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notif = new Notification(
+                R.drawable.timeriffic_icon, // icon
+                "Timeriffic Crashed!",      // tickerText
+                System.currentTimeMillis()  // when
+                );
+        notif.flags |= Notification.FLAG_AUTO_CANCEL;
+        notif.defaults = Notification.DEFAULT_ALL;
+
+        Intent i = new Intent(mAppContext, ErrorReporterUI.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pi = PendingIntent.getActivity(mAppContext, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        notif.setLatestEventInfo(mAppContext,
+                "Oh no! Timeriffic Crashed!",               // contentTitle
+                "Please click here to report this error.",  // contentText
+                pi                                          // contentIntent
+                );
+
+        ns.notify(EXCEPTION_NOTIF_ID, notif);
+    }
 }

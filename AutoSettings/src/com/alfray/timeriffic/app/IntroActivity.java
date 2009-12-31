@@ -152,7 +152,9 @@ public class IntroActivity extends ExceptionHandlerActivity {
                 }
 
             } catch (IOException e) {
-                if (DEBUG) Log.d(TAG, "Asset not found: " + lang);
+                if (!"en".equals(lang)) {
+                    if (DEBUG) Log.d(TAG, "Language not found: " + lang);
+                }
             } finally {
                 if (is != null) {
                     try {

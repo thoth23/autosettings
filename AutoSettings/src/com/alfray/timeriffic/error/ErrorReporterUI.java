@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import android.content.ActivityNotFoundException;
@@ -191,7 +193,9 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                 }
 
             } catch (IOException e) {
-                if (DEBUG) Log.d(TAG, "Asset not found: " + lang);
+                if (!"en".equals(lang)) {
+                    if (DEBUG) Log.d(TAG, "Language not found: " + lang);
+                }
             } finally {
                 if (is != null) {
                     try {
@@ -364,6 +368,7 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
 
             addHeader(sb, c);
             addAppInfo(sb);
+            addDate(sb);
             addAndroidBuildInfo(sb);
 
             if (!mAbortReport) addProfiles(sb, c);
@@ -387,6 +392,14 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                 sb.append(s.trim().replace('/', '\n')).append("\n");
             } catch (Exception ignore) {
             }
+        }
+
+        private void addDate(StringBuilder sb) {
+
+            SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z");
+            String date = df.format(new Date(System.currentTimeMillis()));
+
+            sb.append(String.format("\n## Log Date: %s\n", date));
         }
 
         private void addAppInfo(StringBuilder sb) {
@@ -489,7 +502,7 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                     ExceptionHandler.TAG + ":D",
                     AgentWrapper.TAG + ":D",
 
-                    "WindowManager:D",
+                    "WindowManager:W",
                     "FlurryAgent:W",
 
                     "*:S",      // silence all tags we don't want
