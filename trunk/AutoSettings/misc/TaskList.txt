@@ -1,5 +1,6 @@
 TODO v2.0
 
+
 20091224 Move CheckProfile to a service (instead of inside the BroadcastReceiver)
 20091222 Don't start Airplane mode when in talk. Delay via notification.
 20091207 Store profiles as text in shared prefs
@@ -19,6 +20,9 @@ TODO v2.0
 
 DONE for 1.8
 
+20091230 1.8.03 in Market
+20091230 New setting: No Notification Vibrate
+20091230 More logs to debug settings not engaging issue + cryptic SQL error
 20091229 1.8.02 in Market
 20091229 Fix: screen rotation crashes edit action > percentage dialog
 20091229 1.8.01 in Market

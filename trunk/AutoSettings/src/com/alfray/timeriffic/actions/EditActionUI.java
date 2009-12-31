@@ -18,8 +18,6 @@
 
 package com.alfray.timeriffic.actions;
 
-import java.util.HashMap;
-
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -124,7 +122,7 @@ public class EditActionUI extends ExceptionHandlerActivity {
                 );
         try {
             if (!c.moveToFirst()) {
-                Log.e(TAG, "cursor is empty: " + prof_id_select);
+                Log.w(TAG, "cursor is empty: " + prof_id_select);
                 finish();
                 return;
             }

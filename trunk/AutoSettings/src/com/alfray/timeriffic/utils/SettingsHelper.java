@@ -29,6 +29,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
+
 import com.alfray.timeriffic.R;
 import com.google.code.apndroid.ApplicationConstants;
 
@@ -144,11 +145,14 @@ public class SettingsHelper {
         /** Vibrate is off, both ringer & notif */
         NO_VIBRATE_ALL,
         /** Ringer vibrate is off but notif is on */
-        NO_RINGER_VIBRATE;
+        NO_RINGER_VIBRATE,
+        /** Ringer vibrate is on but notif is off */
+        NO_NOTIF_VIBRATE;
 
         public char getActionLetter() {
             if (this == NO_VIBRATE_ALL) return 'N';
             if (this == NO_RINGER_VIBRATE) return 'R';
+            if (this == NO_NOTIF_VIBRATE) return 'O';
             assert this == VIBRATE;
             return 'V';
         }
@@ -160,6 +164,9 @@ public class SettingsHelper {
             }
             if (this == NO_RINGER_VIBRATE) {
                 return context.getString(R.string.vibrateringermode_no_ringer_vibrate);
+            }
+            if (this == NO_NOTIF_VIBRATE) {
+                return context.getString(R.string.vibrateringermode_no_notif_vibrate);
             }
             assert this == VIBRATE;
             return context.getString(R.string.vibrateringermode_vibrate);
@@ -209,6 +216,15 @@ public class SettingsHelper {
                             AudioManager.VIBRATE_TYPE_NOTIFICATION,
                             AudioManager.VIBRATE_SETTING_ON);
                     break;
+                case NO_NOTIF_VIBRATE:
+                    // ringer vibrate on, notification vibrate off
+                    manager.setVibrateSetting(
+                            AudioManager.VIBRATE_TYPE_RINGER,
+                            AudioManager.VIBRATE_SETTING_ON);
+                    manager.setVibrateSetting(
+                            AudioManager.VIBRATE_TYPE_NOTIFICATION,
+                            AudioManager.VIBRATE_SETTING_OFF);
+                    break;
             }
         }
 
@@ -252,7 +268,7 @@ public class SettingsHelper {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
         if (manager == null) {
-            if (DEBUG) Log.d(TAG, "getRingerVolume: AUDIO_SERVICE missing!");
+            if (DEBUG) Log.w(TAG, "getRingerVolume: AUDIO_SERVICE missing!");
             return 50;
         }
 
@@ -285,7 +301,7 @@ public class SettingsHelper {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
         if (manager == null) {
-            if (DEBUG) Log.d(TAG, "getNotificationVolume: AUDIO_SERVICE missing!");
+            if (DEBUG) Log.w(TAG, "getNotificationVolume: AUDIO_SERVICE missing!");
             return 50;
         } else if (!canControlNotificationVolume()) {
             if (DEBUG) Log.w(TAG, "changeNotificationVolume: API too low.");
@@ -347,7 +363,7 @@ public class SettingsHelper {
             WifiManager manager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
 
             if (manager == null) {
-                if (DEBUG) Log.d(TAG, "changeWifi: WIFI_SERVICE missing!");
+                if (DEBUG) Log.w(TAG, "changeWifi: WIFI_SERVICE missing!");
                 return;
             }
 
@@ -394,7 +410,7 @@ public class SettingsHelper {
                 Object bt = getter.invoke(null);
 
                 if (bt == null) {
-                    if (DEBUG) Log.d(TAG, "changeBluetooh: BluetoothAdapter null!");
+                    if (DEBUG) Log.w(TAG, "changeBluetooh: BluetoothAdapter null!");
                     return;
                 }
 

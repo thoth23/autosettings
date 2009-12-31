@@ -220,7 +220,8 @@
 
     <string name="vibrateringermode_vibrate">Vibrate</string>
     <string name="vibrateringermode_no_vibrate">No vibrate</string>
-    <string name="vibrateringermode_no_ringer_vibrate">No ringer vibrate</string>
+    <string name="vibrateringermode_no_ringer_vibrate">Vibrate for notifications but not ringer</string>
+    <string name="vibrateringermode_no_notif_vibrate">Vibrate for ringer but not notifications</string>
 
     <!-- check services dialog -->
 

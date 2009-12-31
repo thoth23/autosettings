@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.actions.TimedActionUtils;
+import com.alfray.timeriffic.error.ExceptionHandler;
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.Columns;
 import com.alfray.timeriffic.profiles.ProfilesDB;
@@ -47,33 +48,44 @@ public class ApplySettings {
 
     private final static boolean DEBUG = true;
     public final static String TAG = "TFC-ApplySettings";
+    private final Context mContext;
+    private SimpleDateFormat mDateFormat;
+    private final PrefsValues mPrefs;
 
-    private void showToast(Context context, String s, int duration) {
+    public ApplySettings(Context context, PrefsValues prefs) {
+        mContext = context;
+        mPrefs = prefs;
+        mDateFormat = new SimpleDateFormat(context.getString(R.string.globalstatus_nextlast_date_time));
+    }
+
+    private void showToast(String s, int duration) {
         try {
-            Toast.makeText(context, s, duration).show();
+            Toast.makeText(mContext, s, duration).show();
         } catch (Throwable t) {
+            ExceptionHandler.addToLog(mPrefs, t);
             Log.w(TAG, "Toast.show crashed", t);
         }
     }
 
-    public void apply(Context context, int displayToast, PrefsValues prefs) {
+    public void apply(int displayToast) {
         Log.d(TAG, "Checking enabled");
 
         AgentWrapper agentWrapper = new AgentWrapper();
-        agentWrapper.start(context);
-        agentWrapper.event(AgentWrapper.Event.CheckProfiles);
+        try {
+            agentWrapper.start(mContext);
+            agentWrapper.event(AgentWrapper.Event.CheckProfiles);
 
-        checkProfiles(context, displayToast, prefs);
-
-        notifyDataChanged(context);
-
-        agentWrapper.stop(context);
+            checkProfiles(displayToast);
+            notifyDataChanged();
+        } finally{} {
+            agentWrapper.stop(mContext);
+        }
     }
 
-    private void checkProfiles(Context context, int displayToast, PrefsValues prefs) {
+    private void checkProfiles(int displayToast) {
         ProfilesDB profilesDb = new ProfilesDB();
         try {
-            profilesDb.onCreate(context);
+            profilesDb.onCreate(mContext);
 
             profilesDb.removeAllActionExecFlags();
 
@@ -90,7 +102,7 @@ public class ApplySettings {
                     profilesDb.getWeekActivableActions(hourMin, day, prof_indexes);
 
                 if (actions != null && actions.size() > 0) {
-                    performActions(context, actions, prefs);
+                    performActions(actions);
                     profilesDb.markActionsEnabled(actions);
                 }
 
@@ -98,16 +110,19 @@ public class ApplySettings {
                 StringBuilder nextActions = new StringBuilder();
                 int nextEventMin = profilesDb.getWeekNextEvent(hourMin, day, prof_indexes, nextActions);
                 if (nextEventMin > 0) {
-                    scheduleAlarm(context, prefs, c, nextEventMin, nextActions, displayToast);
+                    scheduleAlarm(c, nextEventMin, nextActions, displayToast);
                 }
             }
+        } catch (Exception e) {
+            Log.e(TAG, "checkProfiles failed", e);
+            ExceptionHandler.addToLog(mPrefs, e);
 
         } finally {
             profilesDb.onDestroy();
         }
     }
 
-    private void performActions(Context context, ArrayList<ActionInfo> actions, PrefsValues prefs) {
+    private void performActions(ArrayList<ActionInfo> actions) {
 
         String logActions = null;
         String lastAction = null;
@@ -115,7 +130,7 @@ public class ApplySettings {
 
         for (ActionInfo info : actions) {
             try {
-                if (settings == null) settings = new SettingsHelper(context);
+                if (settings == null) settings = new SettingsHelper(mContext);
 
                 if (performAction(settings, info.mActions)) {
                     lastAction = info.mActions;
@@ -126,21 +141,21 @@ public class ApplySettings {
                     }
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Failed to apply setting", e);
+                Log.w(TAG, "Failed to apply setting", e);
+                ExceptionHandler.addToLog(mPrefs, e);
             }
         }
 
         if (lastAction != null) {
             // Format the timestamp of the last action to be "now"
-            SimpleDateFormat sdf = new SimpleDateFormat(context.getString(R.string.globalstatus_nextlast_date_time));
-            String time = sdf.format(new Date(System.currentTimeMillis()));
-            prefs.setStatusLastTS(time);
+            String time = mDateFormat.format(new Date(System.currentTimeMillis()));
+            mPrefs.setStatusLastTS(time);
 
             // Format the action description
-            String a = TimedActionUtils.computeActions(context, lastAction);
-            prefs.setStatusNextAction(a);
+            String a = TimedActionUtils.computeActions(mContext, lastAction);
+            mPrefs.setStatusNextAction(a);
 
-            addToDebugLog(prefs, time, logActions);
+            addToDebugLog(time, logActions);
         }
     }
 
@@ -225,8 +240,8 @@ public class ApplySettings {
     }
 
     /** Notify UI to update */
-    private void notifyDataChanged(Context context) {
-        Context c = context.getApplicationContext();
+    private void notifyDataChanged() {
+        Context c = mContext.getApplicationContext();
         if (c instanceof TimerifficApp) {
             ((TimerifficApp) c).invokeDataListener();
         }
@@ -242,17 +257,16 @@ public class ApplySettings {
      * @param nextActions
      * @param displayToast One of {@link #TOAST_NONE}, {@link #TOAST_IF_CHANGED} or {@link #TOAST_ALWAYS}
      */
-    private void scheduleAlarm(Context context,
-            PrefsValues prefs,
+    private void scheduleAlarm(
             Calendar now,
             int nextEventMin,
             StringBuilder nextActions,
             int displayToast) {
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager manager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(AutoReceiver.ACTION_AUTO_CHECK_STATE);
         PendingIntent op = PendingIntent.getBroadcast(
-                        context,
+                        mContext,
                         0 /*requestCode*/,
                         intent,
                         PendingIntent.FLAG_ONE_SHOT);
@@ -267,10 +281,10 @@ public class ApplySettings {
 
         boolean shouldDisplayToast = displayToast != AutoReceiver.TOAST_NONE;
         if (displayToast == AutoReceiver.TOAST_IF_CHANGED) {
-            shouldDisplayToast = timeMs != prefs.getLastScheduledAlarm();
+            shouldDisplayToast = timeMs != mPrefs.getLastScheduledAlarm();
         }
 
-        prefs.setLastScheduledAlarm(timeMs);
+        mPrefs.setLastScheduledAlarm(timeMs);
 
         // The DateFormat usage is commented out for 2 reasons:
         // 1- It gives weird results in French. Isolate code and file a bug report.
@@ -292,24 +306,32 @@ public class ApplySettings {
 //                Log.w(TAG, t);
 //          }
 
-        SimpleDateFormat sdf = new SimpleDateFormat(context.getString(R.string.toast_next_alarm_date_time));
+        SimpleDateFormat sdf = new SimpleDateFormat(mContext.getString(R.string.toast_next_alarm_date_time));
         sdf.setCalendar(now);
         String s2 = sdf.format(now.getTime());
 
-        prefs.setStatusNextTS(s2);
-        prefs.setStatusNextAction(TimedActionUtils.computeActions(context, nextActions.toString()));
+        mPrefs.setStatusNextTS(s2);
+        mPrefs.setStatusNextAction(TimedActionUtils.computeActions(mContext, nextActions.toString()));
 
-        s2 = context.getString(R.string.toast_next_change_at_datetime, s2);
+        s2 = mContext.getString(R.string.toast_next_change_at_datetime, s2);
 
 
-        if (shouldDisplayToast) showToast(context, s2, Toast.LENGTH_LONG);
+        if (shouldDisplayToast) showToast(s2, Toast.LENGTH_LONG);
         if (DEBUG) Log.d(TAG, s2);
     }
+
 
     protected static final String SEP_START = " [ ";
     protected static final String SEP_END = " ]\n";
 
-    protected void addToDebugLog(PrefsValues prefs, String time, String logActions) {
+    /** Add debug log for now. */
+    /* package */ void addToDebugLog(String message) {
+        String time = mDateFormat.format(new Date(System.currentTimeMillis()));
+        addToDebugLog(time, message);
+    }
+
+    /** Add time:action specific log. */
+    protected synchronized void addToDebugLog(String time, String logActions) {
 
         logActions = time + SEP_START + logActions + SEP_END;
         int len = logActions.length();
@@ -320,7 +342,7 @@ public class ApplySettings {
         String a = null;
 
         if (logActions.length() < max) {
-            a = prefs.getLastActions();
+            a = mPrefs.getLastActions();
             if (a != null) {
                 int lena = a.length();
                 if (lena + len > max) {
@@ -342,14 +364,14 @@ public class ApplySettings {
         }
 
         if (a == null) {
-            prefs.setLastActions(logActions);
+            mPrefs.setLastActions(logActions);
         } else {
             a += logActions;
-            prefs.setLastActions(a);
+            mPrefs.setLastActions(a);
         }
     }
 
-    public static int getNumActionsInLog(Context context) {
+    public static synchronized int getNumActionsInLog(Context context) {
         try {
             PrefsValues pv = new PrefsValues(context);
             String curr = pv.getLastActions();
@@ -369,6 +391,7 @@ public class ApplySettings {
 
         } catch (Exception e) {
             Log.d(TAG, "getNumActionsInLog failed", e);
+            ExceptionHandler.addToLog(new PrefsValues(context), e);
         }
 
         return 0;
