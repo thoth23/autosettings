@@ -9,6 +9,7 @@
  */
 package com.alfray.timeriffic.test;
 
+import android.content.Context;
 import android.test.AndroidTestCase;
 
 import com.alfray.timeriffic.app.ApplySettings;
@@ -18,12 +19,19 @@ public class ApplySettingsTest extends AndroidTestCase {
 
     private static class MockApplySettings extends ApplySettings {
 
+        private final PrefsValues _mPrefs;
+
+        public MockApplySettings(Context context, PrefsValues prefs) {
+            super(context, prefs);
+            _mPrefs = prefs;
+        }
+
         public static final String _SEP_START = SEP_START;
         public static final String _SEP_END = SEP_END;
 
-        public String _addToDebugLog(PrefsValues prefs, String time, String logActions) {
-            super.addToDebugLog(prefs, time, logActions);
-            return prefs.getLastActions();
+        public String _addToDebugLog(String time, String logActions) {
+            super.addToDebugLog(time, logActions);
+            return _mPrefs.getLastActions();
         }
     }
 
@@ -36,7 +44,7 @@ public class ApplySettingsTest extends AndroidTestCase {
         // make sure to clear the strings we'll be testing
         mPrefs.setLastActions(null);
 
-        m = new MockApplySettings();
+        m = new MockApplySettings(getContext(), mPrefs);
         super.setUp();
     }
 
@@ -52,7 +60,7 @@ public class ApplySettingsTest extends AndroidTestCase {
         String expected = time + MockApplySettings._SEP_START +
                           actions + MockApplySettings._SEP_END;
 
-        String result = m._addToDebugLog(mPrefs, time, actions);
+        String result = m._addToDebugLog(time, actions);
 
         assertEquals(expected, result);
     }
@@ -72,14 +80,14 @@ public class ApplySettingsTest extends AndroidTestCase {
 
         int count = 0;
         while (count + len < limit) {
-            String result = m._addToDebugLog(mPrefs, time, actions);
+            String result = m._addToDebugLog(time, actions);
             assertTrue(result.length() > count);
             count = result.length();
         }
         assertTrue(count < limit);
 
         // add one more
-        String result = m._addToDebugLog(mPrefs, time, actions);
+        String result = m._addToDebugLog(time, actions);
         assertTrue(result.length() < limit);
         assertTrue(result.startsWith(expected));
 
@@ -94,13 +102,13 @@ public class ApplySettingsTest extends AndroidTestCase {
 
         assertFalse(result.startsWith(expected2));
 
-        result = m._addToDebugLog(mPrefs, time2, actions2);
+        result = m._addToDebugLog(time2, actions2);
 
         assertTrue(result.length() > limit);
         assertEquals(expected2, result);
 
         // and add the shorter string again... the excess one should go away
-        result = m._addToDebugLog(mPrefs, time, actions);
+        result = m._addToDebugLog(time, actions);
         assertEquals(expected, result);
     }
 }
