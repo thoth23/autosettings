@@ -3,10 +3,9 @@ This file explains the license of assets in the Timeriffic project.
 This file is part of the Timeriffic project and must be reproduced in any
 derivative work.
 
-- The name "Timeriffic" is the property of both Ralf M. (a.k.a. "ralfoide")
-  and Dave Kaufman and cannot be reused, alone or recombined, for any purpose
-  including advertising or derivative work, without explicit prior permission
-  from both of us.
+- The name "Timeriffic" is the property DK worldwide, Inc. and cannot be
+  reused, alone or recombined, for any purpose including advertising or
+  derivative work, without explicit prior permission.
 
 - The icon files specifically named "ic_menu_<something>.png" located in the
   /res/drawable directory are extracted from the Android 1.5 open-source
@@ -14,7 +13,7 @@ derivative work.
   below.
 
 - The other PNG graphics located in /res/drawable are the sole property of
-  Dave Kaufman and are reused with its permission. They are governed by a
+  DK worldwide, inc. and are reused with permission. They are governed by a
   CC-BY-NC-ND license, Creative Commons Attribution-Noncommercial-No Derivative Works.
 
 - All the rest of the all source files are licensed under the GNU GENERAL PUBLIC LICENSE
