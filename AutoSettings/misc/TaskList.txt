@@ -20,6 +20,8 @@ TODO v2.0
 
 DONE for 1.8
 
+20100101 1.8.04 in Market
+20100101 Try to fix "SQL error no column -1"
 20091230 1.8.03 in Market
 20091230 New setting: No Notification Vibrate
 20091230 More logs to debug settings not engaging issue + cryptic SQL error

@@ -346,7 +346,7 @@ public class ProfilesDB {
         long maxPid = (profileIndex + 1) << Columns.PROFILE_SHIFT;
 
         // Generates query with WHERE type=2 AND prof_id > 32768 AND prof_id < 65536
-        String where = String.format("%s=%d AND %s>%d AND %s<%d",
+        String where = String.format("%s=%d AND (%s>%d) AND (%s<%d)",
                             Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
                             Columns.PROFILE_ID, pid,
                             Columns.PROFILE_ID, maxPid);
@@ -957,7 +957,7 @@ public class ProfilesDB {
         //           AND hourMin <= targetHourMin
         //           AND days & MASK != 0
         //           AND prof_id >> SHIFT IN (profList)
-        String where = String.format("%s=%d AND %s <= %d AND %s & %d != 0 AND %s >> %d IN (%s)",
+        String where = String.format("%s=%d AND (%s <= %d) AND (%s & %d) != 0 AND (%s >> %d) IN (%s)",
                 Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
                 Columns.HOUR_MIN, hourMin,
                 Columns.DAYS, day,
@@ -1099,9 +1099,15 @@ public class ProfilesDB {
         //           AND hourMin > targetHourMin
         //           AND days & MASK != 0
         //           AND prof_id >> SHIFT IN (profList)
-        String where = String.format("%s=%d AND %s > %d AND %s & %d != 0 AND %s >> %d IN (%s)",
+        String hourTest;
+        if (hourMin == -1) {
+            hourTest = String.format("%s >= 0", Columns.HOUR_MIN);
+        } else {
+            hourTest = String.format("%s > (%d)", Columns.HOUR_MIN, hourMin);
+        }
+        String where = String.format("%s=%d AND (%s) AND (%s & %d) != 0 AND (%s >> %d) IN (%s)",
                 Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
-                Columns.HOUR_MIN, hourMin,
+                hourTest,
                 Columns.DAYS, day,
                 Columns.PROFILE_ID, Columns.PROFILE_SHIFT, profList);
 

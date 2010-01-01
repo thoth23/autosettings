@@ -318,6 +318,7 @@ public class ApplySettings {
 
         if (shouldDisplayToast) showToast(s2, Toast.LENGTH_LONG);
         if (DEBUG) Log.d(TAG, s2);
+        addToDebugLog(s2);
     }
 
 
