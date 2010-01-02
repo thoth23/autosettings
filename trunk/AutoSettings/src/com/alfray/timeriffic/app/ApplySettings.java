@@ -269,7 +269,7 @@ public class ApplySettings {
                         mContext,
                         0 /*requestCode*/,
                         intent,
-                        PendingIntent.FLAG_ONE_SHOT);
+                        PendingIntent.FLAG_UPDATE_CURRENT);
 
         now.set(Calendar.SECOND, 0);
         now.set(Calendar.MILLISECOND, 0);
