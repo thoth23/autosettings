@@ -287,26 +287,6 @@ public class ApplySettings {
 
         mPrefs.setLastScheduledAlarm(timeMs);
 
-        // The DateFormat usage is commented out for 2 reasons:
-        // 1- It gives weird results in French. Isolate code and file a bug report.
-        // 2- We have a translatable time format that is used in the catch section only.
-        //    It gives a false sense that the resource string might be used when it's not.
-//            try {
-//                Configuration config = new Configuration();
-//                Settings.System.getConfiguration(context.getContentResolver(), config);
-//
-//                DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, config.locale);
-//                String s2 = df.format(now.getTime());
-//                s2 = context.getString(R.string.toast_next_change_at_datetime, s2);
-//
-//                prefs.setStatusMsg(s2);
-//                if (shouldDisplayToast) showToast(context, s2, Toast.LENGTH_LONG);
-//                if (DEBUG) Log.d(TAG, s2);
-//
-//            } catch (Throwable t) {
-//                Log.w(TAG, t);
-//          }
-
         SimpleDateFormat sdf = new SimpleDateFormat(mContext.getString(R.string.toast_next_alarm_date_time));
         sdf.setCalendar(now);
         String s2 = sdf.format(now.getTime());

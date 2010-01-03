@@ -20,6 +20,8 @@ TODO v2.0
 
 DONE for 1.8
 
+20100102 1.8.06 in Market
+20100102 Fix for alarm not firing
 20100101 1.8.04 in Market
 20100101 Try to fix "SQL error no column -1"
 20091230 1.8.03 in Market
