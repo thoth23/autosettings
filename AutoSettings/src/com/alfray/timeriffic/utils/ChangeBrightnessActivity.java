@@ -57,6 +57,23 @@ import com.alfray.timeriffic.error.ExceptionHandlerActivity;
  */
 public class ChangeBrightnessActivity extends ExceptionHandlerActivity {
 
+/*
+ * If you're curious the hack for 1.6 the following:
+ *
+ * - Starting with 1.6 each app can change its own screen brightness.
+ *   This was made for flashlight apps and is a public API.
+ * - So I have a fake activity that displays nothing.
+ * - The screen dims & restores because Android switched activities...
+ *   you just don't see anything since there's no UI to display.
+ * - Set its brightness to the desired one.
+ * - Write the desired brightness in the public setting preference
+ *   (we have the permission to access it.)
+ * - Normally when the fake activity quits, Android restores the brightness
+ *   to the default.
+ * - Kill the activity exactly 1 second later...
+ * - And voila, the window manager restores the brightness to the *new* default.
+ */
+
     public static final String TAG = "TFC-ChgBright";
 
     /** Using 0 will actually turn the screen off! */
