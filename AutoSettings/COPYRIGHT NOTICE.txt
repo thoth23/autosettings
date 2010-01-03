@@ -3,7 +3,7 @@ This file explains the license of assets in the Timeriffic project.
 This file is part of the Timeriffic project and must be reproduced in any
 derivative work.
 
-- The name "Timeriffic" is the property DK worldwide, Inc. and cannot be
+- The name "Timeriffic" is the property of DK worldwide, Inc. and cannot be
   reused, alone or recombined, for any purpose including advertising or
   derivative work, without explicit prior permission.
 
