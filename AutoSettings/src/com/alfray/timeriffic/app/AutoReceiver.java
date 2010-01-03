@@ -44,6 +44,10 @@ public class AutoReceiver extends BroadcastReceiver {
     /** Name of an extra int: how we should display a toast for next event. */
     public final static String EXTRA_TOAST_NEXT_EVENT = "toast-next";
 
+    /** Name of an extra bool: true if the update request comes from a manual user
+     * intervention. In this case, we want to skip some logging or checks. */
+    public final static String EXTRA_FROM_UI = "from-ui";
+
     public final static int TOAST_NONE = 0;
     public final static int TOAST_IF_CHANGED = 1;
     public final static int TOAST_ALWAYS = 2;
@@ -59,12 +63,17 @@ public class AutoReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        ExceptionHandler handler = new ExceptionHandler(context);
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "TimerifficReceiver");
         try {
-            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TimerifficReceiver");
+            wl.acquire();
+            ExceptionHandler handler = new ExceptionHandler(context);
             try {
-                wl.acquire();
+                PrefsValues prefs = new PrefsValues(context);
+                ApplySettings as = new ApplySettings(context, prefs);
+
+                as.addToDebugLog("AutoReceiver for " + intent.getAction());
+                if (DEBUG) Log.d(TAG, "AutoReceiver for " + intent.getAction());
 
                 // If we get called because of android.permission.READ_PHONE_STATE
                 // we do NOT want to apply all the settings.
@@ -76,10 +85,14 @@ public class AutoReceiver extends BroadcastReceiver {
                 }
 
                 int displayToast = TOAST_NONE;
+                boolean fromUI = false;
                 Bundle extras = intent.getExtras();
-                if (extras != null) displayToast = extras.getInt(EXTRA_TOAST_NEXT_EVENT, TOAST_NONE);
+                if (extras != null) {
+                    displayToast = extras.getInt(EXTRA_TOAST_NEXT_EVENT, TOAST_NONE);
+                    fromUI = extras.getBoolean(EXTRA_FROM_UI, false);
+                }
 
-                PrefsValues prefs = new PrefsValues(context);
+                if (DEBUG) Log.d(TAG, "From UI: " + Boolean.toString(fromUI));
 
                 if (!prefs.isServiceEnabled()) {
                     if (DEBUG) Log.d(TAG, "Checking disabled");
@@ -91,21 +104,17 @@ public class AutoReceiver extends BroadcastReceiver {
                     return;
                 }
 
-                ApplySettings as = new ApplySettings(context, prefs);
-
-
-                if (displayToast == AutoReceiver.TOAST_NONE) {
-                    // Only add this if this is not a manual request
+                if (!fromUI) {
                     as.addToDebugLog("Check profiles");
                 }
 
                 as.apply(displayToast);
 
             } finally {
-                wl.release();
+                handler.detach();
             }
         } finally {
-            handler.detach();
+            wl.release();
         }
     }
 }
