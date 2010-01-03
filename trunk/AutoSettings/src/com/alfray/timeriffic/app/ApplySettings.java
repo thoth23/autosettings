@@ -264,7 +264,8 @@ public class ApplySettings {
             int displayToast) {
         AlarmManager manager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
 
-        Intent intent = new Intent(AutoReceiver.ACTION_AUTO_CHECK_STATE);
+        Intent intent = new Intent(mContext, AutoReceiver.class);
+        intent.setAction(AutoReceiver.ACTION_AUTO_CHECK_STATE);
         PendingIntent op = PendingIntent.getBroadcast(
                         mContext,
                         0 /*requestCode*/,
