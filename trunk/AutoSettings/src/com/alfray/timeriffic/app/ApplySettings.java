@@ -49,13 +49,15 @@ public class ApplySettings {
     private final static boolean DEBUG = true;
     public final static String TAG = "TFC-ApplySettings";
     private final Context mContext;
-    private SimpleDateFormat mDateFormat;
     private final PrefsValues mPrefs;
+    private final SimpleDateFormat mUiDateFormat;
+    private final SimpleDateFormat mDebugDateFormat;
 
     public ApplySettings(Context context, PrefsValues prefs) {
         mContext = context;
         mPrefs = prefs;
-        mDateFormat = new SimpleDateFormat(context.getString(R.string.globalstatus_nextlast_date_time));
+        mUiDateFormat = new SimpleDateFormat(context.getString(R.string.globalstatus_nextlast_date_time));
+        mDebugDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z");
     }
 
     private void showToast(String s, int duration) {
@@ -148,14 +150,14 @@ public class ApplySettings {
 
         if (lastAction != null) {
             // Format the timestamp of the last action to be "now"
-            String time = mDateFormat.format(new Date(System.currentTimeMillis()));
+            String time = mUiDateFormat.format(new Date(System.currentTimeMillis()));
             mPrefs.setStatusLastTS(time);
 
             // Format the action description
             String a = TimedActionUtils.computeActions(mContext, lastAction);
             mPrefs.setStatusNextAction(a);
 
-            addToDebugLog(time, logActions);
+            addToDebugLog(logActions);
         }
     }
 
@@ -308,7 +310,7 @@ public class ApplySettings {
 
     /** Add debug log for now. */
     /* package */ void addToDebugLog(String message) {
-        String time = mDateFormat.format(new Date(System.currentTimeMillis()));
+        String time = mDebugDateFormat.format(new Date(System.currentTimeMillis()));
         addToDebugLog(time, message);
     }
 
@@ -378,5 +380,4 @@ public class ApplySettings {
 
         return 0;
     }
-
 }

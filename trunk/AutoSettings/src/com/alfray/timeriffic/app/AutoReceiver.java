@@ -72,27 +72,35 @@ public class AutoReceiver extends BroadcastReceiver {
                 PrefsValues prefs = new PrefsValues(context);
                 ApplySettings as = new ApplySettings(context, prefs);
 
-                as.addToDebugLog("AutoReceiver for " + intent.getAction());
-                if (DEBUG) Log.d(TAG, "AutoReceiver for " + intent.getAction());
+                Bundle extras = intent.getExtras();
+                int alarmCount = extras.getInt(Intent.EXTRA_ALARM_COUNT, 0);
 
-                // If we get called because of android.permission.READ_PHONE_STATE
-                // we do NOT want to apply all the settings.
-                // TODO later what we want is to:
-                // - prevent starting airplane mode when in call mode
-                // - have a whitelist of phone entries that should never be muted
-                if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(intent.getAction())) {
-                    return;
-                }
+                String action = intent.getAction();
 
                 int displayToast = TOAST_NONE;
                 boolean fromUI = false;
-                Bundle extras = intent.getExtras();
                 if (extras != null) {
                     displayToast = extras.getInt(EXTRA_TOAST_NEXT_EVENT, TOAST_NONE);
                     fromUI = extras.getBoolean(EXTRA_FROM_UI, false);
                 }
 
                 if (DEBUG) Log.d(TAG, "From UI: " + Boolean.toString(fromUI));
+
+                String debug = String.format("AutoReceiver count:%d, ui:%s, action: %s",
+                        alarmCount,
+                        Boolean.toString(fromUI),
+                        action);
+                as.addToDebugLog(debug);
+                Log.d(TAG, debug);
+
+                // If we get called because of android.permission.READ_PHONE_STATE
+                // we do NOT want to apply all the settings.
+                // TODO later what we want is to:
+                // - prevent starting airplane mode when in call mode
+                // - have a whitelist of phone entries that should never be muted
+                if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(action)) {
+                    return;
+                }
 
                 if (!prefs.isServiceEnabled()) {
                     if (DEBUG) Log.d(TAG, "Checking disabled");
