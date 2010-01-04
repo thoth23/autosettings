@@ -112,3 +112,54 @@ x toggle auto-sync => can't do in SDK
 6- actions.EditActionUI: add private PrefToggle, using in onCreate, onPause.
 7- layout/edit_action & layout/land/more_actions: add R.id.xyzButton
 8- values-*/strings.xml: add R.string.timedaction_xyz_on/off, R.string.editaction_xyz
+
+
+----
+20100103 Redesign of the DB
+
+Typical usage is to have around a dozen rule. Heavy users might have
+a hundred rules at most.
+
+Cons of the current scheme: current usage uses SQLite, which is quite heavy
+for our needs. A typical query implies lots of string manipulations to generate
+the query.
+
+Typical operations:
+- settings check: needs to lookup the DB to find the next event to do.
+  That requires reading pretty much all profiles to find active ones, then
+  read all matching actions to get their time and associated actions.
+- finding the next action to execute is expensive if there isn't an immediate
+  hit, since it means one lookup per day of the week till we find one.
+
+The other cons of the scheme is that it doesn't allow for more triggers.
+The only trigger right now is:
+- profile is active.
+- action at a given time for some days of the week.
+
+The action part is encoded as a string, so it's already pretty flexible.
+
+New triggers we want to add:
+- docking intents
+- battery level intents
+- specific day
+
+So there are 2 parts:
+- redesign the schema to make it more flexible.
+- redesign the storage to make it easier to use.
+
+Rather than use SQLite and a Cursor/Adapter, the idea would be to have
+in-memory data, saved to a file, and the adapter would just display the
+in-memory data. Since we need the data all the time, it would be globally
+available (either as a static singleton, or in the app), and loaded on demand.
+
+We also need to import the current database into the new format the first time.
+
+Finally the file will be in the /data/data/<namespace> folder, with an
+option to save/read from the sdcard. Optionally, we could just always save
+a copy on the sdcard if available, and then at startup if there's no data
+just read the one from the sdcard. This is nice since it makes restores
+"magically" happen. We don't need to always update the sdcard one, it would be
+enough to do it in the onPause of the main UI activity.
+
+If we're going to put the file in clear on the sdcard, the parser should be
+relatively resilient and flexible for errors.
