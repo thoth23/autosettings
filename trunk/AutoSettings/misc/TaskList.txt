@@ -1,6 +1,6 @@
 TODO v2.0
 
-
+20100106 Bug: on TimeZone Changed, just recompute next alarm, don't set settings
 20091224 Move CheckProfile to a service (instead of inside the BroadcastReceiver)
 20091222 Don't start Airplane mode when in talk. Delay via notification.
 20091207 Store profiles as text in shared prefs
