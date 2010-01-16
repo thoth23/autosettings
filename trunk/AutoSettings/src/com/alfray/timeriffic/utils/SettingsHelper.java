@@ -328,8 +328,7 @@ public class SettingsHelper {
             // The source indicates
             // - Backlight range is 0..255
             // - Must not set to 0 (user would see nothing) so they use 10 as minimum
-            // - All constants are in android.os.Power which is hidden from the SDK in 1.0
-            //   yet available in 1.1
+            // - All constants are in android.os.Power which is hidden in the SDK.
             // - To get value: Settings.System.getInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
             // - To set value: Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, v);
 

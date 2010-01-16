@@ -28,7 +28,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IHardwareService;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.ServiceManager;
+import android.os.PowerManager.WakeLock;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
@@ -102,6 +104,12 @@ public class ChangeBrightnessActivity extends ExceptionHandlerActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // A bit unfortunate but it seems the brightness change hack
+        // doesn't work on some devices when the screen is turned off.
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "TFCChangeBrightness");
+        wl.acquire(1002); // we need 1000 ms below, so randomly choose 1002 here
 
         setContentView(R.layout.empty);
 

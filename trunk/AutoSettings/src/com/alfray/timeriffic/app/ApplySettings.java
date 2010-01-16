@@ -38,7 +38,6 @@ import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.Columns;
 import com.alfray.timeriffic.profiles.ProfilesDB;
 import com.alfray.timeriffic.profiles.ProfilesDB.ActionInfo;
-import com.alfray.timeriffic.utils.AgentWrapper;
 import com.alfray.timeriffic.utils.SettingsHelper;
 import com.alfray.timeriffic.utils.SettingsHelper.RingerMode;
 import com.alfray.timeriffic.utils.SettingsHelper.VibrateRingerMode;
@@ -72,16 +71,8 @@ public class ApplySettings {
     public void apply(int displayToast) {
         Log.d(TAG, "Checking enabled");
 
-        AgentWrapper agentWrapper = new AgentWrapper();
-        try {
-            agentWrapper.start(mContext);
-            agentWrapper.event(AgentWrapper.Event.CheckProfiles);
-
-            checkProfiles(displayToast);
-            notifyDataChanged();
-        } finally{} {
-            agentWrapper.stop(mContext);
-        }
+        checkProfiles(displayToast);
+        notifyDataChanged();
     }
 
     private void checkProfiles(int displayToast) {
@@ -266,8 +257,8 @@ public class ApplySettings {
             int displayToast) {
         AlarmManager manager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
 
-        Intent intent = new Intent(mContext, AutoReceiver.class);
-        intent.setAction(AutoReceiver.ACTION_AUTO_CHECK_STATE);
+        Intent intent = new Intent(mContext, UpdateReceiver.class);
+        intent.setAction(UpdateReceiver.ACTION_AUTO_CHECK_STATE);
         PendingIntent op = PendingIntent.getBroadcast(
                         mContext,
                         0 /*requestCode*/,
@@ -282,8 +273,8 @@ public class ApplySettings {
 
         manager.set(AlarmManager.RTC_WAKEUP, timeMs, op);
 
-        boolean shouldDisplayToast = displayToast != AutoReceiver.TOAST_NONE;
-        if (displayToast == AutoReceiver.TOAST_IF_CHANGED) {
+        boolean shouldDisplayToast = displayToast != UpdateReceiver.TOAST_NONE;
+        if (displayToast == UpdateReceiver.TOAST_IF_CHANGED) {
             shouldDisplayToast = timeMs != mPrefs.getLastScheduledAlarm();
         }
 
