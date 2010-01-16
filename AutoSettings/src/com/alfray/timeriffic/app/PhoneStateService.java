@@ -25,7 +25,7 @@ import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
-public class AutoService extends Service {
+public class PhoneStateService extends Service {
 
     private MyPhoneStateListener mPSListener;
 

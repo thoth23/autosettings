@@ -50,7 +50,7 @@ import android.widget.Toast;
 import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.actions.EditActionUI;
 import com.alfray.timeriffic.app.ApplySettings;
-import com.alfray.timeriffic.app.AutoReceiver;
+import com.alfray.timeriffic.app.UpdateReceiver;
 import com.alfray.timeriffic.app.IntroActivity;
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.EditProfileUI;
@@ -497,7 +497,7 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                     TimedActionHolder.TAG + ":D",
 
                     ApplySettings.TAG + ":D",
-                    AutoReceiver.TAG + ":D",
+                    UpdateReceiver.TAG + ":D",
                     SettingsHelper.TAG + ":D",
                     ExceptionHandler.TAG + ":D",
                     AgentWrapper.TAG + ":D",

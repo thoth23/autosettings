@@ -47,7 +47,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.app.AutoReceiver;
+import com.alfray.timeriffic.app.UpdateReceiver;
 import com.alfray.timeriffic.app.IntroActivity;
 import com.alfray.timeriffic.app.TimerifficApp;
 import com.alfray.timeriffic.error.ErrorReporterUI;
@@ -286,7 +286,7 @@ public class ProfilesUI extends ExceptionHandlerActivity {
             String next = mPrefsValues.getStatusNextTS();
             if (next == null) {
                 // schedule a profile check to initialize the last/next status
-                requestSettingsCheck(AutoReceiver.TOAST_NONE);
+                requestSettingsCheck(UpdateReceiver.TOAST_NONE);
             }
         }
 
@@ -513,11 +513,11 @@ public class ProfilesUI extends ExceptionHandlerActivity {
         switch(requestCode) {
         case DATA_CHANGED:
             onDataChanged();
-            requestSettingsCheck(AutoReceiver.TOAST_IF_CHANGED);
+            requestSettingsCheck(UpdateReceiver.TOAST_IF_CHANGED);
             break;
         case SETTINGS_UPDATED:
             updateGlobalState();
-            requestSettingsCheck(AutoReceiver.TOAST_IF_CHANGED);
+            requestSettingsCheck(UpdateReceiver.TOAST_IF_CHANGED);
             break;
         case CHECK_SERVICES:
             onCheckServices();
@@ -650,7 +650,7 @@ public class ProfilesUI extends ExceptionHandlerActivity {
             public void onClick(View v) {
                 mPrefsValues.setServiceEnabled(!mPrefsValues.isServiceEnabled());
                 updateGlobalState();
-                requestSettingsCheck(AutoReceiver.TOAST_ALWAYS);
+                requestSettingsCheck(UpdateReceiver.TOAST_ALWAYS);
             }
         });
 
@@ -697,7 +697,7 @@ public class ProfilesUI extends ExceptionHandlerActivity {
             showPrefs();
             break;
         case R.string.check_now:
-            requestSettingsCheck(AutoReceiver.TOAST_ALWAYS);
+            requestSettingsCheck(UpdateReceiver.TOAST_ALWAYS);
             break;
         case R.string.about:
             mAgentWrapper.event(AgentWrapper.Event.MenuAbout);
@@ -728,14 +728,14 @@ public class ProfilesUI extends ExceptionHandlerActivity {
     /**
      * Requests a setting check.
      *
-     * @param displayToast Must be one of {@link AutoReceiver#TOAST_ALWAYS},
-     *                     {@link AutoReceiver#TOAST_IF_CHANGED} or {@link AutoReceiver#TOAST_NONE}
+     * @param displayToast Must be one of {@link UpdateReceiver#TOAST_ALWAYS},
+     *                     {@link UpdateReceiver#TOAST_IF_CHANGED} or {@link UpdateReceiver#TOAST_NONE}
      */
     private void requestSettingsCheck(int displayToast) {
         if (DEBUG) Log.d(TAG, "Request settings check");
-        Intent i = new Intent(AutoReceiver.ACTION_AUTO_CHECK_STATE);
-        i.putExtra(AutoReceiver.EXTRA_TOAST_NEXT_EVENT, displayToast);
-        i.putExtra(AutoReceiver.EXTRA_FROM_UI, true);
+        Intent i = new Intent(UpdateReceiver.ACTION_AUTO_CHECK_STATE);
+        i.putExtra(UpdateReceiver.EXTRA_TOAST_NEXT_EVENT, displayToast);
+        i.putExtra(UpdateReceiver.EXTRA_FROM_UI, true);
         sendBroadcast(i);
     }
 
@@ -757,7 +757,7 @@ public class ProfilesUI extends ExceptionHandlerActivity {
                     mProfilesDb.resetProfiles(which);
                     removeDialog(DIALOG_RESET_CHOICES);
                     onDataChanged();
-                    requestSettingsCheck(AutoReceiver.TOAST_IF_CHANGED);
+                    requestSettingsCheck(UpdateReceiver.TOAST_IF_CHANGED);
                 }
         });
 
