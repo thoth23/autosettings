@@ -424,6 +424,10 @@ public class ProfilesUI extends ExceptionHandlerActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        initOnResume();
+    }
+
+    private void initOnResume() {
         initProfileList();
         setDataListener();
     }
@@ -533,6 +537,12 @@ public class ProfilesUI extends ExceptionHandlerActivity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
+
+        // In case of configuration change (e.g. screen rotation),
+        // the activity is restored but onResume hasn't been called yet
+        // so we do it now.
+        initOnResume();
+
         switch(id) {
         case DIALOG_RESET_CHOICES:
             return createDialogResetChoices();
