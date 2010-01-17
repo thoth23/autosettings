@@ -20,6 +20,9 @@ TODO v2.0
 
 DONE for 1.8
 
+20100117 Fix crash on screen rotation during reset profiles menu
+20100117 Fix crash at boot
+20100116 1.8.07 in Market
 20100102 1.8.06 in Market
 20100102 Fix for alarm not firing
 20100101 1.8.04 in Market

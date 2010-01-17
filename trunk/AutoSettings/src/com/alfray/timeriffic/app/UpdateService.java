@@ -18,26 +18,26 @@
 
 package com.alfray.timeriffic.app;
 
-import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.error.ExceptionHandler;
-import com.alfray.timeriffic.prefs.PrefsValues;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager.WakeLock;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.alfray.timeriffic.R;
+import com.alfray.timeriffic.error.ExceptionHandler;
+import com.alfray.timeriffic.prefs.PrefsValues;
+
 public class UpdateService extends Service {
 
     private static final String TAG = "TFC-UpdServ";
-    private static final boolean DEBUG = true;
+    //--private static final boolean DEBUG = true;
 
     private static final String EXTRA_RELEASE_WL = "releaseWL";
+    private static final String EXTRA_OLD_INTENT = "old_intent";
 
     private static WakeLock sWakeLock = null;
 
@@ -47,11 +47,14 @@ public class UpdateService extends Service {
         return null;
     }
 
-    public static void update(Context context, Intent intent , WakeLock wakeLock) {
-        Intent i = new Intent(context, UpdateService.class);
+    /**
+     * Starts the service.
+     * This is invoked from the {@link UpdateReceiver}.
+     */
+    public static void update(Context context, Intent intent, WakeLock wakeLock) {
 
-        i.setAction(intent.getAction());
-        i.putExtras(intent.getExtras());
+        Intent i = new Intent(context, UpdateService.class);
+        i.putExtra(EXTRA_OLD_INTENT, intent);
 
         if (wakeLock != null) {
             i.putExtra(EXTRA_RELEASE_WL, true);
@@ -71,17 +74,31 @@ public class UpdateService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
+        ExceptionHandler handler = new ExceptionHandler(this);
         try {
-            super.onStart(intent, startId);
+            try {
+                super.onStart(intent, startId);
 
-            applyUpdate(this, intent);
+                Intent i = intent.getParcelableExtra(EXTRA_OLD_INTENT);
+                if (i == null) {
+                    // Not supposed to happen.
+                    String msg = "Missing old_intent in UpdateService.onStart";
+                    PrefsValues prefs = new PrefsValues(this);
+                    ApplySettings as = new ApplySettings(this, prefs);
+                    as.addToDebugLog(msg);
+                    Log.e(TAG, msg);
+                } else {
+                    applyUpdate(i);
+                }
+
+            } finally {
+                if (intent.getBooleanExtra(EXTRA_RELEASE_WL, false)) {
+                    releaseWakeLock();
+                }
+            }
 
         } finally {
-
-            Bundle extras = intent.getExtras();
-            if (extras != null && extras.getBoolean(EXTRA_RELEASE_WL)) {
-                releaseWakeLock();
-            }
+            handler.detach();
         }
     }
 
@@ -103,61 +120,48 @@ public class UpdateService extends Service {
         }
     }
 
-    private void applyUpdate(Context context, Intent intent) {
-        ExceptionHandler handler = new ExceptionHandler(context);
-        try {
-            PrefsValues prefs = new PrefsValues(context);
-            ApplySettings as = new ApplySettings(context, prefs);
+    private void applyUpdate(Intent intent) {
+        PrefsValues prefs = new PrefsValues(this);
+        ApplySettings as = new ApplySettings(this, prefs);
 
-            Bundle extras = intent.getExtras();
-            int alarmCount = extras.getInt(Intent.EXTRA_ALARM_COUNT, 0);
+        int alarmCount = intent.getIntExtra(Intent.EXTRA_ALARM_COUNT, 0);
 
-            String action = intent.getAction();
+        String action = intent.getAction();
 
-            int displayToast = UpdateReceiver.TOAST_NONE;
-            boolean fromUI = false;
-            if (extras != null) {
-                displayToast = extras.getInt(UpdateReceiver.EXTRA_TOAST_NEXT_EVENT, UpdateReceiver.TOAST_NONE);
-                fromUI = extras.getBoolean(UpdateReceiver.EXTRA_FROM_UI, false);
-            }
+        int displayToast = intent.getIntExtra(UpdateReceiver.EXTRA_TOAST_NEXT_EVENT, UpdateReceiver.TOAST_NONE);
+        boolean fromUI = intent.getBooleanExtra(UpdateReceiver.EXTRA_FROM_UI, false);
 
-            if (DEBUG) Log.d(TAG, "From UI: " + Boolean.toString(fromUI));
+        String debug = String.format("UpdateService count:%d, ui:%s, action:%s",
+                alarmCount,
+                Boolean.toString(fromUI),
+                action);
+        as.addToDebugLog(debug);
+        Log.d(TAG, debug);
 
-            String debug = String.format("UpdateService count:%d, ui:%s, action: %s",
-                    alarmCount,
-                    Boolean.toString(fromUI),
-                    action);
+        // If we get called because of android.permission.READ_PHONE_STATE
+        // we do NOT want to apply all the settings.
+        // TODO later what we want is to:
+        // - prevent starting airplane mode when in call mode
+        // - have a whitelist of phone entries that should never be muted
+        if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(action)) {
+            return;
+        }
+
+        if (!prefs.isServiceEnabled()) {
+            debug = "Checking disabled";
             as.addToDebugLog(debug);
             Log.d(TAG, debug);
 
-            // If we get called because of android.permission.READ_PHONE_STATE
-            // we do NOT want to apply all the settings.
-            // TODO later what we want is to:
-            // - prevent starting airplane mode when in call mode
-            // - have a whitelist of phone entries that should never be muted
-            if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(action)) {
-                return;
+            if (displayToast == UpdateReceiver.TOAST_ALWAYS) {
+                showToast(this, prefs,
+                        R.string.globalstatus_disabled,
+                        Toast.LENGTH_LONG);
             }
 
-            if (!prefs.isServiceEnabled()) {
-                if (DEBUG) Log.d(TAG, "Checking disabled");
-                if (displayToast == UpdateReceiver.TOAST_ALWAYS) {
-                    showToast(context, prefs,
-                            R.string.globalstatus_disabled,
-                            Toast.LENGTH_LONG);
-                }
-                return;
-            }
-
-            if (!fromUI) {
-                as.addToDebugLog("Check profiles");
-            }
-
-            as.apply(displayToast);
-
-        } finally {
-            handler.detach();
+            return;
         }
+
+        as.apply(displayToast);
     }
 
 
@@ -165,7 +169,7 @@ public class UpdateService extends Service {
         try {
             Toast.makeText(context, id, duration).show();
         } catch (Throwable t) {
-            Log.w(TAG, "Toast.show crashed", t);
+            Log.e(TAG, "Toast.show crashed", t);
             ExceptionHandler.addToLog(pv, t);
         }
     }

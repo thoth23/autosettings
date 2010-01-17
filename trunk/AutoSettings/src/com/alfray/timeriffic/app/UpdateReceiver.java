@@ -18,6 +18,8 @@
 
 package com.alfray.timeriffic.app;
 
+import com.alfray.timeriffic.error.ExceptionHandler;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -47,10 +49,15 @@ public class UpdateReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TimerifficReceiver");
-        wl.acquire();
-        UpdateService.update(context, intent, wl);
-        if (DEBUG) Log.d(TAG, "UpdateService requested");
+        ExceptionHandler handler = new ExceptionHandler(context);
+        try {
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TimerifficReceiver");
+            wl.acquire();
+            UpdateService.update(context, intent, wl);
+            if (DEBUG) Log.d(TAG, "UpdateService requested");
+        } finally {
+            handler.detach();
+        }
     }
 }
