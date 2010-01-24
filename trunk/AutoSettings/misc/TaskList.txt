@@ -18,6 +18,8 @@ TODO v2.0
 
 DONE for 1.8
 
+20100123 1.8.10 in Market
+20100123 Bug: forgot to apply settings on boot
 20100123 1.8.09 in Market
 20100123 Profile list UI: correctly display prev vs next actions (finally)
 20100123 DB: action.is_enable tri state for normal/next/prev action
