@@ -155,7 +155,6 @@ abstract class BaseHolder {
         action_index = profDb.insertTimedAction(
                 prof_index,
                 action_index,
-                false,      // isActive
                 hourMin,    // hourMin
                 day,        // days
                 "",         // actions

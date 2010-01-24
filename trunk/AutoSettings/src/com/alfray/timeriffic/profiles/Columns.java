@@ -53,11 +53,20 @@ public class Columns implements BaseColumns {
 
     /** Is Enabled:
      * - Profile: user-selected enabled toggle.
+     *   0=disabled, 1=enabled
      * - Timed action: is executing (pre-computed value).
+     *   0=default, 1=last, 2=next
      * <p/>
-     * Type: INTEGER (boolean) 0 or 1
+     * Type: INTEGER
      */
     public static final String IS_ENABLED = "enable";
+
+    public static final int PROFILE_ENABLED = 0;
+    public static final int PROFILE_DISABLED = 1;
+    public static final int ACTION_MARK_DEFAULT = 0;
+    public static final int ACTION_MARK_PREV = 1;
+    public static final int ACTION_MARK_NEXT = 2;
+
 
     // --- fields for a profile definition
 
