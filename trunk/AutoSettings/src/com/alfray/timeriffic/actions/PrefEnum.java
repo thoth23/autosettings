@@ -139,7 +139,7 @@ class PrefEnum extends PrefBase
 
             int dot = counter == 0 ? ID_DOT_STATE_ON :
                         counter == 1 ? ID_DOT_STATE_OFF :
-                            ID_DOT_UNCHANGED;
+                            ID_DOT_EXTRA;
             counter++;
 
             Choice c = new Choice(p, s, dot);

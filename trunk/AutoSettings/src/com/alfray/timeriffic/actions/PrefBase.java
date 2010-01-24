@@ -34,6 +34,7 @@ public abstract class PrefBase {
     protected final static int ID_DOT_STATE_ON  = R.drawable.dot_green;
     protected final static int ID_DOT_STATE_OFF = R.drawable.dot_red;
     protected final static int ID_DOT_PERCENT   = R.drawable.dot_purple;
+    protected final static int ID_DOT_EXTRA     = R.drawable.dot_purple;
 
     public PrefBase(Activity activity) {
         mActivity = activity;
