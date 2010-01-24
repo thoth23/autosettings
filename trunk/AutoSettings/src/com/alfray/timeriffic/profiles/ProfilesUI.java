@@ -466,6 +466,7 @@ public class ProfilesUI extends ExceptionHandlerActivity {
                     onDataChanged();
                 }
             });
+            onDataChanged();
         }
     }
 
