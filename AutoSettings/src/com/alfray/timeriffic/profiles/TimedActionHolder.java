@@ -19,6 +19,7 @@
 package com.alfray.timeriffic.profiles;
 
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -44,9 +45,18 @@ public class TimedActionHolder extends BaseHolder {
         ColIndexes colIndexes = mActivity.getColIndexes();
         super.setUiData(cursor,
                 cursor.getString(colIndexes.mDescColIndex),
-                cursor.getInt(colIndexes.mEnableColIndex) != 0 ?
-                        mActivity.getGreenDot() :
-                        mActivity.getGrayDot());
+                getDotColor(cursor.getInt(colIndexes.mEnableColIndex)));
+    }
+
+    private Drawable getDotColor(int actionMark) {
+        switch (actionMark) {
+        case Columns.ACTION_MARK_PREV:
+            return mActivity.getGreenDot();
+        case Columns.ACTION_MARK_NEXT:
+            return mActivity.getPurpleDot();
+        default:
+            return mActivity.getGrayDot();
+        }
     }
 
     @Override

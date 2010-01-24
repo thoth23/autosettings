@@ -78,8 +78,9 @@ public class ProfilesUI extends ExceptionHandlerActivity {
 
     private AgentWrapper mAgentWrapper;
     private PrefsValues mPrefsValues;
-    private Drawable mGreenDot;
     private Drawable mGrayDot;
+    private Drawable mGreenDot;
+    private Drawable mPurpleDot;
     private Drawable mCheckOn;
     private Drawable mCheckOff;
 
@@ -125,8 +126,9 @@ public class ProfilesUI extends ExceptionHandlerActivity {
         mLayoutInflater = getLayoutInflater();
 
         mPrefsValues = new PrefsValues(this);
-        mGreenDot = getResources().getDrawable(R.drawable.dot_green);
         mGrayDot = getResources().getDrawable(R.drawable.dot_gray);
+        mGreenDot = getResources().getDrawable(R.drawable.dot_green);
+        mPurpleDot = getResources().getDrawable(R.drawable.dot_purple);
         mCheckOn = getResources().getDrawable(R.drawable.btn_check_on);
         mCheckOff = getResources().getDrawable(R.drawable.btn_check_off);
 
@@ -221,12 +223,16 @@ public class ProfilesUI extends ExceptionHandlerActivity {
         return mProfilesDb;
     }
 
+    Drawable getGrayDot() {
+        return mGrayDot;
+    }
+
     Drawable getGreenDot() {
         return mGreenDot;
     }
 
-    Drawable getGrayDot() {
-        return mGrayDot;
+    Drawable getPurpleDot() {
+        return mPurpleDot;
     }
 
     Drawable getCheckOff() {

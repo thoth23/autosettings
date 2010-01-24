@@ -19,7 +19,6 @@
 package com.alfray.timeriffic.app;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -93,20 +92,23 @@ public class ApplySettings {
                 int day = TimedActionUtils.calendarDayToActionDay(c);
 
                 if (applyState) {
-                    ArrayList<ActionInfo> actions =
+                    ActionInfo[] actions =
                         profilesDb.getWeekActivableActions(hourMin, day, prof_indexes);
 
-                    if (actions != null && actions.size() > 0) {
+                    if (actions != null && actions.length > 0) {
                         performActions(actions);
-                        profilesDb.markActionsEnabled(actions);
+                        profilesDb.markActionsEnabled(actions, Columns.ACTION_MARK_PREV);
                     }
                 }
 
                 // Compute next event and set an alarm for it
-                StringBuilder nextActions = new StringBuilder();
+                ActionInfo[] nextActions = new ActionInfo[] { null };
                 int nextEventMin = profilesDb.getWeekNextEvent(hourMin, day, prof_indexes, nextActions);
                 if (nextEventMin > 0) {
-                    scheduleAlarm(c, nextEventMin, nextActions, displayToast);
+                    scheduleAlarm(c, nextEventMin, nextActions[0], displayToast);
+                    if (applyState) {
+                        profilesDb.markActionsEnabled(nextActions, Columns.ACTION_MARK_NEXT);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -118,7 +120,7 @@ public class ApplySettings {
         }
     }
 
-    private void performActions(ArrayList<ActionInfo> actions) {
+    private void performActions(ActionInfo[] actions) {
 
         String logActions = null;
         String lastAction = null;
@@ -265,7 +267,7 @@ public class ApplySettings {
     private void scheduleAlarm(
             Calendar now,
             int nextEventMin,
-            StringBuilder nextActions,
+            ActionInfo nextActions,
             int displayToast) {
         AlarmManager manager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
 
@@ -300,7 +302,7 @@ public class ApplySettings {
             try {
                 mPrefs.editLastScheduledAlarm(e, timeMs);
                 mPrefs.editStatusNextTS(e, s2);
-                mPrefs.editStatusNextAction(e, TimedActionUtils.computeActions(mContext, nextActions.toString()));
+                mPrefs.editStatusNextAction(e, TimedActionUtils.computeActions(mContext, nextActions.mActions));
             } finally {
                 mPrefs.endEdit(e, TAG);
             }

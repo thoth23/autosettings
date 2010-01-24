@@ -275,7 +275,6 @@ public class ProfilesDB {
      */
     public long insertTimedAction(long profileIndex,
             long afterActionIndex,
-            boolean isActive,
             int hourMin,
             int days,
             String actions,
@@ -315,7 +314,7 @@ public class ProfilesDB {
             values.put(Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION);
             values.put(Columns.PROFILE_ID, pid);
             values.put(Columns.DESCRIPTION, description);
-            values.put(Columns.IS_ENABLED, isActive);
+            values.put(Columns.IS_ENABLED, 0);
             values.put(Columns.HOUR_MIN, hourMin);
             values.put(Columns.DAYS, days);
             values.put(Columns.ACTIONS, actions);
@@ -635,14 +634,12 @@ public class ProfilesDB {
     private void initDefaultProfiles() {
         long pindex = insertProfile(0, "Weekdaze", true /*isEnabled*/);
         long action = insertTimedAction(pindex, 0,
-                true,               //isActive
                 7*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY,
                 "RR,VV",            //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
-                false,              //isActive
                 20*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY,
                 "RM,VV",            //actions
@@ -651,14 +648,12 @@ public class ProfilesDB {
 
         pindex = insertProfile(0, "Party Time", true /*isEnabled*/);
         action = insertTimedAction(pindex, 0,
-                false,              //isActive
                 9*60+0,             //hourMin
                 Columns.FRIDAY + Columns.SATURDAY,
                 "RR",               //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
-                false,               //isActive
                 22*60+0,             //hourMin
                 Columns.FRIDAY + Columns.SATURDAY,
                 "RM,VV",            //actions
@@ -667,14 +662,12 @@ public class ProfilesDB {
 
         pindex = insertProfile(0, "Sleeping-In", true /*isEnabled*/);
         action = insertTimedAction(pindex, 0,
-                false,               //isActive
                 10*60+30,            //hourMin
                 Columns.SUNDAY,
                 "RR",               //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
-                false,               //isActive
                 21*60+0,             //hourMin
                 Columns.SUNDAY,
                 "RM,VV",            //actions
@@ -688,14 +681,12 @@ public class ProfilesDB {
     private void initRalfProfiles() {
         long pindex = insertProfile(0, "Ralf Week", true /*isEnabled*/);
         long action = insertTimedAction(pindex, 0,
-                true,               //isActive
                 9*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY + Columns.FRIDAY + Columns.SATURDAY + Columns.SUNDAY,
                 "RR,VV,B75,U1",     //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
-                false,              //isActive
                 21*60+0,             //hourMin
                 Columns.MONDAY + Columns.TUESDAY + Columns.WEDNESDAY + Columns.THURSDAY + Columns.FRIDAY + Columns.SATURDAY + Columns.SUNDAY,
                 "RM,VN,B1,U0",      //actions
@@ -704,21 +695,18 @@ public class ProfilesDB {
 
         pindex = insertProfile(0, "Ring Volume", true /*isEnabled*/);
         action = insertTimedAction(pindex, 0,
-                true,               //isActive
                 13*60+30,           //hourMin
                 Columns.SATURDAY + Columns.SUNDAY,
                 "G25",              //actions
                 0                   //nextMs
                 );
         action = insertTimedAction(pindex, action,
-                false,              //isActive
                 16*60+0,            //hourMin
                 Columns.SATURDAY + Columns.SUNDAY,
                 "G85",              //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
-                false,              //isActive
                 10*60+0,            //hourMin
                 Columns.MONDAY,
                 "G100",             //actions
@@ -835,7 +823,7 @@ public class ProfilesDB {
                 do {
                     String desc = c.getString(colDesc);
                     String actions = c.getString(colActions);
-                    boolean en  = c.getInt(colIsEnabled) != 0;
+                    int enable  = c.getInt(colIsEnabled);
                     int type    = c.getInt (colType);
                     long profId = c.getLong(colProfId);
                     int hourMin = c.getInt (colHourMin);
@@ -856,8 +844,9 @@ public class ProfilesDB {
                             profId >> Columns.PROFILE_SHIFT,
                             profId & Columns.ACTION_MASK,
                             type == Columns.TYPE_IS_PROFILE ?
-                                    (en ? "E" : "D") : // profile: enable/disabled
-                                    (en ? "A" : "I")   // action: active/inactive
+                                    (enable == 0 ? "D" : /*1*/ "E") : // profile: enable/disabled
+                                    (enable == 0 ? "I" :              // action: inactive/prev/next
+                                        (enable == 1 ? "P" : /*2*/ "N"))
                             ));
 
                     // Description profile:user name, action: display summary
@@ -944,7 +933,7 @@ public class ProfilesDB {
      *   The hourMin check is done after on the result.
      * - Can return an empty list, but not null.
      */
-    public ArrayList<ActionInfo> getDayActivableActions(int hourMin, int day, long[] prof_indexes) {
+    public ActionInfo[] getDayActivableActions(int hourMin, int day, long[] prof_indexes) {
         if (prof_indexes.length < 1) return null;
 
         StringBuilder profList = new StringBuilder();
@@ -994,17 +983,19 @@ public class ProfilesDB {
 
             ArrayList<ActionInfo> infos = new ArrayList<ActionInfo>();
             if (c.moveToFirst()) {
-                int currHourMin = c.getInt(hourMinColIndex);
+                int firstHourMin = c.getInt(hourMinColIndex);
                 do {
-                    infos.add(new ActionInfo(c.getLong(rowIdColIndex),
+                    infos.add(new ActionInfo(
+                            c.getLong(rowIdColIndex),
+                            firstHourMin,  // all actions have the same time
                             c.getString(actionsColInfo)));
 
-                    if (DEBUG) Log.d(TAG, String.format("ActivableAction: day %d, hourMin %04d", day, currHourMin));
+                    if (DEBUG) Log.d(TAG, String.format("ActivableAction: day %d, hourMin %04d", day, firstHourMin));
 
-                } while (c.moveToNext() && c.getInt(hourMinColIndex) == currHourMin);
+                } while (c.moveToNext() && c.getInt(hourMinColIndex) == firstHourMin);
             }
 
-            return infos;
+            return infos.toArray(new ActionInfo[infos.size()]);
         } finally {
             if (c != null) c.close();
         }
@@ -1015,8 +1006,8 @@ public class ProfilesDB {
      * day. If nothing is found, look at the 6 previous days to see if we can
      * find an action.
      */
-    public ArrayList<ActionInfo> getWeekActivableActions(int hourMin, int day, long[] prof_indexes) {
-        ArrayList<ActionInfo> actions = null;
+    public ActionInfo[] getWeekActivableActions(int hourMin, int day, long[] prof_indexes) {
+        ActionInfo[] actions = null;
 
         // Look for the last enabled action for day.
         // If none was found, loop up to 6 days before and check the last
@@ -1024,7 +1015,7 @@ public class ProfilesDB {
         for (int k = 0; k < 7; k++) {
             actions = getDayActivableActions(hourMin, day, prof_indexes);
 
-            if (actions != null && actions.size() > 0) {
+            if (actions != null && actions.length > 0) {
                 break;
             }
 
@@ -1042,7 +1033,7 @@ public class ProfilesDB {
     }
 
     /**
-     * Given a day and an hourMin time, try to find the first even that happens
+     * Given a day and an hourMin time, try to find the first event that happens
      * after that timestamp. If nothing if found on the day, look up to 6 days
      * ahead.
      *
@@ -1052,11 +1043,16 @@ public class ProfilesDB {
      * @return The number of minutes from the given timestamp to the next event
      *  or 0 if there's no such event ("now" is not a valid next event)
      */
-    public int getWeekNextEvent(int hourMin, int day, long[] prof_indexes, StringBuilder out_actions) {
-        // First try to find something today
-        int found = getDayNextEvent(hourMin, day, prof_indexes, out_actions);
-        if (found > hourMin) {
-            return found - hourMin;
+    public int getWeekNextEvent(int hourMin, int day, long[] prof_indexes,
+            ActionInfo[] out_actions) {
+        // First try to find something today that is past the requested time.
+        ActionInfo found = getDayNextEvent(hourMin, day, prof_indexes);
+        if (found != null) {
+            out_actions[0] = found;
+            int delta = found.mHourMin - hourMin;
+            if (delta > 0) {
+                return delta;
+            }
         }
 
         // Otherwise look for the 6 days of events
@@ -1066,9 +1062,10 @@ public class ProfilesDB {
             day = day << 1;
             if (day > Columns.SUNDAY) day = Columns.MONDAY;
 
-            found = getDayNextEvent(-1 /*One minute before 00:00*/, day, prof_indexes, out_actions);
-            if (found >= 0) {
-                return minutes + found;
+            found = getDayNextEvent(-1 /*One minute before 00:00*/, day, prof_indexes);
+            if (found != null) {
+                out_actions[0] = found;
+                return minutes + found.mHourMin;
             }
         }
 
@@ -1076,7 +1073,7 @@ public class ProfilesDB {
     }
 
     /**
-     * Given a day and an hourMin time, try to find the first even that happens
+     * Given a day and an hourMin time, try to find the first event that happens
      * after that timestamp on the singular day.
      *
      * prof_indexes is a list of profile indexes (not ids) that are currently
@@ -1086,8 +1083,8 @@ public class ProfilesDB {
      *  If the return value is not -1, it is guaranteed to be greater than the
      *  given hourMin since we look for an event *past* this time.
      */
-    private int getDayNextEvent(int hourMin, int day, long[] prof_indexes, StringBuilder out_actions) {
-        if (prof_indexes.length < 1) return -1;
+    private ActionInfo getDayNextEvent(int hourMin, int day, long[] prof_indexes) {
+        if (prof_indexes.length < 1) return null;
 
         StringBuilder profList = new StringBuilder();
         for (long prof_index : prof_indexes) {
@@ -1133,22 +1130,25 @@ public class ProfilesDB {
                     limit
                     );
 
+            int rowIdColIndex = c.getColumnIndexOrThrow(Columns._ID);
             int hourMinColIndex = c.getColumnIndexOrThrow(Columns.HOUR_MIN);
             int actionColIndex = c.getColumnIndexOrThrow(Columns.ACTIONS);
 
             if (c.moveToFirst()) {
                 hourMin = c.getInt(hourMinColIndex);
-                if (out_actions != null) out_actions.append(c.getString(actionColIndex));
 
                 if (DEBUG) Log.d(TAG, String.format("NextEvent: day %d, hourMin %04d", day, hourMin));
 
-                return hourMin;
+                return new ActionInfo(
+                        c.getLong(rowIdColIndex),
+                        hourMin,
+                        c.getString(actionColIndex));
             }
         } finally {
             if (c != null) c.close();
         }
 
-        return -1;
+        return null;
     }
 
 
@@ -1159,10 +1159,12 @@ public class ProfilesDB {
     public static class ActionInfo {
 
         public final long mRowId;
+        private final int mHourMin;
         public final String mActions;
 
-        public ActionInfo(long rowId, String actions) {
+        public ActionInfo(long rowId, int hourMin, String actions) {
             mRowId = rowId;
+            mHourMin = hourMin;
             mActions = actions;
         }
 
@@ -1173,9 +1175,10 @@ public class ProfilesDB {
     }
 
     /**
-     * Mark all actions as enabled.
+     * Mark all the given actions as enabled for the given state.
+     * Any previous actions with the given state are cleared.
      */
-    public void markActionsEnabled(ArrayList<ActionInfo> actions) {
+    public void markActionsEnabled(ActionInfo[] actions, int state) {
 
         StringBuilder rowList = new StringBuilder();
         for (ActionInfo info : actions) {
@@ -1184,21 +1187,39 @@ public class ProfilesDB {
         }
 
         // generates WHERE type=2 (aka action) AND _id in (profList)
-        String where = String.format("%s=%d AND %s IN (%s)",
+        String where_set = String.format("%s=%d AND %s IN (%s)",
                 Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
                 Columns._ID, rowList);
 
-        if (DEBUG) Log.d(TAG, "Mark actions: WHERE " + where);
+        ContentValues values_set = new ContentValues(1);
+        values_set.put(Columns.IS_ENABLED, state);
 
-        ContentValues values = new ContentValues(1);
-        values.put(Columns.IS_ENABLED, true);
+        if (DEBUG) Log.d(TAG, "Mark actions: WHERE " + where_set);
+
+
+        // generates WHERE type=2 (aka action) AND is_enabled == state
+        String where_clear = String.format("%s=%d AND %s == %d",
+                Columns.TYPE, Columns.TYPE_IS_TIMED_ACTION,
+                Columns.IS_ENABLED, state);
+
+        ContentValues values_clear = new ContentValues(1);
+        values_clear.put(Columns.IS_ENABLED, Columns.ACTION_MARK_DEFAULT);
 
         beginTransaction();
         try {
+            // clear previous marks
             mDb.update(
                     PROFILES_TABLE, // table
-                    values,         // values
-                    where,          // whereClause
+                    values_clear,   // values
+                    where_clear,    // whereClause
+                    null            // whereArgs
+                    );
+
+            // set new ones
+            mDb.update(
+                    PROFILES_TABLE, // table
+                    values_set,     // values
+                    where_set,      // whereClause
                     null            // whereArgs
                     );
 

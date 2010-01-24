@@ -1,7 +1,5 @@
 TODO v2.0
 
-20100106 Bug: on TimeZone Changed, just recompute next alarm, don't set settings
-20100106 Bug: on TimeZone Changed, check extra time.zone and disregard if same as previous
 
 20091222 Don't start Airplane mode when in talk. Delay via notification.
 20091207 Store profiles as text in shared prefs
@@ -20,22 +18,36 @@ TODO v2.0
 
 DONE for 1.8
 
+20100123 1.8.09 in Market
+20100123 Profile list UI: correctly display prev vs next actions (finally)
+20100123 DB: action.is_enable tri state for normal/next/prev action
+20100123 Fix purple dot for butto enum > 2
+20100123 Aggregate pref.edit.comit and synchronize them
+20100123 Bug: on TimeZone Changed, just recompute next alarm, don't set settings
+
 20100117 Fix crash on screen rotation during reset profiles menu
 20100117 Fix crash at boot
+
 20100116 1.8.07 in Market
 20100116 Rename AutoReceiver to UpdateReceiver, implement UpdateService
+
 20100102 1.8.06 in Market
 20100102 Fix for alarm not firing (FAIL)
+
 20100101 1.8.04 in Market
 20100101 Try to fix "SQL error no column -1"
+
 20091230 1.8.03 in Market
 20091230 New setting: No Notification Vibrate
 20091230 More logs to debug settings not engaging issue + cryptic SQL error
+
 20091229 1.8.02 in Market
 20091229 Fix: screen rotation crashes edit action > percentage dialog
+
 20091229 1.8.01 in Market
 20091229 Fix: remove phone_state action in AutoReceiver, must not reset profiles on phone call
 20091229 Fix insert action in DB: always add at end, linear repack when at top
+
 20091229 1.8.00 on Market
 20091228 Fix Edit Timed Action in landscape (missing a button)
 20091227 Error Report UI
