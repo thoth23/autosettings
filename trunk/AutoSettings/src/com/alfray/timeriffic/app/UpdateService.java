@@ -34,7 +34,7 @@ import com.alfray.timeriffic.prefs.PrefsValues;
 public class UpdateService extends Service {
 
     private static final String TAG = "TFC-UpdServ";
-    //--private static final boolean DEBUG = true;
+    private static final boolean DEBUG = true;
 
     private static final String EXTRA_RELEASE_WL = "releaseWL";
     private static final String EXTRA_OLD_INTENT = "old_intent";
@@ -74,6 +74,7 @@ public class UpdateService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
+        if (DEBUG) Log.d(TAG, "Start service");
         ExceptionHandler handler = new ExceptionHandler(this);
         try {
             try {
@@ -100,6 +101,8 @@ public class UpdateService extends Service {
         } finally {
             handler.detach();
         }
+        if (DEBUG) Log.d(TAG, "Stopping service");
+        stopSelf();
     }
 
     @Override
@@ -124,16 +127,14 @@ public class UpdateService extends Service {
         PrefsValues prefs = new PrefsValues(this);
         ApplySettings as = new ApplySettings(this, prefs);
 
-        int alarmCount = intent.getIntExtra(Intent.EXTRA_ALARM_COUNT, 0);
-
         String action = intent.getAction();
 
         int displayToast = intent.getIntExtra(UpdateReceiver.EXTRA_TOAST_NEXT_EVENT, UpdateReceiver.TOAST_NONE);
-        boolean fromUI = intent.getBooleanExtra(UpdateReceiver.EXTRA_FROM_UI, false);
+        boolean fromUI = UpdateReceiver.ACTION_UI_CHECK.equals(action);
+        boolean applyState = fromUI || UpdateReceiver.ACTION_APPLY_STATE.equals(action);
 
-        String debug = String.format("UpdateService count:%d, ui:%s, action:%s",
-                alarmCount,
-                Boolean.toString(fromUI),
+        String debug = String.format("UpdateService apply:%s, %s",
+                Boolean.toString(applyState),
                 action);
         as.addToDebugLog(debug);
         Log.d(TAG, debug);
@@ -161,7 +162,7 @@ public class UpdateService extends Service {
             return;
         }
 
-        as.apply(displayToast);
+        as.apply(applyState, displayToast);
     }
 
 

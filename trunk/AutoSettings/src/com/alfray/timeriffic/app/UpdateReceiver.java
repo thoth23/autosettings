@@ -33,15 +33,16 @@ public class UpdateReceiver extends BroadcastReceiver {
     private final static boolean DEBUG = true;
     public final static String TAG = "TFC-UpdReceiver";
 
-    /** Name of intent to broadcast to activate this receiver. */
-    public final static String ACTION_AUTO_CHECK_STATE = "com.alfray.intent.action.AUTO_CHECK_STATE";
+    /** Name of intent to broadcast to activate this receiver when doing
+     *  alarm-based apply-state. */
+    public final static String ACTION_APPLY_STATE = "com.alfray.intent.action.APPLY_STATE";
+
+    /** Name of intent to broadcast to activate this receiver when triggering
+     *  a check from the UI. */
+    public final static String ACTION_UI_CHECK = "com.alfray.intent.action.UI_CHECK";
 
     /** Name of an extra int: how we should display a toast for next event. */
     public final static String EXTRA_TOAST_NEXT_EVENT = "toast-next";
-
-    /** Name of an extra bool: true if the update request comes from a manual user
-     * intervention. In this case, we want to skip some logging or checks. */
-    public final static String EXTRA_FROM_UI = "from-ui";
 
     public final static int TOAST_NONE = 0;
     public final static int TOAST_IF_CHANGED = 1;

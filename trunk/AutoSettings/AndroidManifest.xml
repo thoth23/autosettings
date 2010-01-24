@@ -29,7 +29,10 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.alfray.intent.action.AUTO_CHECK_STATE" />
+                <action android:name="com.alfray.intent.action.APPLY_STATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.alfray.intent.action.UI_CHECK" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />

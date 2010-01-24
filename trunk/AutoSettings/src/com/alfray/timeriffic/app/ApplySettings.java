@@ -28,6 +28,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -68,14 +69,14 @@ public class ApplySettings {
         }
     }
 
-    public void apply(int displayToast) {
+    public void apply(boolean applyState, int displayToast) {
         Log.d(TAG, "Checking enabled");
 
-        checkProfiles(displayToast);
+        checkProfiles(applyState, displayToast);
         notifyDataChanged();
     }
 
-    private void checkProfiles(int displayToast) {
+    private void checkProfiles(boolean applyState, int displayToast) {
         ProfilesDB profilesDb = new ProfilesDB();
         try {
             profilesDb.onCreate(mContext);
@@ -91,12 +92,14 @@ public class ApplySettings {
                 int hourMin = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
                 int day = TimedActionUtils.calendarDayToActionDay(c);
 
-                ArrayList<ActionInfo> actions =
-                    profilesDb.getWeekActivableActions(hourMin, day, prof_indexes);
+                if (applyState) {
+                    ArrayList<ActionInfo> actions =
+                        profilesDb.getWeekActivableActions(hourMin, day, prof_indexes);
 
-                if (actions != null && actions.size() > 0) {
-                    performActions(actions);
-                    profilesDb.markActionsEnabled(actions);
+                    if (actions != null && actions.size() > 0) {
+                        performActions(actions);
+                        profilesDb.markActionsEnabled(actions);
+                    }
                 }
 
                 // Compute next event and set an alarm for it
@@ -142,11 +145,20 @@ public class ApplySettings {
         if (lastAction != null) {
             // Format the timestamp of the last action to be "now"
             String time = mUiDateFormat.format(new Date(System.currentTimeMillis()));
-            mPrefs.setStatusLastTS(time);
 
             // Format the action description
             String a = TimedActionUtils.computeActions(mContext, lastAction);
-            mPrefs.setStatusNextAction(a);
+
+            synchronized (mPrefs.editLock()) {
+                Editor e = mPrefs.startEdit();
+                try {
+                    mPrefs.editStatusLastTS(e, time);
+                    mPrefs.editStatusNextAction(e, a);
+
+                } finally {
+                    mPrefs.endEdit(e, TAG);
+                }
+            }
 
             addToDebugLog(logActions);
         }
@@ -258,7 +270,7 @@ public class ApplySettings {
         AlarmManager manager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(mContext, UpdateReceiver.class);
-        intent.setAction(UpdateReceiver.ACTION_AUTO_CHECK_STATE);
+        intent.setAction(UpdateReceiver.ACTION_APPLY_STATE);
         PendingIntent op = PendingIntent.getBroadcast(
                         mContext,
                         0 /*requestCode*/,
@@ -278,17 +290,23 @@ public class ApplySettings {
             shouldDisplayToast = timeMs != mPrefs.getLastScheduledAlarm();
         }
 
-        mPrefs.setLastScheduledAlarm(timeMs);
 
         SimpleDateFormat sdf = new SimpleDateFormat(mContext.getString(R.string.toast_next_alarm_date_time));
         sdf.setCalendar(now);
         String s2 = sdf.format(now.getTime());
 
-        mPrefs.setStatusNextTS(s2);
-        mPrefs.setStatusNextAction(TimedActionUtils.computeActions(mContext, nextActions.toString()));
+        synchronized (mPrefs.editLock()) {
+            Editor e = mPrefs.startEdit();
+            try {
+                mPrefs.editLastScheduledAlarm(e, timeMs);
+                mPrefs.editStatusNextTS(e, s2);
+                mPrefs.editStatusNextAction(e, TimedActionUtils.computeActions(mContext, nextActions.toString()));
+            } finally {
+                mPrefs.endEdit(e, TAG);
+            }
+        }
 
         s2 = mContext.getString(R.string.toast_next_change_at_datetime, s2);
-
 
         if (shouldDisplayToast) showToast(s2, Toast.LENGTH_LONG);
         if (DEBUG) Log.d(TAG, s2);
@@ -344,6 +362,7 @@ public class ApplySettings {
             a += logActions;
             mPrefs.setLastActions(a);
         }
+
     }
 
     public static synchronized int getNumActionsInLog(Context context) {

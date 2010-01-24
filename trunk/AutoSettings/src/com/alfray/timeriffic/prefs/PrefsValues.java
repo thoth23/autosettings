@@ -21,8 +21,29 @@ package com.alfray.timeriffic.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
+/**
+ * Manipulates shared preferences.
+ *
+ * Notes: <br/>
+ * - get() methods are not synchronized. <br/>
+ * - set() methods are synchronized on the class object. <br/>
+ * - edit() methods must be wrapped as follows:
+ *
+ * <pre>
+ *  synchronized (mPrefs.editLock()) {
+ *    Editor e = mPrefs.startEdit();
+ *    try {
+ *      mPrefs.editXyz(e, value);
+ *    } finally {
+ *      mPrefs.endEdit(e, TAG);
+ *    }
+ *  }
+ * </pre>
+ */
 public class PrefsValues {
 
     public static final int VERSION = 2;
@@ -35,6 +56,22 @@ public class PrefsValues {
 
 	public SharedPreferences getPrefs() {
         return mPrefs;
+    }
+
+	public Object editLock() {
+	    return PrefsValues.class;
+	}
+
+	/** Returns a shared pref editor. Must call endEdit() later. */
+    public Editor startEdit() {
+        return mPrefs.edit();
+    }
+
+    /** Commits an open editor. */
+    public boolean endEdit(Editor e, String tag) {
+        boolean b = e.commit();
+        if (!b) Log.w(tag, "Prefs.edit.commit failed");
+        return b;
     }
 
 	/** Returns pref version or 0 if not present. */
@@ -55,7 +92,9 @@ public class PrefsValues {
      * @return true if value was successfully changed if the prefs
      */
     public boolean setServiceEnabled(boolean checked) {
-        return mPrefs.edit().putBoolean("enable_serv", checked).commit();
+        synchronized (editLock()) {
+            return mPrefs.edit().putBoolean("enable_serv", checked).commit();
+        }
     }
 
     public boolean isIntroDismissed() {
@@ -67,7 +106,9 @@ public class PrefsValues {
      * @return true if value was successfully changed if the prefs
      */
     public boolean setIntroDismissed(boolean dismiss) {
-        return mPrefs.edit().putBoolean("dismiss_intro", dismiss).commit();
+        synchronized (editLock()) {
+            return mPrefs.edit().putBoolean("dismiss_intro", dismiss).commit();
+        }
     }
 
     public int getLastIntroVersion() {
@@ -75,7 +116,9 @@ public class PrefsValues {
     }
 
     public boolean setLastIntroVersion(int lastIntroVers) {
-        return mPrefs.edit().putInt("last_intro_vers", lastIntroVers).commit();
+        synchronized (editLock()) {
+            return mPrefs.edit().putInt("last_intro_vers", lastIntroVers).commit();
+        }
     }
 
     public boolean getCheckService() {
@@ -83,45 +126,50 @@ public class PrefsValues {
     }
 
     public boolean setCheckService(boolean check) {
-        return mPrefs.edit().putBoolean("check_service", check).commit();
+        synchronized (editLock()) {
+            return mPrefs.edit().putBoolean("check_service", check).commit();
+        }
     }
 
     public String getStatusLastTS() {
         return mPrefs.getString("last_ts", null);
     }
 
-    public void setStatusLastTS(String lastTS) {
-        mPrefs.edit().putString("last_ts", lastTS).commit();
+    public void editStatusLastTS(Editor e, String lastTS) {
+        e.putString("last_ts", lastTS);
     }
 
     public String getStatusLastAction() {
         return mPrefs.getString("last_msg", null);
     }
     public void setStatusLastAction(String summary) {
-        mPrefs.edit().putString("last_msg", summary).commit();
+        synchronized (editLock()) {
+            mPrefs.edit().putString("last_msg", summary).commit();
+        }
     }
 
     public String getStatusNextTS() {
         return mPrefs.getString("next_ts", null);
     }
 
-    public void setStatusNextTS(String nextTS) {
-        mPrefs.edit().putString("next_ts", nextTS).commit();
+    public void editStatusNextTS(Editor e, String nextTS) {
+        e.putString("next_ts", nextTS);
     }
 
     public String getStatusNextAction() {
         return mPrefs.getString("next_msg", null);
     }
-    public void setStatusNextAction(String summary) {
-        mPrefs.edit().putString("next_msg", summary).commit();
+
+    public void editStatusNextAction(Editor e, String summary) {
+        e.putString("next_msg", summary);
     }
 
     public long getLastScheduledAlarm() {
         return mPrefs.getLong("last_alarm", 0);
     }
 
-    public void setLastScheduledAlarm(long timeMs) {
-        mPrefs.edit().putLong("last_alarm", timeMs).commit();
+    public void editLastScheduledAlarm(Editor e, long timeMs) {
+        e.putLong("last_alarm", timeMs);
     }
 
     public String getLastExceptions() {
@@ -129,7 +177,9 @@ public class PrefsValues {
     }
 
     public void setLastExceptions(String s) {
-        mPrefs.edit().putString("last_exceptions", s).commit();
+        synchronized (editLock()) {
+            mPrefs.edit().putString("last_exceptions", s).commit();
+        }
     }
 
     public String getLastActions() {
@@ -137,7 +187,9 @@ public class PrefsValues {
     }
 
     public void setLastActions(String s) {
-        mPrefs.edit().putString("last_actions", s).commit();
+        synchronized (editLock()) {
+            mPrefs.edit().putString("last_actions", s).commit();
+        }
     }
 
     public enum GlobalToggleAnimMode {
