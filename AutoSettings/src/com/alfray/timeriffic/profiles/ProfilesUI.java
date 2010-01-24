@@ -743,9 +743,8 @@ public class ProfilesUI extends ExceptionHandlerActivity {
      */
     private void requestSettingsCheck(int displayToast) {
         if (DEBUG) Log.d(TAG, "Request settings check");
-        Intent i = new Intent(UpdateReceiver.ACTION_AUTO_CHECK_STATE);
+        Intent i = new Intent(UpdateReceiver.ACTION_UI_CHECK);
         i.putExtra(UpdateReceiver.EXTRA_TOAST_NEXT_EVENT, displayToast);
-        i.putExtra(UpdateReceiver.EXTRA_FROM_UI, true);
         sendBroadcast(i);
     }
 
