@@ -131,22 +131,22 @@ public class UpdateService extends Service {
 
         int displayToast = intent.getIntExtra(UpdateReceiver.EXTRA_TOAST_NEXT_EVENT, UpdateReceiver.TOAST_NONE);
         boolean fromUI = UpdateReceiver.ACTION_UI_CHECK.equals(action);
-        boolean applyState = fromUI || UpdateReceiver.ACTION_APPLY_STATE.equals(action);
+
+        // We *only* apply settings if we recognize the action as being:
+        // - Profiles UI > check now
+        // - a previous alarm with Apply State
+        // - boot completed
+        // In all other cases (e.g. timezone changed), we'll recompute the
+        // next alarm but we won't enforce settings.
+        boolean applyState = fromUI ||
+                UpdateReceiver.ACTION_APPLY_STATE.equals(action) ||
+                Intent.ACTION_BOOT_COMPLETED.equals(action);
 
         String debug = String.format("UpdateService apply:%s, %s",
                 Boolean.toString(applyState),
                 action);
         as.addToDebugLog(debug);
         Log.d(TAG, debug);
-
-        // If we get called because of android.permission.READ_PHONE_STATE
-        // we do NOT want to apply all the settings.
-        // TODO later what we want is to:
-        // - prevent starting airplane mode when in call mode
-        // - have a whitelist of phone entries that should never be muted
-        if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(action)) {
-            return;
-        }
 
         if (!prefs.isServiceEnabled()) {
             debug = "Checking disabled";
