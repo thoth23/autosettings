@@ -93,6 +93,12 @@
 
     <string name="intro_title">Timeriffic %s - Introduction</string>
     <string name="intro_button_continue">Continue</string>
+    <!-- I noticed in some languages (e.g. Korean) we need to set the minEms
+         of the continue button to 10 otherwise the layout doesn't make the
+         button wide enough to display its text. For most languages this
+         should stay empty, unless there's a strong need to specify it.
+         When we do use it, it should be an integer for Button.setMinEms(). -->
+    <string name="intro_button_minEms"></string>
     <string name="intro_checkbox_dont_display_again">Don\'t display again</string>
 
 
