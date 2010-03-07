@@ -75,9 +75,9 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
      * Mailto address. %s is app name. Address is naively obfuscated
      * since this code will end up open sourced, to prevent address harvesting.
      */
-    private static final String MAILTO = "and_roid - mar_ket + %s";
+    private static final String MAILTO = "r_dr_r . lab_s +report + %s";
     /** domain part of mailto. */
-    private static final String DOMTO = "al_fr_ay / c_om";
+    private static final String DOMTO = "g_ma_il / c_om";
     /** Email subject. %s is app name. */
     private static final String SUBJECT = "%s Error Report";
 
