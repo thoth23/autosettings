@@ -73,6 +73,10 @@
 
      <string name="intro_title">Timeriffic %s - 소개</string>
      <string name="intro_button_continue">계속</string>
+     <!-- In Korean we need to set the minEms of the continue button to 10
+          otherwise the layout doesn't make the button wide enough to display
+          its text. -->
+     <string name="intro_button_minEms">10</string>
      <string name="intro_checkbox_dont_display_again">다시는 이 화면을 표시하지 않습니다.</string>
 
 
