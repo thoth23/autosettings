@@ -297,7 +297,10 @@ public class ProfilesUI extends ExceptionHandlerActivity {
         }
 
         if (mAdapter == null) {
-            if (mCursor != null) mCursor.close();
+            if (mCursor != null) {
+                mCursor.close();
+                //--mCursor = null;
+            }
             mCursor = mProfilesDb.query(
                     -1, //id
                     new String[] {

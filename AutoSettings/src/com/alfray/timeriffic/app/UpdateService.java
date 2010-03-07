@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.PowerManager.WakeLock;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -33,7 +32,7 @@ import com.alfray.timeriffic.prefs.PrefsValues;
 
 public class UpdateService extends Service {
 
-    private static final String TAG = "TFC-UpdServ";
+    public static final String TAG = "TFC-UpdServ";
     private static final boolean DEBUG = true;
 
     private static final String EXTRA_RELEASE_WL = "releaseWL";
