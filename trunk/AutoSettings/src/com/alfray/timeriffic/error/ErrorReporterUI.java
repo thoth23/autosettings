@@ -52,6 +52,7 @@ import com.alfray.timeriffic.actions.EditActionUI;
 import com.alfray.timeriffic.app.ApplySettings;
 import com.alfray.timeriffic.app.UpdateReceiver;
 import com.alfray.timeriffic.app.IntroActivity;
+import com.alfray.timeriffic.app.UpdateService;
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.EditProfileUI;
 import com.alfray.timeriffic.profiles.ProfileHeaderHolder;
@@ -498,6 +499,7 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
 
                     ApplySettings.TAG + ":D",
                     UpdateReceiver.TAG + ":D",
+                    UpdateService.TAG + ":D",
                     SettingsHelper.TAG + ":D",
                     ExceptionHandler.TAG + ":D",
                     AgentWrapper.TAG + ":D",
