@@ -98,7 +98,7 @@
          button wide enough to display its text. For most languages this
          should stay empty, unless there's a strong need to specify it.
          When we do use it, it should be an integer for Button.setMinEms(). -->
-    <string name="intro_button_minEms"></string>
+    <string name="intro_button_minEms">0</string>
     <string name="intro_checkbox_dont_display_again">Don\'t display again</string>
 
 
