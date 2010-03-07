@@ -18,6 +18,9 @@ TODO v2.0
 
 DONE for 1.8
 
+20100307 Fix "continue" button layout width issue in intro activity (korean only)
+20100307 Integrate Korean translation from Paul Noh / fingertool
+
 20100123 1.8.10 in Market
 20100123 Bug: forgot to apply settings on boot
 20100123 1.8.09 in Market
