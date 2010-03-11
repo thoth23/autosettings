@@ -137,7 +137,12 @@ public class ChangeBrightnessActivity extends ExceptionHandlerActivity {
                 Settings.System.SCREEN_BRIGHTNESS,
                 v);
 
-        int sdk = Integer.parseInt(Build.VERSION.SDK);
+        int sdk = -1;
+        try {
+            sdk = Integer.parseInt(Build.VERSION.SDK);
+        } catch (Exception e) {
+            Log.i(TAG, String.format("Failed to parse SDK Version '%s'", Build.VERSION.SDK));
+        }
         if (sdk >= 3) {
 
             try {

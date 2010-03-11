@@ -1,5 +1,15 @@
 TODO v2.0
 
+20100309 Differentiate user reports from exception reports
+20100309 User reports need to provide some kind of explanation to be useful
+20100309 Time in 24-hours vs AM/PM (user choice, not system)
+20100309 Bug: StaleCursor (can't repro but happens often)
+20100309 Bug: Missing WakeLock permission (can't repro, happens rarely)
+20100309 APNDroid button: don't gray, explain what to do
+20100309 BT 2.0: don't gray, explain why missing
+20100309 Ring/Notif volume: check if tied in prefs (possible?)
+20100309 Ring/Notif volume: explain it must not be tied in prefs
+20100309 Support 24
 
 20091222 Don't start Airplane mode when in talk. Delay via notification.
 20091207 Store profiles as text in shared prefs
@@ -17,6 +27,8 @@ TODO v2.0
 
 
 DONE for 1.8
+
+20100310 Fix crash on invalid SDK Version number
 
 20100307 Fix "continue" button layout width issue in intro activity (korean only)
 20100307 Integrate Korean translation from Paul Noh / fingertool

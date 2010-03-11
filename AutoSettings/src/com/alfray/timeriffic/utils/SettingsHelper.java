@@ -114,7 +114,7 @@ public class SettingsHelper {
         // Build.SDK_INT is only in API 4 and we're still compatible with API 3
         try {
             int n = Integer.parseInt(Build.VERSION.SDK);
-            return n >= 3;
+            return n >= minApiLevel;
         } catch (Exception e) {
             Log.d(TAG, "Failed to parse Build.VERSION.SDK=" + Build.VERSION.SDK, e);
         }
