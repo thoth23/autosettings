@@ -33,7 +33,7 @@ import com.alfray.timeriffic.profiles.ProfilesUI.ColIndexes;
  */
 public class TimedActionHolder extends BaseHolder {
 
-    private static boolean DEBUG = true;
+    private static boolean DEBUG = false;
     public static String TAG = "TFC-TAHolder";
 
     public TimedActionHolder(ProfilesUI activity, View view) {
@@ -41,11 +41,11 @@ public class TimedActionHolder extends BaseHolder {
     }
 
     @Override
-    public void setUiData(Cursor cursor) {
+    public void setUiData() {
         ColIndexes colIndexes = mActivity.getColIndexes();
-        super.setUiData(cursor,
-                cursor.getString(colIndexes.mDescColIndex),
-                getDotColor(cursor.getInt(colIndexes.mEnableColIndex)));
+        Cursor cursor = mActivity.getCursor();
+        super.setUiData(cursor.getString(colIndexes.mDescColIndex),
+                        getDotColor(cursor.getInt(colIndexes.mEnableColIndex)));
     }
 
     private Drawable getDotColor(int actionMark) {
@@ -72,7 +72,7 @@ public class TimedActionHolder extends BaseHolder {
     public void onItemSelected() {
         // trigger edit
         if (DEBUG) Log.d(TAG, "action - edit");
-        editAction(getCursor());
+        editAction(mActivity.getCursor());
     }
 
     @Override
@@ -80,15 +80,15 @@ public class TimedActionHolder extends BaseHolder {
         switch (item.getItemId()) {
         case R.string.insert_action:
             if (DEBUG) Log.d(TAG, "action - insert_action");
-            insertNewAction(getCursor());
+            insertNewAction(mActivity.getCursor());
             break;
         case R.string.delete:
             if (DEBUG) Log.d(TAG, "action - delete");
-            deleteTimedAction(getCursor());
+            deleteTimedAction(mActivity.getCursor());
             break;
         case R.string.edit:
             if (DEBUG) Log.d(TAG, "action - edit");
-            editAction(getCursor());
+            editAction(mActivity.getCursor());
             break;
         default:
             break;

@@ -59,10 +59,9 @@ class ProfileCursorAdapter extends CursorAdapter {
      * and context.
      */
     public ProfileCursorAdapter(ProfilesUI activity,
-            Cursor cursor,
             ColIndexes colIndexes,
             LayoutInflater layoutInflater) {
-        super(activity, cursor);
+        super(activity, activity.getCursor());
         mActivity = activity;
         mColIndexes = colIndexes;
         mLayoutInflater = layoutInflater;
@@ -136,7 +135,7 @@ class ProfileCursorAdapter extends CursorAdapter {
         }
         if (v != null) {
             v.setTag(h);
-            h.setUiData(cursor);
+            h.setUiData();
         }
         return v;
     }
@@ -152,7 +151,7 @@ class ProfileCursorAdapter extends CursorAdapter {
         if (type == Columns.TYPE_IS_PROFILE ||
                 type == Columns.TYPE_IS_TIMED_ACTION) {
             BaseHolder h = (BaseHolder) view.getTag();
-            h.setUiData(cursor);
+            h.setUiData();
         }
     }
 }

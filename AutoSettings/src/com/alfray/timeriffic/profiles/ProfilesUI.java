@@ -215,6 +215,10 @@ public class ProfilesUI extends ExceptionHandlerActivity {
         return null;
     }
 
+    public Cursor getCursor() {
+        return mCursor;
+    };
+
     ColIndexes getColIndexes() {
         return mColIndexes;
     }
@@ -281,14 +285,6 @@ public class ProfilesUI extends ExceptionHandlerActivity {
             mProfilesDb = new ProfilesDB();
             mProfilesDb.onCreate(this);
 
-            if (updateOldPrefs()) {
-                if (mCursor != null) {
-                    mCursor.close();
-                    mCursor = null;
-                }
-                mAdapter = null;
-            }
-
             String next = mPrefsValues.getStatusNextTS();
             if (next == null) {
                 // schedule a profile check to initialize the last/next status
@@ -299,7 +295,7 @@ public class ProfilesUI extends ExceptionHandlerActivity {
         if (mAdapter == null) {
             if (mCursor != null) {
                 mCursor.close();
-                //--mCursor = null;
+                mCursor = null;
             }
             mCursor = mProfilesDb.query(
                     -1, //id
@@ -326,103 +322,11 @@ public class ProfilesUI extends ExceptionHandlerActivity {
             mColIndexes.mEnableColIndex = mCursor.getColumnIndexOrThrow(Columns.IS_ENABLED);
             mColIndexes.mProfIdColIndex = mCursor.getColumnIndexOrThrow(Columns.PROFILE_ID);
 
-            mAdapter = new ProfileCursorAdapter(this, mCursor, mColIndexes, mLayoutInflater);
+            mAdapter = new ProfileCursorAdapter(this, mColIndexes, mLayoutInflater);
             mProfilesList.setAdapter(mAdapter);
 
             Log.d(TAG, String.format("adapter count: %d", mProfilesList.getCount()));
         }
-    }
-
-    /**
-     * Update old prefs
-     *
-     * @return Return true if old prefs was imported, false if nothing changed.
-     */
-    private boolean updateOldPrefs() {
-
-        // Version:
-        // 0=old 1.0
-        // 1=1.2-1.3.3 that tried to import old one and was broken, disabled
-        // 2=once auto-import disable
-        mPrefsValues.setVersion();
-
-        // All this is disabled because it creates something weird
-        // and the generated profile header is treaded as a timed action.
-        // TODO fix and debug then reactivate or drop it.
-
-//        int v = mPrefsValues.getVersion();
-//        switch(v) {
-//            case Oldv1PrefsValues.VERSION:
-//                Log.d(TAG, String.format("Update old prefs: %s to %s", v, PrefsValues.VERSION));
-//
-//                try {
-//                    Oldv1PrefsValues old = new Oldv1PrefsValues(this);
-//                    int startHourMin = old.startHourMin();
-//                    int stopHourMin = old.stopHourMin();
-//
-//                    // need profile headers?
-//
-//                    long prof_index = -1;
-//                    if (startHourMin >= 0 || stopHourMin >= 0) {
-//                        prof_index = mProfilesDb.insertProfile(
-//                                        -1 /*beforeProfileIndex*/,
-//                                        "Old Timeriffic Profile" /*title*/,
-//                                        true /*isEnabled*/);
-//                    }
-//
-//                    long action_index = 0;
-//                    if (prof_index > 0 && startHourMin >= 0) {
-//
-//                        StringBuilder actions = new StringBuilder();
-//                        actions.append(Columns.ACTION_RINGER).append(old.startMute() ? 'M' : 'R');
-//                        actions.append(',');
-//                        actions.append(Columns.ACTION_VIBRATE).append(old.startVibrate() ? 'V' : 'N');
-//
-//                        action_index = mProfilesDb.insertTimedAction(
-//                                        prof_index,
-//                                        0 /*afterActionIndex*/,
-//                                        true /*isActive*/,
-//                                        startHourMin /*hourMin*/,
-//                                        Columns.MONDAY | Columns.TUESDAY | Columns.WEDNESDAY |
-//                                        Columns.THURSDAY | Columns.FRIDAY | Columns.SATURDAY |
-//                                        Columns.SUNDAY,
-//                                        actions.toString(),
-//                                        0 /*nextMs*/);
-//                    }
-//
-//                    if (prof_index > 0 && stopHourMin >= 0) {
-//
-//                        StringBuilder actions = new StringBuilder();
-//                        actions.append(Columns.ACTION_RINGER).append(old.stopMute() ? 'M' : 'R');
-//                        actions.append(',');
-//                        actions.append(Columns.ACTION_VIBRATE).append(old.stopVibrate() ? 'V' : 'N');
-//
-//                        mProfilesDb.insertTimedAction(
-//                                        prof_index,
-//                                        action_index /*afterActionIndex*/,
-//                                        true /*isActive*/,
-//                                        stopHourMin /*hourMin*/,
-//                                        Columns.MONDAY | Columns.TUESDAY | Columns.WEDNESDAY |
-//                                        Columns.THURSDAY | Columns.FRIDAY | Columns.SATURDAY |
-//                                        Columns.SUNDAY,
-//                                        actions.toString(),
-//                                        0 /*nextMs*/);
-//                    }
-//
-//                } catch (Exception e) {
-//                    Log.e(TAG, "Failed update old prefs", e);
-//                } finally {
-//                    mPrefsValues.setVersion();
-//                }
-//
-//                return true;
-//
-//            case PrefsValues.VERSION:
-//                // pass
-//                break;
-//        }
-
-        return false;
     }
 
     /**
