@@ -200,18 +200,20 @@ public class IntroActivity extends ExceptionHandlerActivity {
                     wv.loadUrl("javascript:location.href=\"#known\"");
                     return true;
 
-                } else if (url.startsWith("market://")) {
+                } else {
+                    // For URLs that are not ours, including market: URLs
+                    // just invoke the default view activity (e.g. Browser
+                    // or Market app)
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(url));
                     try {
                         startActivity(intent);
                     } catch (ActivityNotFoundException e) {
-                        // ignore. just means this device has no Market app
-                        // so maybe it's an emulator.
+                        // ignore. just means this device has no Market or
+                        // Browser app... ignore it.
                     }
                     return true;
                 }
-                return false;
             }
         });
     }
