@@ -41,12 +41,6 @@ import com.alfray.timeriffic.profiles.ProfilesUI.ColIndexes;
 abstract class BaseHolder {
 
     /**
-     * The current cursor associated with that holder.
-     * It is null if the view is not associated with a cursor anymore.
-     */
-    private Cursor mCursor;
-
-    /**
      * The text view that holds the title or description as well
      * as the "check box".
      */
@@ -59,24 +53,13 @@ abstract class BaseHolder {
         mDescription = view != null ? (TextView) view.findViewById(R.id.description) : null;
     }
 
-    public Cursor getCursor() {
-        return mCursor;
-    }
-
-    public void clearCursor() {
-        mCursor = null;
-    }
-
-    protected void setUiData(Cursor cursor,
-            String description,
-            Drawable state) {
-        mCursor = cursor;
+    protected void setUiData(String description, Drawable state) {
         if (description != null) mDescription.setText(description);
         if (state != null) mDescription.setCompoundDrawablesWithIntrinsicBounds(
                 state /*left*/, null /*top*/, null /*right*/, null /*bottom*/);
     }
 
-    public abstract void setUiData(Cursor cursor);
+    public abstract void setUiData();
     public abstract void onItemSelected();
     public abstract void onCreateContextMenu(ContextMenu menu);
     public abstract void onContextMenuSelected(MenuItem item);
@@ -85,8 +68,6 @@ abstract class BaseHolder {
     // --- profile actions ---
 
     private void startEditActivity(Class<?> activity, String extra_id, long extra_value) {
-        if (getCursor() != null) getCursor().requery();
-
         Intent intent = new Intent(mActivity, activity);
         intent.putExtra(extra_id, extra_value);
 

@@ -29,6 +29,7 @@ TODO v2.0
 DONE for 1.8
 
 20100310 Fix crash on invalid SDK Version number
+20100309 Refactor: remove usage of cursor reference in Holder classes
 
 20100307 Fix "continue" button layout width issue in intro activity (korean only)
 20100307 Integrate Korean translation from Paul Noh / fingertool

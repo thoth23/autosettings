@@ -32,7 +32,7 @@ import com.alfray.timeriffic.profiles.ProfilesUI.ColIndexes;
  */
 public class ProfileHeaderHolder extends BaseHolder {
 
-    private static boolean DEBUG = true;
+    private static boolean DEBUG = false;
     public static String TAG = "TFC-PHHolder";
 
     public ProfileHeaderHolder(ProfilesUI activity, View view) {
@@ -40,13 +40,13 @@ public class ProfileHeaderHolder extends BaseHolder {
     }
 
     @Override
-    public void setUiData(Cursor cursor) {
+    public void setUiData() {
         ColIndexes colIndexes = mActivity.getColIndexes();
-        super.setUiData(cursor,
-                cursor.getString(colIndexes.mDescColIndex),
-                cursor.getInt(colIndexes.mEnableColIndex) != 0 ?
-                        mActivity.getCheckOn() :
-                        mActivity.getCheckOff());
+        Cursor cursor = mActivity.getCursor();
+        super.setUiData(cursor.getString(colIndexes.mDescColIndex),
+                        cursor.getInt(colIndexes.mEnableColIndex) != 0 ?
+                                mActivity.getCheckOn() :
+                                mActivity.getCheckOff());
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ProfileHeaderHolder extends BaseHolder {
 
     @Override
     public void onItemSelected() {
-        Cursor cursor = getCursor();
+        Cursor cursor = mActivity.getCursor();
         if (cursor == null) return;
 
         ColIndexes colIndexes = mActivity.getColIndexes();
@@ -77,9 +77,8 @@ public class ProfileHeaderHolder extends BaseHolder {
 
         // update ui
         cursor.requery();
-        setUiData(cursor, null, enabled ?
-                mActivity.getCheckOn() :
-                mActivity.getCheckOff());
+        setUiData(null,
+                  enabled ? mActivity.getCheckOn() : mActivity.getCheckOff());
     }
 
     @Override
@@ -87,19 +86,19 @@ public class ProfileHeaderHolder extends BaseHolder {
         switch (item.getItemId()) {
         case R.string.insert_profile:
             if (DEBUG) Log.d(TAG, "profile - insert_profile");
-            insertNewProfile(getCursor());
+            insertNewProfile(mActivity.getCursor());
             break;
         case R.string.insert_action:
             if (DEBUG) Log.d(TAG, "profile - insert_action");
-            insertNewAction(getCursor());
+            insertNewAction(mActivity.getCursor());
             break;
         case R.string.delete:
             if (DEBUG) Log.d(TAG, "profile - delete");
-            deleteProfile(getCursor());
+            deleteProfile(mActivity.getCursor());
             break;
         case R.string.rename:
             if (DEBUG) Log.d(TAG, "profile - rename");
-            editProfile(getCursor());
+            editProfile(mActivity.getCursor());
             break;
         default:
             break;

@@ -21,8 +21,7 @@ class ProfileRecyclerListener implements RecyclerListener {
     @Override
     public void onMovedToScrapHeap(View view) {
         Object tag = view.getTag();
-        if (tag instanceof BaseHolder) {
-            ((BaseHolder) tag).clearCursor();
-        }
+        // pass... not doing anything anymore since BaseHolder doesn't
+        // hold a cursor anymore. TODO remove later.
     }
 }
