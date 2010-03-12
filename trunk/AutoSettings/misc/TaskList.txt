@@ -3,7 +3,7 @@ TODO v2.0
 20100309 Differentiate user reports from exception reports
 20100309 User reports need to provide some kind of explanation to be useful
 20100309 Time in 24-hours vs AM/PM (user choice, not system)
-20100309 Bug: StaleCursor (can't repro but happens often)
+20100309 Bug: StaleData/Cursor.closed (can't repro but happens often)
 20100309 Bug: Missing WakeLock permission (can't repro, happens rarely)
 20100309 APNDroid button: don't gray, explain what to do
 20100309 BT 2.0: don't gray, explain why missing
@@ -28,11 +28,13 @@ TODO v2.0
 
 DONE for 1.8
 
+20100311 1.8.11 in Market
+20100310 Add some links to intro text, e.g. how to translate.
 20100310 Fix crash on invalid SDK Version number
 20100309 Refactor: remove usage of cursor reference in Holder classes
 
 20100307 Fix "continue" button layout width issue in intro activity (korean only)
-20100307 Integrate Korean translation from Paul Noh / fingertool
+20100307 Integrate Korean translation from Paul Noh / Ubinuri / fingertool
 
 20100123 1.8.10 in Market
 20100123 Bug: forgot to apply settings on boot
