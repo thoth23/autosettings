@@ -135,7 +135,7 @@ public class UpdateService extends Service {
         // - Profiles UI > check now
         // - a previous alarm with Apply State
         // - boot completed
-        // In all other cases (e.g. timezone changed), we'll recompute the
+        // In all other cases (e.g. time/timezone changed), we'll recompute the
         // next alarm but we won't enforce settings.
         boolean applyState = fromUI ||
                 UpdateReceiver.ACTION_APPLY_STATE.equals(action) ||
@@ -163,7 +163,6 @@ public class UpdateService extends Service {
 
         as.apply(applyState, displayToast);
     }
-
 
     private void showToast(Context context, PrefsValues pv, int id, int duration) {
         try {

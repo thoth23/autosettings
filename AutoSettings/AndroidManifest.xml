@@ -18,7 +18,7 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.alfray.timeriffic" android:versionCode="1811" android:versionName="1.8.11">
+	package="com.alfray.timeriffic" android:versionCode="1812" android:versionName="1.8.12">
     <application
         android:label="@string/app_name"
         android:icon="@drawable/timeriffic_icon"
@@ -39,6 +39,7 @@
             <intent-filter>
                 <!-- this does NOT trigger apply state, just recompute alarms. -->
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
             <!--  not used yet, maybe later to have profiles per caller. -->
             <!-- intent-filter>
