@@ -103,8 +103,23 @@ public class PrefPercentDialog extends AlertDialog
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-        updatePercentLabel(progress);
-        if (mAccessor != null) mAccessor.changePercent(progress);
+        if (fromTouch) {
+            progress = roundup(progress);
+            mSeekBar.setProgress(progress);
+            updatePercentLabel(progress);
+            if (mAccessor != null) mAccessor.changePercent(progress);
+        }
+    }
+
+    /**
+     * If progress is > 10%, round up to nearest 5%, otherwise use 1%.
+     */
+    private int roundup(int progress) {
+        if (progress > 10) {
+            progress -= 10;
+            progress = 10 + (int) (5.0 * Math.round(((double) progress) / 5.0));
+        }
+        return progress;
     }
 
     @Override
