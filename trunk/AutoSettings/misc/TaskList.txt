@@ -28,6 +28,9 @@ TODO v2.0
 
 DONE for 1.8
 
+[1.8.13]
+20100324 Add Chinese translation (中文(简体)) by Wenle Bao
+
 20100314 1.8.12 in Market
 20100314 Fix: correctly support manual time changes and daylight time change.
 20100314 Roundup brightness to nearest 5%.
