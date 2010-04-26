@@ -43,7 +43,7 @@
     <!-- Context Menu - Edit (profile or timed action) -->
     <string name="edit">Editer</string>
     <!-- Context Menu - Rename (profile or timed action) -->
-    <string name="rename">Renomer</string>
+    <string name="rename">Renommer</string>
     <!-- Context Menu - Delete (profile or timed action) -->
     <string name="delete">Effacer</string>
 
