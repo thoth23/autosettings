@@ -140,9 +140,19 @@ public class IntroActivity extends ExceptionHandlerActivity {
         String file = baseName + ".html";
         Locale lo = Locale.getDefault();
         String lang = lo.getLanguage();
+        if (lang != null && lang.length() > 2) {
+            // There's a bug in the SDK "Locale Setup" app in Android 1.5/1.6
+            // where it sets the full locale such as "en_US" in the languageCode
+            // field of the Locale instead of splitting it correctly. So we do it
+            // here.
+            int pos = lang.indexOf('_');
+            if (pos > 0 && pos < lang.length() - 1) {
+                lang = lang.substring(0, pos);
+            }
+        }
         if (lang != null && lang.length() == 2) {
             InputStream is = null;
-            String file2 = baseName + "-" + lang + ".html";
+            String file2 = baseName + "-" + lang.toLowerCase() + ".html";
             try {
                 AssetManager am = getResources().getAssets();
 
