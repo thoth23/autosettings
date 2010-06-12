@@ -22,7 +22,7 @@
     <string name="app_name">Brighteriffic</string>
 
     <!-- main screen -->
-    <string name="intro_text">Brighteriffic %s let's you toggle the global screen brightness using a Home shortcut.</string>
+    <string name="intro_text">Brighteriffic %s let\'s you toggle the global screen brightness using a Home shortcut.</string>
     <string name="part_toggle_title">Home Shortcut</string>
     <string name="part_toggle_desc">Install toggle shortcut on Home</string>
     <string name="home_shortcut_label">Toggle Brightness</string>
