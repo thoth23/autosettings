@@ -21,7 +21,7 @@
     <string name="app_name">Brighteriffic Luminosité</string>
 
     <!-- ecran principal -->
-    <string name="intro_text">Brighteriffic %s vous permet de changer la luminosité globale de l&apos;écran avec un raccourci dans Accueil.</string>
+    <string name="intro_text">Brighteriffic %s vous permet de changer la luminosité globale de l\'écran avec un raccourci dans Accueil.</string>
     <string name="part_toggle_title">Installer un raccourci</string>
     <string name="part_toggle_desc">Installer un racourci dans Accueil</string>
     <string name="home_shortcut_label">Permuter la luminosité</string>
