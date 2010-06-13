@@ -279,13 +279,8 @@
          Formatting: Spacing matters. Use "/" to insert a new line.
     -->
     <string name="errorreport_emailheader">这是一个Timeriffic错误报告./
-为了更好地帮助您，请描述:/
-- 发生错误时，您正在使用Timeriffic干什么？/
-- 您期望的结果？/
-- 发生了什么错误？/
-- 非常感谢！/
-/
 以上为自动生成的报告，请在下面手工填写报告（译者：请使用英语）。
+Automated report starts here:
     </string>
 
 </resources>

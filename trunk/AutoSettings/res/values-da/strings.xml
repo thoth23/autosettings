@@ -278,13 +278,7 @@
          Formatting: Spacing matters. Use "/" to insert a new line.
     -->
     <string name="errorreport_emailheader">Dette er en fejlrapport for Timeriffic./
-For at hjælpe dig bedst mulig så beskriv venligst:/
-- Hvad lavede du med Timeriffic?/
-- Hvad forventede du?/
-- Hvad skete der?/
-Mange tak!/
-/
-Resten af den automatiske rapport starter her.
+Den automatiske rapport starter her.
     </string>
 
 </resources>

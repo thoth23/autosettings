@@ -276,13 +276,7 @@
          Formatting: Spacing matters. Use "/" to insert a new line.
     -->
     <string name="errorreport_emailheader">This is a bug report for Timeriffic./
-In order to help you best, please describe:/
-- What were you doing with Timeriffic?/
-- What did you expect?/
-- What actually happened?/
-Thanks a lot!/
-/
-There rest of the automated report starts here.
+The automated report starts here.
     </string>
 
 </resources>

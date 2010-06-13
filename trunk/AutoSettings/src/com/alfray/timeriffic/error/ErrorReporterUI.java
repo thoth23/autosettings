@@ -361,14 +361,14 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                             to += DOMTO.replace("/", ".");
                             to = to.replaceAll("[ _]", "").toLowerCase();
 
-                            String sub = String.format("%s %s Report",
+                            String subject = String.format("[%s] %s",
                                     mAppName,
-                                    mIsException ? "Exception" : "Report").trim();
+                                    getReportType()).trim();
 
                             // Generate the intent to send an email
                             Intent i = new Intent(Intent.ACTION_SEND);
                             i.putExtra(Intent.EXTRA_EMAIL, new String[] { to });
-                            i.putExtra(Intent.EXTRA_SUBJECT, sub);
+                            i.putExtra(Intent.EXTRA_SUBJECT, subject);
                             i.putExtra(Intent.EXTRA_TEXT, report);
                             i.setType("message/rfc822");
 
@@ -438,6 +438,26 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
     }
 
 
+    /** Returns a non-translated string for report type. */
+    private String getReportType() {
+
+        if (mIsException) {
+            return "Exception Report (Force Close)";
+        }
+
+        int id = mRadioGroup == null ? -1 : mRadioGroup.getCheckedRadioButtonId();
+
+        if (id == R.id.radio_err) {
+            return "User Error Report";
+
+        } else if (id == R.id.radio_fr) {
+            return "User Feature Request";
+
+        }
+
+        return "Unknown Report Type";
+    }
+
     /**
      * Generates the error report, with the following sections:
      * - Request user to enter some information (translated, rest is not)
@@ -488,21 +508,7 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
 
         private void addUserFeedback(StringBuilder sb) {
 
-            int id = mRadioGroup == null ? -1 : mRadioGroup.getCheckedRadioButtonId();
-
-            sb.append("\n## Report Type: ");
-            if (mIsException) {
-                sb.append("Force Close. Exceptions below.");
-
-            } else if (id == R.id.radio_err) {
-                sb.append("User Error Report");
-
-            } else if (id == R.id.radio_fr) {
-                sb.append("User Feature Request");
-
-            } else {
-                sb.append("Unknown");
-            }
+            sb.append("\n## Report Type: ").append(getReportType());
 
             if (!mIsException) {
                 sb.append("\n\n## User Comments:\n");
