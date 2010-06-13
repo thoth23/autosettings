@@ -141,9 +141,13 @@ public class UpdateService extends Service {
                 UpdateReceiver.ACTION_APPLY_STATE.equals(action) ||
                 Intent.ACTION_BOOT_COMPLETED.equals(action);
 
-        String debug = String.format("UpdateService apply:%s, %s",
-                Boolean.toString(applyState),
-                action);
+        String logAction = action.replace("android.intent.action.", "");
+        logAction = logAction.replace("com.alfray.intent.action.", "");
+
+        String debug = String.format("UpdateService %s%s",
+                applyState ? "*Apply* " : "",
+                logAction
+                );
         as.addToDebugLog(debug);
         Log.d(TAG, debug);
 
