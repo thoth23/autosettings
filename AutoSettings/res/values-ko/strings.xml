@@ -256,13 +256,7 @@
           Formatting: Spacing matters. Use "/" to insert a new line.
      -->
      <string name="errorreport_emailheader">이 것은 Timeriffic의 버그 보고서입니다./
- In order to help you best, please describe:/
- - Timeriffic을 이용해 어떤 일을 하셨나요?/
- - 어떤 부분에 대한 기대감으로 사용하셨나요?/
- - 실제 사용해보니 어떠셨나요?/
- 매우 감사합니다!/
- /
- 나머지는 이곳을 통해 자동으로 보고됩니다.
+Automated report starts here:
      </string>
 
  </resources>
