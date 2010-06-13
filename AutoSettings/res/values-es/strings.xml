@@ -233,6 +233,27 @@
     <!-- Error Report UI: generate button. -->
     <string name="errorreport_generate">Generar</string>
 
+    <!-- Error Report UI: next button (go from page 1 to page 2). -->
+    <string name="errorreport_next">Próximo &gt;</string>
+
+    <!-- Error Report UI: previous button (go from page 2 to page 1). -->
+    <string name="errorreport_prev">&lt; Anterior</string>
+
+    <!-- Error Report UI page 1: text above "select Program Error or Feature Request" -->
+    <string name="errorreport_user1">Por favor, indique el tipo de problema que desea reportar :</string>
+
+    <!-- Error Report UI page 1: select user feedback type, "Program Error" or Feature Request -->
+    <string name="errorreport_program_err">Error del programa</string>
+
+    <!-- Error Report UI page 1: select user feedback type, Program Error or "Feature Request" -->
+    <string name="errorreport_feat_req">Pedido de funciones</string>
+
+    <!-- Error Report UI page 1: text displayed on top of user feedback EditText -->
+    <string name="errorreport_user2">Por favor ingrese su comentario para ayudarnos a entender el problema :</string>
+
+    <!-- Error Report UI page 1: text hint displayed *inside* the user feedback EditText -->
+    <string name="errorreport_user_hint">Antes de que podamos continuar, por favor describir aquí el error o su petición de características.</string>
+
     <!-- Error Report UI: sending fail because there's no mail app. -->
     <string name="errorreport_nomailapp">No puedo encontrar una aplicación de correo electrónico para enviar el mensaje. Por favor instale una, como K9 de Market.</string>
 

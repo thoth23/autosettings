@@ -26,6 +26,7 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -38,20 +39,24 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Handler.Callback;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.Toast;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.actions.EditActionUI;
 import com.alfray.timeriffic.app.ApplySettings;
-import com.alfray.timeriffic.app.UpdateReceiver;
 import com.alfray.timeriffic.app.IntroActivity;
+import com.alfray.timeriffic.app.UpdateReceiver;
 import com.alfray.timeriffic.app.UpdateService;
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.EditProfileUI;
@@ -71,6 +76,11 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
     private static final boolean DEBUG = true;
     public static final String TAG = "TFC-ErrorUI";
 
+    /** Boolean extra: True if this is generated from an exception, false
+     * if generated from a user request. */
+    public static final String EXTRA_IS_EXCEPTION =
+        ErrorReporterUI.class.getPackage().getName() + "_isException";
+
     /**
      * Mailto address. %s is app name. Address is naively obfuscated
      * since this code will end up open sourced, to prevent address harvesting.
@@ -78,8 +88,6 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
     private static final String MAILTO = "r_dr_r . lab_s +report + %s";
     /** domain part of mailto. */
     private static final String DOMTO = "g_ma_il / c_om";
-    /** Email subject. %s is app name. */
-    private static final String SUBJECT = "%s Error Report";
 
     private static final int MSG_REPORT_COMPLETE = 1;
 
@@ -88,6 +96,14 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
     private boolean mAbortReport;
     private String mAppName;
     private String mAppVersion;
+    private boolean mIsException;
+    private Button mButtonGen;
+    private Button mButtonPrev;
+    private Button mButtonNext;
+    private View mUserFrame;
+    private RadioGroup mRadioGroup;
+    private WebView mWebView;
+    private EditText mUserText;
 
     private class JSErrorInfo {
 
@@ -115,44 +131,51 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.error_reporter);
-        setTitle(R.string.errorreport_title);
+        setContentView(R.layout.error_report);
+
+        Intent i = getIntent();
+        mIsException = i == null ? false : i.getBooleanExtra(EXTRA_IS_EXCEPTION, false);
+
+        mButtonGen = (Button) findViewById(R.id.generate);
+        mButtonPrev = (Button) findViewById(R.id.prev);
+        mButtonNext = (Button) findViewById(R.id.next);
+        mUserFrame = findViewById(R.id.user_frame);
+        mRadioGroup = (RadioGroup) findViewById(R.id.radio_group);
+        mWebView = (WebView) findViewById(R.id.web);
+        mUserText = (EditText) findViewById(R.id.user_text);
+
+        mAppName = getString(R.string.app_name);
+
+        setTitle(getString(R.string.errorreport_title).replaceAll("\\$APP", mAppName));
 
         PackageManager pm = getPackageManager();
         if (pm != null) {
             PackageInfo pi;
             try {
                 pi = pm.getPackageInfo(getPackageName(), 0);
-
-                mAppName = getPackageName();
-                if (pi.applicationInfo != null) {
-                    try {
-                        mAppName = getString(pi.applicationInfo.labelRes);
-                    } catch (Exception ignore) {
-                        // getString typically returns NotFoundException. Ignore it.
-                    }
-                }
                 mAppVersion = pi.versionName;
             } catch (Exception ignore) {
                 // getPackageName typically throws NameNotFoundException
             }
         }
 
-        final WebView wv = (WebView) findViewById(R.id.web);
-        if (wv == null) {
-            if (DEBUG) Log.d(TAG, "Missing web view");
+        if (mWebView == null) {
+            if (DEBUG) Log.e(TAG, "Missing web view");
             finish();
         }
 
         // Make the webview transparent (for background gradient)
-        wv.setBackgroundColor(0x00000000);
+        mWebView.setBackgroundColor(0x00000000);
 
         String file = selectFile("error_report");
-        loadFile(wv, file);
-        setupJavaScript(wv);
-        setupProgressBar(wv);
-        setupButtons();
+        file = file.replaceAll("\\$APP", mAppName);
+        loadFile(mWebView, file);
+        setupJavaScript(mWebView);
+        setupListeners();
         setupHandler();
+
+        selectPage(mIsException ? 2 : 1);
+        updateButtons();
     }
 
     @Override
@@ -229,23 +252,9 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
         wv.addJavascriptInterface(js, "JSErrorInfo");
     }
 
-    private void setupProgressBar(final WebView wv) {
-        final ProgressBar progress = (ProgressBar) findViewById(R.id.progress);
-        if (progress != null) {
-            wv.setWebChromeClient(new WebChromeClient() {
-                @Override
-                public void onProgressChanged(WebView view, int newProgress) {
-                    progress.setProgress(newProgress);
-                    progress.setVisibility(newProgress >= 100 ? View.GONE : View.VISIBLE);
-                }
-            });
-        }
-    }
-
-    private void setupButtons() {
-        final Button gen = (Button) findViewById(R.id.generate);
-        if (gen != null) {
-            gen.setOnClickListener(new OnClickListener() {
+    private void setupListeners() {
+        if (mButtonGen != null) {
+            mButtonGen.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -257,7 +266,7 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                     }
 
                     // Gray generate button (to avoid user repeasting it)
-                    gen.setEnabled(false);
+                    mButtonGen.setEnabled(false);
 
                     mAbortReport = false;
 
@@ -273,6 +282,53 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                                 "Failed to generate report: " + t.toString(),
                                 Toast.LENGTH_LONG).show();
                     }
+                }
+            });
+        }
+
+        if (mButtonPrev != null) {
+            mButtonPrev.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!mIsException) selectPage(1);
+                }
+            });
+        }
+
+        if (mButtonNext != null) {
+            mButtonNext.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectPage(2);
+                }
+            });
+        }
+
+        if (mRadioGroup != null) {
+            mRadioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    updateButtons();
+                }
+            });
+        }
+
+        if (mUserText != null) {
+            mUserText.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    // pass
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    // pass
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    updateButtons();
                 }
             });
         }
@@ -305,7 +361,9 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                             to += DOMTO.replace("/", ".");
                             to = to.replaceAll("[ _]", "").toLowerCase();
 
-                            String sub = String.format(SUBJECT, mAppName).trim();
+                            String sub = String.format("%s %s Report",
+                                    mAppName,
+                                    mIsException ? "Exception" : "Report").trim();
 
                             // Generate the intent to send an email
                             Intent i = new Intent(Intent.ACTION_SEND);
@@ -338,9 +396,8 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                         // above. So maybe something failed and we should let the
                         // user retry, so in any case, ungray generate button.
 
-                        Button gen = (Button) findViewById(R.id.generate);
-                        if (gen != null) {
-                            gen.setEnabled(true);
+                        if (mButtonGen != null) {
+                            mButtonGen.setEnabled(true);
                         }
                     }
                 }
@@ -348,6 +405,38 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
             }
         });
     }
+
+    private void updateButtons() {
+        if (mButtonNext != null && mUserText != null && mRadioGroup != null) {
+            mButtonNext.setEnabled(
+                    mRadioGroup.getCheckedRadioButtonId() != -1 &&
+                    mUserText.getText().length() > 0);
+        }
+    }
+
+    private void selectPage(int i) {
+        if (i < 0 || i > 2) return;
+
+        // Page 1:
+        // - scrollview "user_frame"
+        // - button "next" (enabled if radio choice + text not empty)
+        // - hide prev, gen, web
+        //
+        // Page 2:
+        // - show gen, web
+        // - hide prev if mIsException, otherwise show
+        // - hide user_frame, next
+
+        int visPage1 = i == 1 ? View.VISIBLE : View.GONE;
+        int visPage2 = i == 2 ? View.VISIBLE : View.GONE;
+
+        mButtonPrev.setVisibility(mIsException ? View.GONE : visPage2);
+        mButtonNext.setVisibility(visPage1);
+        mButtonGen.setVisibility(visPage2);
+        mUserFrame.setVisibility(visPage1);
+        mWebView.setVisibility(visPage2);
+    }
+
 
     /**
      * Generates the error report, with the following sections:
@@ -368,6 +457,7 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
             StringBuilder sb = new StringBuilder();
 
             addHeader(sb, c);
+            addUserFeedback(sb);
             addAppInfo(sb);
             addDate(sb);
             addAndroidBuildInfo(sb);
@@ -390,10 +480,37 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
         private void addHeader(StringBuilder sb, Context c) {
             try {
                 String s = c.getString(R.string.errorreport_emailheader);
+                s = s.replaceAll(Pattern.quote("$APP"), mAppName);
                 sb.append(s.trim().replace('/', '\n')).append("\n");
             } catch (Exception ignore) {
             }
         }
+
+        private void addUserFeedback(StringBuilder sb) {
+
+            int id = mRadioGroup == null ? -1 : mRadioGroup.getCheckedRadioButtonId();
+
+            sb.append("\n## Report Type: ");
+            if (mIsException) {
+                sb.append("Force Close. Exceptions below.");
+
+            } else if (id == R.id.radio_err) {
+                sb.append("User Error Report");
+
+            } else if (id == R.id.radio_fr) {
+                sb.append("User Feature Request");
+
+            } else {
+                sb.append("Unknown");
+            }
+
+            if (!mIsException) {
+                sb.append("\n\n## User Comments:\n");
+                if (mUserText != null) sb.append(mUserText.getText());
+                sb.append("\n");
+            }
+        }
+
 
         private void addDate(StringBuilder sb) {
 
@@ -507,7 +624,8 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                     "WindowManager:W",
                     "FlurryAgent:W",
 
-                    "*:S",      // silence all tags we don't want
+                    // all other tags in info mode or better
+                    "*:I",
             };
 
             try {
