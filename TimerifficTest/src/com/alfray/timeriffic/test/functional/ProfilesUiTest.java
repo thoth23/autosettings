@@ -27,6 +27,7 @@ import android.util.Log;
 import com.alfray.timeriffic.R;
 import com.alfray.timeriffic.app.IntroActivity;
 import com.alfray.timeriffic.app.TimerifficApp;
+import com.alfray.timeriffic.error.ErrorReporterUI;
 import com.alfray.timeriffic.prefs.PrefsActivity;
 import com.alfray.timeriffic.prefs.PrefsValues;
 import com.alfray.timeriffic.profiles.ProfilesUI;
@@ -196,6 +197,7 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
         assertEquals(1, monitor.getHits());
     }
 
+    /** Menu>About starts the IntroActivity. */
     public void testMenu_ShowIntro() throws Exception {
         ActivityMonitor monitor = new ActivityMonitor(
                         IntroActivity.class.getName(),
@@ -210,6 +212,27 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
         assertNotNull(a);
 
         boolean ok = getInstrumentation().invokeMenuActionSync(a, R.string.about, 0);
+        assertTrue(ok);
+        getInstrumentation().waitForIdleSync();
+        getInstrumentation().waitForMonitorWithTimeout(monitor, 1000);
+        assertEquals(1, monitor.getHits());
+    }
+
+    /** Menu>ErroReport starts the ErrorReportActivity. */
+    public void testMenu_ErrorReport() throws Exception {
+        ActivityMonitor monitor = new ActivityMonitor(
+                        ErrorReporterUI.class.getName(),
+                        null, // result
+                        true); // block
+        getInstrumentation().addMonitor(monitor);
+        assertEquals(0, monitor.getHits());
+
+        getInstrumentation().addMonitor(monitor);
+
+        ProfilesUI a = getActivity();
+        assertNotNull(a);
+
+        boolean ok = getInstrumentation().invokeMenuActionSync(a, R.string.report_error, 0);
         assertTrue(ok);
         getInstrumentation().waitForIdleSync();
         getInstrumentation().waitForMonitorWithTimeout(monitor, 1000);
