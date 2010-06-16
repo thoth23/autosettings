@@ -637,8 +637,10 @@ public class ProfilesUI extends ExceptionHandlerActivity {
         case R.string.report_error:
             showErrorReport();
             break;
+        default:
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+        return true; // handled
     }
 
     private void showPrefs() {
