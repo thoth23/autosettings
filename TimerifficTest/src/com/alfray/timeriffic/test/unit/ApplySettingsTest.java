@@ -7,7 +7,7 @@
 /**
  *
  */
-package com.alfray.timeriffic.test;
+package com.alfray.timeriffic.test.unit;
 
 import android.content.Context;
 import android.test.AndroidTestCase;
