@@ -21,8 +21,7 @@
 	package="com.alfray.timeriffic" android:versionName="1.8.14" android:versionCode="1814">
     <application
         android:label="@string/app_name"
-        android:icon="@drawable/timeriffic_icon"
-        android:name=".app.TimerifficApp" >
+        android:name=".app.TimerifficApp" android:icon="@drawable/app_icon">
 
         <receiver android:name=".app.UpdateReceiver">
             <intent-filter>
@@ -77,7 +76,7 @@
         <activity
             android:name=".utils.ChangeBrightnessActivity"
             android:theme="@style/NoBackground"
-            android:taskAffinity="com.alfray.timeriffic.Change" />
+            android:taskAffinity="com.alfray.timeriffic.Change" android:excludeFromRecents="true"/>
 
         <service android:name=".app.PhoneStateService"/>
 
