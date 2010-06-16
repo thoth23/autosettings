@@ -190,7 +190,7 @@ public class ExceptionHandler {
         NotificationManager ns =
             (NotificationManager) mAppContext.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notif = new Notification(
-                R.drawable.timeriffic_icon, // icon
+                R.drawable.app_icon, // icon
                 "Timeriffic Crashed!",      // tickerText
                 System.currentTimeMillis()  // when
                 );

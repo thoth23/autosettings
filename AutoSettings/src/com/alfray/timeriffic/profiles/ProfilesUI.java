@@ -671,7 +671,7 @@ public class ProfilesUI extends ExceptionHandlerActivity {
 
         d.setCancelable(true);
         d.setTitle(R.string.resetprofiles_msg_confirm_delete);
-        d.setIcon(R.drawable.timeriffic_icon);
+        d.setIcon(R.drawable.app_icon);
         //d.setMessage("Are you sure you want to delete all profiles?");
         d.setItems(mProfilesDb.getResetLabels(),
             new DialogInterface.OnClickListener() {
@@ -720,7 +720,7 @@ public class ProfilesUI extends ExceptionHandlerActivity {
 
         d.setCancelable(true);
         d.setTitle(R.string.deleteprofile_title);
-        d.setIcon(R.drawable.timeriffic_icon);
+        d.setIcon(R.drawable.app_icon);
         d.setMessage(String.format(
                 getString(R.string.deleteprofile_msgbody), title));
 
@@ -762,7 +762,7 @@ public class ProfilesUI extends ExceptionHandlerActivity {
 
         d.setCancelable(true);
         d.setTitle(R.string.deleteaction_title);
-        d.setIcon(R.drawable.timeriffic_icon);
+        d.setIcon(R.drawable.app_icon);
         d.setMessage(getString(R.string.deleteaction_msgbody, description));
 
         d.setOnCancelListener(new OnCancelListener() {

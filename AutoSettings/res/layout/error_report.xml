@@ -119,6 +119,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@drawable/intro_bg_gradient"
+        android:visibility="gone"
         />
 
 </FrameLayout>
