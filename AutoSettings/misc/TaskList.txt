@@ -1,7 +1,27 @@
-TODO v2.0
+TODO
 
-20100309 Differentiate user reports from exception reports
-20100309 User reports need to provide some kind of explanation to be useful
+T v1.8.15 => medium update, couple features + improvements based on googlecode tickets.
+. T need to add serious functional tests + UI tests framework (to make sure things don't break when I add features)
+ (Note: "risk" below means potential impact of bugs on usability and probability of inserting regressions)
+. T merge the rest of AndroidAppLib
+. T make action buttons dynamic. C=Medium.
+. T generic help for action buttons including disabled buttons. C=Medium
+. T use action buttons' help to explain volume/brigthness issue + why no bluetooth < 2.0). Need new UI + I18n.
+. T media volume. C=Easy. Low risk.
+. T detect sound link setting. C=Medium. Low risk.
+. T warn sound linked . Ui.
+. T detect auto brightness. Medium.
+. T change auto brightness. C=Experimental. Low Risk. Try moonblink's googlecode (check license)
+. T -- publish
+
+T v1.9
+. T remove DB, C=high, risky. need extra testing.
+. T save restore SD. C=medium. Needs tests.
+. T -- publish
+
+
+TODO (misc)
+
 20100309 Time in 24-hours vs AM/PM (user choice, not system)
 20100309 Bug: StaleData/Cursor.closed (can't repro but happens often)
 20100309 Bug: Missing WakeLock permission (can't repro, happens rarely)
@@ -27,6 +47,14 @@ TODO v2.0
 
 
 DONE for 1.8
+
+
+[1.8.14]
+20100616 Added partial volume_change broadcast support
+20100615 Fixes for TimerifficTest
+20100615 Danish Translation by Stefan Thrane Overby
+20100614 Merge new Error Report UI from AndroidAppLib
+20100613 Make error log more compact
 
 [1.8.13]
 20100324 Add Chinese translation (中文(简体)) by Wenle Bao
