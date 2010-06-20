@@ -48,8 +48,12 @@ TODO (misc)
 
 DONE for 1.8
 
+[1.8.15]
+20100620 Fix prevent invalid DateTime format from crashing SimpleDateFormat
+20100620 Fix DateTime strings for Korean
 
 [1.8.14]
+20100620 1.8.14 in Market
 20100616 Added partial volume_change broadcast support
 20100615 Fixes for TimerifficTest
 20100615 Danish Translation by Stefan Thrane Overby

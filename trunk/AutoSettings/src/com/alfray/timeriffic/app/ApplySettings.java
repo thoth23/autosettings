@@ -55,8 +55,17 @@ public class ApplySettings {
     public ApplySettings(Context context, PrefsValues prefs) {
         mContext = context;
         mPrefs = prefs;
-        mUiDateFormat = new SimpleDateFormat(context.getString(R.string.globalstatus_nextlast_date_time));
         mDebugDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z");
+        String format = null;
+        SimpleDateFormat dt = null;
+        try {
+            format = context.getString(R.string.globalstatus_nextlast_date_time);
+            dt  = new SimpleDateFormat(format);
+        } catch (Exception e) {
+            Log.e(TAG, "Invalid R.string.globalstatus_nextlast_date_time: " +
+                    (format == null ? "null" : format));
+        }
+        mUiDateFormat = dt == null ? mDebugDateFormat : dt;
     }
 
     private void showToast(String s, int duration) {
@@ -293,7 +302,17 @@ public class ApplySettings {
         }
 
 
-        SimpleDateFormat sdf = new SimpleDateFormat(mContext.getString(R.string.toast_next_alarm_date_time));
+        SimpleDateFormat sdf = null;
+        String format = null;
+        try {
+            format = mContext.getString(R.string.toast_next_alarm_date_time);
+            sdf = new SimpleDateFormat(format);
+        } catch (Exception e) {
+            Log.e(TAG, "Invalid R.string.toast_next_alarm_date_time: " +
+                    (format == null ? "null" : format));
+        }
+        if (sdf == null) sdf = mDebugDateFormat;
+
         sdf.setCalendar(now);
         String s2 = sdf.format(now.getTime());
 
