@@ -187,12 +187,12 @@
      <!-- toast_next_alarm_date_time uses Java SimpleDateFormat, see
           http://java.sun.com/j2se/1.5.0/docs/api/java/text/SimpleDateFormat.html
      -->
-     <string name="toast_next_alarm_date_time">년/월/일 시:분:초</string>
+     <string name="toast_next_alarm_date_time">yyyy/MM/dd HH:mm:ss</string>
 
 
      <!-- global status (information view at the top) -->
 
-     <string name="globalstatus_nextlast_date_time">년/월/일 시:분:초</string>
+     <string name="globalstatus_nextlast_date_time">yyyy/MM/dd HH:mm:ss</string>
      <string name="globalstatus_next">다음:</string>
      <string name="globalstatus_last">마지막:</string>
      <string name="globalstatus_disabled">Timeriffic "사용안함" 상태</string>
