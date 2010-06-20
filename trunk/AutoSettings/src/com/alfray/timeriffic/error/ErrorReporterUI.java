@@ -630,8 +630,9 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
                     "WindowManager:W",
                     "FlurryAgent:W",
 
-                    // all other tags in info mode or better
-                    "*:I",
+
+                    //-- too verbose --"*:I",      // all other tags in info mode or better
+                    "*:S",      // silence all tags we don't want
             };
 
             try {
