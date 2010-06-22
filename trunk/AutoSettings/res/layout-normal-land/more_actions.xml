@@ -30,11 +30,37 @@
     >
 
     <Button
+        android:id="@+id/mediaVolButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="mediaVol"
+        style="@style/ActionButton"
+        />
+    <Button
+        android:id="@+id/alarmVolButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="alarmVol"
+        style="@style/ActionButton"
+        />
+</LinearLayout>
+
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:orientation="horizontal"
+    android:baselineAligned="false"
+    >
+
+    <Button
         android:id="@+id/wifiButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="- -"
+        android:text="wifi"
         style="@style/ActionButton"
         />
     <Button
@@ -42,7 +68,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="- -"
+        android:text="brightness"
         style="@style/ActionButton"
         />
 </LinearLayout>
@@ -60,7 +86,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="- -"
+        android:text="airplane"
         style="@style/ActionButton"
         />
     <Button
@@ -68,7 +94,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="- -"
+        android:text="bluetooth"
         style="@style/ActionButton"
         />
 
@@ -86,16 +112,16 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:text="- -"
+        android:text="apndroid"
         style="@style/ActionButton"
         />
     <Button
         android:enabled="false" android:visibility="invisible"
-        android:id="@+id/nextButton"
+        android:id="@+id/freeButton"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:text="-"
+        android:text="free"
         style="@style/ActionButton"
         />
 </LinearLayout>

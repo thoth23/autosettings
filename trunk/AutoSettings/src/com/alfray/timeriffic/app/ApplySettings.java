@@ -222,6 +222,14 @@ public class ApplySettings {
                             settings.changeNotificationVolume(value);
                             didSomething = true;
                             break;
+                        case Columns.ACTION_MEDIA_VOLUME:
+                            settings.changeMediaVolume(value);
+                            didSomething = true;
+                            break;
+                        case Columns.ACTION_ALARM_VOLUME:
+                            settings.changeAlarmVolume(value);
+                            didSomething = true;
+                            break;
                         case Columns.ACTION_WIFI:
                             settings.changeWifi(value > 0);
                             didSomething = true;

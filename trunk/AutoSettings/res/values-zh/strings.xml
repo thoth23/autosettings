@@ -151,6 +151,10 @@
     <string name="timedaction_bluetooth_off">蓝牙关闭</string>
     <string name="timedaction_ringer_int">铃声 %d%%</string>
     <string name="timedaction_notif_int">提醒 %d%%</string>
+<!-- BEGIN NEW TRANSLATION -->
+    <string name="timedaction_media_int">Media %d%%</string>
+    <string name="timedaction_alarm_int">Alarm %d%%</string>
+<!--  END NEW TRANSLATION -->
     <string name="timedaction_brightness_int">亮度 %d%%</string>
     <string name="timedaction_apndroid_on">3G/2G数据连接关闭</string>
     <string name="timedaction_apndroid_off">3G/2G数据连接开启</string>
@@ -183,6 +187,10 @@
     <string name="editaction_wifi">Wifi</string>
     <string name="editaction_airplane">飞行模式</string>
     <string name="editaction_notif_volume">提醒音量.</string>
+<!-- BEGIN NEW TRANSLATION -->
+    <string name="editaction_media_volume">Media Vol.</string>
+    <string name="editaction_alarm_volume">Alarm Vol.</string>
+<!--  END NEW TRANSLATION -->
     <string name="editaction_bluetooth">蓝牙</string>
     <!-- APNdroid app name, not translated -->
     <string name="editaction_apndroid">APNdroid</string>

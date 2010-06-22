@@ -213,6 +213,18 @@ public class TimedActionUtils {
                                                 R.string.timedaction_notif_int,
                                                 value));
                                 break;
+                            case Columns.ACTION_MEDIA_VOLUME:
+                                actions_names.add(
+                                        context.getString(
+                                                R.string.timedaction_media_int,
+                                                value));
+                                break;
+                            case Columns.ACTION_ALARM_VOLUME:
+                                actions_names.add(
+                                        context.getString(
+                                                R.string.timedaction_alarm_int,
+                                                value));
+                                break;
                             case Columns.ACTION_BLUETOOTH:
                                 if (sh.canControlWifi()) {
                                     actions_names.add(

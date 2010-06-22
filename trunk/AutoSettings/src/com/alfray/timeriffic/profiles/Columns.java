@@ -151,6 +151,10 @@ public class Columns implements BaseColumns {
     public static final char ACTION_RING_VOLUME = 'G';
     /** Notification volume. Integer: 0..100 */
     public static final char ACTION_NOTIF_VOLUME = 'N';
+    /** Media volume. Integer: 0..100 */
+    public static final char ACTION_MEDIA_VOLUME = 'M';
+    /** Alarm volume. Integer: 0..100 */
+    public static final char ACTION_ALARM_VOLUME = 'L';
     /** Screen Brightness. Integer: 0..100 */
     public static final char ACTION_BRIGHTNESS  = 'B';
     /** Wifi. Boolean: 0..1 */

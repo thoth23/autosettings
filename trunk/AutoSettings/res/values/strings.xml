@@ -151,6 +151,8 @@
     <string name="timedaction_bluetooth_off">Bluetooth Off</string>
     <string name="timedaction_ringer_int">Ringer %d%%</string>
     <string name="timedaction_notif_int">Notification %d%%</string>
+    <string name="timedaction_media_int">Media %d%%</string>
+    <string name="timedaction_alarm_int">Alarm %d%%</string>
     <string name="timedaction_brightness_int">Brightness %d%%</string>
     <string name="timedaction_apndroid_on">3G/2G Data On</string>
     <string name="timedaction_apndroid_off">3G/2G Data Off</string>
@@ -178,11 +180,13 @@
 
     <string name="editaction_ringer">Ringer</string>
     <string name="editaction_vibrate">Vibrate</string>
-    <string name="editaction_volume">Main Volume</string>
     <string name="editaction_brightness">Brightness</string>
     <string name="editaction_wifi">Wifi</string>
     <string name="editaction_airplane">Airplane Mode</string>
+    <string name="editaction_volume">Ring Volume</string>
     <string name="editaction_notif_volume">Notification Vol.</string>
+    <string name="editaction_media_volume">Media Vol.</string>
+    <string name="editaction_alarm_volume">Alarm Vol.</string>
     <string name="editaction_bluetooth">Bluetooth</string>
     <!-- APNdroid app name, not translated -->
     <string name="editaction_apndroid">APNdroid</string>

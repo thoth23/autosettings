@@ -129,6 +129,10 @@
      <string name="timedaction_bluetooth_off">블루투스 Off</string>
      <string name="timedaction_ringer_int">벨소리 %d%%</string>
      <string name="timedaction_notif_int">알리미 %d%%</string>
+<!-- BEGIN NEW TRANSLATION -->
+    <string name="timedaction_media_int">Media %d%%</string>
+    <string name="timedaction_alarm_int">Alarm %d%%</string>
+<!--  END NEW TRANSLATION -->
      <string name="timedaction_brightness_int">밝기 %d%%</string>
      <string name="timedaction_apndroid_on">3G망 사용 On</string>
      <string name="timedaction_apndroid_off">3G망 사용 Off</string>
@@ -161,6 +165,10 @@
      <string name="editaction_wifi">무선랜</string>
      <string name="editaction_airplane">비행기 모드</string>
      <string name="editaction_notif_volume">알리미 볼륨</string>
+<!-- BEGIN NEW TRANSLATION -->
+    <string name="editaction_media_volume">Media Vol.</string>
+    <string name="editaction_alarm_volume">Alarm Vol.</string>
+<!--  END NEW TRANSLATION -->
      <string name="editaction_bluetooth">블루투스</string>
      <!-- APNdroid app name, not translated -->
      <string name="editaction_apndroid">APNdroid</string>
