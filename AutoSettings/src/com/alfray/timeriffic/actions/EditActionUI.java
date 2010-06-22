@@ -68,6 +68,8 @@ public class EditActionUI extends ExceptionHandlerActivity {
     private PrefEnum mPrefRingerVibrate;
     private PrefPercent mPrefRingerVolume;
     private PrefPercent mPrefNotifVolume;
+    private PrefPercent mPrefMediaVolume;
+    private PrefPercent mPrefAlarmVolume;
     private PrefPercent mPrefBrightness;
     private PrefToggle mPrefAirplane;
     private PrefToggle mPrefWifi;
@@ -203,11 +205,51 @@ public class EditActionUI extends ExceptionHandlerActivity {
                             return mSettingsHelper.getNotificationVolume();
                         }
                     });
-            mPrefNotifVolume.setEnabled(mSettingsHelper.canControlNotificationVolume(),
-                    getString(R.string.setting_not_supported));
             mPercentDialogMap.put(
                     mPrefNotifVolume.setDialogId(++dialogId),
                     mPrefNotifVolume);
+
+            mPrefMediaVolume = new PrefPercent(this,
+                    R.id.mediaVolButton,
+                    actions,
+                    Columns.ACTION_MEDIA_VOLUME,
+                    getString(R.string.editaction_media_volume),
+                    0,
+                    new Accessor() {
+                        @Override
+                        public void changePercent(int percent) {
+                            mSettingsHelper.changeMediaVolume(percent);
+                        }
+
+                        @Override
+                        public int getPercent() {
+                            return mSettingsHelper.getMediaVolume();
+                        }
+                    });
+            mPercentDialogMap.put(
+                    mPrefMediaVolume.setDialogId(++dialogId),
+                    mPrefMediaVolume);
+
+            mPrefAlarmVolume = new PrefPercent(this,
+                    R.id.alarmVolButton,
+                    actions,
+                    Columns.ACTION_ALARM_VOLUME,
+                    getString(R.string.editaction_alarm_volume),
+                    0,
+                    new Accessor() {
+                        @Override
+                        public void changePercent(int percent) {
+                            mSettingsHelper.changeAlarmVolume(percent);
+                        }
+
+                        @Override
+                        public int getPercent() {
+                            return mSettingsHelper.getAlarmVolume();
+                        }
+                    });
+            mPercentDialogMap.put(
+                    mPrefAlarmVolume.setDialogId(++dialogId),
+                    mPrefAlarmVolume);
 
             mPrefBrightness = new PrefPercent(this,
                     R.id.brightnessButton,
@@ -424,6 +466,8 @@ public class EditActionUI extends ExceptionHandlerActivity {
             mPrefRingerVibrate.collectResult(actions);
             mPrefRingerVolume.collectResult(actions);
             mPrefNotifVolume.collectResult(actions);
+            mPrefMediaVolume.collectResult(actions);
+            mPrefAlarmVolume.collectResult(actions);
             mPrefBluetooth.collectResult(actions);
             mPrefWifi.collectResult(actions);
             mPrefAirplane.collectResult(actions);

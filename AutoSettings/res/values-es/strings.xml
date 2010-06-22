@@ -143,6 +143,10 @@
     <string name="timedaction_bluetooth_off">Bluetooth desactivado</string>
     <string name="timedaction_ringer_int">Timbre %d%%</string>
     <string name="timedaction_notif_int">Notificación %d%%</string>
+<!-- BEGIN NEW TRANSLATION -->
+    <string name="timedaction_media_int">Media %d%%</string>
+    <string name="timedaction_alarm_int">Alarm %d%%</string>
+<!--  END NEW TRANSLATION -->
     <string name="timedaction_brightness_int">Brillo %d%%</string>
     <string name="timedaction_apndroid_on">Red 3G/2G activada</string>
     <string name="timedaction_apndroid_off">Red 3G/2G desactivada</string>
@@ -181,6 +185,10 @@
     <string name="editaction_wifi">Wi-Fi</string>
     <string name="editaction_airplane">Modo avión</string>
     <string name="editaction_notif_volume">Vol. notificación</string>
+<!-- BEGIN NEW TRANSLATION -->
+    <string name="editaction_media_volume">Media Vol.</string>
+    <string name="editaction_alarm_volume">Alarm Vol.</string>
+<!--  END NEW TRANSLATION -->
     <string name="editaction_bluetooth">Bluetooth</string>
 
     <!-- percent dialog -->

@@ -29,11 +29,19 @@
     >
 
     <Button
-        android:id="@+id/brightnessButton"
+        android:id="@+id/mediaVolButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="- -"
+        android:text="mediaVol"
+        style="@style/ActionButton"
+        />
+    <Button
+        android:id="@+id/alarmVolButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="alarmVol"
         style="@style/ActionButton"
         />
     <Button
@@ -41,15 +49,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="- -"
-        style="@style/ActionButton"
-        />
-    <Button
-        android:id="@+id/airplaneButton"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="- -"
+        android:text="wifi"
         style="@style/ActionButton"
         />
 </LinearLayout>
@@ -62,28 +62,62 @@
     >
 
     <Button
+        android:id="@+id/brightnessButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="brightness"
+        style="@style/ActionButton"
+        />
+    <Button
+        android:id="@+id/airplaneButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="airplane"
+        style="@style/ActionButton"
+        />
+    <Button
         android:id="@+id/bluetoothButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="- -"
+        android:text="bluetooth"
         style="@style/ActionButton"
         />
+</LinearLayout>
+
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:orientation="horizontal"
+    >
+
     <Button
         android:id="@+id/apndroidButton"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="- -"
+        android:text="apndroid"
         style="@style/ActionButton"
         />
     <Button
         android:enabled="false" android:visibility="invisible"
-        android:id="@+id/nextButton"
+        android:id="@+id/freeButton1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:text="-"
+        android:text="free1"
+        style="@style/ActionButton"
+        />
+    <Button
+        android:enabled="false" android:visibility="invisible"
+        android:id="@+id/freeButton2"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:text="free2"
         style="@style/ActionButton"
         />
 </LinearLayout>

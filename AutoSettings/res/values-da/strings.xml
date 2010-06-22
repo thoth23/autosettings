@@ -151,6 +151,10 @@
     <string name="timedaction_bluetooth_off">Bluetooth Fra</string>
     <string name="timedaction_ringer_int">Ringetone %d%%</string>
     <string name="timedaction_notif_int">Meddelelse %d%%</string>
+<!-- BEGIN NEW TRANSLATION -->
+    <string name="timedaction_media_int">Media %d%%</string>
+    <string name="timedaction_alarm_int">Alarm %d%%</string>
+<!--  END NEW TRANSLATION -->
     <string name="timedaction_brightness_int">Lysstyrke %d%%</string>
     <string name="timedaction_apndroid_on">3G/2G Data Til</string>
     <string name="timedaction_apndroid_off">3G/2G Data Fra</string>
@@ -183,6 +187,10 @@
     <string name="editaction_wifi">Wifi</string>
     <string name="editaction_airplane">Flytilstand</string>
     <string name="editaction_notif_volume">Meddelelseslyd</string>
+<!-- BEGIN NEW TRANSLATION -->
+    <string name="editaction_media_volume">Media Vol.</string>
+    <string name="editaction_alarm_volume">Alarm Vol.</string>
+<!--  END NEW TRANSLATION -->
     <string name="editaction_bluetooth">Bluetooth</string>
     <!-- APNdroid app name, not translated -->
     <string name="editaction_apndroid">APNdroid</string>

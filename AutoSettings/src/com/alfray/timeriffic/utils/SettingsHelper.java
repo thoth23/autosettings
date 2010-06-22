@@ -75,13 +75,6 @@ public class SettingsHelper {
         return manager != null;
     }
 
-    public boolean canControlNotificationVolume() {
-        AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-        if (manager == null) return false;
-
-        return checkMinApiLevel(3);
-    }
-
     public boolean canControlBluetooth() {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         if (manager == null) return false;
@@ -284,73 +277,67 @@ public class SettingsHelper {
         }
     }
 
-    public void changeRingerVolume(int percent) {
+    private void changeVolume(int stream, int percent) {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
         if (manager == null) {
-            Log.w(TAG, "changeRingerVolume: AUDIO_SERVICE missing!");
+            if (DEBUG) Log.w(TAG, "changeVolume: AUDIO_SERVICE missing!");
             return;
         }
 
-        if (DEBUG) Log.d(TAG, "changeRingerVolume: " + Integer.toString(percent));
+        if (DEBUG) Log.d(TAG, String.format("changeVolume: stream=%d, vol=%d%%", stream, percent));
 
-        int max = manager.getStreamMaxVolume(AudioManager.STREAM_RING);
+        int max = manager.getStreamMaxVolume(stream);
         int vol = (max * percent) / 100;
 
-        broadcastVolumeUpdate(AudioManager.STREAM_RING, vol, -1);
-        manager.setStreamVolume(AudioManager.STREAM_RING, vol, 0 /*flags*/);
+        broadcastVolumeUpdate(stream, vol, -1);
+        manager.setStreamVolume(stream, vol, 0 /*flags*/);
     }
 
-    public int getRingerVolume() {
+    private int getVolume(int stream) {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
         if (manager == null) {
-            if (DEBUG) Log.w(TAG, "getRingerVolume: AUDIO_SERVICE missing!");
+            if (DEBUG) Log.w(TAG, "getVolume: AUDIO_SERVICE missing!");
             return 50;
         }
 
-        int vol = manager.getStreamVolume(AudioManager.STREAM_RING);
-        int max = manager.getStreamMaxVolume(AudioManager.STREAM_RING);
+        int vol = manager.getStreamVolume(stream);
+        int max = manager.getStreamMaxVolume(stream);
 
         return (vol * 100 / max);
+    }
+
+    public void changeRingerVolume(int percent) {
+        changeVolume(AudioManager.STREAM_RING, percent);
     }
 
     public void changeNotificationVolume(int percent) {
-        AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        changeVolume(AudioManager.STREAM_NOTIFICATION, percent);
+    }
 
-        if (manager == null) {
-            Log.w(TAG, "changeNotificationVolume: AUDIO_SERVICE missing!");
-            return;
-        } else if (!canControlNotificationVolume()) {
-            if (DEBUG) Log.w(TAG, "changeNotificationVolume: API too low.");
-            changeRingerVolume(percent);
-            return;
-        }
+    public void changeMediaVolume(int percent) {
+        changeVolume(AudioManager.STREAM_MUSIC, percent);
+    }
 
-        if (DEBUG) Log.d(TAG, "changeNotificationVolume: " + Integer.toString(percent));
+    public void changeAlarmVolume(int percent) {
+        changeVolume(AudioManager.STREAM_ALARM, percent);
+    }
 
-        int max = manager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION);
-        int vol = (max * percent) / 100;
-
-        broadcastVolumeUpdate(AudioManager.STREAM_NOTIFICATION, vol, -1);
-        manager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, vol, 0 /*flags*/);
+    public int getRingerVolume() {
+        return getVolume(AudioManager.STREAM_RING);
     }
 
     public int getNotificationVolume() {
-        AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        return getVolume(AudioManager.STREAM_NOTIFICATION);
+    }
 
-        if (manager == null) {
-            if (DEBUG) Log.w(TAG, "getNotificationVolume: AUDIO_SERVICE missing!");
-            return 50;
-        } else if (!canControlNotificationVolume()) {
-            if (DEBUG) Log.w(TAG, "changeNotificationVolume: API too low.");
-            return getRingerVolume();
-        }
+    public int getMediaVolume() {
+        return getVolume(AudioManager.STREAM_MUSIC);
+    }
 
-        int vol = manager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
-        int max = manager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION);
-
-        return (vol * 100 / max);
+    public int getAlarmVolume() {
+        return getVolume(AudioManager.STREAM_ALARM);
     }
 
     // --- Global Brightness --

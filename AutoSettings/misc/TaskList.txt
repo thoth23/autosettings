@@ -48,7 +48,8 @@ TODO (misc)
 DONE for 1.8
 
 [1.8.15]
-20100309 Time in 24-hours vs AM/PM (not user choice, system default)
+20100620 Add "media volume" and "alarm volume" buttons and control
+20100620 Time in 24-hours vs AM/PM (not user choice, system default)
 20100620 Fix prevent invalid DateTime format from crashing SimpleDateFormat
 20100620 Fix DateTime strings for Korean
 
