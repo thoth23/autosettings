@@ -18,12 +18,15 @@
 
 package com.alfray.timeriffic.actions;
 
+import java.util.Locale;
+
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnDismissListener;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.ContextMenu;
@@ -470,6 +473,8 @@ public class EditActionUI extends ExceptionHandlerActivity {
 
         timePicker.setCurrentHour(hours);
         timePicker.setCurrentMinute(minutes);
+
+        timePicker.setIs24HourView(DateFormat.is24HourFormat(this));
     }
 
 }
