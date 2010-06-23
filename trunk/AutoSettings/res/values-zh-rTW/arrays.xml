@@ -18,8 +18,8 @@
 -->
 
 <!--
-    Language: 中文（简体）
-    Regions:  中国.
+    Language: 中文（正體）
+    Regions:  中國.
 -->
 
 <resources>
@@ -31,20 +31,14 @@
 -->
 <string-array name="prefs_globaltoggle_anim_names">
     <!-- Global toggle is not animated. -->
-    <item>无动画效果</item>
+    <item>無動畫效果</item>
 
     <!-- Global toggle is animated with a slow pulse animation. -->
-    <item>慢速搏动</item>
+    <item>慢速搏動</item>
 
     <!-- Global toggle is animated with a slow pulse animation. -->
-    <item>快速搏动</item>
+    <item>快速搏動</item>
 </string-array>
 
-<!-- do not translate! -->
-<string-array name="prefs_globaltoggle_anim_values">
-    <item>no_anim</item>
-    <item>slow</item>
-    <item>fast</item>
-</string-array>
 
 </resources>

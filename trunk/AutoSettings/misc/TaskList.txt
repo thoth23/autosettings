@@ -45,13 +45,16 @@ TODO (misc)
 
 
 
-DONE for 1.8
+DONE for 1.9
 
 [1.8.15]
 20100620 Add "media volume" and "alarm volume" buttons and control
 20100620 Time in 24-hours vs AM/PM (not user choice, system default)
 20100620 Fix prevent invalid DateTime format from crashing SimpleDateFormat
 20100620 Fix DateTime strings for Korean
+
+
+DONE for 1.8
 
 [1.8.14]
 20100620 1.8.14 in Market
@@ -151,17 +154,14 @@ DONE for 1.6
 20090916 Donut SDK, added support-screens in manifest
 
 
-
 DONE for 1.5
 
 20090706 Added Wifi and Airplane mode setting.
 
 
-
 DONE for 1.4
 
 20090629 Added global brightness setting (for pre- and Cupcake)
-
 
 
 DONE for 1.3

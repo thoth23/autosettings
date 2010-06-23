@@ -40,12 +40,5 @@
     <item>Hurtig puls</item>
 </string-array>
 
-<!-- do not translate! -->
-<string-array name="prefs_globaltoggle_anim_values">
-    <item>no_anim</item>
-    <item>slow</item>
-    <item>fast</item>
-</string-array>
-
 </resources>
 
