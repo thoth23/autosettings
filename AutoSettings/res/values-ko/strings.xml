@@ -129,13 +129,15 @@
      <string name="timedaction_bluetooth_off">블루투스 Off</string>
      <string name="timedaction_ringer_int">벨소리 %d%%</string>
      <string name="timedaction_notif_int">알리미 %d%%</string>
-<!-- BEGIN NEW TRANSLATION -->
-    <string name="timedaction_media_int">Media %d%%</string>
-    <string name="timedaction_alarm_int">Alarm %d%%</string>
-<!--  END NEW TRANSLATION -->
      <string name="timedaction_brightness_int">밝기 %d%%</string>
      <string name="timedaction_apndroid_on">3G망 사용 On</string>
      <string name="timedaction_apndroid_off">3G망 사용 Off</string>
+<!-- BEGIN NEW TRANSLATION -->
+    <string name="timedaction_media_int">Media %d%%</string>
+    <string name="timedaction_alarm_int">Alarm %d%%</string>
+    <string name="timedaction_auto_brightness">Automatic Brightness</string>
+    <string name="timedaction_automatic">Automatic</string>
+<!--  END NEW TRANSLATION -->
 
      <!-- edit profile screen -->
 
@@ -225,6 +227,16 @@
      <string name="checkservices_miss_wifi_service">무선랜 켜기/끄기</string>
      <string name="checkservices_miss_airplane">비행기 모드</string>
      <string name="checkservices_miss_brightness">밝기</string>
+<!-- BEGIN NEW TRANSLATION -->
+    <string name="checkservices_miss_bluetooh">Bluetooth</string>
+    <string name="checkservices_miss_apndroid">APNDroid</string>
+    <string name="checkservices_miss_ringguard">RingGuard</string>
+    <string name="checkservices_explain_why">explain why</string>
+
+    <string name="checkservices_help_bluetooh">Bluetooth control requires Android 2.0 or more.</string>
+    <string name="checkservices_help_application">To enable this feature, install the application \'%s\' from Android Market.</string>
+    <string name="install_now_button">Install Now</string>
+<!--  END NEW TRANSLATION -->
 
      <!-- === Error Reporting === -->
 
