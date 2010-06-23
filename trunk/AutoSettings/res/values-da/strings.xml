@@ -88,6 +88,17 @@
     <!-- Settings - Animation of the toggle button logo: help string -->
     <string name="prefs_toggle_anim_tooltip">Vælg animationen af logo ikonet på profil-liste skærmen.</string>
 
+<!-- BEGIN NEW TRANSLATION -->
+    <string name="save_to_sd">Save to SD Card</string>
+    <string name="restore_from_sd">Restore from SD Card</string>
+    <!-- Settings - Display Notification: toggle title -->
+    <string name="prefs_display_notif_label">Display notification on profile change</string>
+    <!-- Settings - Display Notification: help string when on -->
+    <string name="prefs_display_notif_on">Display a notification when a profile changes</string>
+    <!-- Settings - Display Notification: help string when off -->
+    <string name="prefs_display_notif_off">Do not display a notification when a profile changes</string>
+<!--  END NEW TRANSLATION -->
+
 
     <!-- === Intro screen === -->
 
@@ -151,13 +162,15 @@
     <string name="timedaction_bluetooth_off">Bluetooth Fra</string>
     <string name="timedaction_ringer_int">Ringetone %d%%</string>
     <string name="timedaction_notif_int">Meddelelse %d%%</string>
-<!-- BEGIN NEW TRANSLATION -->
-    <string name="timedaction_media_int">Media %d%%</string>
-    <string name="timedaction_alarm_int">Alarm %d%%</string>
-<!--  END NEW TRANSLATION -->
     <string name="timedaction_brightness_int">Lysstyrke %d%%</string>
     <string name="timedaction_apndroid_on">3G/2G Data Til</string>
     <string name="timedaction_apndroid_off">3G/2G Data Fra</string>
+<!-- BEGIN NEW TRANSLATION -->
+    <string name="timedaction_media_int">Media %d%%</string>
+    <string name="timedaction_alarm_int">Alarm %d%%</string>
+    <string name="timedaction_auto_brightness">Automatic Brightness</string>
+    <string name="timedaction_automatic">Automatic</string>
+<!--  END NEW TRANSLATION -->
 
     <!-- edit profile screen -->
 
@@ -188,8 +201,8 @@
     <string name="editaction_airplane">Flytilstand</string>
     <string name="editaction_notif_volume">Meddelelseslyd</string>
 <!-- BEGIN NEW TRANSLATION -->
-    <string name="editaction_media_volume">Media Vol.</string>
-    <string name="editaction_alarm_volume">Alarm Vol.</string>
+    <string name="editaction_media_volume">Media Volume</string>
+    <string name="editaction_alarm_volume">Alarm Volume</string>
 <!--  END NEW TRANSLATION -->
     <string name="editaction_bluetooth">Bluetooth</string>
     <!-- APNdroid app name, not translated -->
@@ -247,6 +260,16 @@
     <string name="checkservices_miss_wifi_service">Wifi skift</string>
     <string name="checkservices_miss_airplane">Flytilstand</string>
     <string name="checkservices_miss_brightness">Lysstyrke</string>
+<!-- BEGIN NEW TRANSLATION -->
+    <string name="checkservices_miss_bluetooh">Bluetooth</string>
+    <string name="checkservices_miss_apndroid">APNDroid</string>
+    <string name="checkservices_miss_ringguard">RingGuard</string>
+    <string name="checkservices_explain_why">explain why</string>
+
+    <string name="checkservices_help_bluetooh">Bluetooth control requires Android 2.0 or more.</string>
+    <string name="checkservices_help_application">To enable this feature, install the application \'%s\' from Android Market.</string>
+    <string name="install_now_button">Install Now</string>
+<!--  END NEW TRANSLATION -->
 
     <!-- === Error Reporting === -->
 

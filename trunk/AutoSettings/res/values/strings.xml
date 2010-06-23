@@ -195,11 +195,11 @@
 
     <string name="editaction_ringer">Ringer</string>
     <string name="editaction_vibrate">Vibrate</string>
+    <string name="editaction_volume">Ring Volume</string>
     <string name="editaction_brightness">Brightness</string>
     <string name="editaction_wifi">Wifi</string>
     <string name="editaction_airplane">Airplane Mode</string>
 <!-- BEGIN NEW TRANSLATION -->
-    <string name="editaction_volume">Ring Volume</string>
     <string name="editaction_media_volume">Media Volume</string>
     <string name="editaction_alarm_volume">Alarm Volume</string>
 <!--  END NEW TRANSLATION -->
