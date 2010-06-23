@@ -199,38 +199,68 @@ public class ErrorReporterUI extends ExceptionHandlerActivity {
     }
 
     private String selectFile(String baseName) {
+        String file;
+
         // Compute which file we want to display, i.e. try to select
         // one that matches baseName-LocaleCountryName.html or default
         // to intro.html
-        String file = baseName + ".html";
         Locale lo = Locale.getDefault();
         String lang = lo.getLanguage();
+        String country = lo.getCountry();
+        if (lang != null && lang.length() > 2) {
+            // There's a bug in the SDK "Locale Setup" app in Android 1.5/1.6
+            // where it sets the full locale such as "en_US" in the languageCode
+            // field of the Locale instead of splitting it correctly. So we do it
+            // here.
+            int pos = lang.indexOf('_');
+            if (pos > 0 && pos < lang.length() - 1) {
+                country = lang.substring(pos + 1);
+                lang = lang.substring(0, pos);
+            }
+        }
         if (lang != null && lang.length() == 2) {
-            InputStream is = null;
-            String file2 = baseName + "-" + lang + ".html";
-            try {
-                AssetManager am = getResources().getAssets();
+            AssetManager am = getResources().getAssets();
 
-                is = am.open(file2);
-                if (is != null) {
-                    file = file2;
+            // Try with both language and country, e.g. -en-US, -zh-CN
+            if (country != null && country.length() == 2) {
+                file = baseName + "-" + lang.toLowerCase() + "-" + country.toUpperCase() + ".html";
+                if (checkFileExists(am, file)) {
+                    return file;
                 }
+            }
 
-            } catch (IOException e) {
-                if (!"en".equals(lang)) {
-                    if (DEBUG) Log.d(TAG, "Language not found: " + lang);
-                }
-            } finally {
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        // pass
-                    }
+            // Try to fall back on just language, e.g. -zh, -fr
+            file = baseName + "-" + lang.toLowerCase() + ".html";
+            if (checkFileExists(am, file)) {
+                return file;
+            }
+        }
+
+        if (!"en".equals(lang)) {
+            if (DEBUG) Log.d(TAG, "Language not found: " + lang + "+" + country);
+        }
+
+        // This one just has to exist or we'll crash n' burn on the 101.
+        return baseName + ".html";
+    }
+
+    private boolean checkFileExists(AssetManager am, String filename) {
+        InputStream is = null;
+        try {
+            is = am.open(filename);
+            return is != null;
+        } catch (IOException e) {
+            // pass
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    // pass
                 }
             }
         }
-        return file;
+        return false;
     }
 
     private void loadFile(final WebView wv, String file) {
