@@ -62,6 +62,11 @@ public class IntroActivity extends ExceptionHandlerActivity {
     private class JSTimerifficVersion {
 
         private String mVersion;
+        private String mIntroFile;
+
+        public JSTimerifficVersion(String introFile) {
+            mIntroFile = introFile;
+        }
 
         public String longVersion() {
             if (mVersion == null) {
@@ -85,6 +90,11 @@ public class IntroActivity extends ExceptionHandlerActivity {
             }
             return v;
         }
+
+        @SuppressWarnings("unused")
+        public String introFile() {
+            return mIntroFile;
+        }
     }
 
     /** Called when the activity is first created. */
@@ -93,7 +103,9 @@ public class IntroActivity extends ExceptionHandlerActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.intro);
-        JSTimerifficVersion jsVersion = new JSTimerifficVersion();
+
+        String introFile = selectFile("intro");
+        JSTimerifficVersion jsVersion = new JSTimerifficVersion(introFile);
 
         String title = getString(R.string.intro_title, jsVersion.shortVersion());
         setTitle(title);
@@ -111,8 +123,7 @@ public class IntroActivity extends ExceptionHandlerActivity {
         wv.getSettings().setJavaScriptEnabled(true);
         wv.addJavascriptInterface(jsVersion, "JSTimerifficVersion");
 
-        String file = selectFile("intro");
-        loadFile(wv, file);
+        loadFile(wv, introFile);
         setupProgressBar(wv);
         setupWebViewClient(wv);
         setupButtons();
