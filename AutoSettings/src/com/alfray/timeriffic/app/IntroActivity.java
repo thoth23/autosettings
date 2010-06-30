@@ -160,6 +160,7 @@ public class IntroActivity extends ExceptionHandlerActivity {
             if (country != null && country.length() == 2) {
                 file = baseName + "-" + lang.toLowerCase() + "-" + country.toUpperCase() + ".html";
                 if (checkFileExists(am, file)) {
+                    if (DEBUG) Log.d(TAG, String.format("Locale(%s,%s) => %s", lang, country, file));
                     return file;
                 }
             }
@@ -167,12 +168,14 @@ public class IntroActivity extends ExceptionHandlerActivity {
             // Try to fall back on just language, e.g. -zh, -fr
             file = baseName + "-" + lang.toLowerCase() + ".html";
             if (checkFileExists(am, file)) {
+                if (DEBUG) Log.d(TAG, String.format("Locale(%s) => %s", lang, file));
                 return file;
             }
         }
 
         if (!"en".equals(lang)) {
-            if (DEBUG) Log.d(TAG, "Language not found: " + lang + "+" + country);
+            if (DEBUG) Log.d(TAG, String.format("Language not found for %s-%s (Locale %s)",
+                    lang, country, lo.toString()));
         }
 
         // This one just has to exist or we'll crash n' burn on the 101.
