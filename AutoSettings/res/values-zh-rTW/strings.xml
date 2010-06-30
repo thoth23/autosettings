@@ -89,14 +89,14 @@
     <string name="prefs_toggle_anim_tooltip">選取開關圖示的動畫效果.</string>
 
 <!-- BEGIN NEW TRANSLATION -->
-    <string name="save_to_sd">Save to SD Card</string>
-    <string name="restore_from_sd">Restore from SD Card</string>
+    <string name="save_to_sd">儲存到SD卡</string>
+    <string name="restore_from_sd">從SD上還原</string>
     <!-- Settings - Display Notification: toggle title -->
-    <string name="prefs_display_notif_label">Display notification on profile change</string>
+    <string name="prefs_display_notif_label">當情景模式改變時顯示通知</string>
     <!-- Settings - Display Notification: help string when on -->
-    <string name="prefs_display_notif_on">Display a notification when a profile changes</string>
+    <string name="prefs_display_notif_on">當情景模式改變時顯示一個通知訊息</string>
     <!-- Settings - Display Notification: help string when off -->
-    <string name="prefs_display_notif_off">Do not display a notification when a profile changes</string>
+    <string name="prefs_display_notif_off">當情景模式改變時不顯示通知訊息</string>
 <!--  END NEW TRANSLATION -->
 
 
@@ -166,10 +166,10 @@
     <string name="timedaction_apndroid_on">3G/2G資料連接關閉</string>
     <string name="timedaction_apndroid_off">3G/2G資料連接開啟</string>
 <!-- BEGIN NEW TRANSLATION -->
-    <string name="timedaction_media_int">Media %d%%</string>
-    <string name="timedaction_alarm_int">Alarm %d%%</string>
-    <string name="timedaction_auto_brightness">Automatic Brightness</string>
-    <string name="timedaction_automatic">Automatic</string>
+    <string name="timedaction_media_int">媒體 %d%%</string>
+    <string name="timedaction_alarm_int">鬧鐘 %d%%</string>
+    <string name="timedaction_auto_brightness">自動背光</string>
+    <string name="timedaction_automatic">自動的</string>
 <!--  END NEW TRANSLATION -->
 
     <!-- edit profile screen -->
@@ -201,8 +201,8 @@
     <string name="editaction_airplane">飛行模式</string>
     <string name="editaction_notif_volume">提醒音量.</string>
 <!-- BEGIN NEW TRANSLATION -->
-    <string name="editaction_media_volume">Media Volume</string>
-    <string name="editaction_alarm_volume">Alarm Volume</string>
+    <string name="editaction_media_volume">媒體音量</string>
+    <string name="editaction_alarm_volume">鬧鐘音量</string>
 <!--  END NEW TRANSLATION -->
     <string name="editaction_bluetooth">藍牙</string>
     <!-- APNdroid app name, not translated -->
@@ -262,14 +262,14 @@
     <string name="checkservices_miss_airplane">飛行模式</string>
     <string name="checkservices_miss_brightness">亮度</string>
 <!-- BEGIN NEW TRANSLATION -->
-    <string name="checkservices_miss_bluetooh">Bluetooth</string>
+    <string name="checkservices_miss_bluetooh">藍牙</string>
     <string name="checkservices_miss_apndroid">APNDroid</string>
     <string name="checkservices_miss_ringguard">RingGuard</string>
-    <string name="checkservices_explain_why">explain why</string>
+    <string name="checkservices_explain_why">解釋為什麼</string>
 
-    <string name="checkservices_help_bluetooh">Bluetooth control requires Android 2.0 or more.</string>
-    <string name="checkservices_help_application">To enable this feature, install the application \'%s\' from Android Market.</string>
-    <string name="install_now_button">Install Now</string>
+    <string name="checkservices_help_bluetooh">藍牙控制需要 Android 2.0 或更高版本的系統。</string>
+    <string name="checkservices_help_application">想要開啟這個功能，請從Android市場上下載安裝軟體 \'%s\'。</string>
+    <string name="install_now_button">現在安裝</string>
 <!--  END NEW TRANSLATION -->
 
     <!-- === Error Reporting === -->
@@ -282,25 +282,25 @@
 
 <!-- BEGIN - NEW TRANSLATE -->
     <!-- Error Report UI: next button (go from page 1 to page 2). -->
-    <string name="errorreport_next">Next &gt;</string>
+    <string name="errorreport_next">下一步 &gt;</string>
 
     <!-- Error Report UI: previous button (go from page 2 to page 1). -->
-    <string name="errorreport_prev">&lt; Previous</string>
+    <string name="errorreport_prev">&lt; 上一步</string>
 
     <!-- Error Report UI page 1: text above "select Program Error or Feature Request" -->
-    <string name="errorreport_user1">Please indicate the kind of issue you would like to report:</string>
+    <string name="errorreport_user1">請說明你想要報告的問題的類型：</string>
 
     <!-- Error Report UI page 1: select user feedback type, "Program Error" or Feature Request -->
-    <string name="errorreport_program_err">Program Error</string>
+    <string name="errorreport_program_err">程式錯誤</string>
 
     <!-- Error Report UI page 1: select user feedback type, Program Error or "Feature Request" -->
-    <string name="errorreport_feat_req">Feature Request</string>
+    <string name="errorreport_feat_req">功能要求</string>
 
     <!-- Error Report UI page 1: text displayed on top of user feedback EditText -->
-    <string name="errorreport_user2">To help us understand the issue, please provide some comments:</string>
+    <string name="errorreport_user2">為說明我們瞭解這個錯誤，請提供一些訊息：</string>
 
     <!-- Error Report UI page 1: text hint displayed *inside* the user feedback EditText -->
-    <string name="errorreport_user_hint">Before we can continue, please describe here your error or your feature request.</string>
+    <string name="errorreport_user_hint">在我們繼續之前，請描述一下你遇到的問題或是對功能的要求。</string>
 <!-- END - NEW TRANSLATE -->
 
     <!-- Error Report UI: sending fail because there's no mail app. -->
