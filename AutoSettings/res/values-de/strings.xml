@@ -54,7 +54,7 @@
     <!-- Context Menu - Insert new profile -->
     <string name="insert_profile">Profil einfügen</string>
     <!-- Menu & Context Menu - Add new profile -->
-    <string name="append_profile">Neues Profil hinzufügen</string>
+    <string name="append_profile">Neues Profil</string>
 
 
     <!-- === Settings / Preferences === -->
@@ -127,7 +127,7 @@
     <string name="deleteprofile_button_delete">Löschen</string>
     <string name="deleteprofile_button_cancel">Abbrechen</string>
 
-    <string name="deleteaction_title">Delete action</string>
+    <string name="deleteaction_title">Aktion löschen</string>
     <string name="deleteaction_msgbody">Möchtest du die Aktion \'%s\' wirklich löschen?</string>
     <string name="deleteaction_button_delete">Löschen</string>
     <string name="deleteaction_button_cancel">Abbrechen</string>
@@ -167,11 +167,11 @@
 
     <!-- edit profile screen -->
 
-    <string name="editprofile_title">Timeriffic - Profil bearbeiten</string>
+    <string name="editprofile_title">Profil erstellen/ändern</string>
     <string name="editprofile_profile_name">Profilname:</string>
     <string name="editprofile_profile_hint">Profilname</string>
-    <string name="editprofile_checkbox_enabled">Angeschaltet</string>
-    <string name="editprofile_button_accept">Akzeptieren</string>
+    <string name="editprofile_checkbox_enabled">Einschalten</string>
+    <string name="editprofile_button_accept">Ausführen</string>
 
     <!-- edit action screen -->
 
@@ -186,17 +186,17 @@
     <string name="setting_not_supported">Nicht ünterstüzt</string>
     <string name="setting_not_installed">Nicht installiert</string>
 
-    <string name="editaction_ringer">Klingeltonlautstärke</string>
+    <string name="editaction_ringer">Klingeltonlaut.</string>
     <string name="editaction_vibrate">Vibration</string>
     <string name="editaction_volume">Hauptlautstärke</string>
     <string name="editaction_brightness">Helligkeit</string>
     <string name="editaction_wifi">Wifi</string>
     <string name="editaction_airplane">Flugzeugmodus</string>
 <!-- BEGIN NEW TRANSLATION -->
-    <string name="editaction_media_volume">Medienlautstärke</string>
+    <string name="editaction_media_volume">Medienlaut.</string>
     <string name="editaction_alarm_volume">Alarmlautstärke</string>
 <!--  END NEW TRANSLATION -->
-    <string name="editaction_notif_volume">Benachrichtigungslautstärke</string>
+    <string name="editaction_notif_volume">Nachrichtlaut.</string>
     <string name="editaction_bluetooth">Bluetooth</string>
     <!-- APNdroid app name, not translated -->
     <string name="editaction_apndroid">APNdroid</string>
@@ -204,7 +204,7 @@
     <!-- percent dialog -->
 
     <string name="percent_do_not_change">Nicht ändern.</string>
-    <string name="percent_change_to">Volgenden Wert festlegen:</string>
+    <string name="percent_change_to">Folgenden Wert festlegen:</string>
     <string name="percent_button_unchanged">Ungeändert</string>
     <string name="percent_button_accept">Akzeptieren</string>
 
