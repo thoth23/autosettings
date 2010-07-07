@@ -89,14 +89,14 @@
     <string name="prefs_toggle_anim_tooltip">Vælg animationen af logo ikonet på profil-liste skærmen.</string>
 
 <!-- BEGIN NEW TRANSLATION -->
-    <string name="save_to_sd">Save to SD Card</string>
-    <string name="restore_from_sd">Restore from SD Card</string>
+    <string name="save_to_sd">Gem på SD Kort</string>
+    <string name="restore_from_sd">Genskab fra SD Kort</string>
     <!-- Settings - Display Notification: toggle title -->
-    <string name="prefs_display_notif_label">Display notification on profile change</string>
+    <string name="prefs_display_notif_label">Vis notifikation ved profil ændring</string>
     <!-- Settings - Display Notification: help string when on -->
-    <string name="prefs_display_notif_on">Display a notification when a profile changes</string>
+    <string name="prefs_display_notif_on">Vis notifikation når en profil ændres</string>
     <!-- Settings - Display Notification: help string when off -->
-    <string name="prefs_display_notif_off">Do not display a notification when a profile changes</string>
+    <string name="prefs_display_notif_off">Vis ikke notifikation når en profil ændres</string>
 <!--  END NEW TRANSLATION -->
 
 
@@ -166,10 +166,10 @@
     <string name="timedaction_apndroid_on">3G/2G Data Til</string>
     <string name="timedaction_apndroid_off">3G/2G Data Fra</string>
 <!-- BEGIN NEW TRANSLATION -->
-    <string name="timedaction_media_int">Media %d%%</string>
+    <string name="timedaction_media_int">Medie %d%%</string>
     <string name="timedaction_alarm_int">Alarm %d%%</string>
-    <string name="timedaction_auto_brightness">Automatic Brightness</string>
-    <string name="timedaction_automatic">Automatic</string>
+    <string name="timedaction_auto_brightness">Automatisk Lysstyrke</string>
+    <string name="timedaction_automatic">Automatisk</string>
 <!--  END NEW TRANSLATION -->
 
     <!-- edit profile screen -->
@@ -185,7 +185,7 @@
     <string name="editaction_title">Timeriffic - Rediger Tidsbestemt Handling</string>
 
     <string name="editaction_section_action">Handling</string>
-    <string name="editaction_section_time_and_day">Tid og Dag</string>
+    <string name="editaction_section_time_and_day">Tid og Dag(e)</string>
     <string name="editaction_section_days">Dage</string>
 
     <string name="editaction_button_label">  <b>@</b>\n  $</string>
@@ -201,8 +201,8 @@
     <string name="editaction_airplane">Flytilstand</string>
     <string name="editaction_notif_volume">Meddelelseslyd</string>
 <!-- BEGIN NEW TRANSLATION -->
-    <string name="editaction_media_volume">Media Volume</string>
-    <string name="editaction_alarm_volume">Alarm Volume</string>
+    <string name="editaction_media_volume">Medielydstyrke</string>
+    <string name="editaction_alarm_volume">Alarmlydstyrke</string>
 <!--  END NEW TRANSLATION -->
     <string name="editaction_bluetooth">Bluetooth</string>
     <!-- APNdroid app name, not translated -->
@@ -264,11 +264,11 @@
     <string name="checkservices_miss_bluetooh">Bluetooth</string>
     <string name="checkservices_miss_apndroid">APNDroid</string>
     <string name="checkservices_miss_ringguard">RingGuard</string>
-    <string name="checkservices_explain_why">explain why</string>
+    <string name="checkservices_explain_why">forklar hvorfor</string>
 
-    <string name="checkservices_help_bluetooh">Bluetooth control requires Android 2.0 or more.</string>
-    <string name="checkservices_help_application">To enable this feature, install the application \'%s\' from Android Market.</string>
-    <string name="install_now_button">Install Now</string>
+    <string name="checkservices_help_bluetooh">Bluetooth kontrol kræver Android 2.0 eller nyere.</string>
+    <string name="checkservices_help_application">For at aktiver denne funktion, så installer programmet \'%s\' fra Android Marked.</string>
+    <string name="install_now_button">Installer Nu</string>
 <!--  END NEW TRANSLATION -->
 
     <!-- === Error Reporting === -->
@@ -301,7 +301,7 @@
     <string name="errorreport_user_hint">Før vi kan forsætte, så beskriv venligst din fejl eller din funktions anmodning her.</string>
 
     <!-- Error Report UI: sending fail because there's no mail app. -->
-    <string name="errorreport_nomailapp">Intet Email/Gmail program blev fundet til afsendelses af beskeden. Installere venligst en som K9 fra Marked først.</string>
+    <string name="errorreport_nomailapp">Intet Email/Gmail program blev fundet til afsendelses af beskeden. Installer venligst en som K9 fra Marked først.</string>
 
     <!-- Error Report UI: header of generated email (the rest of the log is in English).
          Formatting: Spacing matters. Use "/" to insert a new line.
