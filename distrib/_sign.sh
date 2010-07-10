@@ -76,6 +76,7 @@ function update() {
 
 for i in [tTfFB]+([^_]).apk ; do
 	if [ -f "$i" ]; then
+        chmod a+r "$i"
 		[[ "${i:0:1}" == "T" ]] && update "$i"
 		process "$i"
 	fi
