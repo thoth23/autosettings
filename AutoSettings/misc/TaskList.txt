@@ -1,4 +1,24 @@
-TODO
+TODO (approximate version plan)
+
+v1.9 "SD support"
+. Migrate db to new format, keep in memory
+. Specify format to be extensible but don't add features yet. Must be sortable.
+. Write-through to text file (start..end commit changes)
+. Also store to SD
+. Menu reset profiles > revert from SD (manual)
+. Add froyo backup API for the file (using TS as in sample)
+
+. Notification on setting applied (optional)
+. Auto-brightness support (?)
+
+v1.10 "Profile UI revamp"
+. Don't auto-edit on actions
+. Selectable profile/actions
+. On select, display button bar: up/down, edit, add, remove
+
+v1.11 "Exclusion feature"
+
+v1.12 
 
 T v1.8.15 => medium update, couple features + improvements based on googlecode tickets.
 . T need to add serious functional tests + UI tests framework (to make sure things don't break when I add features)
@@ -47,14 +67,22 @@ TODO (misc)
 
 DONE for 1.9
 
+DONE for 1.8
+
+[1.8.16]
+20100702 1.8.16 in Market
+20100702 Update German translation by Laias
+20100629 For debug, display language in intro file.
+20100629 Added German translation by Laias
+20100629 Updated Chinese translation zh-TW by goapk.com
+20100622 Added Chinese translation zh-TW by goapk.com
+
 [1.8.15]
 20100620 Add "media volume" and "alarm volume" buttons and control
 20100620 Time in 24-hours vs AM/PM (not user choice, system default)
 20100620 Fix prevent invalid DateTime format from crashing SimpleDateFormat
 20100620 Fix DateTime strings for Korean
 
-
-DONE for 1.8
 
 [1.8.14]
 20100620 1.8.14 in Market
@@ -65,7 +93,7 @@ DONE for 1.8
 20100613 Make error log more compact
 
 [1.8.13]
-20100324 Add Chinese translation (中文(简体)) by Wenle Bao
+20100324 Add Chinese translation zh-CN (中文(简体)) by Wenle Bao
 
 20100314 1.8.12 in Market
 20100314 Fix: correctly support manual time changes and daylight time change.
