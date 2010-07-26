@@ -2,8 +2,7 @@
 
 set -e # fail early
 
-VERS="$1"
-[ -n "$VERS" ] && VERS="${VERS}_"
+shopt -s extglob  # extended glob pattern
 
 function die() {
   echo "Error: " $*
@@ -12,10 +11,6 @@ function die() {
   echo "Automatically sign [A-Z].apk"
   exit 1
 }
-
-[ -z "$1" ] && die
-
-shopt -s extglob  # extended glob pattern
 
 function process() {
 	SRC="$1"
@@ -52,6 +47,8 @@ function process() {
 	SIZE2=`stat -c "%s" "$DEST"`
 	
 	echo "$DEST has been signed and zipaligned (added $((SIZE2-SIZE1)) bytes)" 
+
+    svn add "$DEST"
 }
 
 function update() {
@@ -74,9 +71,33 @@ function update() {
 	fi
 }
 
-for i in [tTfFB]+([^_]).apk ; do
+APK=( [tTfFB]+([^_]).apk )
+APK="${APK}"
+if [ ! -f "$APK" ]; then
+    die "Failed to find an APK to sign"
+fi
+
+VERS="$1"
+if [ -z "$VERS" ]; then
+    # Try to use AAPT on first APK to guess the version number
+    AAPT=( ~/sdk/platforms/*/tools/aapt.exe )
+    AAPT="${AAPT}"  # convert first's array value into its own value
+    if [ ! -x "$AAPT" ]; then
+        die "Failed to find aapt.exe"
+    fi
+    
+    VERS=`"$AAPT" dump badging "$APK" | grep versionName | sed "s/.*versionName='\(.*\)'/\1/g"`
+    [ -n "$VERS" ] && VERS="v${VERS}"
+    echo "Found version $VERS"
+fi
+
+[ -n "$VERS" ] && VERS="${VERS}_"
+
+[ -z "$VERS" ] && die "Missing version number"
+
+for i in "$APK" ; do
 	if [ -f "$i" ]; then
-        chmod a+r "$i"
+        ##--chmod a+r "$i"
 		[[ "${i:0:1}" == "T" ]] && update "$i"
 		process "$i"
 	fi
