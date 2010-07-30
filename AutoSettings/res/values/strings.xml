@@ -88,7 +88,6 @@
     <!-- Settings - Animation of the toggle button logo: help string -->
     <string name="prefs_toggle_anim_tooltip">Select the animation of the toggle icon in the profile list screen.</string>
 
-<!-- BEGIN NEW TRANSLATION -->
     <string name="save_to_sd">Save to SD Card</string>
     <string name="restore_from_sd">Restore from SD Card</string>
     <!-- Settings - Display Notification: toggle title -->
@@ -97,7 +96,6 @@
     <string name="prefs_display_notif_on">Display a notification when a profile changes</string>
     <!-- Settings - Display Notification: help string when off -->
     <string name="prefs_display_notif_off">Do not display a notification when a profile changes</string>
-<!--  END NEW TRANSLATION -->
 
 
     <!-- === Intro screen === -->
@@ -147,7 +145,7 @@
          Date and Time section at
            http://java.sun.com/j2se/1.5.0/docs/api/java/util/Formatter.html
          Summary:
-           tk=hour 0-23, tl=hour 1-12, tp=am/om, tM=minutes 00-59
+           tk=hour 0-23, tl=hour 1-12, tp=am/pm, tM=minutes 00-59
      -->
     <!-- display time on exact hour -->
     <string name="timedaction_time_0_minute">%1$tk:%1$tM</string>
@@ -165,12 +163,22 @@
     <string name="timedaction_brightness_int">Brightness %d%%</string>
     <string name="timedaction_apndroid_on">3G/2G Data On</string>
     <string name="timedaction_apndroid_off">3G/2G Data Off</string>
-<!-- BEGIN NEW TRANSLATION -->
     <string name="timedaction_media_int">Media %d%%</string>
     <string name="timedaction_alarm_int">Alarm %d%%</string>
     <string name="timedaction_auto_brightness">Automatic Brightness</string>
     <string name="timedaction_automatic">Automatic</string>
-<!--  END NEW TRANSLATION -->
+
+<!-- BEGIN NEW TRANSLATE -->
+    <!-- Short description in the action list indicating that notification
+         volume uses the ring volume. -->
+    <string name="timedaction_notif_ring_sync">Notification uses ring vol.</string>
+    <!-- Radio-button in the Action>Edit>Notif Vol dialog that indicates whether
+         notification volume uses the ring volume. -->
+    <string name="editaction_notif_ring_sync">Notification uses ring volume.</string>
+    <!-- String displayed in the 2nd line of the Action>Edit>Notif Vol button
+         indicating that notification volume uses the ring volume. Must be really short. -->
+    <string name="actionlabel_notif_ring_sync">Uses ring volume</string>
+<!-- END NEW TRANSLATE -->
 
     <!-- edit profile screen -->
 
@@ -199,10 +207,8 @@
     <string name="editaction_brightness">Brightness</string>
     <string name="editaction_wifi">Wifi</string>
     <string name="editaction_airplane">Airplane Mode</string>
-<!-- BEGIN NEW TRANSLATION -->
     <string name="editaction_media_volume">Media Volume</string>
     <string name="editaction_alarm_volume">Alarm Volume</string>
-<!--  END NEW TRANSLATION -->
     <string name="editaction_notif_volume">Notification Vol.</string>
     <string name="editaction_bluetooth">Bluetooth</string>
     <!-- APNdroid app name, not translated -->
@@ -260,7 +266,6 @@
     <string name="checkservices_miss_wifi_service">Wifi toggle</string>
     <string name="checkservices_miss_airplane">Airplane mode</string>
     <string name="checkservices_miss_brightness">Brightness</string>
-<!-- BEGIN NEW TRANSLATION -->
     <string name="checkservices_miss_bluetooh">Bluetooth</string>
     <string name="checkservices_miss_apndroid">APNDroid</string>
     <string name="checkservices_miss_ringguard">RingGuard</string>
@@ -269,7 +274,6 @@
     <string name="checkservices_help_bluetooh">Bluetooth control requires Android 2.0 or more.</string>
     <string name="checkservices_help_application">To enable this feature, install the application \'%s\' from Android Market.</string>
     <string name="install_now_button">Install Now</string>
-<!--  END NEW TRANSLATION -->
 
     <!-- === Error Reporting === -->
 
@@ -299,6 +303,9 @@
 
     <!-- Error Report UI page 1: text hint displayed *inside* the user feedback EditText -->
     <string name="errorreport_user_hint">Before we can continue, please describe here your error or your feature request.</string>
+
+    <!-- Error Report UI page 1: text hint part 2 is "please write in English". DO NOT TRANSLATE -->
+    <string name="errorreport_user_hint_english">(Please write the comment in English if possible.)</string>
 
     <!-- Error Report UI: sending fail because there's no mail app. -->
     <string name="errorreport_nomailapp">No Email/Gmail app found to send the message. Please install one such as K9 from Market first.</string>

@@ -34,10 +34,10 @@
     <item>Pas d\'animation</item>
 
     <!-- Global toggle is animated with a slow pulse animation. -->
-    <item>Pulsation lente</item>
+    <item>Animation lente</item>
 
     <!-- Global toggle is animated with a slow pulse animation. -->
-    <item>Pulsation rapide</item>
+    <item>Animation rapide</item>
 </string-array>
 
 </resources>
