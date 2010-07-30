@@ -146,12 +146,20 @@
     <string name="timedaction_brightness_int">Luminosité %d%%</string>
     <string name="timedaction_apndroid_on">Data 3G/2G activé</string>
     <string name="timedaction_apndroid_off">Data 3G/2G désactivé</string>
-<!-- BEGIN NEW TRANSLATION -->
     <string name="timedaction_media_int">Media %d%%</string>
-    <string name="timedaction_alarm_int">Alarm %d%%</string>
-    <string name="timedaction_auto_brightness">Automatic Brightness</string>
-    <string name="timedaction_automatic">Automatic</string>
-<!--  END NEW TRANSLATION -->
+    <string name="timedaction_alarm_int">Alarme %d%%</string>
+    <string name="timedaction_auto_brightness">Luminosité automatique</string>
+    <string name="timedaction_automatic">Automatique</string>
+
+    <!-- Short description in the action list indicating that notification
+         volume uses the ring volume. -->
+    <string name="timedaction_notif_ring_sync">Vol. notif. comme sonnerie</string>
+    <!-- Radio-button in the Action>Edit>Notif Vol dialog that indicates whether
+         notification volume uses the ring volume. -->
+    <string name="editaction_notif_ring_sync">Notifications utilisent le volume de la sonnerie.</string>
+    <!-- String displayed in the 2nd line of the Action>Edit>Notif Vol button
+         indicating that notification volume uses the ring volume. Must be really short. -->
+    <string name="actionlabel_notif_ring_sync">Vol. sonnerie</string>
 
     <string name="ringermode_ring">Sonner</string>
     <string name="ringermode_mute">Silence</string>
@@ -182,15 +190,13 @@
 
     <string name="editaction_ringer">Sonnerie</string>
     <string name="editaction_vibrate">Vibreur</string>
-    <string name="editaction_volume">Volume</string>
+    <string name="editaction_volume">Volume sonnerie</string>
     <string name="editaction_brightness">Luminosité</string>
     <string name="editaction_wifi">Wi-Fi</string>
     <string name="editaction_airplane">Mode avion</string>
-    <string name="editaction_notif_volume">Vol. Notification</string>
-<!-- BEGIN NEW TRANSLATION -->
-    <string name="editaction_media_volume">Media Vol.</string>
-    <string name="editaction_alarm_volume">Alarm Vol.</string>
-<!--  END NEW TRANSLATION -->
+    <string name="editaction_notif_volume">Vol. notification</string>
+    <string name="editaction_media_volume">Volume média</string>
+    <string name="editaction_alarm_volume">Volume alarme</string>
     <string name="editaction_bluetooth">Bluetooth</string>
 
     <!-- percent dialog -->
@@ -234,16 +240,14 @@
     <string name="checkservices_miss_wifi_service">Etat de la Wi-Fi</string>
     <string name="checkservices_miss_airplane">Mode avion</string>
     <string name="checkservices_miss_brightness">Luminosité</string>
-<!-- BEGIN NEW TRANSLATION -->
     <string name="checkservices_miss_bluetooh">Bluetooth</string>
     <string name="checkservices_miss_apndroid">APNDroid</string>
     <string name="checkservices_miss_ringguard">RingGuard</string>
-    <string name="checkservices_explain_why">explain why</string>
+    <string name="checkservices_explain_why">Expliquer</string>
 
-    <string name="checkservices_help_bluetooh">Bluetooth control requires Android 2.0 or more.</string>
-    <string name="checkservices_help_application">To enable this feature, install the application \'%s\' from Android Market.</string>
-    <string name="install_now_button">Install Now</string>
-<!--  END NEW TRANSLATION -->
+    <string name="checkservices_help_bluetooh">Bluetooth control requiert Android 2.0 ou plus.</string>
+    <string name="checkservices_help_application">Pour activer cette fonction, installez l\'application \'%s\' depuis Android Market.</string>
+    <string name="install_now_button">Installer maintenant</string>
 
     <!-- === Error Reporting === -->
 
