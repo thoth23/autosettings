@@ -24,31 +24,31 @@ import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
+import com.alfray.timeriffic.ERUI;
+import com.alfray.timeriffic.IA;
+import com.alfray.timeriffic.PA;
+import com.alfray.timeriffic.PUI;
+import com.alfray.timeriffic.PV;
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.app.IntroActivity;
-import com.alfray.timeriffic.app.TimerifficApp;
-import com.alfray.timeriffic.error.ErrorReporterUI;
-import com.alfray.timeriffic.prefs.PrefsActivity;
-import com.alfray.timeriffic.prefs.PrefsValues;
-import com.alfray.timeriffic.profiles.ProfilesUI;
+import com.alfray.timeriffic.TA;
 
 //-----------------------------------------------
 
-public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI> {
+public class PUIT extends ActivityInstrumentationTestCase2<PUI> {
 
-    private static final String TAG = "ProfilesUiTest";
+    private static final String TAG = "PUIT";
 
-    private TimerifficApp mApplication;
-    private PrefsValues mPV;
+    private TA mApplication;
+    private PV mPV;
 
-    public ProfilesUiTest() {
-        super(ProfilesUI.class.getPackage().getName(), ProfilesUI.class);
+    public PUIT() {
+        super(PUI.class.getPackage().getName(), PUI.class);
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        startApplication(false /* show auto-intro */);
+        sa(false /* show auto-intro */);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
         super.tearDown();
     }
 
-    private TimerifficApp startApplication(boolean showAutoIntro) {
+    private TA sa(boolean showAutoIntro) {
 
         if (mApplication != null) {
             Log.d(TAG, String.format("Reuse application: %s=%s",
@@ -73,8 +73,8 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
         if (mApplication == null) {
             Context ac = getInstrumentation().getTargetContext().getApplicationContext();
 
-            if (ac instanceof TimerifficApp) {
-                mApplication = (TimerifficApp) ac;
+            if (ac instanceof TA) {
+                mApplication = (TA) ac;
                 Log.d(TAG, String.format("Reuse context application: %s=%s",
                         mApplication.getClass().getSimpleName(),
                         mApplication.toString()));
@@ -84,8 +84,8 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
 
         try {
             if (mApplication == null) {
-                mApplication = (TimerifficApp) Instrumentation.newApplication(
-                                TimerifficApp.class,
+                mApplication = (TA) Instrumentation.newApplication(
+                        TA.class,
                                 getInstrumentation().getTargetContext());
                 Log.d(TAG, String.format("Start application: %s=%s",
                         mApplication.getClass().getSimpleName(),
@@ -100,8 +100,8 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
         // always reset is-first-start
         mApplication.setFirstStart(true);
 
-        // disable auto-start of IntroActivity, activated as needed below.
-        mPV = new PrefsValues(mApplication);
+        // disable auto-start of IA, activated as needed below.
+        mPV = new PV(mApplication);
         mPV.setIntroDismissed(!showAutoIntro);
 
         return mApplication;
@@ -109,17 +109,16 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
 
     // ------------
 
-    /** Starts the activity from cold, with no auto-intro. */
-    public void testCold_NoIntro() throws Exception {
+    public void tc_noi() throws Exception {
 
         ActivityMonitor monitor = new ActivityMonitor(
-                IntroActivity.class.getName(),
+                IA.class.getName(),
                 null, // result
                 true); // block
         getInstrumentation().addMonitor(monitor);
         assertEquals(0, monitor.getHits());
 
-        ProfilesUI a = getActivity();
+        PUI a = getActivity();
         assertNotNull(a);
 
         getInstrumentation().waitForIdleSync();
@@ -128,18 +127,18 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
     }
 
     /** Starts the activity from cold, with auto-intro. */
-    public void testCold_WithIntro() throws Exception {
+    public void tc_wi() throws Exception {
 
-        startApplication(true /* show auto-intro */);
+        sa(true /* show auto-intro */);
 
         ActivityMonitor monitor = new ActivityMonitor(
-                IntroActivity.class.getName(),
+                IA.class.getName(),
                 null, // result
                 true); // block
         getInstrumentation().addMonitor(monitor);
         assertEquals(0, monitor.getHits());
 
-        ProfilesUI a = getActivity();
+        PUI a = getActivity();
         assertNotNull(a);
 
         getInstrumentation().waitForIdleSync();
@@ -150,23 +149,23 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
     /** Starting the application changes its isFirstStart flag. */
     public void testIntro_IsFirstStart() throws Exception {
 
-        TimerifficApp app = startApplication(false);
+        TA app = sa(false);
         app.setFirstStart(true);
 
         // onCreate will check app.isFirstStart and set it to false
-        ProfilesUI a = getActivity();
+        PUI a = getActivity();
         assertNotNull(a);
 
         assertTrue(app.isFirstStart());
     }
 
-    /** Menu>About/Help starts the IntroActivity. */
+    /** Menu>About/Help starts the IA. */
     public void testMenu_Help() throws Exception {
-        ProfilesUI a = getActivity();
+        PUI a = getActivity();
         assertNotNull(a);
 
         ActivityMonitor monitor = new ActivityMonitor(
-                        IntroActivity.class.getName(),
+                        IA.class.getName(),
                         null, // result
                         true); // block
         getInstrumentation().addMonitor(monitor);
@@ -181,11 +180,11 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
 
     /** Menu>Settings starts the PrefsActivity. */
     public void testMenu_Settings() throws Exception {
-        ProfilesUI a = getActivity();
+        PUI a = getActivity();
         assertNotNull(a);
 
         ActivityMonitor monitor = new ActivityMonitor(
-                        PrefsActivity.class.getName(),
+                        PA.class.getName(),
                         null, // result
                         true); // block
         getInstrumentation().addMonitor(monitor);
@@ -197,10 +196,10 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
         assertEquals(1, monitor.getHits());
     }
 
-    /** Menu>About starts the IntroActivity. */
+    /** Menu>About starts the IA. */
     public void testMenu_ShowIntro() throws Exception {
         ActivityMonitor monitor = new ActivityMonitor(
-                        IntroActivity.class.getName(),
+                IA.class.getName(),
                         null, // result
                         true); // block
         getInstrumentation().addMonitor(monitor);
@@ -208,7 +207,7 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
 
         getInstrumentation().addMonitor(monitor);
 
-        ProfilesUI a = getActivity();
+        PUI a = getActivity();
         assertNotNull(a);
 
         boolean ok = getInstrumentation().invokeMenuActionSync(a, R.string.about, 0);
@@ -221,7 +220,7 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
     /** Menu>ErroReport starts the ErrorReportActivity. */
     public void testMenu_ErrorReport() throws Exception {
         ActivityMonitor monitor = new ActivityMonitor(
-                        ErrorReporterUI.class.getName(),
+                        ERUI.class.getName(),
                         null, // result
                         true); // block
         getInstrumentation().addMonitor(monitor);
@@ -229,7 +228,7 @@ public class ProfilesUiTest extends ActivityInstrumentationTestCase2<ProfilesUI>
 
         getInstrumentation().addMonitor(monitor);
 
-        ProfilesUI a = getActivity();
+        PUI a = getActivity();
         assertNotNull(a);
 
         boolean ok = getInstrumentation().invokeMenuActionSync(a, R.string.report_error, 0);

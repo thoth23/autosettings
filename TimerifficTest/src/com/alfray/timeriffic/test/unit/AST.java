@@ -12,16 +12,16 @@ package com.alfray.timeriffic.test.unit;
 import android.content.Context;
 import android.test.AndroidTestCase;
 
-import com.alfray.timeriffic.app.ApplySettings;
-import com.alfray.timeriffic.prefs.PrefsValues;
+import com.alfray.timeriffic.AS;
+import com.alfray.timeriffic.PV;
 
-public class ApplySettingsTest extends AndroidTestCase {
+public class AST extends AndroidTestCase {
 
-    private static class MockApplySettings extends ApplySettings {
+    private static class MockAS extends AS {
 
-        private final PrefsValues _mPrefs;
+        private final PV _mPrefs;
 
-        public MockApplySettings(Context context, PrefsValues prefs) {
+        public MockAS(Context context, PV prefs) {
             super(context, prefs);
             _mPrefs = prefs;
         }
@@ -35,16 +35,16 @@ public class ApplySettingsTest extends AndroidTestCase {
         }
     }
 
-    private MockApplySettings m;
-    private PrefsValues mPrefs;
+    private MockAS m;
+    private PV mPrefs;
 
     @Override
     protected void setUp() throws Exception {
-        mPrefs = new PrefsValues(getContext());
+        mPrefs = new PV(getContext());
         // make sure to clear the strings we'll be testing
         mPrefs.setLastActions(null);
 
-        m = new MockApplySettings(getContext(), mPrefs);
+        m = new MockAS(getContext(), mPrefs);
         super.setUp();
     }
 
@@ -57,8 +57,8 @@ public class ApplySettingsTest extends AndroidTestCase {
     public void testAddToDebugLog_set() throws Exception {
         String time = "12:34";
         String actions = "A0,B12,31145";
-        String expected = time + MockApplySettings._SEP_START +
-                          actions + MockApplySettings._SEP_END;
+        String expected = time + MockAS._SEP_START +
+                          actions + MockAS._SEP_END;
 
         String result = m._addToDebugLog(time, actions);
 
@@ -70,8 +70,8 @@ public class ApplySettingsTest extends AndroidTestCase {
         String actions = "1234567890";
         actions = actions + actions + actions + actions + actions + actions + actions + actions;
         actions = actions + actions + actions + actions + actions + actions + actions + actions;
-        String expected = time + MockApplySettings._SEP_START +
-                          actions + MockApplySettings._SEP_END;
+        String expected = time + MockAS._SEP_START +
+                          actions + MockAS._SEP_END;
         int len = expected.length();
         int limit = 4096;
 
@@ -97,8 +97,8 @@ public class ApplySettingsTest extends AndroidTestCase {
         while (actions2.length() < limit) {
             actions2 += actions;
         }
-        String expected2 = time2 + MockApplySettings._SEP_START +
-                           actions2 + MockApplySettings._SEP_END;
+        String expected2 = time2 + MockAS._SEP_START +
+                           actions2 + MockAS._SEP_END;
 
         assertFalse(result.startsWith(expected2));
 

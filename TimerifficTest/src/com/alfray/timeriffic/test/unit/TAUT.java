@@ -11,28 +11,28 @@ package com.alfray.timeriffic.test.unit;
 
 import java.util.Locale;
 
-import com.alfray.timeriffic.actions.TimedActionUtils;
-
 import junit.framework.TestCase;
 
-public class TimedActionUtilsTest extends TestCase {
+import com.alfray.timeriffic.TAU;
 
-    private static class MockTimedActionUtils extends TimedActionUtils {
+public class TAUT extends TestCase {
+
+    private static class MockTAU extends TAU {
 
         public String[] _getDaysNames() {
-            TimedActionUtils.sDaysNames = null;
-            return TimedActionUtils.getDaysNames();
+            TAU.sDaysNames = null;
+            return TAU.getDaysNames();
         }
 
     }
 
-    private MockTimedActionUtils m;
+    private MockTAU m;
     private Locale mDefaultLocale;
 
     @Override
     protected void setUp() throws Exception {
         mDefaultLocale = Locale.getDefault();
-        m = new MockTimedActionUtils();
+        m = new MockTAU();
         super.setUp();
     }
 
