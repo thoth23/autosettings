@@ -114,7 +114,7 @@ public class SH {
         return false;
     }
 
-    public enum RingerMode {
+    public enum _RM {
         /** Normal ringer: actually rings. */
         RING,
         /** Muted ringed. */
@@ -132,7 +132,7 @@ public class SH {
         }
     }
 
-    public enum VibrateRingerMode {
+    public enum _VRM {
         /** Vibrate is on (Ringer & Notification) */
         VIBRATE,
         /** Vibrate is off, both ringer & notif */
@@ -195,7 +195,7 @@ public class SH {
         }
     }
 
-    public void changeRingerVibrate(RingerMode ringer, VibrateRingerMode vib) {
+    public void changeRingerVibrate(_RM ringer, _VRM vib) {
         AudioManager manager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
         if (manager == null) {
@@ -259,7 +259,7 @@ public class SH {
                     break;
                 case MUTE:
 
-                    if (vib != null && vib == VibrateRingerMode.VIBRATE) {
+                    if (vib != null && vib == _VRM.VIBRATE) {
                         broadcastVolumeUpdate(AudioManager.STREAM_RING,
                                 0, AudioManager.RINGER_MODE_VIBRATE);
                         manager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);

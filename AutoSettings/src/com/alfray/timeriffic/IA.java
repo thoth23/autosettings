@@ -132,7 +132,7 @@ public class IA extends EHA {
 
         mAW = new AW();
         mAW.start(this);
-        mAW.event(AW.Event.OpenIntroUI);
+        mAW._E(AW._E.OpenIntroUI);
     }
 
     @Override

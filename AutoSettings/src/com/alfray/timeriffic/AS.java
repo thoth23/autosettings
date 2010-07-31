@@ -32,9 +32,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.PDB.ActionInfo;
-import com.alfray.timeriffic.SH.RingerMode;
-import com.alfray.timeriffic.SH.VibrateRingerMode;
+import com.alfray.timeriffic.PDB._AI;
+import com.alfray.timeriffic.SH._RM;
+import com.alfray.timeriffic.SH._VRM;
 
 
 public class AS {
@@ -95,22 +95,22 @@ public class AS {
                 int day = TAU.calendarDayToActionDay(c);
 
                 if (applyState) {
-                    ActionInfo[] actions =
+                    _AI[] actions =
                         profilesDb.getWeekActivableActions(hourMin, day, prof_indexes);
 
                     if (actions != null && actions.length > 0) {
                         performActions(actions);
-                        profilesDb.markActionsEnabled(actions, C.ACTION_MARK_PREV);
+                        profilesDb.markActionsEnabled(actions, C.AMkP);
                     }
                 }
 
                 // Compute next event and set an alarm for it
-                ActionInfo[] nextActions = new ActionInfo[] { null };
+                _AI[] nextActions = new _AI[] { null };
                 int nextEventMin = profilesDb.getWeekNextEvent(hourMin, day, prof_indexes, nextActions);
                 if (nextEventMin > 0) {
                     scheduleAlarm(c, nextEventMin, nextActions[0], displayToast);
                     if (applyState) {
-                        profilesDb.markActionsEnabled(nextActions, C.ACTION_MARK_NEXT);
+                        profilesDb.markActionsEnabled(nextActions, C.AMkN);
                     }
                 }
             }
@@ -123,13 +123,13 @@ public class AS {
         }
     }
 
-    private void performActions(ActionInfo[] actions) {
+    private void performActions(_AI[] actions) {
 
         String logActions = null;
         String lastAction = null;
         SH settings = null;
 
-        for (ActionInfo info : actions) {
+        for (_AI info : actions) {
             try {
                 if (settings == null) settings = new SH(mContext);
 
@@ -173,8 +173,8 @@ public class AS {
         if (actions == null) return false;
         boolean didSomething = false;
 
-        RingerMode ringerMode = null;
-        VibrateRingerMode vibRingerMode = null;
+        _RM _RM = null;
+        _VRM vibRingerMode = null;
 
         for (String action : actions.split(",")) {
             int value = -1;
@@ -183,16 +183,16 @@ public class AS {
                 char v = action.charAt(1);
 
                 switch(code) {
-                case C.ACTION_RINGER:
-                    for (RingerMode mode : RingerMode.values()) {
+                case C.AR:
+                    for (_RM mode : _RM.values()) {
                         if (mode.getActionLetter() == v) {
-                            ringerMode = mode;
+                            _RM = mode;
                             break;
                         }
                     }
                     break;
-                case C.ACTION_VIBRATE:
-                    for (VibrateRingerMode mode : VibrateRingerMode.values()) {
+                case C.AV:
+                    for (_VRM mode : _VRM.values()) {
                         if (mode.getActionLetter() == v) {
                             vibRingerMode = mode;
                             break;
@@ -204,39 +204,39 @@ public class AS {
                         value = Integer.parseInt(action.substring(1));
 
                         switch(code) {
-                        case C.ACTION_BRIGHTNESS:
+                        case C.ABR:
                             settings.changeBrightness(value, true /*persist*/);
                             didSomething = true;
                             break;
-                        case C.ACTION_RING_VOLUME:
+                        case C.ARV:
                             settings.changeRingerVolume(value);
                             didSomething = true;
                             break;
-                        case C.ACTION_NOTIF_VOLUME:
+                        case C.ANV:
                             settings.changeNotificationVolume(value);
                             didSomething = true;
                             break;
-                        case C.ACTION_MEDIA_VOLUME:
+                        case C.AMV:
                             settings.changeMediaVolume(value);
                             didSomething = true;
                             break;
-                        case C.ACTION_ALARM_VOLUME:
+                        case C.AAV:
                             settings.changeAlarmVolume(value);
                             didSomething = true;
                             break;
-                        case C.ACTION_WIFI:
+                        case C.AW:
                             settings.changeWifi(value > 0);
                             didSomething = true;
                             break;
-                        case C.ACTION_AIRPLANE:
+                        case C.AA:
                             settings.changeAirplaneMode(value > 0);
                             didSomething = true;
                             break;
-                        case C.ACTION_BLUETOOTH:
+                        case C.ABT:
                             settings.changeBluetooh(value > 0);
                             didSomething = true;
                             break;
-                        case C.ACTION_APN_DROID:
+                        case C.AAD:
                             settings.changeApnDroid(value > 0);
                             didSomething = true;
                             break;
@@ -249,9 +249,9 @@ public class AS {
             }
         }
 
-        if (ringerMode != null || vibRingerMode != null) {
+        if (_RM != null || vibRingerMode != null) {
             didSomething = true;
-            settings.changeRingerVibrate(ringerMode, vibRingerMode);
+            settings.changeRingerVibrate(_RM, vibRingerMode);
         }
 
         return didSomething;
@@ -278,7 +278,7 @@ public class AS {
     private void scheduleAlarm(
             Calendar now,
             int nextEventMin,
-            ActionInfo nextActions,
+            _AI nextActions,
             int displayToast) {
         AlarmManager manager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
 

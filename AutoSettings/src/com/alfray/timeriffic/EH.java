@@ -46,7 +46,7 @@ public class EH {
     public static final String SEP_END = "} /*end*/ \n";
 
     private Context mAppContext;
-    private Handler mHandler;
+    private _H m_H;
 
     private static DateFormat sDateFormat;
 
@@ -91,27 +91,27 @@ public class EH {
         // We only set our handler if there's no current handler or it is
         // not our -- we don't override our own handler.
         UncaughtExceptionHandler h = Thread.currentThread().getUncaughtExceptionHandler();
-        if (h == null || !(h instanceof Handler)) {
+        if (h == null || !(h instanceof _H)) {
             mAppContext = context.getApplicationContext();
-            mHandler = new Handler(h);
-            Thread.currentThread().setUncaughtExceptionHandler(mHandler);
+            m_H = new _H(h);
+            Thread.currentThread().setUncaughtExceptionHandler(m_H);
 
         }
     }
 
     public void detach() {
         if (mAppContext != null) {
-            Thread.currentThread().setUncaughtExceptionHandler(mHandler.getOldHanlder());
-            mHandler = null;
+            Thread.currentThread().setUncaughtExceptionHandler(m_H.getOldHanlder());
+            m_H = null;
             mAppContext = null;
         }
     }
 
-    private class Handler implements Thread.UncaughtExceptionHandler {
+    private class _H implements Thread.UncaughtExceptionHandler {
 
         private final UncaughtExceptionHandler mOldHanlder;
 
-        public Handler(UncaughtExceptionHandler oldHanlder) {
+        public _H(UncaughtExceptionHandler oldHanlder) {
             mOldHanlder = oldHanlder;
         }
 
@@ -135,8 +135,8 @@ public class EH {
             try {
                 // chain the calls to any previous handler that is not one of ours
                 UncaughtExceptionHandler h = mOldHanlder;
-                while (h != null && h instanceof Handler) {
-                    h = ((Handler) h).getOldHanlder();
+                while (h != null && h instanceof _H) {
+                    h = ((_H) h).getOldHanlder();
                 }
                 if (h != null) {
                     mOldHanlder.uncaughtException(t, e);

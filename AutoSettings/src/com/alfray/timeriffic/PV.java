@@ -39,7 +39,7 @@ import android.util.Log;
  *    try {
  *      mPrefs.editXyz(e, value);
  *    } finally {
- *      mPrefs.endEdit(e, TAG);
+ *      mPrefs.endEdit(e, __T);
  *    }
  *  }
  * </pre>
@@ -192,20 +192,20 @@ public class PV {
         }
     }
 
-    public enum GlobalToggleAnimMode {
+    public enum GTAM {
         NO_ANIM,
         SLOW,
         FAST
     }
 
-    public GlobalToggleAnimMode getGlobalToggleAnim() {
+    public GTAM getGlobalToggleAnim() {
         // "fast" is the default
         String s = mPrefs.getString("globaltoggle_anim", "fast");
         if ("no_anim".equals(s)) {
-            return GlobalToggleAnimMode.NO_ANIM;
+            return GTAM.NO_ANIM;
         } else if ("slow".equals(s)) {
-            return GlobalToggleAnimMode.SLOW;
+            return GTAM.SLOW;
         }
-        return GlobalToggleAnimMode.FAST;
+        return GTAM.FAST;
     }
 }

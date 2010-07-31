@@ -26,7 +26,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.PUI.ColIndexes;
+import com.alfray.timeriffic.PUI._CI;
 
 
 /**
@@ -46,12 +46,12 @@ import com.alfray.timeriffic.PUI.ColIndexes;
 class PCA extends CursorAdapter {
 
     /** View type is a profile header. */
-    private final static int TYPE_PROFILE = 0;
+    private final static int _TP = 0;
     /** View type is a timed action item. */
-    private final static int TYPE_TIMED_ACTION = 1;
+    private final static int _TTA = 1;
 
     private final LayoutInflater mLayoutInflater;
-    private final ColIndexes mColIndexes;
+    private final _CI m_CI;
     private final PUI mActivity;
 
     /**
@@ -59,11 +59,11 @@ class PCA extends CursorAdapter {
      * and context.
      */
     public PCA(PUI activity,
-            ColIndexes colIndexes,
+            _CI _CI,
             LayoutInflater layoutInflater) {
-        super(activity, activity.getCursor());
+        super(activity, activity.c());
         mActivity = activity;
-        mColIndexes = colIndexes;
+        m_CI = _CI;
         mLayoutInflater = layoutInflater;
     }
 
@@ -92,18 +92,18 @@ class PCA extends CursorAdapter {
     }
 
     /**
-     * View types served are either {@link #TYPE_PROFILE} or
-     * {@link #TYPE_TIMED_ACTION}. This is based on the value of
-     * {@link C#TYPE} in the cursor.
+     * View types served are either {@link #_TP} or
+     * {@link #_TTA}. This is based on the value of
+     * {@link C#T} in the cursor.
      */
     @Override
     public int getItemViewType(int position) {
         Cursor c = (Cursor) getItem(position);
-        int type = c.getInt(mColIndexes.mTypeColIndex);
-        if (type == C.TYPE_IS_PROFILE)
-            return TYPE_PROFILE;
-        if (type == C.TYPE_IS_TIMED_ACTION)
-            return TYPE_TIMED_ACTION;
+        int type = c.getInt(m_CI.mTCi);
+        if (type == C.TiP)
+            return _TP;
+        if (type == C.TiTA)
+            return _TTA;
 
         return IGNORE_ITEM_VIEW_TYPE;
     }
@@ -111,7 +111,7 @@ class PCA extends CursorAdapter {
     // ---
 
     /**
-     * Depending on the value of {@link C#TYPE} in the cursor,
+     * Depending on the value of {@link C#T} in the cursor,
      * this inflates either a profile_header or a timed_action resource.
      * <p/>
      * It then associates the tag with a new {@link PHH}
@@ -125,17 +125,17 @@ class PCA extends CursorAdapter {
         View v = null;
         BH h = null;
 
-        int type = cursor.getInt(mColIndexes.mTypeColIndex);
-        if (type == C.TYPE_IS_PROFILE) {
+        int type = cursor.getInt(m_CI.mTCi);
+        if (type == C.TiP) {
             v = mLayoutInflater.inflate(R.layout.profile_header, null);
             h = new PHH(mActivity, v);
-        } else if (type == C.TYPE_IS_TIMED_ACTION) {
+        } else if (type == C.TiTA) {
             v = mLayoutInflater.inflate(R.layout.timed_action, null);
             h = new TAH(mActivity, v);
         }
         if (v != null) {
             v.setTag(h);
-            h.setUiData();
+            h._uid();
         }
         return v;
     }
@@ -147,11 +147,11 @@ class PCA extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-        int type = cursor.getInt(mColIndexes.mTypeColIndex);
-        if (type == C.TYPE_IS_PROFILE ||
-                type == C.TYPE_IS_TIMED_ACTION) {
+        int type = cursor.getInt(m_CI.mTCi);
+        if (type == C.TiP ||
+                type == C.TiTA) {
             BH h = (BH) view.getTag();
-            h.setUiData();
+            h._uid();
         }
     }
 }
