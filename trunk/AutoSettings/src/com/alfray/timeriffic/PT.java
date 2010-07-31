@@ -72,17 +72,17 @@ class PT extends PE {
             off = uiStrings[1];
         }
 
-        Choice c1 = new Choice(
+        _C c1 = new _C(
                 '1',
                 on,
                 ID_DOT_STATE_ON);
-        Choice c0 = new Choice(
+        _C c0 = new _C(
                 '0',
                 off,
                 ID_DOT_STATE_OFF);
 
-        mChoices.add(c1);
-        mChoices.add(c0);
+        m_Cs.add(c1);
+        m_Cs.add(c0);
 
         String currentValue = getActionValue(actions, prefix);
 

@@ -35,7 +35,7 @@ public class AW {
     private static Class<?> mAgentClazz;
     private static String mK;
 
-    public enum Event {
+    public enum _E {
         OpenProfileUI,
         OpenTimeActionUI,
         OpenIntroUI,
@@ -98,11 +98,11 @@ public class AW {
         }
     }
 
-    public void event(Event event) {
+    public void _E(_E _E) {
         if (mAgentClazz != null) {
             try {
                 Method m = mAgentClazz.getMethod("onEvent", new Class<?>[] { String.class });
-                m.invoke(null, new Object[] { event.toString() });
+                m.invoke(null, new Object[] { _E.toString() });
             } catch (Exception e) {
                 // ignore silently
             }

@@ -36,11 +36,11 @@ public class PPD extends AlertDialog
     private final PP mPP;
     private SeekBar mSeekBar;
     private TextView mPercentLabel;
-    private Accessor mAccessor;
+    private _A m_A;
     private RadioButton mRadioNoChange;
     private RadioButton mRadioChange;
 
-    public interface Accessor {
+    public interface _A {
         public int getPercent();
         public void changePercent(int percent);
     }
@@ -55,8 +55,8 @@ public class PPD extends AlertDialog
         View content = getLayoutInflater().inflate(R.layout.percent_alert, null/* root */);
         setView(content);
 
-        mAccessor = mPP.getAccessor();
-        mInitialValue = mAccessor == null ? -1 : mAccessor.getPercent();
+        m_A = mPP.getAccessor();
+        mInitialValue = m_A == null ? -1 : m_A.getPercent();
 
         mRadioNoChange = (RadioButton) content.findViewById(R.id.radio_nochange);
         mRadioNoChange.setOnClickListener(this);
@@ -76,7 +76,7 @@ public class PPD extends AlertDialog
         // set initial value
         int percent = mPP.getCurrentValue();
         if (percent >= 0) {
-            if (mAccessor != null) mAccessor.changePercent(percent);
+            if (m_A != null) m_A.changePercent(percent);
             mRadioChange.setChecked(true);
             mRadioNoChange.setChecked(false);
             mSeekBar.setProgress(percent);
@@ -98,7 +98,7 @@ public class PPD extends AlertDialog
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        if (mAccessor != null) mAccessor.changePercent(mInitialValue);
+        if (m_A != null) m_A.changePercent(mInitialValue);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class PPD extends AlertDialog
             progress = roundup(progress);
             mSeekBar.setProgress(progress);
             updatePercentLabel(progress);
-            if (mAccessor != null) mAccessor.changePercent(progress);
+            if (m_A != null) m_A.changePercent(progress);
         }
     }
 

@@ -30,8 +30,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.SH.RingerMode;
-import com.alfray.timeriffic.SH.VibrateRingerMode;
+import com.alfray.timeriffic.SH._RM;
+import com.alfray.timeriffic.SH._VRM;
 
 //-----------------------------------------------
 
@@ -41,19 +41,19 @@ class PE extends PB
     protected static final char UNCHANGED_KEY = '-';
     private final char mActionPrefix;
 
-    protected static class Choice {
+    protected static class _C {
         public final char mKey;
         public final String mUiName;
         public final int mDotColor;
-        public Choice(char key, String uiName, int dot_color) {
+        public _C(char key, String uiName, int dot_color) {
             mKey = key;
             mUiName = uiName;
             mDotColor = dot_color;
         }
     }
 
-    protected ArrayList<Choice> mChoices = new ArrayList<Choice>();
-    protected Choice mCurrentChoice;
+    protected ArrayList<_C> m_Cs = new ArrayList<_C>();
+    protected _C mCurrentChoice;
     private Button mButton;
     private final String mMenuTitle;
     private String mDisabledMessage;
@@ -89,10 +89,10 @@ class PE extends PB
         mButton.setOnClickListener(this);
         mButton.setTag(this);
 
-        Choice c = new Choice(UNCHANGED_KEY,
+        _C c = new _C(UNCHANGED_KEY,
                               activity.getResources().getString(R.string.enum_unchanged),
                               ID_DOT_UNCHANGED);
-        mChoices.add(c);
+        m_Cs.add(c);
         mCurrentChoice = c;
 
         initChoices(values, actions, actionPrefix, uiStrings);
@@ -129,12 +129,12 @@ class PE extends PB
         for (Object value : values) {
             String s = "#PE: Error Unknown Setting#";
             char p = 0;
-            if (value instanceof RingerMode) {
-                p = ((RingerMode) value).getActionLetter();
-                s = ((RingerMode) value).toUiString(getActivity());
-            } else if (value instanceof VibrateRingerMode) {
-                p = ((VibrateRingerMode) value).getActionLetter();
-                s = ((VibrateRingerMode) value).toUiString(getActivity());
+            if (value instanceof _RM) {
+                p = ((_RM) value).getActionLetter();
+                s = ((_RM) value).toUiString(getActivity());
+            } else if (value instanceof _VRM) {
+                p = ((_VRM) value).getActionLetter();
+                s = ((_VRM) value).toUiString(getActivity());
             }
 
             int dot = counter == 0 ? ID_DOT_STATE_ON :
@@ -142,8 +142,8 @@ class PE extends PB
                             ID_DOT_EXTRA;
             counter++;
 
-            Choice c = new Choice(p, s, dot);
-            mChoices.add(c);
+            _C c = new _C(p, s, dot);
+            m_Cs.add(c);
 
             if (currentValue != null &&
                     currentValue.length() >= 1 &&
@@ -163,8 +163,8 @@ class PE extends PB
 
         menu.setHeaderTitle(mMenuTitle);
 
-        for (Choice choice : mChoices) {
-            menu.add(choice.mUiName);
+        for (_C _C : m_Cs) {
+            menu.add(_C.mUiName);
         }
     }
 
@@ -173,9 +173,9 @@ class PE extends PB
 
         CharSequence title = item.getTitle();
 
-        for (Choice choice : mChoices) {
-            if (choice.mUiName.equals(title)) {
-                mCurrentChoice = choice;
+        for (_C _C : m_Cs) {
+            if (_C.mUiName.equals(title)) {
+                mCurrentChoice = _C;
                 updateButtonState(mCurrentChoice);
                 break;
             }
@@ -194,7 +194,7 @@ class PE extends PB
      * Buttons labels (from resources) can contain @ (for menu title) or
      * $ for ui name.
      */
-    private void updateButtonState(Choice choice) {
+    private void updateButtonState(_C _C) {
 
         Resources r = getActivity().getResources();
 
@@ -210,14 +210,14 @@ class PE extends PB
                 if (!isEnabled() && mDisabledMessage != null) {
                     sb.replace(i, i + 1, mDisabledMessage);
                 } else {
-                    sb.replace(i, i + 1, choice.mUiName);
+                    sb.replace(i, i + 1, _C.mUiName);
                 }
             }
         }
 
         mButton.setText(sb);
 
-        Drawable d = r.getDrawable(choice.mDotColor);
+        Drawable d = r.getDrawable(_C.mDotColor);
         mButton.setCompoundDrawablesWithIntrinsicBounds(
                 d,    // left
                 null, // top

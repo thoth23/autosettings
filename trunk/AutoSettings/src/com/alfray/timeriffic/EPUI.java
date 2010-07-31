@@ -65,14 +65,14 @@ public class EPUI extends EHA {
         profilesDb.onCreate(this);
 
         // get cursor
-        String prof_id_select = String.format("%s=%d", C.PROFILE_ID, mProfId);
+        String prof_id_select = String.format("%s=%d", C.PID, mProfId);
         Cursor c = profilesDb.query(
                 -1, // id
                 // projection, a.k.a. the list of columns to retrieve from the db
                 new String[] {
-                        C.PROFILE_ID,
-                        C.DESCRIPTION,
-                        C.IS_ENABLED
+                        C.PID,
+                        C.Dsc,
+                        C.EN
                 },
                 prof_id_select, // selection
                 null, // selectionArgs
@@ -90,8 +90,8 @@ public class EPUI extends EHA {
             mEnabledCheck = (CheckBox) findViewById(R.id.enabled);
 
             // get column indexes
-            int descColIndex = c.getColumnIndexOrThrow(C.DESCRIPTION);
-            int enColIndex = c.getColumnIndexOrThrow(C.IS_ENABLED);
+            int descColIndex = c.getColumnIndexOrThrow(C.Dsc);
+            int enColIndex = c.getColumnIndexOrThrow(C.EN);
 
             // fill in UI from cursor data
             mNameField.setText(c.getString(descColIndex));

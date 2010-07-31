@@ -26,41 +26,41 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.PUI.ColIndexes;
+import com.alfray.timeriffic.PUI._CI;
 
 /**
  * The holder for a timed action row.
  */
 public class TAH extends BH {
 
-    private static boolean DEBUG = false;
-    public static String TAG = "TFC-TAHolder";
+    private static boolean __D = false;
+    public static String __T = "TFC-TAHolder";
 
     public TAH(PUI activity, View view) {
         super(activity, view);
     }
 
     @Override
-    public void setUiData() {
-        ColIndexes colIndexes = mActivity.getColIndexes();
-        Cursor cursor = mActivity.getCursor();
-        super.setUiData(cursor.getString(colIndexes.mDescColIndex),
-                        getDotColor(cursor.getInt(colIndexes.mEnableColIndex)));
+    public void _uid() {
+        _CI _CI = mA.ci();
+        Cursor cursor = mA.c();
+        super._uid(cursor.getString(_CI.mDCi),
+                        getDotColor(cursor.getInt(_CI.mECi)));
     }
 
     private Drawable getDotColor(int actionMark) {
         switch (actionMark) {
-        case C.ACTION_MARK_PREV:
-            return mActivity.getGreenDot();
-        case C.ACTION_MARK_NEXT:
-            return mActivity.getPurpleDot();
+        case C.AMkP:
+            return mA.gd2();
+        case C.AMkN:
+            return mA.getPurpleDot();
         default:
-            return mActivity.getGrayDot();
+            return mA.gd1();
         }
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu) {
+    public void onCCM(ContextMenu menu) {
         menu.setHeaderTitle(R.string.timedactioncontextmenu_title);
 
         menu.add(0, R.string.insert_action, 0, R.string.insert_action);
@@ -69,26 +69,26 @@ public class TAH extends BH {
     }
 
     @Override
-    public void onItemSelected() {
+    public void onIS() {
         // trigger edit
-        if (DEBUG) Log.d(TAG, "action - edit");
-        editAction(mActivity.getCursor());
+        if (__D) Log.d(__T, "action - edit");
+        ea(mA.c());
     }
 
     @Override
-    public void onContextMenuSelected(MenuItem item) {
+    public void onCMS(MenuItem item) {
         switch (item.getItemId()) {
         case R.string.insert_action:
-            if (DEBUG) Log.d(TAG, "action - insert_action");
-            insertNewAction(mActivity.getCursor());
+            if (__D) Log.d(__T, "action - insert_action");
+            ina(mA.c());
             break;
         case R.string.delete:
-            if (DEBUG) Log.d(TAG, "action - delete");
-            deleteTimedAction(mActivity.getCursor());
+            if (__D) Log.d(__T, "action - delete");
+            dta(mA.c());
             break;
         case R.string.edit:
-            if (DEBUG) Log.d(TAG, "action - edit");
-            editAction(mActivity.getCursor());
+            if (__D) Log.d(__T, "action - edit");
+            ea(mA.c());
             break;
         default:
             break;

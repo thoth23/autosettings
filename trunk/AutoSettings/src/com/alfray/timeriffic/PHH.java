@@ -25,32 +25,29 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.PUI.ColIndexes;
+import com.alfray.timeriffic.PUI._CI;
 
-/**
- * The holder for a profile header row.
- */
 public class PHH extends BH {
 
-    private static boolean DEBUG = false;
-    public static String TAG = "TFC-PHHolder";
+    private static boolean __D = false;
+    public static String __T = "TFC-PHHolder";
 
     public PHH(PUI activity, View view) {
         super(activity, view);
     }
 
     @Override
-    public void setUiData() {
-        ColIndexes colIndexes = mActivity.getColIndexes();
-        Cursor cursor = mActivity.getCursor();
-        super.setUiData(cursor.getString(colIndexes.mDescColIndex),
-                        cursor.getInt(colIndexes.mEnableColIndex) != 0 ?
-                                mActivity.getCheckOn() :
-                                mActivity.getCheckOff());
+    public void _uid() {
+        _CI _CI = mA.ci();
+        Cursor cursor = mA.c();
+        super._uid(cursor.getString(_CI.mDCi),
+                        cursor.getInt(_CI.mECi) != 0 ?
+                                mA.co1() :
+                                mA.co0());
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu) {
+    public void onCCM(ContextMenu menu) {
         menu.setHeaderTitle(R.string.profilecontextmenu_title);
 
         menu.add(0, R.string.insert_profile, 0, R.string.insert_profile);
@@ -60,45 +57,44 @@ public class PHH extends BH {
     }
 
     @Override
-    public void onItemSelected() {
-        Cursor cursor = mActivity.getCursor();
+    public void onIS() {
+        Cursor cursor = mA.c();
         if (cursor == null) return;
 
-        ColIndexes colIndexes = mActivity.getColIndexes();
+        _CI _CI = mA.ci();
 
-        boolean enabled = cursor.getInt(colIndexes.mEnableColIndex) != 0;
+        boolean enabled = cursor.getInt(_CI.mECi) != 0;
         enabled = !enabled;
 
-        PDB profDb = mActivity.getProfilesDb();
+        PDB profDb = mA.getProfilesDb();
         profDb.updateProfile(
-                cursor.getLong(colIndexes.mProfIdColIndex),
-                null, // name
+                cursor.getLong(_CI.mPICi),
+                null,
                 enabled);
 
-        // update ui
         cursor.requery();
-        setUiData(null,
-                  enabled ? mActivity.getCheckOn() : mActivity.getCheckOff());
+        _uid(null,
+                  enabled ? mA.co1() : mA.co0());
     }
 
     @Override
-    public void onContextMenuSelected(MenuItem item) {
+    public void onCMS(MenuItem item) {
         switch (item.getItemId()) {
         case R.string.insert_profile:
-            if (DEBUG) Log.d(TAG, "profile - insert_profile");
-            insertNewProfile(mActivity.getCursor());
+            if (__D) Log.d(__T, "profile - insert_profile");
+            inp(mA.c());
             break;
         case R.string.insert_action:
-            if (DEBUG) Log.d(TAG, "profile - insert_action");
-            insertNewAction(mActivity.getCursor());
+            if (__D) Log.d(__T, "profile - insert_action");
+            ina(mA.c());
             break;
         case R.string.delete:
-            if (DEBUG) Log.d(TAG, "profile - delete");
-            deleteProfile(mActivity.getCursor());
+            if (__D) Log.d(__T, "profile - delete");
+            dp(mA.c());
             break;
         case R.string.rename:
-            if (DEBUG) Log.d(TAG, "profile - rename");
-            editProfile(mActivity.getCursor());
+            if (__D) Log.d(__T, "profile - rename");
+            ep(mA.c());
             break;
         default:
             break;

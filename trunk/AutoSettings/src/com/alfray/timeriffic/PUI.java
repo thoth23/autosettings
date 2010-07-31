@@ -50,55 +50,49 @@ import com.alfray.timeriffic.R;
 
 public class PUI extends EHA {
 
-    private static final boolean DEBUG = true;
-    public static final String TAG = "TFC-PUI";
+    private static final boolean __D = true;
+    public static final String __T = "TFC-PUI";
 
-    static final int DATA_CHANGED = 42;
-    static final int SETTINGS_UPDATED = 43;
-    static final int CHECK_SERVICES   = 44;
+    static final int __DC = 42;
+    static final int __SU = 43;
+    static final int __CS   = 44;
 
-    static final int DIALOG_RESET_CHOICES = 0;
-    static final int DIALOG_DELETE_ACTION  = 1;
-    static final int DIALOG_DELETE_PROFILE = 2;
-    static final int DIALOG_CHECK_SERVICES = 3;
+    static final int __DRC = 0;
+    static final int __DDA  = 1;
+    static final int __DDP = 2;
+    static final int __DCS = 3;
 
-    private ListView mProfilesList;
-    private PCA mAdapter;
-    private LayoutInflater mLayoutInflater;
-    private PDB mProfilesDb;
+    private ListView mPL;
+    private PCA mA;
+    private LayoutInflater mLI;
+    private PDB mPD;
 
     private AW mAW;
     private PV mPV;
-    private Drawable mGrayDot;
-    private Drawable mGreenDot;
-    private Drawable mPurpleDot;
-    private Drawable mCheckOn;
-    private Drawable mCheckOff;
+    private Drawable mGD1;
+    private Drawable mGD2;
+    private Drawable mPD3;
+    private Drawable mCO1;
+    private Drawable mCO0;
 
     private GT mGT;
     private GS mGS;
 
-    private long mTempDialogRowId;
-    private String mTempDialogTitle;
+    private long mTDRI;
+    private String mTDT;
 
-    private Cursor mCursor;
+    private Cursor mC;
 
-    public static class ColIndexes {
-        int mIdColIndex;
-        int mTypeColIndex;
-        int mDescColIndex;
-        int mEnableColIndex;
-        int mProfIdColIndex;
+    public static class _CI {
+        int mICi;
+        int mTCi;
+        int mDCi;
+        int mECi;
+        int mPICi;
     };
 
-    private ColIndexes mColIndexes = new ColIndexes();
+    private _CI m_CI = new _CI();
 
-    /**
-     * Called when the activity is created.
-     * <p/>
-     * Initializes row indexes and buttons.
-     * Profile list & db is initialized in {@link #onResume()}.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,37 +101,36 @@ public class PUI extends EHA {
         try {
             version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (NameNotFoundException e) {
-            // pass
         }
-        Log.d(TAG, String.format("Started %s v%s",
+        Log.d(__T, String.format("Started %s v%s",
                         getClass().getSimpleName(),
                         version));
 
         setContentView(R.layout.profiles_screen);
-        mLayoutInflater = getLayoutInflater();
+        mLI = getLayoutInflater();
 
         mPV = new PV(this);
-        mGrayDot = getResources().getDrawable(R.drawable.dot_gray);
-        mGreenDot = getResources().getDrawable(R.drawable.dot_green);
-        mPurpleDot = getResources().getDrawable(R.drawable.dot_purple);
-        mCheckOn = getResources().getDrawable(R.drawable.btn_check_on);
-        mCheckOff = getResources().getDrawable(R.drawable.btn_check_off);
+        mGD1 = getResources().getDrawable(R.drawable.dot_gray);
+        mGD2 = getResources().getDrawable(R.drawable.dot_green);
+        mPD3 = getResources().getDrawable(R.drawable.dot_purple);
+        mCO1 = getResources().getDrawable(R.drawable.btn_check_on);
+        mCO0 = getResources().getDrawable(R.drawable.btn_check_off);
 
-        initButtons();
-        showIntroAtStartup();
+        ib();
+        sias();
 
         mAW = new AW();
         mAW.start(this);
-        mAW.event(AW.Event.OpenProfileUI);
+        mAW._E(AW._E.OpenProfileUI);
     }
 
-    private void showIntroAtStartup() {
-        final TA tapp = getApp();
+    private void sias() {
+        final TA tapp = a();
         if (tapp.isFirstStart() && mGT != null) {
             final Runnable action = new Runnable() {
                 @Override
                 public void run() {
-                    showIntro(false, true);
+                    si(false, true);
                     tapp.setFirstStart(false);
                 }
             };
@@ -155,168 +148,159 @@ public class PUI extends EHA {
         }
     }
 
-    private void showIntro(boolean force, boolean checkServices) {
+    private void si(boolean force, boolean checkServices) {
 
-        // force is set when this comes from Menu > About
         boolean showIntro = force;
 
-        // if not forcing, does the user wants to see the intro?
-        // true by default, unless disabled in the prefs
         if (!showIntro) {
             showIntro = !mPV.isIntroDismissed();
         }
 
-        // user doesn't want to see it... but we force it anyway if this is
-        // a version upgrade
         int currentVersion = -1;
         try {
             currentVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
-            // the version number is in format n.m.kk where n.m is the
-            // actual version number, incremented for features and kk is
-            // a sub-minor index of minor fixes. We clear these last digits
-            // out and don't force to see the intro for these minor fixes.
+
+
+
+
             currentVersion = (currentVersion / 100) * 100;
         } catch (NameNotFoundException e) {
-            // ignore. should not happen.
+
         }
         if (!showIntro && currentVersion > 0) {
             showIntro = currentVersion > mPV.getLastIntroVersion();
         }
 
         if (showIntro) {
-            // mark it as seen
+
             if (currentVersion > 0) {
                 mPV.setLastIntroVersion(currentVersion);
             }
 
             Intent i = new Intent(this, IA.class);
             if (force) i.putExtra(IA.EXTRA_NO_CONTROLS, true);
-            startActivityForResult(i, CHECK_SERVICES);
+            startActivityForResult(i, __CS);
             return;
         }
 
         if (checkServices) {
-            onCheckServices();
+            ocs();
         }
     }
 
-    private TA getApp() {
+    private TA a() {
         Application app = getApplication();
         if (app instanceof TA) return (TA) app;
         return null;
     }
 
-    public Cursor getCursor() {
-        return mCursor;
+    public Cursor c() {
+        return mC;
     };
 
-    ColIndexes getColIndexes() {
-        return mColIndexes;
+    _CI ci() {
+        return m_CI;
     }
 
     PDB getProfilesDb() {
-        return mProfilesDb;
+        return mPD;
     }
 
-    Drawable getGrayDot() {
-        return mGrayDot;
+    Drawable gd1() {
+        return mGD1;
     }
 
-    Drawable getGreenDot() {
-        return mGreenDot;
+    Drawable gd2() {
+        return mGD2;
     }
 
     Drawable getPurpleDot() {
-        return mPurpleDot;
+        return mPD3;
     }
 
-    Drawable getCheckOff() {
-        return mCheckOff;
+    Drawable co0() {
+        return mCO0;
     }
 
-    Drawable getCheckOn() {
-        return mCheckOn;
+    Drawable co1() {
+        return mCO1;
     }
 
-    /**
-     * Initializes the profile list widget with a cursor adapter.
-     * Creates a db connection.
-     */
-    private void initProfileList() {
+    private void ipl() {
 
-        Log.d(TAG, "init profile list");
+        Log.d(__T, "init profile list");
 
-        if (mProfilesList == null) {
-            mProfilesList = (ListView) findViewById(R.id.profilesList);
-            mProfilesList.setRecyclerListener(new PRL());
-            mProfilesList.setEmptyView(findViewById(R.id.empty));
+        if (mPL == null) {
+            mPL = (ListView) findViewById(R.id.profilesList);
+            mPL.setRecyclerListener(new PRL());
+            mPL.setEmptyView(findViewById(R.id.empty));
 
-            mProfilesList.setOnItemClickListener(new OnItemClickListener() {
+            mPL.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View clickedView, int position, long id) {
-                    if (DEBUG) Log.d(TAG, String.format("onItemClick: pos %d, id %d", position, id));
+                    if (__D) Log.d(__T, String.format("onItemClick: pos %d, id %d", position, id));
                     BH h = null;
-                    h = getHolder(null, clickedView);
-                    if (h != null) h.onItemSelected();
+                    h = h(null, clickedView);
+                    if (h != null) h.onIS();
                 }
             });
 
-            mProfilesList.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
+            mPL.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
                 @Override
                 public void onCreateContextMenu(ContextMenu menu, View listview, ContextMenuInfo menuInfo) {
-                    if (DEBUG) Log.d(TAG, "onCreateContextMenu");
+                    if (__D) Log.d(__T, "onCreateContextMenu");
                     BH h = null;
-                    h = getHolder(menuInfo, null);
-                    if (h != null) h.onCreateContextMenu(menu);
+                    h = h(menuInfo, null);
+                    if (h != null) h.onCCM(menu);
                 }
             });
         }
 
-        if (mProfilesDb == null) {
-            mProfilesDb = new PDB();
-            mProfilesDb.onCreate(this);
+        if (mPD == null) {
+            mPD = new PDB();
+            mPD.onCreate(this);
 
             String next = mPV.getStatusNextTS();
             if (next == null) {
-                // schedule a profile check to initialize the last/next status
-                requestSettingsCheck(UR.TOAST_NONE);
+
+                rsc(UR.TOAST_NONE);
             }
         }
 
-        if (mAdapter == null) {
-            if (mCursor != null) {
-                mCursor.close();
-                mCursor = null;
+        if (mA == null) {
+            if (mC != null) {
+                mC.close();
+                mC = null;
             }
-            mCursor = mProfilesDb.query(
-                    -1, //id
+            mC = mPD.query(
+                    -1,
                     new String[] {
                         C._ID,
-                        C.TYPE,
-                        C.DESCRIPTION,
-                        C.IS_ENABLED,
-                        C.PROFILE_ID,
-                        // enable these only if they are actually used here
-                        //C.HOUR_MIN,
-                        //C.DAYS,
-                        //C.ACTIONS,
-                        //C.NEXT_MS
-                    } , //projection
-                    null, //selection
-                    null, //selectionArgs
-                    null //sortOrder
+                        C.T,
+                        C.Dsc,
+                        C.EN,
+                        C.PID,
+
+
+
+
+
+                    } ,
+                    null,
+                    null,
+                    null
                     );
 
-            mColIndexes.mIdColIndex = mCursor.getColumnIndexOrThrow(C._ID);
-            mColIndexes.mTypeColIndex = mCursor.getColumnIndexOrThrow(C.TYPE);
-            mColIndexes.mDescColIndex = mCursor.getColumnIndexOrThrow(C.DESCRIPTION);
-            mColIndexes.mEnableColIndex = mCursor.getColumnIndexOrThrow(C.IS_ENABLED);
-            mColIndexes.mProfIdColIndex = mCursor.getColumnIndexOrThrow(C.PROFILE_ID);
+            m_CI.mICi = mC.getColumnIndexOrThrow(C._ID);
+            m_CI.mTCi = mC.getColumnIndexOrThrow(C.T);
+            m_CI.mDCi = mC.getColumnIndexOrThrow(C.Dsc);
+            m_CI.mECi = mC.getColumnIndexOrThrow(C.EN);
+            m_CI.mPICi = mC.getColumnIndexOrThrow(C.PID);
 
-            mAdapter = new PCA(this, mColIndexes, mLayoutInflater);
-            mProfilesList.setAdapter(mAdapter);
+            mA = new PCA(this, m_CI, mLI);
+            mPL.setAdapter(mA);
 
-            Log.d(TAG, String.format("adapter count: %d", mProfilesList.getCount()));
+            Log.d(__T, String.format("adapter count: %d", mPL.getCount()));
         }
     }
 
@@ -328,12 +312,12 @@ public class PUI extends EHA {
     @Override
     protected void onResume() {
         super.onResume();
-        initOnResume();
+        ior();
     }
 
-    private void initOnResume() {
-        initProfileList();
-        setDataListener();
+    private void ior() {
+        ipl();
+        _dl();
     }
 
     /**
@@ -346,7 +330,7 @@ public class PUI extends EHA {
     @Override
     protected void onPause() {
         super.onPause();
-        removeDataListener();
+        rdl();
     }
 
     @Override
@@ -355,21 +339,21 @@ public class PUI extends EHA {
         mAW.stop(this);
     }
 
-    private void setDataListener() {
-        TA app = getApp();
+    private void _dl() {
+        TA app = a();
         if (app != null) {
             app.setDataListener(new Runnable() {
                 @Override
                 public void run() {
-                    onDataChanged();
+                    odc();
                 }
             });
-            onDataChanged();
+            odc();
         }
     }
 
-    private void removeDataListener() {
-        TA app = getApp();
+    private void rdl() {
+        TA app = a();
         if (app != null) {
             app.setDataListener(null);
         }
@@ -380,38 +364,38 @@ public class PUI extends EHA {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        mTempDialogRowId = savedInstanceState.getLong("dlg_rowid");
-        mTempDialogTitle = savedInstanceState.getString("dlg_title");
+        mTDRI = savedInstanceState.getLong("dlg_rowid");
+        mTDT = savedInstanceState.getString("dlg_title");
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putLong("dlg_rowid", mTempDialogRowId);
-        outState.putString("dlg_title", mTempDialogTitle);
+        outState.putLong("dlg_rowid", mTDRI);
+        outState.putString("dlg_title", mTDT);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mAdapter != null) {
-            mAdapter.changeCursor(null);
-            mAdapter = null;
+        if (mA != null) {
+            mA.changeCursor(null);
+            mA = null;
         }
-        if (mCursor != null) {
-            mCursor.close();
-            mCursor = null;
+        if (mC != null) {
+            mC.close();
+            mC = null;
         }
-        if (mProfilesDb != null) {
-            mProfilesDb.onDestroy();
-            mProfilesDb = null;
+        if (mPD != null) {
+            mPD.onDestroy();
+            mPD = null;
         }
-        if (mProfilesList != null) {
+        if (mPL != null) {
             ArrayList<View> views = new ArrayList<View>();
-            mProfilesList.reclaimViews(views);
-            mProfilesList.setAdapter(null);
-            mProfilesList = null;
+            mPL.reclaimViews(views);
+            mPL.setAdapter(null);
+            mPL = null;
         }
     }
 
@@ -420,58 +404,58 @@ public class PUI extends EHA {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch(requestCode) {
-        case DATA_CHANGED:
-            onDataChanged();
-            requestSettingsCheck(UR.TOAST_IF_CHANGED);
+        case __DC:
+            odc();
+            rsc(UR.TOAST_IF_CHANGED);
             break;
-        case SETTINGS_UPDATED:
-            updateGlobalState();
-            requestSettingsCheck(UR.TOAST_IF_CHANGED);
+        case __SU:
+            ugs();
+            rsc(UR.TOAST_IF_CHANGED);
             break;
-        case CHECK_SERVICES:
-            onCheckServices();
+        case __CS:
+            ocs();
         }
     }
 
-    private void onDataChanged() {
-        if (mCursor != null) mCursor.requery();
-        mAdapter = null;
-        initProfileList();
-        updateGlobalState();
+    private void odc() {
+        if (mC != null) mC.requery();
+        mA = null;
+        ipl();
+        ugs();
     }
 
     @Override
     protected Dialog onCreateDialog(int id) {
 
-        // In case of configuration change (e.g. screen rotation),
-        // the activity is restored but onResume hasn't been called yet
-        // so we do it now.
-        initOnResume();
+
+
+
+        ior();
 
         switch(id) {
-        case DIALOG_RESET_CHOICES:
-            return createDialogResetChoices();
-        case DIALOG_DELETE_PROFILE:
-            return createDeleteProfileDialog();
-        case DIALOG_DELETE_ACTION:
-            return createDialogDeleteTimedAction();
-        case DIALOG_CHECK_SERVICES:
-            return createDialogCheckServices();
+        case __DRC:
+            return cdrc();
+        case __DDP:
+            return cdpd();
+        case __DDA:
+            return cddta();
+        case __DCS:
+            return cdcs();
         default:
             return null;
         }
     }
 
 
-    private void onCheckServices() {
-        String msg = getCheckServicesMessage();
-        if (DEBUG) Log.d(TAG, "Check Services: " + msg == null ? "null" : msg);
+    private void ocs() {
+        String msg = csm();
+        if (__D) Log.d(__T, "Check Services: " + msg == null ? "null" : msg);
         if (msg.length() > 0 && mPV.getCheckService()) {
-            showDialog(DIALOG_CHECK_SERVICES);
+            showDialog(__DCS);
         }
     }
 
-    private String getCheckServicesMessage() {
+    private String csm() {
         SH sh = new SH(this);
         StringBuilder sb = new StringBuilder();
 
@@ -495,22 +479,22 @@ public class PUI extends EHA {
         return sb.toString();
     }
 
-    private Dialog createDialogCheckServices() {
+    private Dialog cdcs() {
         Builder b = new AlertDialog.Builder(this);
 
         b.setTitle(R.string.checkservices_dlg_title);
-        b.setMessage(getCheckServicesMessage());
+        b.setMessage(csm());
         b.setPositiveButton(R.string.checkservices_ok_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                removeDialog(DIALOG_CHECK_SERVICES);
+                removeDialog(__DCS);
             }
         });
         b.setNegativeButton(R.string.checkservices_skip_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mPV.setCheckService(false);
-                removeDialog(DIALOG_CHECK_SERVICES);
+                removeDialog(__DCS);
             }
         });
 
@@ -518,7 +502,7 @@ public class PUI extends EHA {
         b.setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                removeDialog(DIALOG_CHECK_SERVICES);
+                removeDialog(__DCS);
             }
         });
 
@@ -528,16 +512,16 @@ public class PUI extends EHA {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         ContextMenuInfo info = item.getMenuInfo();
-        BH h = getHolder(info, null);
+        BH h = h(info, null);
         if (h != null) {
-            h.onContextMenuSelected(item);
+            h.onCMS(item);
             return true;
         }
 
         return super.onContextItemSelected(item);
     }
 
-    private BH getHolder(ContextMenuInfo menuInfo, View selectedView) {
+    private BH h(ContextMenuInfo menuInfo, View selectedView) {
         if (selectedView == null && menuInfo instanceof AdapterContextMenuInfo) {
             selectedView = ((AdapterContextMenuInfo) menuInfo).targetView;
         }
@@ -547,37 +531,37 @@ public class PUI extends EHA {
             return (BH) tag;
         }
 
-        Log.d(TAG, "Holder missing");
+        Log.d(__T, "Holder missing");
         return null;
     }
 
     /**
      * Initializes the list-independent buttons: global toggle, check now.
      */
-    private void initButtons() {
+    private void ib() {
         mGT = (GT) findViewById(R.id.global_toggle);
         mGS = (GS) findViewById(R.id.global_status);
 
-        updateGlobalState();
+        ugs();
 
         mGT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mPV.setServiceEnabled(!mPV.isServiceEnabled());
-                updateGlobalState();
-                requestSettingsCheck(UR.TOAST_ALWAYS);
+                ugs();
+                rsc(UR.TOAST_ALWAYS);
             }
         });
 
         mGS.setWindowVisibilityChangedCallback(new Runnable() {
             @Override
             public void run() {
-                updateGlobalState();
+                ugs();
             }
         });
     }
 
-    private void updateGlobalState() {
+    private void ugs() {
         boolean isEnabled = mPV.isServiceEnabled();
         mGT.setActive(isEnabled);
 
@@ -608,37 +592,37 @@ public class PUI extends EHA {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
         case R.string.settings:
-            mAW.event(AW.Event.MenuSettings);
-            showPrefs();
+            mAW._E(AW._E.MenuSettings);
+            sp();
             break;
         case R.string.check_now:
-            requestSettingsCheck(UR.TOAST_ALWAYS);
+            rsc(UR.TOAST_ALWAYS);
             break;
         case R.string.about:
-            mAW.event(AW.Event.MenuAbout);
-            showIntro(true /*force*/, false /* checkService */);
+            mAW._E(AW._E.MenuAbout);
+            si(true /*force*/, false /* checkService */);
             break;
         case R.string.reset:
-            mAW.event(AW.Event.MenuReset);
-            showResetChoices();
+            mAW._E(AW._E.MenuReset);
+            src();
             break;
         case R.string.append_profile:
-            appendNewProfile();
+            anp();
             break;
         case R.string.report_error:
-            showErrorReport();
+            ser();
             break;
         default:
             return super.onOptionsItemSelected(item);
         }
-        return true; // handled
+        return true;
     }
 
-    private void showPrefs() {
-        startActivityForResult(new Intent(this, PA.class), SETTINGS_UPDATED);
+    private void sp() {
+        startActivityForResult(new Intent(this, PA.class), __SU);
     }
 
-    private void showErrorReport() {
+    private void ser() {
         startActivity(new Intent(this, ERUI.class));
     }
 
@@ -648,46 +632,46 @@ public class PUI extends EHA {
      * @param displayToast Must be one of {@link UR#TOAST_ALWAYS},
      *                     {@link UR#TOAST_IF_CHANGED} or {@link UR#TOAST_NONE}
      */
-    private void requestSettingsCheck(int displayToast) {
-        if (DEBUG) Log.d(TAG, "Request settings check");
+    private void rsc(int displayToast) {
+        if (__D) Log.d(__T, "Request settings check");
         Intent i = new Intent(UR.ACTION_UI_CHECK);
         i.putExtra(UR.EXTRA_TOAST_NEXT_EVENT, displayToast);
         sendBroadcast(i);
     }
 
-    protected void showResetChoices() {
-        showDialog(DIALOG_RESET_CHOICES);
+    protected void src() {
+        showDialog(__DRC);
     }
 
-    private Dialog createDialogResetChoices() {
+    private Dialog cdrc() {
         Builder d = new AlertDialog.Builder(this);
 
         d.setCancelable(true);
         d.setTitle(R.string.resetprofiles_msg_confirm_delete);
         d.setIcon(R.drawable.app_icon);
-        //d.setMessage("Are you sure you want to delete all profiles?");
-        d.setItems(mProfilesDb.getResetLabels(),
+
+        d.setItems(mPD.getResetLabels(),
             new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    mProfilesDb.resetProfiles(which);
-                    removeDialog(DIALOG_RESET_CHOICES);
-                    onDataChanged();
-                    requestSettingsCheck(UR.TOAST_IF_CHANGED);
+                    mPD.resetProfiles(which);
+                    removeDialog(__DRC);
+                    odc();
+                    rsc(UR.TOAST_IF_CHANGED);
                 }
         });
 
         d.setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                removeDialog(DIALOG_RESET_CHOICES);
+                removeDialog(__DRC);
             }
         });
 
         d.setNegativeButton(R.string.resetprofiles_button_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                removeDialog(DIALOG_RESET_CHOICES);
+                removeDialog(__DRC);
             }
         });
 
@@ -697,17 +681,17 @@ public class PUI extends EHA {
 
     //--------------
 
-    public void showTempDialog(long row_id, String title, int dlg_id) {
-        mTempDialogRowId = row_id;
-        mTempDialogTitle = title;
+    public void std(long row_id, String title, int dlg_id) {
+        mTDRI = row_id;
+        mTDT = title;
         showDialog(dlg_id);
     }
 
     //--------------
 
-    private Dialog createDeleteProfileDialog() {
-        final long row_id = mTempDialogRowId;
-        final String title = mTempDialogTitle;
+    private Dialog cdpd() {
+        final long row_id = mTDRI;
+        final String title = mTDT;
 
         Builder d = new AlertDialog.Builder(PUI.this);
 
@@ -720,36 +704,36 @@ public class PUI extends EHA {
         d.setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                removeDialog(DIALOG_DELETE_PROFILE);
+                removeDialog(__DDP);
             }
         });
 
         d.setNegativeButton(R.string.deleteprofile_button_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                removeDialog(DIALOG_DELETE_PROFILE);
+                removeDialog(__DDP);
             }
         });
 
         d.setPositiveButton(R.string.deleteprofile_button_delete, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int count = mProfilesDb.deleteProfile(row_id);
+                int count = mPD.deleteProfile(row_id);
                 if (count > 0) {
-                    mAdapter.notifyDataSetChanged();
-                    onDataChanged();
+                    mA.notifyDataSetChanged();
+                    odc();
                 }
-                removeDialog(DIALOG_DELETE_PROFILE);
+                removeDialog(__DDP);
             }
         });
 
         return d.create();
     }
 
-    private Dialog createDialogDeleteTimedAction() {
+    private Dialog cddta() {
 
-        final long row_id = mTempDialogRowId;
-        final String description = mTempDialogTitle;
+        final long row_id = mTDRI;
+        final String description = mTDT;
 
         Builder d = new AlertDialog.Builder(PUI.this);
 
@@ -761,26 +745,26 @@ public class PUI extends EHA {
         d.setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                removeDialog(DIALOG_DELETE_ACTION);
+                removeDialog(__DDA);
             }
         });
 
         d.setNegativeButton(R.string.deleteaction_button_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                removeDialog(DIALOG_DELETE_ACTION);
+                removeDialog(__DDA);
             }
         });
 
         d.setPositiveButton(R.string.deleteaction_button_delete, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int count = mProfilesDb.deleteAction(row_id);
+                int count = mPD.deleteAction(row_id);
                 if (count > 0) {
-                    mAdapter.notifyDataSetChanged();
-                    onDataChanged();
+                    mA.notifyDataSetChanged();
+                    odc();
                 }
-                removeDialog(DIALOG_DELETE_ACTION);
+                removeDialog(__DDA);
             }
         });
 
@@ -788,15 +772,15 @@ public class PUI extends EHA {
     }
 
 
-    public void appendNewProfile() {
-        long prof_index = mProfilesDb.insertProfile(0,
+    public void anp() {
+        long prof_index = mPD.insertProfile(0,
                         getString(R.string.insertprofile_new_profile_title),
                         true /*isEnabled*/);
 
         Intent intent = new Intent(PUI.this, EPUI.class);
-        intent.putExtra(EPUI.EXTRA_PROFILE_ID, prof_index << C.PROFILE_SHIFT);
+        intent.putExtra(EPUI.EXTRA_PROFILE_ID, prof_index << C.PS);
 
-        startActivityForResult(intent, DATA_CHANGED);
+        startActivityForResult(intent, __DC);
     }
 
 }

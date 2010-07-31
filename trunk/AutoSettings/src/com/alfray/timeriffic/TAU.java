@@ -27,8 +27,8 @@ import java.util.Locale;
 import android.content.Context;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.SH.RingerMode;
-import com.alfray.timeriffic.SH.VibrateRingerMode;
+import com.alfray.timeriffic.SH._RM;
+import com.alfray.timeriffic.SH._VRM;
 
 
 public class TAU {
@@ -57,7 +57,7 @@ public class TAU {
 
     static public int calendarDayToActionDay(Calendar c) {
         int day = c.get(Calendar.DAY_OF_WEEK);
-        for (int i = C.MONDAY_BIT_INDEX; i <= C.SUNDAY_BIT_INDEX; i++) {
+        for (int i = C.MOi; i <= C.SUi; i++) {
             if (day == CALENDAR_DAYS[i]) {
                 day = 1<<i;
                 break;
@@ -121,7 +121,7 @@ public class TAU {
 
         String[] dayNames = getDaysNames();
 
-        for (int i = C.MONDAY_BIT_INDEX; i <= C.SUNDAY_BIT_INDEX; i++) {
+        for (int i = C.MOi; i <= C.SUi; i++) {
             if ((days & (1<<i)) != 0 ) {
 
                 if (start == i-1) {
@@ -170,16 +170,16 @@ public class TAU {
                     char v = action.charAt(1);
 
                     switch(code) {
-                    case C.ACTION_RINGER:
-                        for (RingerMode mode : RingerMode.values()) {
+                    case C.AR:
+                        for (_RM mode : _RM.values()) {
                             if (mode.getActionLetter() == v) {
                                 actions_names.add(mode.toUiString(context));   // ringer name
                                 break;
                             }
                         }
                         break;
-                    case C.ACTION_VIBRATE:
-                        for (VibrateRingerMode mode : VibrateRingerMode.values()) {
+                    case C.AV:
+                        for (_VRM mode : _VRM.values()) {
                             if (mode.getActionLetter() == v) {
                                 actions_names.add(mode.toUiString(context));   // vibrate name
                                 break;
@@ -191,7 +191,7 @@ public class TAU {
                             value = Integer.parseInt(action.substring(1));
 
                             switch(code) {
-                            case C.ACTION_BRIGHTNESS:
+                            case C.ABR:
                                 if (sh.canControlBrigthness()) {
                                     actions_names.add(
                                             context.getString(
@@ -199,31 +199,31 @@ public class TAU {
                                                     value));
                                 }
                                 break;
-                            case C.ACTION_RING_VOLUME:
+                            case C.ARV:
                                 actions_names.add(
                                         context.getString(
                                                 R.string.timedaction_ringer_int,
                                                 value));
                                 break;
-                            case C.ACTION_NOTIF_VOLUME:
+                            case C.ANV:
                                 actions_names.add(
                                         context.getString(
                                                 R.string.timedaction_notif_int,
                                                 value));
                                 break;
-                            case C.ACTION_MEDIA_VOLUME:
+                            case C.AMV:
                                 actions_names.add(
                                         context.getString(
                                                 R.string.timedaction_media_int,
                                                 value));
                                 break;
-                            case C.ACTION_ALARM_VOLUME:
+                            case C.AAV:
                                 actions_names.add(
                                         context.getString(
                                                 R.string.timedaction_alarm_int,
                                                 value));
                                 break;
-                            case C.ACTION_BLUETOOTH:
+                            case C.ABT:
                                 if (sh.canControlWifi()) {
                                     actions_names.add(
                                             context.getString(
@@ -231,7 +231,7 @@ public class TAU {
                                                                 R.string.timedaction_bluetooth_off));
                                 }
                                 break;
-                            case C.ACTION_WIFI:
+                            case C.AW:
                                 if (sh.canControlWifi()) {
                                     actions_names.add(
                                             context.getString(
@@ -239,7 +239,7 @@ public class TAU {
                                                                 R.string.timedaction_wifi_off));
                                 }
                                 break;
-                            case C.ACTION_AIRPLANE:
+                            case C.AA:
                                 if (sh.canControlAirplaneMode()) {
                                     actions_names.add(
                                             context.getString(
@@ -247,7 +247,7 @@ public class TAU {
                                                                 R.string.timedaction_airplane_off));
                                 }
                                 break;
-                            case C.ACTION_APN_DROID:
+                            case C.AAD:
                                 if (sh.canControlApnDroid()) {
                                     actions_names.add(
                                             context.getString(

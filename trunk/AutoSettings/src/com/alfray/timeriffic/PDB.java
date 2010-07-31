@@ -59,7 +59,7 @@ public class PDB {
     private static final int DB_VERSION = 1 * 100 + 1; // major*100 + minor
 
     private SQLiteDatabase mDb;
-    private DatabaseHelper mDbHelper;
+    private _DBH mDbHelper;
 
     private Context mContext;
 
@@ -69,7 +69,7 @@ public class PDB {
     /** Call this after creating this object. */
     public boolean onCreate(Context context) {
         mContext = context;
-        mDbHelper = new DatabaseHelper(context, DB_NAME, DB_VERSION);
+        mDbHelper = new _DBH(context, DB_NAME, DB_VERSION);
         mDb = mDbHelper.getWritableDatabase();
         boolean created = mDb != null;
         return created;
@@ -113,7 +113,7 @@ public class PDB {
         try {
             SQLiteStatement sql = mDb.compileStatement(
                     String.format("SELECT %s FROM %s WHERE %s=%d;",
-                            C.PROFILE_ID,
+                            C.PID,
                             PROFILES_TABLE,
                             C._ID, row_id));
             return sql.simpleQueryForLong();
@@ -138,17 +138,17 @@ public class PDB {
             String testMaxProfId = "";
             if (maxProfileIndex > 0) {
                 testMaxProfId = String.format("AND %s<%d",
-                        C.PROFILE_ID, maxProfileIndex << C.PROFILE_SHIFT);
+                        C.PID, maxProfileIndex << C.PS);
             }
             // e.g. SELECT MAX(prof_id) FROM profiles WHERE type=1 [ AND prof_id < 65536 ]
             SQLiteStatement sql = mDb.compileStatement(
                     String.format("SELECT MAX(%s) FROM %s WHERE %s=%d %s;",
-                            C.PROFILE_ID,
+                            C.PID,
                             PROFILES_TABLE,
-                            C.TYPE, C.TYPE_IS_PROFILE,
+                            C.T, C.TiP,
                             testMaxProfId));
 
-            return sql.simpleQueryForLong() >> C.PROFILE_SHIFT;
+            return sql.simpleQueryForLong() >> C.PS;
         } catch (SQLiteDoneException e) {
             // no profiles
             return 0;
@@ -165,20 +165,20 @@ public class PDB {
      */
     public long getMinActionIndex(long profileIndex, long minActionIndex) {
         try {
-            long pid = (profileIndex << C.PROFILE_SHIFT) + minActionIndex;
-            long maxPid = (profileIndex + 1) << C.PROFILE_SHIFT;
+            long pid = (profileIndex << C.PS) + minActionIndex;
+            long maxPid = (profileIndex + 1) << C.PS;
 
             // e.g. SELECT MIN(prof_id) FROM profiles WHERE type=2 AND prof_id > 32768+256 AND prof_id < 65536
             SQLiteStatement sql = mDb.compileStatement(
                     String.format("SELECT MIN(%s) FROM %s WHERE %s=%d AND %s>%d AND %s<%d;",
-                            C.PROFILE_ID,
+                            C.PID,
                             PROFILES_TABLE,
-                            C.TYPE, C.TYPE_IS_TIMED_ACTION,
-                            C.PROFILE_ID, pid,
-                            C.PROFILE_ID, maxPid));
+                            C.T, C.TiTA,
+                            C.PID, pid,
+                            C.PID, maxPid));
 
             long result = sql.simpleQueryForLong();
-            if (result > pid && result < maxPid) return result & C.ACTION_MASK;
+            if (result > pid && result < maxPid) return result & C.AMk;
         } catch (SQLiteDoneException e) {
             // no actions
         }
@@ -191,20 +191,20 @@ public class PDB {
      */
     public long getMaxActionIndex(long profileIndex) {
         try {
-            long pid = (profileIndex << C.PROFILE_SHIFT);
-            long maxPid = (profileIndex + 1) << C.PROFILE_SHIFT;
+            long pid = (profileIndex << C.PS);
+            long maxPid = (profileIndex + 1) << C.PS;
 
             // e.g. SELECT MAX(prof_id) FROM profiles WHERE type=2 AND prof_id > 32768 AND prof_id < 65536
             SQLiteStatement sql = mDb.compileStatement(
                     String.format("SELECT MAX(%s) FROM %s WHERE %s=%d AND %s>%d AND %s<%d;",
-                            C.PROFILE_ID,
+                            C.PID,
                             PROFILES_TABLE,
-                            C.TYPE, C.TYPE_IS_TIMED_ACTION,
-                            C.PROFILE_ID, pid,
-                            C.PROFILE_ID, maxPid));
+                            C.T, C.TiTA,
+                            C.PID, pid,
+                            C.PID, maxPid));
 
             long result = sql.simpleQueryForLong();
-            if (result > pid && result < maxPid) return result & C.ACTION_MASK;
+            if (result > pid && result < maxPid) return result & C.AMk;
         } catch (SQLiteDoneException e) {
             // no actions
         }
@@ -226,12 +226,12 @@ public class PDB {
         try {
             long index = getMaxProfileIndex(beforeProfileIndex);
             if (beforeProfileIndex <= 0) {
-                long max = Long.MAX_VALUE >> C.PROFILE_SHIFT;
+                long max = Long.MAX_VALUE >> C.PS;
                 if (index >= max - 1) {
                     // TODO repack
                     throw new UnsupportedOperationException("Profile index at maximum.");
-                } else if (index < max - C.PROFILE_GAP) {
-                    index += C.PROFILE_GAP;
+                } else if (index < max - C.PG) {
+                    index += C.PG;
                 } else {
                     index += (max - index) / 2;
                 }
@@ -244,15 +244,15 @@ public class PDB {
                 }
             }
 
-            long id = index << C.PROFILE_SHIFT;
+            long id = index << C.PS;
 
             ContentValues values = new ContentValues(2);
-            values.put(C.PROFILE_ID, id);
-            values.put(C.TYPE, C.TYPE_IS_PROFILE);
-            values.put(C.DESCRIPTION, title);
-            values.put(C.IS_ENABLED, isEnabled);
+            values.put(C.PID, id);
+            values.put(C.T, C.TiP);
+            values.put(C.Dsc, title);
+            values.put(C.EN, isEnabled);
 
-            id = mDb.insert(PROFILES_TABLE, C.TYPE, values);
+            id = mDb.insert(PROFILES_TABLE, C.T, values);
 
             if (DEBUG) Log.d(TAG, String.format("Insert profile: %d => row %d", index, id));
 
@@ -281,15 +281,15 @@ public class PDB {
 
         beginTransaction();
         try {
-            long pid = profileIndex << C.PROFILE_SHIFT;
+            long pid = profileIndex << C.PS;
 
             long maxIndex = getMaxActionIndex(profileIndex);
 
-            if (maxIndex >= C.ACTION_MASK) {
+            if (maxIndex >= C.AMk) {
                 // Last index is used. Try to repack the action list.
                 maxIndex = repackTimeActions(profileIndex);
 
-                if (maxIndex == C.ACTION_MASK) {
+                if (maxIndex == C.AMk) {
                     // definitely full... too bad.
                     Toast.makeText(mContext,
                             "No space left to insert action. Please delete some first.",
@@ -310,16 +310,16 @@ public class PDB {
 
             ContentValues values = new ContentValues(2);
 
-            values.put(C.TYPE, C.TYPE_IS_TIMED_ACTION);
-            values.put(C.PROFILE_ID, pid);
-            values.put(C.DESCRIPTION, description);
-            values.put(C.IS_ENABLED, 0);
-            values.put(C.HOUR_MIN, hourMin);
-            values.put(C.DAYS, days);
-            values.put(C.ACTIONS, actions);
-            values.put(C.NEXT_MS, nextMs);
+            values.put(C.T, C.TiTA);
+            values.put(C.PID, pid);
+            values.put(C.Dsc, description);
+            values.put(C.EN, 0);
+            values.put(C.HM, hourMin);
+            values.put(C.D, days);
+            values.put(C.A, actions);
+            values.put(C.NMS, nextMs);
 
-            long id = mDb.insert(PROFILES_TABLE, C.TYPE, values);
+            long id = mDb.insert(PROFILES_TABLE, C.T, values);
 
             if (DEBUG) Log.d(TAG, String.format("Insert profile %d, action: %d => row %d", profileIndex, index, id));
 
@@ -340,37 +340,37 @@ public class PDB {
      */
     private long repackTimeActions(long profileIndex) {
 
-        long pid = (profileIndex << C.PROFILE_SHIFT);
-        long maxPid = (profileIndex + 1) << C.PROFILE_SHIFT;
+        long pid = (profileIndex << C.PS);
+        long maxPid = (profileIndex + 1) << C.PS;
 
         // Generates query with WHERE type=2 AND prof_id > 32768 AND prof_id < 65536
         String where = String.format("%s=%d AND (%s>%d) AND (%s<%d)",
-                            C.TYPE, C.TYPE_IS_TIMED_ACTION,
-                            C.PROFILE_ID, pid,
-                            C.PROFILE_ID, maxPid);
+                            C.T, C.TiTA,
+                            C.PID, pid,
+                            C.PID, maxPid);
 
         Cursor c = null;
         try {
             c = mDb.query(
                     PROFILES_TABLE,                         // table
-                    new String[] { C.PROFILE_ID } ,   // columns
+                    new String[] { C.PID } ,   // columns
                     where,                                  // selection
                     null,                                   // selectionArgs
                     null,                                   // groupBy
                     null,                                   // having
-                    C.PROFILE_ID                      // orderBy
+                    C.PID                      // orderBy
                     );
 
             int numActions = c.getCount();
 
             if (DEBUG) Log.d(TAG, String.format("Repacking %d action", numActions));
 
-            if (numActions == 0 || numActions == C.ACTION_MASK) {
+            if (numActions == 0 || numActions == C.AMk) {
                 // we know the table is empty or full, no need to repack.
                 return numActions;
             }
 
-            int colProfId = c.getColumnIndexOrThrow(C.PROFILE_ID);
+            int colProfId = c.getColumnIndexOrThrow(C.PID);
 
             if (c.moveToFirst()) {
                 int i = 1;
@@ -382,11 +382,11 @@ public class PDB {
                     if (profId != newId) {
                         // generates update with WHERE type=2 AND prof_id=id
                         where = String.format("%s=%d AND %s=%d",
-                                C.TYPE, C.TYPE_IS_TIMED_ACTION,
-                                C.PROFILE_ID, profId);
+                                C.T, C.TiTA,
+                                C.PID, profId);
 
                         ContentValues values = new ContentValues(1);
-                        values.put(C.PROFILE_ID, newId);
+                        values.put(C.PID, newId);
 
                         mDb.update(
                                 PROFILES_TABLE, // table
@@ -423,7 +423,7 @@ public class PDB {
         	qb.appendWhere(String.format("%s=%d", C._ID, id));
         }
 
-        if (sortOrder == null || sortOrder.length() == 0) sortOrder = C.DEFAULT_SORT_ORDER;
+        if (sortOrder == null || sortOrder.length() == 0) sortOrder = C.DSO;
 
         Cursor c = qb.query(mDb, projection, selection, selectionArgs,
         		null, // groupBy
@@ -442,12 +442,12 @@ public class PDB {
     public int updateProfile(long prof_id, String name, boolean isEnabled) {
 
         String where = String.format("%s=%d AND %s=%d",
-                C.TYPE, C.TYPE_IS_PROFILE,
-                C.PROFILE_ID, prof_id);
+                C.T, C.TiP,
+                C.PID, prof_id);
 
         ContentValues cv = new ContentValues();
-        if (name != null) cv.put(C.DESCRIPTION, name);
-        cv.put(C.IS_ENABLED, isEnabled);
+        if (name != null) cv.put(C.Dsc, name);
+        cv.put(C.EN, isEnabled);
 
         beginTransaction();
         try {
@@ -466,11 +466,11 @@ public class PDB {
     public int updateTimedAction(long action_id, boolean isEnabled) {
 
         String where = String.format("%s=%d AND %s=%d",
-                C.TYPE, C.TYPE_IS_TIMED_ACTION,
-                C.PROFILE_ID, action_id);
+                C.T, C.TiTA,
+                C.PID, action_id);
 
         ContentValues cv = new ContentValues();
-        cv.put(C.IS_ENABLED, isEnabled);
+        cv.put(C.EN, isEnabled);
 
         beginTransaction();
         try {
@@ -490,14 +490,14 @@ public class PDB {
             String actions, String description) {
 
         String where = String.format("%s=%d AND %s=%d",
-                C.TYPE, C.TYPE_IS_TIMED_ACTION,
-                C.PROFILE_ID, action_id);
+                C.T, C.TiTA,
+                C.PID, action_id);
 
         ContentValues cv = new ContentValues();
-        cv.put(C.HOUR_MIN, hourMin);
-        cv.put(C.DAYS, days);
-        cv.put(C.ACTIONS, actions);
-        if (description != null) cv.put(C.DESCRIPTION, description);
+        cv.put(C.HM, hourMin);
+        cv.put(C.D, days);
+        cv.put(C.A, actions);
+        if (description != null) cv.put(C.Dsc, description);
 
         beginTransaction();
         try {
@@ -522,12 +522,12 @@ public class PDB {
             long pid = getProfileIdForRowId(row_id);
             if (pid == 0) throw new InvalidParameterException("No profile id for this row id.");
 
-            pid = pid & (~C.ACTION_MASK);
+            pid = pid & (~C.AMk);
 
             // DELETE FROM profiles WHERE prof_id >= 65536 AND prof_id < 65536+65535
             String where = String.format("%s>=%d AND %s<%d",
-                    C.PROFILE_ID, pid,
-                    C.PROFILE_ID, pid + C.ACTION_MASK);
+                    C.PID, pid,
+                    C.PID, pid + C.AMk);
 
             int count = mDb.delete(PROFILES_TABLE, where, null);
             setTransactionSuccessful();
@@ -545,9 +545,9 @@ public class PDB {
 
         beginTransaction();
         try {
-            // DELETE FROM profiles WHERE TYPE=2 AND _id=65537
+            // DELETE FROM profiles WHERE T=2 AND _id=65537
             String where = String.format("%s=%d AND %s=%d",
-                    C.TYPE, C.TYPE_IS_TIMED_ACTION,
+                    C.T, C.TiTA,
                     C._ID, row_id);
 
             int count = mDb.delete(PROFILES_TABLE, where, null);
@@ -562,9 +562,9 @@ public class PDB {
     // ----------------------------------
 
     /** Convenience helper to open/create/update the database */
-    private class DatabaseHelper extends SQLiteOpenHelper {
+    private class _DBH extends SQLiteOpenHelper {
 
-        public DatabaseHelper(Context context,
+        public _DBH(Context context,
                 String db_name,
                 int version) {
 			super(context, db_name, null /* cursor factory */, version);
@@ -595,7 +595,7 @@ public class PDB {
     }
 
     /**
-     * Called by {@link DatabaseHelper} to reset the tables.
+     * Called by {@link _DBH} to reset the tables.
      */
     private void onResetTables() {
         // hand over that chocolate and nobody gets hurt!
@@ -613,18 +613,18 @@ public class PDB {
                 + "%s INTEGER);" ,
                 PROFILES_TABLE,
                 C._ID,
-                C.TYPE,
-                C.DESCRIPTION,
-                C.IS_ENABLED,
-                C.PROFILE_ID,
-                C.HOUR_MIN,
-                C.DAYS,
-                C.ACTIONS,
-                C.NEXT_MS));
+                C.T,
+                C.Dsc,
+                C.EN,
+                C.PID,
+                C.HM,
+                C.D,
+                C.A,
+                C.NMS));
     }
 
     /**
-     * Called by {@link DatabaseHelper} when the database has just been
+     * Called by {@link _DBH} when the database has just been
      * created to initialize it with initial data. It's safe to use
      * {@link PDB#insertProfile(String, boolean)} or
      * {@link PDB#insertTimedAction(String, boolean, int, int, String, long)}
@@ -634,13 +634,13 @@ public class PDB {
         long pindex = insertProfile(0, "Weekdaze", true /*isEnabled*/);
         long action = insertTimedAction(pindex, 0,
                 7*60+0,             //hourMin
-                C.MONDAY + C.TUESDAY + C.WEDNESDAY + C.THURSDAY,
+                C.MO + C.TU + C.WE + C.TH,
                 "RR,VV",            //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
                 20*60+0,             //hourMin
-                C.MONDAY + C.TUESDAY + C.WEDNESDAY + C.THURSDAY,
+                C.MO + C.TU + C.WE + C.TH,
                 "RM,VV",            //actions
                 0                   //nextMs
                 );
@@ -648,13 +648,13 @@ public class PDB {
         pindex = insertProfile(0, "Party Time", true /*isEnabled*/);
         action = insertTimedAction(pindex, 0,
                 9*60+0,             //hourMin
-                C.FRIDAY + C.SATURDAY,
+                C.FR + C.SA,
                 "RR",               //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
                 22*60+0,             //hourMin
-                C.FRIDAY + C.SATURDAY,
+                C.FR + C.SA,
                 "RM,VV",            //actions
                 0                   //nextMs
                 );
@@ -662,13 +662,13 @@ public class PDB {
         pindex = insertProfile(0, "Sleeping-In", true /*isEnabled*/);
         action = insertTimedAction(pindex, 0,
                 10*60+30,            //hourMin
-                C.SUNDAY,
+                C.SU,
                 "RR",               //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
                 21*60+0,             //hourMin
-                C.SUNDAY,
+                C.SU,
                 "RM,VV",            //actions
                 0                   //nextMs
                 );
@@ -681,13 +681,13 @@ public class PDB {
         long pindex = insertProfile(0, "Ralf Week", true /*isEnabled*/);
         long action = insertTimedAction(pindex, 0,
                 9*60+0,             //hourMin
-                C.MONDAY + C.TUESDAY + C.WEDNESDAY + C.THURSDAY + C.FRIDAY + C.SATURDAY + C.SUNDAY,
+                C.MO + C.TU + C.WE + C.TH + C.FR + C.SA + C.SU,
                 "RR,VV,B75,U1",     //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
                 21*60+0,             //hourMin
-                C.MONDAY + C.TUESDAY + C.WEDNESDAY + C.THURSDAY + C.FRIDAY + C.SATURDAY + C.SUNDAY,
+                C.MO + C.TU + C.WE + C.TH + C.FR + C.SA + C.SU,
                 "RM,VN,B1,U0",      //actions
                 0                   //nextMs
                 );
@@ -695,19 +695,19 @@ public class PDB {
         pindex = insertProfile(0, "Ring Volume", true /*isEnabled*/);
         action = insertTimedAction(pindex, 0,
                 13*60+30,           //hourMin
-                C.SATURDAY + C.SUNDAY,
+                C.SA + C.SU,
                 "G25",              //actions
                 0                   //nextMs
                 );
         action = insertTimedAction(pindex, action,
                 16*60+0,            //hourMin
-                C.SATURDAY + C.SUNDAY,
+                C.SA + C.SU,
                 "G85",              //actions
                 0                   //nextMs
                 );
         insertTimedAction(pindex, action,
                 10*60+0,            //hourMin
-                C.MONDAY,
+                C.MO,
                 "G100",             //actions
                 0                   //nextMs
                 );
@@ -766,11 +766,11 @@ public class PDB {
     public void removeAllActionExecFlags() {
         // generates WHERE type=2 (aka action) AND enable=1
         String where = String.format("%s=%d AND %s=%d",
-                C.TYPE, C.TYPE_IS_TIMED_ACTION,
-                C.IS_ENABLED, 1);
+                C.T, C.TiTA,
+                C.EN, 1);
 
         ContentValues values = new ContentValues(1);
-        values.put(C.IS_ENABLED, false);
+        values.put(C.EN, false);
 
         beginTransaction();
         try {
@@ -805,14 +805,14 @@ public class PDB {
                     null                                    // orderBy
                     );
 
-            int colType      = c.getColumnIndexOrThrow(C.TYPE);
-            int colDesc      = c.getColumnIndexOrThrow(C.DESCRIPTION);
-            int colIsEnabled = c.getColumnIndexOrThrow(C.IS_ENABLED);
-            int colProfId    = c.getColumnIndexOrThrow(C.PROFILE_ID);
-            int colHourMin   = c.getColumnIndexOrThrow(C.HOUR_MIN);
-            int colDays      = c.getColumnIndexOrThrow(C.DAYS);
-            int colActions   = c.getColumnIndexOrThrow(C.ACTIONS);
-            int colNextMs    = c.getColumnIndexOrThrow(C.NEXT_MS);
+            int colType      = c.getColumnIndexOrThrow(C.T);
+            int colDesc      = c.getColumnIndexOrThrow(C.Dsc);
+            int colIsEnabled = c.getColumnIndexOrThrow(C.EN);
+            int colProfId    = c.getColumnIndexOrThrow(C.PID);
+            int colHourMin   = c.getColumnIndexOrThrow(C.HM);
+            int colDays      = c.getColumnIndexOrThrow(C.D);
+            int colActions   = c.getColumnIndexOrThrow(C.A);
+            int colNextMs    = c.getColumnIndexOrThrow(C.NMS);
 
             String[] summaries = new String[c.getCount()];
             StringBuilder sb = new StringBuilder();
@@ -831,18 +831,18 @@ public class PDB {
 
                     sb.setLength(0);
 
-                    if (type == C.TYPE_IS_TIMED_ACTION) {
+                    if (type == C.TiTA) {
                         sb.append("- ");
                     }
 
                     // Format: { profile/action prof-index:action-index enable/active }
                     sb.append(String.format("{ %1$s 0x%2$04x:%3$04x %4$s } ",
-                            type == C.TYPE_IS_PROFILE ? "P" :
-                                type == C.TYPE_IS_TIMED_ACTION ? "A" :
+                            type == C.TiP ? "P" :
+                                type == C.TiTA ? "A" :
                                     Integer.toString(type),
-                            profId >> C.PROFILE_SHIFT,
-                            profId & C.ACTION_MASK,
-                            type == C.TYPE_IS_PROFILE ?
+                            profId >> C.PS,
+                            profId & C.AMk,
+                            type == C.TiP ?
                                     (enable == 0 ? "D" : /*1*/ "E") : // profile: enable/disabled
                                     (enable == 0 ? "I" :              // action: inactive/prev/next
                                         (enable == 1 ? "P" : /*2*/ "N"))
@@ -851,7 +851,7 @@ public class PDB {
                     // Description profile:user name, action: display summary
                     sb.append(desc);
 
-                    if (type == C.TYPE_IS_TIMED_ACTION) {
+                    if (type == C.TiTA) {
                         // Format: [ d:days-bitfield, hm:hour*60+min, a:actions/-, n:next MS ]
                         sb.append(String.format(" [ d:%1$01x, hm:%2$04d, a:'%3$s', n:%d ]",
                                 days,
@@ -883,14 +883,14 @@ public class PDB {
 
         // generates WHERE type=1 (aka profile) AND enable=1
         String where = String.format("%s=%d AND %s=%d",
-                C.TYPE, C.TYPE_IS_PROFILE,
-                C.IS_ENABLED, 1);
+                C.T, C.TiP,
+                C.EN, 1);
 
         Cursor c = null;
         try {
             c = mDb.query(
                     PROFILES_TABLE,                         // table
-                    new String[] { C.PROFILE_ID },    // columns
+                    new String[] { C.PID },    // columns
                     where,                                  // selection
                     null,                                   // selectionArgs
                     null,                                   // groupBy
@@ -898,14 +898,14 @@ public class PDB {
                     null                                    // orderBy
                     );
 
-            int profIdColIndex = c.getColumnIndexOrThrow(C.PROFILE_ID);
+            int profIdColIndex = c.getColumnIndexOrThrow(C.PID);
 
             long[] indexes = new long[c.getCount()];
 
             if (c.moveToFirst()) {
                 int i = 0;
                 do {
-                    indexes[i++] = c.getLong(profIdColIndex) >> C.PROFILE_SHIFT;
+                    indexes[i++] = c.getLong(profIdColIndex) >> C.PS;
                 } while (c.moveToNext());
             }
 
@@ -932,7 +932,7 @@ public class PDB {
      *   The hourMin check is done after on the result.
      * - Can return an empty list, but not null.
      */
-    public ActionInfo[] getDayActivableActions(int hourMin, int day, long[] prof_indexes) {
+    public _AI[] getDayActivableActions(int hourMin, int day, long[] prof_indexes) {
         if (prof_indexes.length < 1) return null;
 
         StringBuilder profList = new StringBuilder();
@@ -946,13 +946,13 @@ public class PDB {
         //           AND days & MASK != 0
         //           AND prof_id >> SHIFT IN (profList)
         String where = String.format("%s=%d AND (%s <= %d) AND (%s & %d) != 0 AND (%s >> %d) IN (%s)",
-                C.TYPE, C.TYPE_IS_TIMED_ACTION,
-                C.HOUR_MIN, hourMin,
-                C.DAYS, day,
-                C.PROFILE_ID, C.PROFILE_SHIFT, profList);
+                C.T, C.TiTA,
+                C.HM, hourMin,
+                C.D, day,
+                C.PID, C.PS, profList);
 
         // ORDER BY hourMin DESC
-        String orderBy = String.format("%s DESC", C.HOUR_MIN);
+        String orderBy = String.format("%s DESC", C.HM);
 
         if (DEBUG) Log.d(TAG, "Get actions: WHERE " + where + " ORDER BY " + orderBy);
 
@@ -961,7 +961,7 @@ public class PDB {
         try {
             c = mDb.query(
                     PROFILES_TABLE,                         // table
-                    new String[] { C._ID, C.HOUR_MIN, C.ACTIONS },    // columns
+                    new String[] { C._ID, C.HM, C.A },    // columns
                     where,                                  // selection
                     null,                                   // selectionArgs
                     null,                                   // groupBy
@@ -970,8 +970,8 @@ public class PDB {
                     );
 
             int rowIdColIndex = c.getColumnIndexOrThrow(C._ID);
-            int hourMinColIndex = c.getColumnIndexOrThrow(C.HOUR_MIN);
-            int actionsColInfo = c.getColumnIndexOrThrow(C.ACTIONS);
+            int hourMinColIndex = c.getColumnIndexOrThrow(C.HM);
+            int actionsColInfo = c.getColumnIndexOrThrow(C.A);
 
             // Above we got the list of all actions for the requested day
             // that happen before the requested hourMin, in descending time
@@ -980,11 +980,11 @@ public class PDB {
             // We want to return the first action found. There might be more
             // than one action with the same time, so return them all.
 
-            ArrayList<ActionInfo> infos = new ArrayList<ActionInfo>();
+            ArrayList<_AI> infos = new ArrayList<_AI>();
             if (c.moveToFirst()) {
                 int firstHourMin = c.getInt(hourMinColIndex);
                 do {
-                    infos.add(new ActionInfo(
+                    infos.add(new _AI(
                             c.getLong(rowIdColIndex),
                             firstHourMin,  // all actions have the same time
                             c.getString(actionsColInfo)));
@@ -994,7 +994,7 @@ public class PDB {
                 } while (c.moveToNext() && c.getInt(hourMinColIndex) == firstHourMin);
             }
 
-            return infos.toArray(new ActionInfo[infos.size()]);
+            return infos.toArray(new _AI[infos.size()]);
         } finally {
             if (c != null) c.close();
         }
@@ -1005,8 +1005,8 @@ public class PDB {
      * day. If nothing is found, look at the 6 previous days to see if we can
      * find an action.
      */
-    public ActionInfo[] getWeekActivableActions(int hourMin, int day, long[] prof_indexes) {
-        ActionInfo[] actions = null;
+    public _AI[] getWeekActivableActions(int hourMin, int day, long[] prof_indexes) {
+        _AI[] actions = null;
 
         // Look for the last enabled action for day.
         // If none was found, loop up to 6 days before and check the last
@@ -1020,7 +1020,7 @@ public class PDB {
 
             // Switch to previous day and loop from monday to sunday as needed.
             day = day >> 1;
-            if (day == 0) day = C.SUNDAY;
+            if (day == 0) day = C.SU;
 
             // Look for anything "before the end of the day". Since we
             // want to match 23:59 we need to add one minute thus 24h00
@@ -1043,9 +1043,9 @@ public class PDB {
      *  or 0 if there's no such event ("now" is not a valid next event)
      */
     public int getWeekNextEvent(int hourMin, int day, long[] prof_indexes,
-            ActionInfo[] out_actions) {
+            _AI[] out_actions) {
         // First try to find something today that is past the requested time.
-        ActionInfo found = getDayNextEvent(hourMin, day, prof_indexes);
+        _AI found = getDayNextEvent(hourMin, day, prof_indexes);
         if (found != null) {
             out_actions[0] = found;
             int delta = found.mHourMin - hourMin;
@@ -1059,7 +1059,7 @@ public class PDB {
         for(int k = 1; k < 7; k++, minutes += 24*60) {
             // Switch to next day. Loop from sunday back to monday.
             day = day << 1;
-            if (day > C.SUNDAY) day = C.MONDAY;
+            if (day > C.SU) day = C.MO;
 
             found = getDayNextEvent(-1 /*One minute before 00:00*/, day, prof_indexes);
             if (found != null) {
@@ -1082,7 +1082,7 @@ public class PDB {
      *  If the return value is not -1, it is guaranteed to be greater than the
      *  given hourMin since we look for an event *past* this time.
      */
-    private ActionInfo getDayNextEvent(int hourMin, int day, long[] prof_indexes) {
+    private _AI getDayNextEvent(int hourMin, int day, long[] prof_indexes) {
         if (prof_indexes.length < 1) return null;
 
         StringBuilder profList = new StringBuilder();
@@ -1097,18 +1097,18 @@ public class PDB {
         //           AND prof_id >> SHIFT IN (profList)
         String hourTest;
         if (hourMin == -1) {
-            hourTest = String.format("%s >= 0", C.HOUR_MIN);
+            hourTest = String.format("%s >= 0", C.HM);
         } else {
-            hourTest = String.format("%s > (%d)", C.HOUR_MIN, hourMin);
+            hourTest = String.format("%s > (%d)", C.HM, hourMin);
         }
         String where = String.format("%s=%d AND (%s) AND (%s & %d) != 0 AND (%s >> %d) IN (%s)",
-                C.TYPE, C.TYPE_IS_TIMED_ACTION,
+                C.T, C.TiTA,
                 hourTest,
-                C.DAYS, day,
-                C.PROFILE_ID, C.PROFILE_SHIFT, profList);
+                C.D, day,
+                C.PID, C.PS, profList);
 
         // ORDER BY hourMin ASC
-        String orderBy = String.format("%s ASC", C.HOUR_MIN);
+        String orderBy = String.format("%s ASC", C.HM);
 
         // LIMIT 1 (we only want the first result)
         String limit = "1";
@@ -1120,7 +1120,7 @@ public class PDB {
         try {
             c = mDb.query(
                     PROFILES_TABLE,                         // table
-                    new String[] { C._ID, C.HOUR_MIN, C.ACTIONS },    // columns
+                    new String[] { C._ID, C.HM, C.A },    // columns
                     where,                                  // selection
                     null,                                   // selectionArgs
                     null,                                   // groupBy
@@ -1130,15 +1130,15 @@ public class PDB {
                     );
 
             int rowIdColIndex = c.getColumnIndexOrThrow(C._ID);
-            int hourMinColIndex = c.getColumnIndexOrThrow(C.HOUR_MIN);
-            int actionColIndex = c.getColumnIndexOrThrow(C.ACTIONS);
+            int hourMinColIndex = c.getColumnIndexOrThrow(C.HM);
+            int actionColIndex = c.getColumnIndexOrThrow(C.A);
 
             if (c.moveToFirst()) {
                 hourMin = c.getInt(hourMinColIndex);
 
                 if (DEBUG) Log.d(TAG, String.format("NextEvent: day %d, hourMin %04d", day, hourMin));
 
-                return new ActionInfo(
+                return new _AI(
                         c.getLong(rowIdColIndex),
                         hourMin,
                         c.getString(actionColIndex));
@@ -1155,13 +1155,13 @@ public class PDB {
      * Struct that describes a Timed Action returned by
      * {@link PDB#getDayActivableActions(int, int, long[])}
      */
-    public static class ActionInfo {
+    public static class _AI {
 
         public final long mRowId;
         private final int mHourMin;
         public final String mActions;
 
-        public ActionInfo(long rowId, int hourMin, String actions) {
+        public _AI(long rowId, int hourMin, String actions) {
             mRowId = rowId;
             mHourMin = hourMin;
             mActions = actions;
@@ -1177,32 +1177,32 @@ public class PDB {
      * Mark all the given actions as enabled for the given state.
      * Any previous actions with the given state are cleared.
      */
-    public void markActionsEnabled(ActionInfo[] actions, int state) {
+    public void markActionsEnabled(_AI[] actions, int state) {
 
         StringBuilder rowList = new StringBuilder();
-        for (ActionInfo info : actions) {
+        for (_AI info : actions) {
             if (rowList.length() > 0) rowList.append(",");
             rowList.append(Long.toString(info.mRowId));
         }
 
         // generates WHERE type=2 (aka action) AND _id in (profList)
         String where_set = String.format("%s=%d AND %s IN (%s)",
-                C.TYPE, C.TYPE_IS_TIMED_ACTION,
+                C.T, C.TiTA,
                 C._ID, rowList);
 
         ContentValues values_set = new ContentValues(1);
-        values_set.put(C.IS_ENABLED, state);
+        values_set.put(C.EN, state);
 
         if (DEBUG) Log.d(TAG, "Mark actions: WHERE " + where_set);
 
 
         // generates WHERE type=2 (aka action) AND is_enabled == state
         String where_clear = String.format("%s=%d AND %s == %d",
-                C.TYPE, C.TYPE_IS_TIMED_ACTION,
-                C.IS_ENABLED, state);
+                C.T, C.TiTA,
+                C.EN, state);
 
         ContentValues values_clear = new ContentValues(1);
-        values_clear.put(C.IS_ENABLED, C.ACTION_MARK_DEFAULT);
+        values_clear.put(C.EN, C.AMD);
 
         beginTransaction();
         try {

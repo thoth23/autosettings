@@ -23,21 +23,18 @@
         android:label="@string/app_name"
         android:name=".app.TA" android:icon="@drawable/app_icon">
 
-        <receiver android:name=".app.UR">
+        <receiver android:name="UR">
         </receiver>
 
         <activity
-            android:name=".prefs.PA"
-            android:label="@string/prefs_title" />
+            android:label="@string/prefs_title" android:name="PA"/>
 
         <activity
-            android:name=".app.IA"
             android:label="@string/intro_title"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@android:style/Theme.Dialog" android:name="IA"/>
 
         <activity
-            android:name=".profiles.PUI"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" android:name="PUI">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
@@ -45,27 +42,23 @@
         </activity>
 
         <activity
-            android:name=".profiles.EPUI"
             android:label="@string/editprofile_title"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@android:style/Theme.Dialog" android:name="EPUI"/>
 
         <activity
-            android:name=".actions.EAUI"
-            android:label="@string/editaction_title" />
+            android:label="@string/editaction_title" android:name=".EAUI"/>
 
         <activity
-            android:name=".utils.CBA"
             android:theme="@style/NoBackground"
             android:taskAffinity="com.alfray.timeriffic.Change"
-            android:excludeFromRecents="true"/>
+            android:excludeFromRecents="true" android:name=".CBA"/>
 
-        <service android:name=".app.PSS"/>
+        <service android:name=".PSS"/>
 
         <activity android:theme="@android:style/Theme.Dialog"
-             android:label="@string/errorreport_title"
-             android:name=".error.ERUI"/>
+             android:label="@string/errorreport_title" android:name=".ERUI"/>
 
-        <service android:name=".app.US"></service>
+        <service android:name=".US"></service>
     </application>
 
     <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="3"/>

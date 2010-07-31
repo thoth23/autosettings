@@ -30,98 +30,90 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.PUI.ColIndexes;
+import com.alfray.timeriffic.PUI._CI;
 
-/**
- * A base holder class that keeps tracks of the current cursor
- * and the common widgets of the two derived holders.
- */
 abstract class BH {
 
-    /**
-     * The text view that holds the title or description as well
-     * as the "check box".
-     */
-    private final TextView mDescription;
+    private final TextView mD;
 
-    protected final PUI mActivity;
+    protected final PUI mA;
 
     public BH(PUI activity, View view) {
-        mActivity = activity;
-        mDescription = view != null ? (TextView) view.findViewById(R.id.description) : null;
+        mA = activity;
+        mD = view != null ? (TextView) view.findViewById(R.id.description) : null;
     }
 
-    protected void setUiData(String description, Drawable state) {
-        if (description != null) mDescription.setText(description);
-        if (state != null) mDescription.setCompoundDrawablesWithIntrinsicBounds(
+    protected void _uid(String description, Drawable state) {
+        if (description != null) mD.setText(description);
+        if (state != null) mD.setCompoundDrawablesWithIntrinsicBounds(
                 state /*left*/, null /*top*/, null /*right*/, null /*bottom*/);
     }
 
-    public abstract void setUiData();
-    public abstract void onItemSelected();
-    public abstract void onCreateContextMenu(ContextMenu menu);
-    public abstract void onContextMenuSelected(MenuItem item);
+    public abstract void _uid();
+    public abstract void onIS();
+    public abstract void onCCM(ContextMenu menu);
+    public abstract void onCMS(MenuItem item);
 
 
     // --- profile actions ---
 
-    private void startEditActivity(Class<?> activity, String extra_id, long extra_value) {
-        Intent intent = new Intent(mActivity, activity);
+    private void sea(Class<?> activity, String extra_id, long extra_value) {
+        Intent intent = new Intent(mA, activity);
         intent.putExtra(extra_id, extra_value);
 
-        mActivity.startActivityForResult(intent, PUI.DATA_CHANGED);
+        mA.startActivityForResult(intent, PUI.__DC);
     }
 
-    protected void deleteProfile(Cursor cursor) {
-        ColIndexes colIndexes = mActivity.getColIndexes();
-        final long row_id = cursor.getLong(colIndexes.mIdColIndex);
-        String title = cursor.getString(colIndexes.mDescColIndex);
+    protected void dp(Cursor cursor) {
+        _CI _CI = mA.ci();
+        final long row_id = cursor.getLong(_CI.mICi);
+        String title = cursor.getString(_CI.mDCi);
 
-        mActivity.showTempDialog(row_id, title, PUI.DIALOG_DELETE_PROFILE);
+        mA.std(row_id, title, PUI.__DDP);
     }
 
-    protected void insertNewProfile(Cursor beforeCursor) {
+    protected void inp(Cursor beforeCursor) {
         long prof_index = 0;
         if (beforeCursor != null) {
-            ColIndexes colIndexes = mActivity.getColIndexes();
-            prof_index = beforeCursor.getLong(colIndexes.mProfIdColIndex) >> C.PROFILE_SHIFT;
+            _CI _CI = mA.ci();
+            prof_index = beforeCursor.getLong(_CI.mPICi) >> C.PS;
         }
 
-        PDB profDb = mActivity.getProfilesDb();
+        PDB profDb = mA.getProfilesDb();
         prof_index = profDb.insertProfile(prof_index,
-                        mActivity.getString(R.string.insertprofile_new_profile_title),
+                        mA.getString(R.string.insertprofile_new_profile_title),
                         true /*isEnabled*/);
 
-        startEditActivity(EPUI.class,
-                EPUI.EXTRA_PROFILE_ID, prof_index << C.PROFILE_SHIFT);
+        sea(EPUI.class,
+                EPUI.EXTRA_PROFILE_ID, prof_index << C.PS);
     }
 
-    protected void editProfile(Cursor cursor) {
-        ColIndexes colIndexes = mActivity.getColIndexes();
-        long prof_id = cursor.getLong(colIndexes.mProfIdColIndex);
+    protected void ep(Cursor cursor) {
+        _CI _CI = mA.ci();
+        long prof_id = cursor.getLong(_CI.mPICi);
 
-        startEditActivity(EPUI.class, EPUI.EXTRA_PROFILE_ID, prof_id);
+        sea(EPUI.class, EPUI.EXTRA_PROFILE_ID, prof_id);
     }
 
     // --- timed actions ----
 
 
-    protected void deleteTimedAction(Cursor cursor) {
-        ColIndexes colIndexes = mActivity.getColIndexes();
-        final long row_id = cursor.getLong(colIndexes.mIdColIndex);
-        String description = cursor.getString(colIndexes.mDescColIndex);
+    protected void dta(Cursor cursor) {
+        _CI _CI = mA.ci();
+        final long row_id = cursor.getLong(_CI.mICi);
+        String description = cursor.getString(_CI.mDCi);
 
-        mActivity.showTempDialog(row_id, description, PUI.DIALOG_DELETE_ACTION);
+        mA.std(row_id, description, PUI.__DDA);
     }
 
-    protected void insertNewAction(Cursor beforeCursor) {
+    protected void ina(Cursor beforeCursor) {
         long prof_index = 0;
         long action_index = 0;
         if (beforeCursor != null) {
-            ColIndexes colIndexes = mActivity.getColIndexes();
-            prof_index = beforeCursor.getLong(colIndexes.mProfIdColIndex);
-            action_index = prof_index & C.ACTION_MASK;
-            prof_index = prof_index >> C.PROFILE_SHIFT;
+            _CI _CI = mA.ci();
+            prof_index = beforeCursor.getLong(_CI.mPICi);
+            action_index = prof_index & C.AMk;
+            prof_index = prof_index >> C.PS;
         }
 
         Calendar c = new GregorianCalendar();
@@ -130,7 +122,7 @@ abstract class BH {
 
         int day = TAU.calendarDayToActionDay(c);
 
-        PDB profDb = mActivity.getProfilesDb();
+        PDB profDb = mA.getProfilesDb();
         action_index = profDb.insertTimedAction(
                 prof_index,
                 action_index,
@@ -140,16 +132,16 @@ abstract class BH {
                 0           // nextMs
                 );
 
-        long action_id = (prof_index << C.PROFILE_SHIFT) + action_index;
+        long action_id = (prof_index << C.PS) + action_index;
 
-        startEditActivity(EAUI.class, EAUI.EXTRA_ACTION_ID, action_id);
+        sea(EAUI.class, EAUI._EAI, action_id);
     }
 
-    protected void editAction(Cursor cursor) {
-        ColIndexes colIndexes = mActivity.getColIndexes();
-        long action_id = cursor.getLong(colIndexes.mProfIdColIndex);
+    protected void ea(Cursor cursor) {
+        _CI _CI = mA.ci();
+        long action_id = cursor.getLong(_CI.mPICi);
 
-        startEditActivity(EAUI.class, EAUI.EXTRA_ACTION_ID, action_id);
+        sea(EAUI.class, EAUI._EAI, action_id);
     }
 
 }

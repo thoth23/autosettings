@@ -170,7 +170,7 @@ public class ERUI extends EHA {
 
         mAW = new AW();
         mAW.start(this);
-        mAW.event(AW.Event.OpenIntroUI);
+        mAW._E(AW._E.OpenIntroUI);
     }
 
     @Override
@@ -287,7 +287,7 @@ public class ERUI extends EHA {
                     mAbortReport = false;
 
                     try {
-                        Thread t = new Thread(new ReportGenerator(), "ReportGenerator");
+                        Thread t = new Thread(new _RG(), "_RG");
                         t.start();
                     } catch (Throwable t) {
                         // We can possibly get a VerifyError from Dalvik here
@@ -483,7 +483,7 @@ public class ERUI extends EHA {
      * - Recent actions
      * - Recent logcat
      */
-    private class ReportGenerator implements Runnable {
+    private class _RG implements Runnable {
         @Override
         public void run() {
 
@@ -625,7 +625,7 @@ public class ERUI extends EHA {
                     "logcat",
                     "-d",       // dump log and exits
 
-                    PUI.TAG + ":D",
+                    PUI.__T + ":D",
                     EPUI.TAG + ":D",
                     EAUI.TAG + ":D",
                     IA.TAG + ":D",
@@ -633,8 +633,8 @@ public class ERUI extends EHA {
                     CBA.TAG + ":D",
 
                     PDB.TAG + ":D",
-                    PHH.TAG + ":D",
-                    TAH.TAG + ":D",
+                    PHH.__T + ":D",
+                    TAH.__T + ":D",
 
                     AS.TAG + ":D",
                     UR.TAG + ":D",

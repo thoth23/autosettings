@@ -40,7 +40,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.PPD.Accessor;
+import com.alfray.timeriffic.PPD._A;
 
 public class EAUI extends EHA {
 
@@ -48,7 +48,7 @@ public class EAUI extends EHA {
     public static String TAG = "TFC-EAUI";
 
     /** Extra long with the action prof_id (not index) to edit. */
-    public static final String EXTRA_ACTION_ID = "action_id";
+    public static final String _EAI = "action_id";
 
     /*package*/ static final int DIALOG_EDIT_PERCENT = 100;
     /** Maps dialog ids to their {@link PP} instance. */
@@ -72,8 +72,8 @@ public class EAUI extends EHA {
     private PT mPrefApnDroid;
 
     /**
-     * Day checkboxes, in the same index order than {@link C#MONDAY_BIT_INDEX}
-     * to {@link C#SUNDAY_BIT_INDEX}.
+     * Day checkboxes, in the same index order than {@link C#MOi}
+     * to {@link C#SUi}.
      */
     private CheckBox[] mCheckDays;
 
@@ -89,7 +89,7 @@ public class EAUI extends EHA {
         setTitle(R.string.editaction_title);
 
         Intent intent = getIntent();
-        mActionId = intent.getExtras().getLong(EXTRA_ACTION_ID);
+        mActionId = intent.getExtras().getLong(_EAI);
 
         if (DEBUG) Log.d(TAG, String.format("edit prof_id: %08x", mActionId));
 
@@ -106,15 +106,15 @@ public class EAUI extends EHA {
         profilesDb.onCreate(this);
 
         // get cursor
-        String prof_id_select = String.format("%s=%d", C.PROFILE_ID, mActionId);
+        String prof_id_select = String.format("%s=%d", C.PID, mActionId);
         Cursor c = profilesDb.query(
                 -1, // id
                 // projection, a.k.a. the list of columns to retrieve from the db
                 new String[] {
-                        C.PROFILE_ID,
-                        C.HOUR_MIN,
-                        C.DAYS,
-                        C.ACTIONS
+                        C.PID,
+                        C.HM,
+                        C.D,
+                        C.A
                 },
                 prof_id_select, // selection
                 null, // selectionArgs
@@ -128,9 +128,9 @@ public class EAUI extends EHA {
             }
 
             // get column indexes
-            int hourMinColIndex = c.getColumnIndexOrThrow(C.HOUR_MIN);
-            int daysColIndex = c.getColumnIndexOrThrow(C.DAYS);
-            int actionsColIndex = c.getColumnIndexOrThrow(C.ACTIONS);
+            int hourMinColIndex = c.getColumnIndexOrThrow(C.HM);
+            int daysColIndex = c.getColumnIndexOrThrow(C.D);
+            int actionsColIndex = c.getColumnIndexOrThrow(C.A);
 
 
             String actions_str = c.getString(actionsColIndex);
@@ -143,18 +143,18 @@ public class EAUI extends EHA {
 
             mPrefRingerMode = new PE(this,
                     R.id.ringerModeButton,
-                    SH.RingerMode.values(),
+                    SH._RM.values(),
                     actions,
-                    C.ACTION_RINGER,
+                    C.AR,
                     getString(R.string.editaction_ringer));
             mPrefRingerMode.setEnabled(mSH.canControlAudio(),
                     getString(R.string.setting_not_supported));
 
             mPrefRingerVibrate = new PE(this,
                     R.id.ringerVibButton,
-                    SH.VibrateRingerMode.values(),
+                    SH._VRM.values(),
                     actions,
-                    C.ACTION_VIBRATE,
+                    C.AV,
                     getString(R.string.editaction_vibrate));
             mPrefRingerVibrate.setEnabled(mSH.canControlAudio(),
                     getString(R.string.setting_not_supported));
@@ -162,10 +162,10 @@ public class EAUI extends EHA {
             mPrefRingerVolume = new PP(this,
                     R.id.ringerVolButton,
                     actions,
-                    C.ACTION_RING_VOLUME,
+                    C.ARV,
                     getString(R.string.editaction_volume),
                     0,
-                    new Accessor() {
+                    new _A() {
                         @Override
                         public void changePercent(int percent) {
                             mSH.changeRingerVolume(percent);
@@ -186,10 +186,10 @@ public class EAUI extends EHA {
             mPrefNotifVolume = new PP(this,
                     R.id.notifVolButton,
                     actions,
-                    C.ACTION_NOTIF_VOLUME,
+                    C.ANV,
                     getString(R.string.editaction_notif_volume),
                     0,
-                    new Accessor() {
+                    new _A() {
                         @Override
                         public void changePercent(int percent) {
                             mSH.changeNotificationVolume(percent);
@@ -207,10 +207,10 @@ public class EAUI extends EHA {
             mPrefMediaVolume = new PP(this,
                     R.id.mediaVolButton,
                     actions,
-                    C.ACTION_MEDIA_VOLUME,
+                    C.AMV,
                     getString(R.string.editaction_media_volume),
                     0,
-                    new Accessor() {
+                    new _A() {
                         @Override
                         public void changePercent(int percent) {
                             mSH.changeMediaVolume(percent);
@@ -228,10 +228,10 @@ public class EAUI extends EHA {
             mPrefAlarmVolume = new PP(this,
                     R.id.alarmVolButton,
                     actions,
-                    C.ACTION_ALARM_VOLUME,
+                    C.AAV,
                     getString(R.string.editaction_alarm_volume),
                     0,
-                    new Accessor() {
+                    new _A() {
                         @Override
                         public void changePercent(int percent) {
                             mSH.changeAlarmVolume(percent);
@@ -249,10 +249,10 @@ public class EAUI extends EHA {
             mPrefBrightness = new PP(this,
                     R.id.brightnessButton,
                     actions,
-                    C.ACTION_BRIGHTNESS,
+                    C.ABR,
                     getString(R.string.editaction_brightness),
                     R.drawable.ic_menu_view_brightness,
-                    new Accessor() {
+                    new _A() {
                         @Override
                         public void changePercent(int percent) {
                             // disable the immediate slider feedback, it flickers too much and is very slow.
@@ -273,7 +273,7 @@ public class EAUI extends EHA {
             mPrefBluetooth = new PT(this,
                             R.id.bluetoothButton,
                             actions,
-                            C.ACTION_BLUETOOTH,
+                            C.ABT,
                             getString(R.string.editaction_bluetooth));
             mPrefBluetooth.setEnabled(mSH.canControlBluetooth(),
                     getString(R.string.setting_not_supported));
@@ -281,7 +281,7 @@ public class EAUI extends EHA {
             mPrefApnDroid = new PT(this,
                     R.id.apndroidButton,
                     actions,
-                    C.ACTION_APN_DROID,
+                    C.AAD,
                     getString(R.string.editaction_apndroid),
                     new String[] {
                         getString(R.string.timedaction_apndroid_on),
@@ -293,7 +293,7 @@ public class EAUI extends EHA {
             mPrefWifi = new PT(this,
                             R.id.wifiButton,
                             actions,
-                            C.ACTION_WIFI,
+                            C.AW,
                             getString(R.string.editaction_wifi));
             mPrefWifi.setEnabled(mSH.canControlWifi(),
                     getString(R.string.setting_not_supported));
@@ -301,7 +301,7 @@ public class EAUI extends EHA {
             mPrefAirplane = new PT(this,
                             R.id.airplaneButton,
                             actions,
-                            C.ACTION_AIRPLANE,
+                            C.AA,
                             getString(R.string.editaction_airplane));
             mPrefAirplane.setEnabled(mSH.canControlAirplaneMode(),
                     getString(R.string.setting_not_supported));
@@ -337,7 +337,7 @@ public class EAUI extends EHA {
 
             // Update days checked
             int days = c.getInt(daysColIndex);
-            for (int i = C.MONDAY_BIT_INDEX; i <= C.SUNDAY_BIT_INDEX; i++) {
+            for (int i = C.MOi; i <= C.SUi; i++) {
                 mCheckDays[i].setChecked((days & (1<<i)) != 0);
             }
 
@@ -433,7 +433,7 @@ public class EAUI extends EHA {
 
         mAW = new AW();
         mAW.start(this);
-        mAW.event(AW.Event.OpenTimeActionUI);
+        mAW._E(AW._E.OpenTimeActionUI);
     }
 
 
@@ -449,7 +449,7 @@ public class EAUI extends EHA {
 
             int days = 0;
 
-            for (int i = C.MONDAY_BIT_INDEX; i <= C.SUNDAY_BIT_INDEX; i++) {
+            for (int i = C.MOi; i <= C.SUi; i++) {
                 if (mCheckDays[i].isChecked()) {
                     days |= 1<<i;
                 }

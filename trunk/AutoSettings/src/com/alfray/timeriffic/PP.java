@@ -28,7 +28,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.alfray.timeriffic.R;
-import com.alfray.timeriffic.PPD.Accessor;
+import com.alfray.timeriffic.PPD._A;
 
 //-----------------------------------------------
 
@@ -43,7 +43,7 @@ class PP extends PB implements View.OnClickListener {
     private final int mIconResId;
 
     private int mDialogId;
-    private final Accessor mAccessor;
+    private final _A m_A;
     private String mDisabledMessage;
 
     public PP(Activity activity,
@@ -52,12 +52,12 @@ class PP extends PB implements View.OnClickListener {
                     char actionPrefix,
                     String dialogTitle,
                     int iconResId,
-                    PPD.Accessor accessor) {
+                    PPD._A _A) {
         super(activity);
         mActionPrefix = actionPrefix;
         mDialogTitle = dialogTitle;
         mIconResId = iconResId;
-        mAccessor = accessor;
+        m_A = _A;
 
         mButton = (Button) getActivity().findViewById(buttonResId);
         mButton.setOnClickListener(this);
@@ -93,8 +93,8 @@ class PP extends PB implements View.OnClickListener {
         return mIconResId;
     }
 
-    public Accessor getAccessor() {
-        return mAccessor;
+    public _A getAccessor() {
+        return m_A;
     }
 
     /** -1 if unchanged, or 0..100 */
