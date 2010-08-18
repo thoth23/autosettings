@@ -86,7 +86,7 @@ if [ -z "$VERS" ]; then
         die "Failed to find aapt.exe"
     fi
     
-    VERS=`"$AAPT" dump badging "$APK" | grep versionName | sed "s/.*versionName='\(.*\)'/\1/g"`
+    VERS=`"$AAPT" dump badging "$APK" | grep versionName | sed "s/.*versionName='\([^ ]*\).*'/\1/g"`
     [ -n "$VERS" ] && VERS="v${VERS}"
     echo "Found version $VERS"
 fi
