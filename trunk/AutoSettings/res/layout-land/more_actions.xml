@@ -21,6 +21,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
 >
 
+<include layout="@layout/more_actions_3cols" />
+
+<!--
 <LinearLayout
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -119,7 +122,7 @@
         android:text="free1"
         style="@style/ActionButton"
         />
-    <!--
+    <!- -
     <Button
         android:enabled="false" android:visibility="invisible"
         android:id="@+id/freeButton2"
@@ -129,7 +132,8 @@
         android:text="free2"
         style="@style/ActionButton"
         />
-     -->
+     - ->
 </LinearLayout>
+-->
 
 </merge>
