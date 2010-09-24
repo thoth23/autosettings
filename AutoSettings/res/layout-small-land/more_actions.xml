@@ -21,7 +21,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
 >
 
-<!-- include layout="@layout/more_actions_2cols" / -->
+<include layout="@layout/more_actions_2cols" />
 
 <!--
 <LinearLayout
