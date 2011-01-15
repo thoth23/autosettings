@@ -74,13 +74,15 @@ public class FlashlightActivity extends Activity {
         applyColor(mPrefs.getColorIndex());
 
         findViewById(R.id.GoBright).setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
+			@Override
+			public void onClick(View v) {
                 goBright();
             }
         });
 
         findViewById(R.id.GoDark).setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
+			@Override
+			public void onClick(View v) {
                 goDark();
             }
         });
@@ -165,7 +167,7 @@ public class FlashlightActivity extends Activity {
                     mPrefs.getColorIndex(),
                     new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
+						public void onClick(DialogInterface dialog, int which) {
                             changeColor(which);
                             dismissDialog(R.string.menu_color);
                         }
