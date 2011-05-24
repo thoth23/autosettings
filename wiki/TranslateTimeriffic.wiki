@@ -1,17 +1,20 @@
 #summary How to translate Timeriffic in a new language.
 
+*IMPORTANT: This document is OBSOLETE*. Please read http://code.google.com/p/timeriffic/wiki/TranslateTimeriffic instead.
+
 = Introduction =
 
-I mantain the Timeriffic translations for English, French and Spanish.
+Timeriffic is already translated in a number of languages, but we'd love to have more translations!
 
-I'd love to have more translations.
+Ralfoide mantains the Timeriffic translations for English, French and Spanish.
+
 
 This document explains what is involved.
 
 = Details =
 
-Before starting to translate anything, please contact me at
-_*rdrr.labs gmail com*_ to make sure I don't already have a similar translation in progress.
+Before starting to translate anything, please contact us at
+_*rdrr.labs gmail com*_ to make sure we don't already have a similar translation in progress.
 
 You will need:
   * A text editor, or simply an email application.
