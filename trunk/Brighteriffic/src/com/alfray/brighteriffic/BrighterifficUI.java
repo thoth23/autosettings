@@ -31,24 +31,29 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class BrighterifficUI extends Activity {
 
-    //private static final String TAG = "BrighterifficUI";
+    @SuppressWarnings("unused")
+    private static final String TAG = BrighterifficUI.class.getSimpleName();
 
 
     private interface IMinMaxActions {
         /** Returns the current pref. */
         public int getPrefValue();
-        /** Returns true if pref was correctly saved. */
-        public boolean setPrefValue(int percent);
+        /** Set new pref value. */
+        public void setPrefValue(int percent);
         /** Changes the brightness to the one from the current pref. */
         public void applyValue();
     }
@@ -87,8 +92,8 @@ public class BrighterifficUI extends Activity {
                     public int getPrefValue() {
                         return mPrefsValues.getMinBrightness();
                     }
-                    public boolean setPrefValue(int percent) {
-                        return mPrefsValues.setMinBrightness(percent);
+                    public void setPrefValue(int percent) {
+                        mPrefsValues.setMinBrightness(percent);
                     }
                     public void applyValue() {
                         Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
@@ -107,8 +112,8 @@ public class BrighterifficUI extends Activity {
                     public int getPrefValue() {
                         return mPrefsValues.getMaxBrightness();
                     }
-                    public boolean setPrefValue(int percent) {
-                        return mPrefsValues.setMaxBrightness(percent);
+                    public void setPrefValue(int percent) {
+                        mPrefsValues.setMaxBrightness(percent);
                     }
                     public void applyValue() {
                         Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
@@ -119,6 +124,81 @@ public class BrighterifficUI extends Activity {
                     }
                 }
         );
+
+        // Dock events are only for API 5+
+        if (Utils.getApiLevel() >= 5) {
+            final View carView = initMinMaxPart(R.id.part_car,
+                    getString(R.string.car_title),
+                    getString(R.string.car_button_percent),
+                    new IMinMaxActions() {
+                        public int getPrefValue() {
+                            return mPrefsValues.getCarBrightness();
+                        }
+                        public void setPrefValue(int percent) {
+                            mPrefsValues.setCarBrightness(percent);
+                        }
+                        public void applyValue() {
+                            Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
+                            i.putExtra(ChangeBrightnessActivity.INTENT_SET_BRIGHTNESS,
+                                            getPrefValue() / 100.0f);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(i);
+                        }
+                    }
+            );
+
+            CheckBox cb = (CheckBox) findViewById(R.id.check_car);
+            cb.setChecked(mPrefsValues.getUseCarBrightness());
+            enableView(carView, cb.isChecked());
+            cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mPrefsValues.setUseCarBrightness(isChecked);
+                    enableView(carView, isChecked);
+                }
+            });
+
+            final View deskView = initMinMaxPart(R.id.part_desk,
+                    getString(R.string.desk_title),
+                    getString(R.string.desk_button_percent),
+                    new IMinMaxActions() {
+                        public int getPrefValue() {
+                            return mPrefsValues.getDeskBrightness();
+                        }
+                        public void setPrefValue(int percent) {
+                            mPrefsValues.setDeskBrightness(percent);
+                        }
+                        public void applyValue() {
+                            Intent i = new Intent(BrighterifficUI.this, ChangeBrightnessActivity.class);
+                            i.putExtra(ChangeBrightnessActivity.INTENT_SET_BRIGHTNESS,
+                                            getPrefValue() / 100.0f);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(i);
+                        }
+                    }
+            );
+
+            cb = (CheckBox) findViewById(R.id.check_desk);
+            cb.setChecked(mPrefsValues.getUseDeskBrightness());
+            enableView(deskView, cb.isChecked());
+            cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mPrefsValues.setUseDeskBrightness(isChecked);
+                    enableView(deskView, isChecked);
+                }
+            });
+        }
+    }
+
+    private void enableView(View v, boolean enabled) {
+        v.setEnabled(enabled);
+        if (v instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) v;
+            for (int n = vg.getChildCount() - 1; n >= 0; n--) {
+                enableView(vg.getChildAt(n), enabled);
+            }
+        }
     }
 
     private BrighterifficApp getApp() {
@@ -159,7 +239,7 @@ public class BrighterifficUI extends Activity {
         }
     }
 
-    private void initMinMaxPart(
+    private View initMinMaxPart(
             int id,
             String title,
             final String buttonLabel,
@@ -195,6 +275,8 @@ public class BrighterifficUI extends Activity {
                 button.setText(String.format(buttonLabel, actions.getPrefValue()));
             }
         });
+
+        return group;
     }
 
     public String longVersion() {

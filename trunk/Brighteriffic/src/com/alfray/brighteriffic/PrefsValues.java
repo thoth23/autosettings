@@ -21,38 +21,75 @@ package com.alfray.brighteriffic;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 public class PrefsValues {
 
     private SharedPreferences mPrefs;
 
-	public PrefsValues(Context context) {
+    public PrefsValues(Context context) {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-	}
+    }
 
-	public SharedPreferences getPrefs() {
+    public SharedPreferences getPrefs() {
         return mPrefs;
     }
 
-	public int getMinBrightness() {
-	    return mPrefs.getInt("minBrightness", 10);
-	}
+    public int getMinBrightness() {
+        return mPrefs.getInt("minBrightness", 10);
+    }
 
-	/** Returns true if value was successfully changed.
-	 * This seems to always return false. */
-	public boolean setMinBrightness(int minBrightness) {
-        return mPrefs.edit().putInt("minBrightness", minBrightness).commit();
-	}
+    public void setMinBrightness(int brightness) {
+        apply(mPrefs.edit().putInt("minBrightness", brightness));
+    }
 
     public int getMaxBrightness() {
         return mPrefs.getInt("maxBrightness", 75);
     }
 
-    /** Returns true if value was successfully changed.
-    * This seems to always return false. */
-    public boolean setMaxBrightness(int maxBrightness) {
-        return mPrefs.edit().putInt("maxBrightness", maxBrightness).commit();
+    public void setMaxBrightness(int brightness) {
+        apply(mPrefs.edit().putInt("maxBrightness", brightness));
+    }
+
+    public int getCarBrightness() {
+        return mPrefs.getInt("carBrightness", 90);
+    }
+
+    public void setCarBrightness(int brightness) {
+        apply(mPrefs.edit().putInt("carBrightness", brightness));
+    }
+
+    public boolean getUseCarBrightness() {
+        return mPrefs.getBoolean("useCarBrightness", false);
+    }
+
+    public void setUseCarBrightness(boolean use) {
+        apply(mPrefs.edit().putBoolean("useCarBrightness", use));
+    }
+
+    public int getDeskBrightness() {
+        return mPrefs.getInt("deskBrightness", 50);
+    }
+
+    public void setDeskBrightness(int brightness) {
+        apply(mPrefs.edit().putInt("deskBrightness", brightness));
+    }
+
+    public boolean getUseDeskBrightness() {
+        return mPrefs.getBoolean("useDeskBrightness", false);
+    }
+
+    public void setUseDeskBrightness(boolean use) {
+        apply(mPrefs.edit().putBoolean("useDeskBrightness", use));
+    }
+
+    public int getSavedBrightness() {
+        return mPrefs.getInt("savedBrightness", -1);
+    }
+
+    public void setSavedBrightness(int brightness) {
+        apply(mPrefs.edit().putInt("savedBrightness", brightness));
     }
 
     public boolean isIntroDismissed() {
@@ -63,8 +100,18 @@ public class PrefsValues {
      * Sets the dismiss_intro boolean value.
      * @return true if value was successfully changed if the prefs
      */
-    public boolean setIntroDismissed(boolean dismiss) {
-        return mPrefs.edit().putBoolean("dismiss_intro", dismiss).commit();
+    public void setIntroDismissed(boolean dismiss) {
+        apply(mPrefs.edit().putBoolean("dismiss_intro", dismiss));
+    }
+
+    // ---
+
+    private void apply(Editor editor) {
+        if (Utils.getApiLevel() >= 9) {
+            editor.apply();
+        } else {
+            editor.commit();
+        }
     }
 
 }
