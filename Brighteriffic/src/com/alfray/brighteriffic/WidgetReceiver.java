@@ -27,8 +27,10 @@ import android.widget.RemoteViews;
 
 public class WidgetReceiver extends AppWidgetProvider {
 
-    //private static boolean DEBUG = true;
-    //private static String TAG = "WidgetReceiver";
+    @SuppressWarnings("unused")
+    private static boolean DEBUG = false;
+    @SuppressWarnings("unused")
+    private static String TAG = WidgetReceiver.class.getSimpleName();
 
     public WidgetReceiver() {
         // Nothing here. This is constructed for *each* call.
@@ -51,6 +53,5 @@ public class WidgetReceiver extends AppWidgetProvider {
 
         // update it
         appWidgetManager.updateAppWidget(appWidgetIds, views);
-
     }
 }

@@ -28,8 +28,12 @@
     <string name="home_shortcut_label">Toggle Brightness</string>
     <string name="min_title">Min Brightness</string>
     <string name="max_title">Max Brightness</string>
+    <string name="car_title">Car Dock Brightness</string>
+    <string name="desk_title">Desk Dock Brightness</string>
     <string name="min_button_percent">Set Min to %d%%</string>
     <string name="max_button_percent">Set Max to %d%%</string>
+    <string name="car_button_percent">Set Car to %d%%</string>
+    <string name="desk_button_percent">Set Desk to %d%%</string>
     <string name="brightness_changed_toast">Brightness changed to %d%%</string>
 
     <!-- menu -->

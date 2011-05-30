@@ -46,10 +46,18 @@ public class ChangeBrightnessActivity extends Activity {
      *  is not public.) */
     private static final int BR_MAX = 255;
 
+    /** Action to invoke this activity. */
+    public static final String ACTION_TOGGLE_BRIGHTNESS = "com.alfray.brighteriffic.TOGGLE_BRIGHTNESS";
 
+    /** Brightness value to set, if present. Must be a float in range [0..1] included. */
     public static final String INTENT_SET_BRIGHTNESS = "set";
 
-    public static final String ACTION_TOGGLE_BRIGHTNESS = "com.alfray.brighteriffic.TOGGLE_BRIGHTNESS";
+    /** Save current brightness before changing it. Boolean. Defaults to false.
+     * Use {@link PrefsValues#getSavedBrightness()} to restore it.
+     */
+    public static final String INTENT_SAVE_BRIGHTNESS = "save";
+
+    /** Toggle between preset min and max brightness values. Must be boolean True. */
     public static final String INTENT_TOGGLE_BRIGHTNESS = "toggle";
 
     private Handler mHandler;
@@ -74,6 +82,13 @@ public class ChangeBrightnessActivity extends Activity {
         setContentView(R.layout.empty);
 
         Intent i = getIntent();
+
+        if (i.getBooleanExtra(INTENT_SAVE_BRIGHTNESS, false)) {
+            float f = getCurrentBrightness();
+            PrefsValues pv = new PrefsValues(this);
+            pv.setSavedBrightness((int) (100 * f));
+        }
+
         float f = i.getFloatExtra(INTENT_SET_BRIGHTNESS, -1);
 
         float result = -1;

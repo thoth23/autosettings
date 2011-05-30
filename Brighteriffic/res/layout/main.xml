@@ -33,6 +33,20 @@
     <include layout="@layout/part_desc" />
     <include android:id="@+id/part_min" layout="@layout/part_minmax" />
     <include android:id="@+id/part_max" layout="@layout/part_minmax" />
+
+    <include android:id="@+id/part_car"  layout="@layout/part_minmax" />
+    <CheckBox android:id="@+id/check_car"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Set Car Dock Brightness"
+        />
+    <include android:id="@+id/part_desk" layout="@layout/part_minmax" />
+    <CheckBox android:id="@+id/check_desk"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Set Desk Dock Brightness"
+        />
+
     <include layout="@layout/part_toggle" />
 
 </LinearLayout>
